@@ -1,0 +1,155 @@
+﻿@inject ITrakHoundInstance instance
+@inject IJSRuntime javascript
+@using Radzen
+@using Radzen.Blazor
+@using TrakHound.Blazor.Components
+@using TrakHound.Deployments
+@using TrakHound.Instances
+
+<div class="install-panel">
+
+    <div class="hidden-input">
+        <InputFile OnChange="DeploymentFileChanged" id="@fileInputId" name="file" />
+    </div>
+
+    <div class="toolbar-panel">
+        <div class="toolbar-panel-container">
+            <div class="toolbar-panel-install">
+
+                @if (!loading)
+                {
+                    var installDisabled = deploymentFile != null ? "" : "disabled";
+
+                    <button class="btn btn-primary btn-install @installDisabled" @onclick="InstallClicked"><span class="icon fa-solid fa-sharp fa-down-to-bracket"></span>Install</button>
+                }
+                else
+                {
+                    <button class="btn btn-primary btn-install disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Installing..</button>
+                }
+
+            </div>
+
+            @if (!loading)
+            {
+                <div class="toolbar-panel-browse">
+                    <button class="btn bt-light btn-browse" @onclick="BrowseClicked"><span class="icon fa-solid fa-sharp fa-magnifying-glass"></span>Browse..</button>
+                </div>
+                <div class="toolbar-panel-input">
+                    <TextBox Value="@filename" />
+                </div>
+            }
+
+        </div>
+    </div>
+
+    @if (!resultMessages.IsNullOrEmpty() || !resultErrors.IsNullOrEmpty())
+    {
+        <div class="results-panel">
+            <table class="table table-sm">
+                <tbody>
+
+                    @if (!resultMessages.IsNullOrEmpty())
+                    {
+                        foreach (var result in resultMessages)
+                        {
+                            <tr>
+                                <td class="result-message">@result</td>
+                            </tr>
+                        }
+                    }
+
+                    @if (!resultErrors.IsNullOrEmpty())
+                    {
+                        foreach (var result in resultErrors)
+                        {
+                            <tr>
+                                <td class="result-error">@result</td>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    }
+
+</div>
+
+@code {
+
+    private string fileInputId = Guid.NewGuid().ToString();
+
+    private IBrowserFile deploymentFile;
+    private string filename;
+
+    private bool loading;
+    private IEnumerable<string> resultMessages;
+    private IEnumerable<string> resultErrors;
+
+
+    private async Task InstallClicked()
+    {
+        loading = true;
+        await InvokeAsync(StateHasChanged);
+
+        await Task.Delay(250); // Show Loading?
+
+        if (deploymentFile != null)
+        {
+            try
+            {
+                byte[] deploymentBytes = null;
+                using (var outputStream = new MemoryStream())
+                using (var readStream = deploymentFile.OpenReadStream(deploymentFile.Size))
+                {
+                    await readStream.CopyToAsync(outputStream);
+                    deploymentBytes = outputStream.ToArray();
+                }
+
+                // Stop Instance
+                await instance.Stop();
+
+                var destinationPath = AppDomain.CurrentDomain.BaseDirectory;
+                var result = TrakHoundDeployment.Install(deploymentBytes, destinationPath);
+                if (result.Success)
+                {
+
+                }
+                else
+                {
+
+                }
+
+                resultMessages = result.Messages;
+                resultErrors = result.Errors;
+
+                // Restart Instance
+                await instance.Start();
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void BrowseClicked()
+    {
+        try
+        {
+            await javascript.InvokeVoidAsync("JsFunctions.clickElement", fileInputId);
+        }
+        catch (Exception) { }
+    }
+
+    private async void DeploymentFileChanged(InputFileChangeEventArgs args)
+    {
+        deploymentFile = args.File;
+        filename = args.File.Name;
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

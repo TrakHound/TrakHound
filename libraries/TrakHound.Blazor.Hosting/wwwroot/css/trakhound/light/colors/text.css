@@ -1,0 +1,33 @@
+:root {
+    --textDark: #333;
+    --textMild: #555;
+    --textLight: #888;
+    --textMuted: #bbb;
+    --textVeryLight: #ccc;
+    --textVeryVeryLight: #dfdfdf;
+    --textLink: #0080ff;
+}
+
+.text-disabled {
+    color: #aaa !important;
+}
+
+.text-active {
+    color: var(--colorGreen) !important;
+}
+
+.text-idle {
+    color: var(--colorOrange) !important;
+}
+
+.text-alert {
+    color: var(--colorRed) !important;
+}
+
+.text-accent {
+    color: var(--accent) !important;
+}
+
+.text-purple {
+    color: var(--colorPurple) !important;
+}

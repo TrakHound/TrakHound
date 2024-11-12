@@ -1,0 +1,39 @@
+﻿@inject ExplorerService explorerService
+@using TrakHound.Requests
+
+@if (!SourceChain.IsNullOrEmpty())
+{
+    <table class="source-table table table-sm">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Type</th>
+                <th>Sender</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var source in SourceChain)
+            {
+                var link = Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, $"entities/sources?uuid={source.Uuid}");
+
+                <tr>
+                    <td class="view"><a href="@link">View</a></td>
+                    <td class="type">@source.Type</td>
+                    <td class="sender">@source.Sender</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+@code {
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+    [Parameter]
+    public IEnumerable<TrakHoundSource> SourceChain { get; set; }
+
+}

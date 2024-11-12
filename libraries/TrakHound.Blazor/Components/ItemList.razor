@@ -1,0 +1,88 @@
+﻿<div class="item-list">
+    <div class="item-list-toolbar">
+        <div class="item-list-toolbar-container">
+            <div class="item-list-toolbar-buttons">
+                <button class="btn btn-sm btn-primary" @onclick="Add"><span class="icon fa-solid fa-sharp fa-plus"></span>Add</button>
+            </div>
+            <div class="item-list-toolbar-input">
+                <TextBox @bind-Value="@addItem" Submitted="Add" InputChangeType="InputChangeType.OnValueChange" PlaceHolder="@PlaceHolder" />
+            </div>
+        </div>
+    </div>
+
+    @if (!Items.IsNullOrEmpty())
+    {
+        var items = Items.ToArray();
+
+        <div class="item-list-content">
+            <div class="item-list-content-container">
+        
+                @for (var i = 0; i < items.Length; i++)
+                {
+                    var index = i;
+
+                    <div class="item">
+                        <div class="item-buttons">
+                            <button class="btn btn-sm btn-remove" @onclick="() => Remove(index)"><span class="icon fa-solid fa-sharp fa-minus"></span></button>
+                        </div>
+                        <div class="item-value">@items[i]</div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    }
+
+</div>
+
+@code {
+
+    private string addItem;
+
+
+    [Parameter]
+    public IEnumerable<string> Items { get; set; }
+
+    [Parameter]
+    public EventCallback<IEnumerable<string>> ItemsChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ItemAdded { get; set; }
+
+    [Parameter]
+    public EventCallback<int> ItemRemoved { get; set; }
+
+    [Parameter]
+    public string PlaceHolder { get; set; }
+
+
+    private async void Add()
+    {
+        if (!string.IsNullOrEmpty(addItem))
+        {
+            var items = Items?.ToList();
+            if (items == null) items = new List<string>();
+            items.Add(addItem);
+            Items = items;
+
+            addItem = null;
+
+            await ItemAdded.InvokeAsync(addItem);
+            await ItemsChanged.InvokeAsync(Items);
+        }
+    }
+
+    private async void Remove(int index)
+    {
+        var items = Items?.ToList();
+        if (index >= 0 && index < items.Count)
+        {
+            items.RemoveAt(index);
+            Items = items;
+
+            await ItemRemoved.InvokeAsync(index);
+            await ItemsChanged.InvokeAsync(Items);
+        }
+    }
+
+}

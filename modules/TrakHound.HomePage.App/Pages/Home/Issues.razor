@@ -1,0 +1,62 @@
+﻿@inherits TrakHoundComponentBase
+
+<div class="issues-panel">
+    <div class="issues-toolbar">
+        <a href="https://github.com/TrakHound/MTConnect.NET/issues/new" target="_blank" class="btn btn-link"><span class="icon fa-regular fa-sharp fa-plus"></span>Create Issue</a>
+    </div>
+    <div class="issues-list">
+
+        @if (!issues.IsNullOrEmpty())
+        {
+            foreach (var issue in issues)
+            {
+                <a href="@issue.HtmlUrl" target="_blank" class="issue-panel">
+                    <div class="issue-container">
+                        <div class="issue-icon">
+                            <span class="icon fa-regular fa-sharp fa-circle-dot"></span>
+                        </div>
+                        <div class="issue-header">
+                            <span class="issue-title">@issue.Title</span>
+                        </div>
+                        <div class="issue-content">
+                            <span class="issue-number"><span>#</span>@issue.Number</span>
+                            <span class="issue-updated">last updated at @issue.UpdatedAt</span>
+                        </div>
+                        <div class="issue-icons">
+                            <span class="issue-comments"><span class="icon fa-regular fa-sharp fa-message-lines"></span>@issue.Comments</span>
+                        </div>
+                    </div>
+                </a>
+            }
+        }
+
+    </div>
+</div>
+
+@code {
+
+    private IEnumerable<Issue> issues;
+
+    class Issue
+    {
+        public long Id { get; set; }
+        public string Url { get; set; }
+        public string HtmlUrl { get; set; }
+        public int Number { get; set; }
+        public string Title { get; set; }
+        public string Body { get; set; }
+        public int Comments { get; set; }
+        public DateTime UpdatedAt { get; set; }
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var url = "https://www.trakhound.com/management/github/api/issues/TrakHound/MTConnect.NET";
+        issues = await TrakHound.Http.RestRequest.Get<IEnumerable<Issue>>(url);
+
+        // issues = await Client.Api.QueryJson<IEnumerable<Issue>>("github/api/issues/TrakHound/MTConnect.NET");
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

@@ -1,0 +1,127 @@
+﻿.object-content-panel {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.header-panel {
+    grid-row: 1;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    padding: 6px 20px 4px;
+    padding: 0;
+    padding: 0 10px;
+    border-bottom: 1px solid #eee;
+}
+
+    .header-panel .header-content-type-container {
+        grid-column: 1;
+        display: grid;
+        grid-template-columns: max-content max-content 1fr;
+        grid-column-gap: 12px;
+        padding: 7px 10px 4px;
+        border-right: 1px solid #ddd;
+    }
+
+    .header-panel .icon-container {
+        grid-column: 1;
+    }
+
+    .header-panel .icon {
+        font-size: 16px;
+        color: var(--accent);
+        color: #aaa;
+    }
+
+    .header-panel .title-container {
+        grid-column: 2;
+    }
+
+    .header-panel .title {
+        font-size: 13px;
+        font-weight: bold;
+        line-height: 18px;
+        color: var(--accent);
+        color: #555;
+    }
+
+    .header-panel .description-container {
+        grid-column: 3;
+    }
+
+    .header-panel .header-breadcrumbs-container {
+        grid-column: 2;
+        padding: 8px 20px;
+        padding: 0;
+        padding: 5px 20px;
+    }
+
+.content-panel {
+    grid-row: 2;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .content-panel ::deep .form-field {
+        display: block;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+        .content-panel ::deep .form-field label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .content-panel ::deep .form-field .rz-textbox {
+            display: block;
+            width: 100%;
+            font-size: 13px;
+        }
+
+        .content-panel ::deep .form-field .rz-textarea {
+            display: block;
+            width: 100%;
+            font-size: 13px;
+        }
+
+    .content-panel ::deep .timestamp-panel {
+        display: block;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+        .content-panel ::deep .timestamp-panel .timestamp-selection {
+            border: 1px solid #f4f4f4;
+            border-radius: 4px;
+            padding: 10px;
+        }
+
+        .content-panel ::deep .timestamp-panel label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .content-panel ::deep .timestamp-panel .rz-calendar input,
+        .content-panel ::deep .timestamp-panel .rz-spinner input {
+            font-size: 14px;
+        }
+
+        .content-panel ::deep .timestamp-panel .rz-selectbutton {
+            margin: 0 !important;
+        }
+
+        .content-panel ::deep .timestamp-panel .timestamp-shortcuts {
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        .content-panel ::deep .timestamp-panel .timestamp-type {
+            display: inline-block;
+            margin-left: 20px;
+        }

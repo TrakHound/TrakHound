@@ -1,0 +1,97 @@
+﻿<div class="hash-item-list">
+    <div class="hash-item-list-toolbar">
+        <div class="hash-item-list-toolbar-container">
+            <div class="hash-item-list-toolbar-buttons">
+                <button class="btn btn-sm btn-primary" @onclick="Add"><span class="icon fa-solid fa-sharp fa-plus"></span>Add</button>
+            </div>
+            <div class="hash-item-list-toolbar-input">
+                <TextBox @bind-Value="@addItemKey" Submitted="Add" InputChangeType="InputChangeType.OnValueChange" PlaceHolder="@KeyPlaceHolder" />
+            </div>
+            <div class="hash-item-list-toolbar-input">
+                <TextBox @bind-Value="@addItemValue" Submitted="Add" InputChangeType="InputChangeType.OnValueChange" PlaceHolder="@ValuePlaceHolder" />
+            </div>
+        </div>
+    </div>
+
+    @if (!Items.IsNullOrEmpty())
+    {
+        var items = Items.ToArray();
+
+        <div class="hash-item-list-content">
+            <div class="hash-item-list-content-container">
+        
+                @for (var i = 0; i < items.Length; i++)
+                {
+                    var index = i;
+
+                    <div class="hash-item">
+                        <div class="hash-item-buttons">
+                            <button class="btn btn-sm btn-remove" @onclick="() => Remove(index)"><span class="icon fa-solid fa-sharp fa-minus"></span></button>
+                        </div>
+                        <div class="hash-item-key">@items[i].Key</div>
+                        <div class="hash-item-value">@items[i].Value</div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    }
+
+</div>
+
+@code {
+
+    private string addItemKey;
+    private string addItemValue;
+
+
+    [Parameter]
+    public Dictionary<string, string> Items { get; set; }
+
+    [Parameter]
+    public EventCallback<Dictionary<string, string>> ItemsChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<KeyValuePair<string, string>> ItemAdded { get; set; }
+
+    [Parameter]
+    public EventCallback<int> ItemRemoved { get; set; }
+
+    [Parameter]
+    public string KeyPlaceHolder { get; set; }
+
+    [Parameter]
+    public string ValuePlaceHolder { get; set; }
+
+
+    private async void Add()
+    {
+        if (!string.IsNullOrEmpty(addItemKey) && !string.IsNullOrEmpty(addItemValue))
+        {
+            var items = Items;
+            if (items == null) items = new Dictionary<string, string>();
+            if (!items.ContainsKey(addItemKey))
+            {
+                items.Add(addItemKey, addItemValue);
+            }
+            Items = items;
+
+            await ItemAdded.InvokeAsync(new KeyValuePair<string, string>(addItemKey, addItemValue));
+            await ItemsChanged.InvokeAsync(Items);
+        }
+    }
+
+    private async void Remove(int index)
+    {
+        var items = Items?.ToList();
+        if (index >= 0 && index < items.Count)
+        {
+            items.RemoveAt(index);
+            Items = items.ToDictionary();
+
+            await ItemRemoved.InvokeAsync(index);
+            await ItemsChanged.InvokeAsync(Items);
+        }
+    }
+
+}

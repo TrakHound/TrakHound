@@ -1,0 +1,171 @@
+﻿.redirect-node {
+    width: 350px;
+    min-height: 150px;
+    padding: 5px 20px 0px;
+    background: var(--accentVeryVeryLight);
+    border: 1px solid var(--accentLight);
+    border-radius: 4px;
+}
+
+.diagram-node .redirect-node:hover {
+    background: var(--accentVeryLight);
+    border: 1px solid var(--accentLight);
+}
+
+.diagram-node.selected .redirect-node {
+    background: var(--accentVeryLight);
+    border: 1px solid var(--accent);
+}
+
+.redirect-node .node-type {
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.diagram-node.selected .redirect-node .node-type,
+.diagram-node .redirect-node:hover .node-type {
+    color: var(--accentLight);
+}
+
+.redirect-node .node-type .icon {
+    font-size: 10px;
+    margin-right: 8px;
+}
+
+.redirect-node .node-on-label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 3px;
+}
+
+.redirect-node .node-on {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.redirect-node .node-id {
+    font-size: 9px;
+    color: rgba(0, 0, 0, 0.25);
+    text-align: center;
+}
+
+
+.node-on-container ::deep .item-list {
+    margin-bottom: 5px;
+}
+
+.node-on-container ::deep .item-list-content {
+    background: #fff;
+}
+
+.node-on-container ::deep .btn-primary {
+    background: var(--accent) !important;
+    border: none !important;
+}
+
+.diagram-node.selected .redirect-node .node-on-container ::deep .btn-primary,
+.redirect-node:hover .node-on-container ::deep .btn-primary {
+    background: var(--accent) !important;
+    border: none !important;
+}
+
+    .diagram-node .redirect-node .node-on-container ::deep .btn-primary:hover {
+        background: var(--accentDark) !important;
+        border: none !important;
+    }
+
+.node-on-container ::deep .item {
+    padding: 2px;
+    font-size: 12px;
+}
+
+
+.node-options-container {
+    display: grid;
+    grid-template-columns: 1fr max-content max-content 1fr;
+    grid-column-gap: 20px;
+    padding: 0px 5px 10px;
+}
+
+.node-options-publish-container {
+    grid-column: 2;
+    min-width: 100px;
+}
+
+.node-options-empty-container {
+    grid-column: 3;
+    min-width: 100px;
+}
+
+.node-options-container label {
+    margin-right: 10px;
+    font-size: 13px;
+    line-height: 25px;
+    vertical-align: top;
+}
+
+    .node-options-container ::deep .rz-chkbox-box {
+        border: none;
+        height: 20px;
+        width: 20px;
+    }
+
+        .node-options-container ::deep .rz-chkbox-box:hover {
+            background: var(--accentLight) !important;
+            border: none;
+        }
+
+        .node-options-container ::deep .rz-chkbox-box.rz-state-active {
+            background: var(--accent) !important;
+            border: none;
+        }
+
+.diagram-node .redirect-node:hover .node-options-container ::deep .rz-chkbox-box.rz-state-active,
+.diagram-node.selected .node-options-container ::deep .rz-chkbox-box.rz-state-active {
+    background: var(--accent) !important;
+    border: none;
+}
+
+.node-options-publish-container {
+    grid-column: 1;
+}
+
+.node-options-empty-container {
+    grid-column: 2;
+}
+
+
+::deep .diagram-port {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border: 1px solid #aaa;
+}
+
+    ::deep .diagram-port.has-links {
+        background: var(--accentLight);
+        border: 1px solid var(--accentLight);
+    }
+
+    ::deep .diagram-port.router-input-port {
+        border-radius: 50%;
+        top: 45px;
+        left: -8px;
+    }
+
+    ::deep .diagram-port.driver-output-port {
+        border-radius: 50%;
+        top: 45px;
+        right: -8px;
+    }
+
+    ::deep .diagram-port.bottom {
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        bottom: -30px;
+    }

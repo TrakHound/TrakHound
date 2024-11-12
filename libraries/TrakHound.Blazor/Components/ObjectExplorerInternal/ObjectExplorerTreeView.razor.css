@@ -1,0 +1,55 @@
+﻿.server-tree-view {
+    overflow: auto;
+}
+
+    .server-tree-view ::deep .folder > .tree-item-content > .tree-item-header > .tree-item-header-content > .btn-selection > .btn-selection-container > .icon-container > .icon {
+        color: #ffbb00;
+        color: #a0a0a0;
+        color: #88bacc;
+        /*color: #75b0d7;*/
+        /*color: #61a4d1;*/
+        /*color: #57a6db;*/
+        color: #9cb3c9;
+        /*color: #6699cc;*/
+    }
+
+    .server-tree-view ::deep .tree-item .tree-item-content > .tree-item-header {
+        border-right: 5px solid transparent;
+        transition: border-right 1.5s;
+    }
+
+/*    .server-tree-view ::deep .tree-item .tree-item-content > .tree-item-header .title {
+        color: #333;
+        transition: color 1.5s;
+    }*/
+
+/*        .server-tree-view ::deep .tree-item.active .tree-item-content > .tree-item-header .title {
+            color: #333;
+            transition: none;
+        }*/
+
+    .server-tree-view ::deep .tree-item .tree-item-content > .tree-item-header .value {
+/*        color: inherit !important;
+        transition: color 1.5s;*/
+    }
+
+/*    .server-tree-view ::deep .tree-item .tree-item-content > .tree-item-header .value-container {
+        background: inherit !important;
+        transition: background 1s;
+    }*/
+
+    .server-tree-view ::deep .tree-item.recent .tree-item-content > .tree-item-header {
+        border-right: 5px solid var(--accentLight);
+        border-radius: 2px;
+        transition: border-right 0.35s;
+    }
+
+/*        .server-tree-view ::deep .tree-item.recent .tree-item-content > .tree-item-header .title {
+            color: var(--accent);
+            transition: color 0.35s;
+        }*/
+/*
+    .server-tree-view ::deep .tree-item.recent .tree-item-content > .tree-item-header .value-container {
+        background: var(--accentVeryLight) !important;
+        transition: background 0.5s;
+    }*/

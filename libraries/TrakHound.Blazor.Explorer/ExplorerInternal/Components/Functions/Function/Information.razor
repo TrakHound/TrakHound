@@ -1,0 +1,149 @@
+﻿@inject ExplorerService explorerService
+@using TrakHound.Functions
+
+@if (FunctionInformation != null)
+{
+    <div class="information-panel">
+
+        <div class="properties-panel">
+            <table class="table table-sm">
+                <tbody>
+                    <tr>
+                        <td class="label">Function ID</td>
+                        <td class="value">@FunctionInformation.FunctionId</td>
+                    </tr>
+                    <tr>
+                        <td class="label">TrakHound Version</td>
+                        <td class="value">@FunctionInformation.TrakHoundVersion</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="configuration-panel">
+            <table class="table table-sm">
+                <tbody>
+                    <tr>
+                        <td class="label">Configuration ID</td>
+                        <td class="value">@FunctionInformation.ConfigurationId</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="package-panel">
+            <table class="table table-sm">
+                <tbody>
+                    <tr>
+                        <td class="label">Package ID</td>
+                        <td class="value">@FunctionInformation.PackageId</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Package Version</td>
+                        <td class="value">@FunctionInformation.PackageVersion</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Package UUID</td>
+                        <td class="value">@FunctionInformation.PackageUuid</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Package Hash</td>
+                        <td class="value">@FunctionInformation.PackageHash</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Package Build Date</td>
+                        <td class="value">@FunctionInformation.PackageBuildDate?.ToLocalTime()</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @if (FunctionInformation.Repository != null)
+        {
+            <div class="repository-panel">
+                <table class="table table-sm">
+                    <tbody>
+                        <tr>
+                            <td class="label">Repository</td>
+                            <td class="value"><a href="@FunctionInformation.Repository" target="_blank">@FunctionInformation.Repository</a></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Repository Branch</td>
+                            <td class="value"><a href="@GetRepositoryBranchLink(FunctionInformation)" target="_blank">@FunctionInformation.RepositoryBranch</a></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Repository Directory</td>
+                            <td class="value"><a href="@GetRepositoryDirectoryLink(FunctionInformation)" target="_blank">@FunctionInformation.RepositoryDirectory</a></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Repository Commit</td>
+                            <td class="value"><a href="@GetRepositoryCommitLink(FunctionInformation)" target="_blank">@FunctionInformation.RepositoryCommit</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+
+@*          <div class="metrics-panel">
+             <table class="table table-sm">
+                 <tbody>
+                     <tr>
+                         <td class="label">Run Count</td>
+                         <td class="value">@FunctionInformation.RunCount</td>
+                     </tr>
+                     <tr>
+                         <td class="label">Run Average Duration</td>
+                         <td class="value">@FunctionInformation.AverageDuration.ToFormattedString(true)</td>
+                     </tr>
+                 </tbody>
+             </table>
+         </div> *@
+
+        @if (FunctionInformation.PackageReadMe != null)
+        {
+            <div class="readme-panel">
+                <MarkdownContent Markdown="@FunctionInformation.PackageReadMe" />
+            </div>
+        }
+
+    </div>
+}
+
+@code {
+
+	[Parameter]
+	public string ServerId { get; set; }
+
+	[Parameter]
+	public TrakHoundFunctionInformation FunctionInformation { get; set; }
+
+	[CascadingParameter(Name = "Explorer")]
+	public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    private static string GetRepositoryBranchLink(TrakHoundFunctionInformation information)
+    {
+        var baseUrl = information.Repository;
+        var branch = information.RepositoryBranch;
+
+        return Url.Combine(baseUrl, "tree", branch); // May need to revise this as this might only be valid for GitHub
+    }
+
+    private static string GetRepositoryDirectoryLink(TrakHoundFunctionInformation information)
+    {
+        var baseUrl = information.Repository;
+        var branch = information.RepositoryBranch;
+        var directory = information.RepositoryDirectory;
+
+        return Url.Combine(baseUrl, "tree", branch, directory); // May need to revise this as this might only be valid for GitHub
+    }
+
+    private static string GetRepositoryCommitLink(TrakHoundFunctionInformation information)
+    {
+        var baseUrl = information.Repository;
+        var commit = information.RepositoryCommit;
+
+        return Url.Combine(baseUrl, "commit", commit); // May need to revise this as this might only be valid for GitHub
+    }
+
+}

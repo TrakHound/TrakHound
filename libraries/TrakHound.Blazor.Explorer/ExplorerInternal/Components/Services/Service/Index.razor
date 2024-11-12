@@ -1,0 +1,111 @@
+﻿@rendermode InteractiveServer
+@implements IDisposable
+@inject ExplorerService explorerService
+@using TrakHound.Services
+
+@if (!loading)
+{
+    if (_service != null)
+    {
+        <div class="service-page">
+            <div class="header-panel">
+                <Header ServiceInformation="@_service" />
+            </div>
+            <div class="toolbar-panel">
+                <Toolbar ServiceInformation="@_service" />
+            </div>
+            <div class="tab-panel">
+                <RadzenTabs RenderMode="TabRenderMode.Client">
+                    <Tabs>
+                        <RadzenTabsItem Text="Information">
+                            <div class="information-panel">
+                                <Information ServiceInformation="@_service" />
+                            </div>
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="Log">
+                            <div class="log-panel">
+                                <Log ServiceInformation="@_service" />
+                            </div>
+                        </RadzenTabsItem>
+                    </Tabs>
+                </RadzenTabs>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <Loading Message="Loading Service.." />
+}
+
+@code {
+
+    private TrakHoundServiceInformation _service;
+    private ITrakHoundConsumer<TrakHoundServiceInformation> serviceConsumer;
+    private string previousInstanceId;
+    private string previousServiceId;
+    private bool loading;
+
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    void IDisposable.Dispose()
+    {
+        if (serviceConsumer != null) serviceConsumer.Dispose();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        var serviceId = Url.GetRouteParameter(Explorer.Path, Url.Combine(explorerService.SelectedInstanceId, "services", "{serviceId}"), "serviceId");
+
+        if (forceReload || explorerService.SelectedInstanceId != previousInstanceId || serviceId != previousServiceId)
+        {
+            previousInstanceId = explorerService.SelectedInstanceId;
+            previousServiceId = serviceId;
+
+            loading = true;
+            await InvokeAsync(StateHasChanged);
+
+            if (serviceConsumer != null) serviceConsumer.Dispose();
+
+            var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+            if (client != null)
+            {
+                // Get Service Information
+                _service = await client.System.Services.GetInformation(serviceId);
+
+                // Set Explorer Breadcrumbs
+                var breadcrumbItems = new List<BreadcrumbItem>();
+                breadcrumbItems.Add(new BreadcrumbItem(explorerService.SelectedInstanceId, null));
+                breadcrumbItems.Add(new BreadcrumbItem("Services", Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "services")));
+                breadcrumbItems.Add(new BreadcrumbItem(_service?.Name, null));
+                breadcrumbItems.Add(new BreadcrumbItem(serviceId, null));
+                explorerService.BreadcrumbItems = breadcrumbItems;
+
+                // Subscribe to any new Updates
+                serviceConsumer = await client.System.Services.Subscribe(serviceId);
+                if (serviceConsumer != null)
+                {
+                    serviceConsumer.Received += ServiceUpdated;
+                }
+            }
+
+            loading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void ServiceUpdated(object sender, TrakHoundServiceInformation service)
+    {
+        _service = service;
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

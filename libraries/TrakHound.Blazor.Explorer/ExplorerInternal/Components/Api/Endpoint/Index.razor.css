@@ -1,0 +1,234 @@
+﻿.endpoint-panel {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    padding: 10px 20px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: #fff;
+}
+
+.header-panel {
+
+}
+
+.header-panel .header-content {
+    display: grid;
+    grid-template-rows: 1fr max-content;
+    grid-template-columns: max-content max-content max-content 1fr;
+    grid-column-gap: 10px;
+    padding-left: 0px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.header-panel .header-icon-container {
+    grid-column: 1;
+    padding: 15px;
+}
+
+.header-panel .header-icon {
+    font-size: 30px;
+    line-height: 20px;
+    color: var(--accent);
+}
+
+    .header-panel .header-icon-container .icon {
+        font-size: 28px;
+        color: var(--accent);
+        margin-top: 2px;
+        margin-right: 10px;
+    }
+
+.header-panel .header-icon-container .header-type {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    padding: 5px 8px;
+    vertical-align: top;
+}
+
+.header-panel .header-description-container {
+    grid-column: 2;
+    padding-right: 80px;
+}
+
+    .header-panel .header-description-container .header-title {
+        display: block;
+        font-size: 12px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    .header-panel .header-description-container .header-id {
+        display: block;
+        font-size: 18px;
+        font-weight: bold;
+        line-height: 26px;
+    }
+
+    .header-panel .header-description-container .header-description {
+        display: block;
+        font-size: 12px;
+        color: #888;
+    }
+
+.header-panel .header-package-icon-container {
+    grid-column: 3;
+    padding: 15px;
+}
+
+.header-panel .header-package-icon {
+    font-size: 30px;
+    line-height: 30px;
+    color: #ccc;
+}
+
+.header-panel .header-package-container {
+    grid-column: 4;
+    border-left: 1px solid #eee;
+    padding: 0 20px;
+}
+
+    .header-panel .header-package-container .header-title {
+        display: block;
+        font-size: 12px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    .header-panel .header-package-container .header-package {
+        display: block;
+        font-size: 14px;
+        line-height: 20px;
+        color: #333;
+    }
+
+    .header-panel .header-package-container .header-version {
+        display: block;
+        font-size: 12px;
+        line-height: 14px;
+        color: #555;
+    }
+
+/*.header-panel .header-content {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.header-panel .header-icon {
+    grid-column: 1;
+    padding-right: 20px;
+}
+
+    .header-panel .header-icon .icon {
+        font-size: 28px;
+        color: var(--accent);
+        margin-top: 2px;
+        margin-right: 10px;
+    }
+
+    .header-panel .header-icon .header-type {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: bold;
+        color: var(--accent);
+        border: 1px solid var(--accent);
+        border-radius: 3px;
+        padding: 5px 8px;
+        vertical-align: top;
+    }
+
+.header-panel .header-text {
+    grid-column: 2;
+}
+
+    .header-panel .header-text .header-route {
+        display: inline-block;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .header-panel .header-text .header-id {
+        font-size: 12px;
+        color: #888;
+        margin-left: 15px;
+    }
+
+    .header-panel .header-text .header-package {
+        display: inline-block;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .header-panel .header-text .header-package .version {
+        margin-left: 10px;
+    }*/
+
+
+.tab-panel {
+    grid-row: 2;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .tab-panel ::deep .rz-tabview {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .tab-panel ::deep .rz-tabview-panels {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .tab-panel ::deep .rz-tabview-panel {
+        height: 100%;
+        overflow: hidden;
+        padding: 0;
+    }
+
+
+.parameters-panel {
+    margin-bottom: 30px;
+}
+
+.parameters-panel label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+
+.responses-panel {
+    margin-bottom: 30px;
+    height: 100%;
+    overflow: hidden;
+}
+
+.responses-panel label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.responses-panel .response-content {
+    height: 100%;
+    overflow: hidden;
+
+    padding-bottom: 100px;
+}
+
+.information-panel {
+    padding: 20px 0;
+}

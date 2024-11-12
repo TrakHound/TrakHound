@@ -1,0 +1,37 @@
+﻿@rendermode InteractiveServer
+@using TrakHound.Blazor.Layouts
+@using TrakHound.Instance.Security
+@using TrakHound.Instance.Services
+
+<TrakHoundBlazorRouter>
+    <Found Context="routeData">
+        <CascadingValue Name="RouteManager" Value="@routeData.RouteManager">
+            <CascadingValue Name="AppId" Value="@routeData.AppId">
+                <CascadingValue Name="AppName" Value="@routeData.AppName">
+                    <CascadingValue Name="Package" Value="@routeData.Package">
+                        <CascadingValue Name="Client" Value="@routeData.Client">
+                            <CascadingValue Name="Volume" Value="@routeData.Volume">
+                                <CascadingValue Name="Logger" Value="@routeData.Logger">
+                                    <CascadingValue Name="Session" Value="@routeData.Session">
+                                        <CascadingValue Name="BaseUrl" Value="@routeData.BaseUrl">
+                                            <CascadingValue Name="BasePath" Value="@routeData.BasePath">
+                                                <CascadingValue Name="BaseLocation" Value="@routeData.BaseLocation">
+
+                                                    <TrakHoundAppPackageStylesheets AppId="@routeData.AppId" />
+                                                    <TrakHoundAppPackageScripts AppId="@routeData.AppId" />
+
+                                                    <RouteView RouteData="@routeData.Data" DefaultLayout="@typeof(AppLayout)" />
+
+                                                </CascadingValue>
+                                            </CascadingValue>
+                                        </CascadingValue>
+                                    </CascadingValue>
+                                </CascadingValue>
+                            </CascadingValue>
+                        </CascadingValue>
+                    </CascadingValue>
+                </CascadingValue>
+            </CascadingValue>
+        </CascadingValue>
+    </Found>
+</TrakHoundBlazorRouter>

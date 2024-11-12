@@ -1,0 +1,50 @@
+﻿.header-panel {
+    display: grid;
+    grid-template-rows: max-content max-content;
+}
+
+.title-container {
+    grid-row: 1;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    text-align: center;
+    padding: 25px 20px 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+    .title-container .title-logo {
+        height: 34px;
+        margin-bottom: 10px;
+    }
+
+    .title-container .title-label {
+        font-size: 14px;
+        font-weight: 400;
+        color: var(--accentLight);
+    }
+
+.navigation-container {
+    grid-row: 2;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.35);
+    padding: 8px 0;
+}
+
+    .navigation-container .btn {
+        padding: 5px 15px;
+        font-size: 14px;
+        font-weight: bold;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 0;
+        width: 200px;
+        color: var(--accentVeryLight);
+    }
+
+        .navigation-container .btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid var(--accentLight);
+            color: var(--accentVeryLight);
+        }

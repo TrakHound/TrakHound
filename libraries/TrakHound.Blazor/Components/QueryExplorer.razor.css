@@ -1,0 +1,41 @@
+.query-explorer {
+    height: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: max-content 1fr;
+}
+
+.query-explorer-header {
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.query-explorer-header .icon {
+    margin-right: 10px;
+    font-size: 20px;
+    color: var(--accent);
+}
+
+    .query-explorer-header .title {
+        font-size: 14px;
+        font-weight: bold;
+        color: #333;
+    }
+
+.query-explorer-content {
+    padding: 15px 0;
+    height: 100%;
+    overflow: auto;
+}
+
+.query-explorer ::deep .folder .title {
+    font-weight: bold;
+}
+
+.query-explorer ::deep .folder .icon-container .icon {
+    color: #9cb3c9 !important;
+}
+
+.query-explorer ::deep .query .title {
+    font-weight: normal;
+}

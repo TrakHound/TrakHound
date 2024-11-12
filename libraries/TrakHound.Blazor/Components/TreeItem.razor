@@ -1,0 +1,272 @@
+﻿@inject TrakHound.Blazor.Services.ContextMenuService contextMenuService
+@using Microsoft.AspNetCore.Components.Routing
+
+@if (Title != null)
+{
+    var hasLink = Selected.HasDelegate ? "link" : "";
+    var active = !string.IsNullOrEmpty(TreeView.SelectedId) && Id == TreeView.SelectedId ? "active" : "";
+    var expanded = IsExpanded ? "expanded" : "collapsed";
+    var loading = IsLoading ? "loading" : "";
+    var noChildren = IsExpandable && ChildContent != null ? "" : "no-children";
+    var hasValue = !string.IsNullOrEmpty(Value) ? "hasValue" : "";
+
+    <div class="tree-item @CssClass @hasLink @noChildren @expanded @loading">
+        <div class="tree-item-content">
+
+            <div class="expand-border"><div></div></div>
+
+            <div class="tree-item-header">
+                <div class="tree-item-header-content">
+
+                    <div class="expand-border-tab"></div>
+
+                    @if (IsLoading)
+                    {
+                        <div class="loading-icon-container">
+                            <span class="loading-icon fa-solid fa-sharp fa-loader"></span>
+                        </div>
+                    }
+                    else if (IsExpandable && ChildContent != null)
+                    {
+                        @if (IsExpanded)
+                        {
+                            <span class="btn-expand btn" @onclick="() => Collapse()"><span class="icon far fa-minus-square"></span></span>
+                        }
+                        else
+                        {
+                            <span class="btn-expand btn" @onclick="() => Expand()"><span class="icon far fa-plus-square"></span></span>
+                        }
+                    }
+                    else if (ShowCheckBox)
+                    {
+                        <span class="expand-placeholder"></span>
+                    }
+
+                    @if (ShowCheckBox)
+                    {
+                        var checkClass = IsChecked ? "checked" : "unchecked";
+                        var checkIcon = IsChecked ? "fa-solid fa-sharp fa-square-check" : "fa-regular fa-sharp fa-square";
+
+                        <div class="tree-item-checkbox @checkClass" @onclick="() => ToggleCheck()">
+                            <span class="tree-item-checkbox-icon @checkIcon"></span>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Link))
+                    {
+                        <TrakHoundNavLink Match="NavLinkMatch.All" href="@Link" class="btn-selection" @ondblclick="Expand">
+                            <div class="btn-selection-container">
+
+                                @if (Icon != null)
+                                {
+                                    <div class="icon-container">
+                                        <span class="icon @Icon" title="@IconLabel"></span>
+                                    </div>
+                                }
+
+                                <div class="description-container">
+                                    <span class="title" title="@TitleLabel">@Title <span class="subtitle">@Subtitle</span></span>
+                                </div>
+
+                            </div>
+                        </TrakHoundNavLink>
+                    }
+                    else
+                    {
+                        <div class="btn-selection @active" @onclick="Select" @ondblclick="Expand" @onkeydown="KeyPress" @oncontextmenu="ToggleContextMenu" @oncontextmenu:preventDefault="true">
+                            <div class="btn-selection-container">
+
+                                @if (Icon != null)
+                                {
+                                    <div class="icon-container">
+                                        <span class="icon @Icon" title="@IconLabel"></span>
+                                    </div>
+                                }
+
+                                <div class="description-container">
+                                    <span class="title" title="@TitleLabel">@Title <span class="subtitle">@Subtitle</span></span>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(Value))
+                                {
+                                    <div class="grid-container"></div>
+
+                                    <div class="value-container">
+
+                                        @if (ValueTemplate != null)
+                                        {
+                                            @ValueTemplate
+                                        }
+                                        else
+                                        {
+                                            <span class="value" title="@Value">@Value</span>
+                                        }
+
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+            @if (IsExpandable && ChildContent != null)
+            {
+                <div class="tree-item-children">
+                    <div class="tree-item-children-content">
+                        <div class="children-container">
+                            @ChildContent
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (ContextMenu != null)
+            {
+                <ContextMenu Id="@contextMenuId">
+                    @ContextMenu
+                </ContextMenu>
+            }
+
+        </div>
+    </div>
+}
+
+
+@code {
+
+    private readonly string contextMenuId = Guid.NewGuid().ToString();
+
+
+    [CascadingParameter]
+    private TreeView TreeView { get; set; }
+
+    [Parameter]
+    public bool IsChild { get; set; } = true;
+
+    [Parameter]
+    public bool IsSelected { get; set; }
+
+    [Parameter]
+    public bool IsLoading { get; set; }
+
+    [Parameter]
+    public bool IsExpanded { get; set; } = false;
+
+    [Parameter]
+    public bool IsExpandable { get; set; } = true;
+
+    [Parameter]
+    public bool ShowCheckBox { get; set; } = false;
+
+    [Parameter]
+    public bool IsChecked { get; set; } = false;
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment ValueTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment ContextMenu { get; set; }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string TitleLabel { get; set; }
+
+    [Parameter]
+    public string Subtitle { get; set; }
+
+    [Parameter]
+    public string Value { get; set; }
+
+    [Parameter]
+    public string Link { get; set; }
+
+    [Parameter]
+    public string Icon { get; set; }
+
+    [Parameter]
+    public string IconLabel { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter]
+    public EventCallback<string> Selected { get; set; }
+
+    [Parameter]
+    public EventCallback<string> Checked { get; set; }
+
+    [Parameter]
+    public EventCallback<string> Unchecked { get; set; }
+
+    [Parameter]
+    public EventCallback<string> Collapsed { get; set; }
+
+    [Parameter]
+    public EventCallback<string> Expanded { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsExpandedChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<KeyboardEventArgs> KeyPressed { get; set; }
+
+
+    private async void Expand()
+    {
+        IsExpanded = true;
+        await IsExpandedChanged.InvokeAsync(IsExpanded);
+        await Expanded.InvokeAsync(Id);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Collapse()
+    {
+        IsExpanded = false;
+        await IsExpandedChanged.InvokeAsync(IsExpanded);
+        await Collapsed.InvokeAsync(Id);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Select()
+    {
+        await Selected.InvokeAsync(Id);
+    }
+
+    private async void ToggleCheck()
+    {
+        if (IsChecked)
+        {
+            await Unchecked.InvokeAsync(Id);
+        }
+        else
+        {
+            await Checked.InvokeAsync(Id);
+        }
+    }
+
+    private async void ToggleContextMenu(MouseEventArgs args)
+    {
+        if (args != null)
+        {
+            contextMenuService.Show(contextMenuId, args.PageX, args.PageY);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void KeyPress(KeyboardEventArgs args)
+    {
+        await KeyPressed.InvokeAsync(args);
+    }
+
+}

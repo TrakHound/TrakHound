@@ -1,0 +1,10 @@
+﻿{
+  "id": "TrakHound.Templates.Liquid.Api",
+  "category": "api",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Process Liquid Templates",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultRoute": "templates/liquid"
+  }
+}

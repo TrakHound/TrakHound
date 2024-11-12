@@ -1,0 +1,24 @@
+﻿.btn-secondary {
+    background: none;
+    border: 1px solid var(--borderVeryLight);
+    color: #333;
+    font-size: 12px;
+    transition: none;
+}
+
+    .btn-secondary:hover {
+        background: #eee;
+        border: 1px solid #ccc;
+        color: #000;
+        transition: none;
+    }
+
+    .btn-secondary .icon {
+        color: #888;
+        transition: none;
+    }
+
+    .btn-secondary:hover .icon {
+        color: #333;
+        transition: none;
+    }

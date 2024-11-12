@@ -1,0 +1,49 @@
+﻿@page "/"
+@layout Layout
+@inherits TrakHoundComponentBase
+
+<TrakHoundPageTitle>TrakHound - Home</TrakHoundPageTitle>
+
+<div class="home-page">
+    <div class="content-container">
+        <div class="header-container">
+            <Header />
+        </div>
+        <div class="body-container">
+            <RadzenTabs RenderMode="TabRenderMode.Client">
+                <Tabs>
+                    <RadzenTabsItem Text="Apps">
+                        <Apps />
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Downloads">
+                        <Downloads />
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Developer">
+                        <Developer />
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="ReadMe">
+                        <ReadMe />
+                    </RadzenTabsItem>
+                </Tabs>
+            </RadzenTabs>
+        </div>
+        <div class="sidebar-container">
+            <RadzenTabs RenderMode="TabRenderMode.Client">
+                <Tabs>
+                    <RadzenTabsItem Text="Packages">
+                        <Packages />
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Releases">
+                        <Releases />
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Issues">
+                       <Issues />
+                    </RadzenTabsItem>
+                </Tabs>
+            </RadzenTabs>
+        </div>
+    </div>
+    <div class="footer-container">
+        <Footer />
+    </div>
+</div>

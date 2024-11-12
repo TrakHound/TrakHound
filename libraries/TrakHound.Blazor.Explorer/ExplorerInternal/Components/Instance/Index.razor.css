@@ -1,0 +1,53 @@
+﻿.instance-page {
+    display: grid;
+    grid-template-rows: max-content max-content 1fr;
+    padding: 10px 20px;
+    height: 100%;
+    overflow: hidden;
+    background: #fff;
+}
+
+.header-panel {
+    grid-row: 1;
+}
+
+.toolbar-panel {
+    grid-row: 2;
+    padding-bottom: 5px;
+}
+
+.tab-panel {
+    grid-row: 3;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .tab-panel ::deep .rz-tabview-nav {
+        /*padding-left: 20px;*/
+    }
+
+    .tab-panel ::deep .rz-tabview {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .tab-panel ::deep .rz-tabview-panels {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .tab-panel ::deep .rz-tabview-panel {
+        height: 100%;
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .tab-panel .log-panel {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .tab-panel .buffers-panel {
+        height: 100%;
+        overflow: hidden;
+    }

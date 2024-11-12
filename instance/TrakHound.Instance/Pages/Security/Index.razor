@@ -1,0 +1,37 @@
+﻿@page "/_admin/security"
+@using Radzen
+@using Radzen.Blazor
+@using TrakHound.Instance.Configurations
+
+<TrakHoundPageTitle>Security - TrakHound Instance</TrakHoundPageTitle>
+
+<div class="security-page">
+
+    <div class="header-panel">
+        <div class="header-panel-content">
+            <div class="header-panel-icon">
+                <div class="header-icon-outline">
+                    <span class="icon fa-solid fa-sharp fa-lock-keyhole"></span>
+                </div>
+            </div>
+            <div class="header-panel-text">
+                <span class="header-panel-title">Security</span>
+                <span class="header-panel-subtitle">Manage Identity and Permissions</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabs-panel">
+        <RadzenTabs>
+            <Tabs>
+                <RadzenTabsItem Text="Profiles">
+                    <Profiles />
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Assignments">
+                    <Assignments />
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+    </div>
+
+</div>

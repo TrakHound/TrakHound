@@ -1,0 +1,226 @@
+﻿@using TrakHound.Extensions
+@using TrakHound.Licenses
+@using TrakHound.Management
+@using TrakHound.Packages
+
+@if (Package != null)
+{
+    var publisher = Package.Metadata != null && Package.Metadata.ContainsKey("publisher") ? Package.Metadata["publisher"]?.ToString() : null;
+    var description = Package.Metadata != null && Package.Metadata.ContainsKey("description") ? Package.Metadata["description"]?.ToString() : null;
+    var image = Package.Metadata != null && Package.Metadata.ContainsKey(".image") ? Package.Metadata[".image"]?.ToString() : null;
+    var licenseRequired = Package.Metadata != null && Package.Metadata.ContainsKey(".licenseRequired") ? Package.Metadata[".licenseRequired"].ToBoolean() : false;
+    var licenseRequestUrl = Package.Metadata != null && Package.Metadata.ContainsKey(".licenseRequestUrl") ? Package.Metadata[".licenseRequestUrl"]?.ToString() : null;
+    var licensePublisherId = Package.Metadata != null && Package.Metadata.ContainsKey(".licensePublisherId") ? Package.Metadata[".licensePublisherId"]?.ToString() : null;
+    var licenseProductId = Package.Metadata != null && Package.Metadata.ContainsKey(".licenseProductId") ? Package.Metadata[".licenseProductId"]?.ToString() : null;
+
+    if (!string.IsNullOrEmpty(licenseRequestUrl))
+    {
+        licenseRequestUrl = Url.AddQueryParameter(licenseRequestUrl, "productId", licenseProductId);
+
+        var licenseManager = TrakHoundLicenseManagers.Get(licensePublisherId);
+        if (licenseManager != null)
+        {
+            licenseRequestUrl = Url.AddQueryParameter(licenseRequestUrl, "deviceId", licenseManager.GetDeviceId());
+        }
+    }
+
+    <div class="package-information">
+        <div class="identity-panel">
+
+            <div class="icon-container">
+
+                @if (!string.IsNullOrEmpty(image))
+                {
+                    <img src="@image" class="icon" />
+                }
+                else
+                {
+                    <span class="icon fa-solid fa-sharp fa-box"></span>
+                }
+
+            </div>
+
+            <div class="identity-title">
+                <span class="title">@Package.Id</span>
+                <span class="publisher">@publisher</span>
+            </div>
+            <div class="toolbar-panel">
+
+                @if (ShowUninstall)
+                {
+                    <button class="btn btn-sm btn-light btn-uninstall" @onclick="Uninstall"><span class="icon fas fa-x"></span>Uninstall</button>
+                }
+
+            </div>
+        </div>
+
+        @if (licenseRequired)
+        {
+            @* License *@
+            <div class="license-panel">
+                <div class="license-buttons">
+                    <a href="@licenseRequestUrl" target="_blank" class="btn btn-light btn-license"><span class="icon fa-solid fa-sharp fa-key"></span>Request License</a>
+                </div>
+                <div class="license-product">
+                    <span class="license-product-description">This package requires a License with the following Product ID:</span>
+                    <span class="license-product-id">@licenseProductId</span>
+                </div>
+            </div>
+        }
+
+        @* Version *@
+        <div class="version-panel">
+            <span class="label">Version:</span>
+            <RadzenDropDown TValue="string" Value=@selectedVersion Data="@versions" ValueChanged="VersionChanged" />
+        </div>
+
+        @* Description *@
+        @if (!string.IsNullOrEmpty(description))
+        {
+            <div class="description-panel">
+                <p>@description</p>
+            </div>
+        }
+
+        <div class="properties-panel">
+            <table>
+                <tbody>
+
+                    <tr>
+                        <td class="label">UUID:</td>
+                        <td class="value">@Package.Uuid</td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">Hash:</td>
+                        <td class="value">@Package.Hash</td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">Build Date:</td>
+                        <td class="value">@Package.BuildDate</td>
+                    </tr>
+
+                    @if (!Package.Metadata.IsNullOrEmpty())
+                    {
+                        var nonConfigurationMetadata = Package.Metadata.Where(o => !o.Key.StartsWith('.'));
+                        if (!nonConfigurationMetadata.IsNullOrEmpty())
+                        {
+                            foreach (var metadata in nonConfigurationMetadata)
+                            {
+                                <tr>
+                                    <td class="label">@metadata.Key:</td>
+
+                                    @switch (metadata.Key)
+                                    {
+                                        case TrakHoundPackage.ProjectName:
+                                            <td class="value"><a href="@metadata.Value" target="_blank">@metadata.Value</a></td>
+                                            break;
+
+                                        case TrakHoundPackage.RepositoryName:
+                                            <td class="value"><a href="@metadata.Value" target="_blank">@metadata.Value</a></td>
+                                            break;
+
+                                        case TrakHoundPackage.RepositoryBranchName:
+                                            <td class="value"><a href="@GetRepositoryBranchLink(Package)" target="_blank">@metadata.Value</a></td>
+                                            break;
+
+                                        case TrakHoundPackage.RepositoryDirectoryName:
+                                            <td class="value"><a href="@GetRepositoryDirectoryLink(Package)" target="_blank">@metadata.Value</a></td>
+                                            break;
+
+                                        case TrakHoundPackage.RepositoryCommitName:
+                                            <td class="value"><a href="@GetRepositoryCommitLink(Package)" target="_blank">@metadata.Value</a></td>
+                                            break;
+
+                                        default:
+                                            <td class="value">@metadata.Value</td>
+                                            break;
+                                    }
+                                    
+                                </tr>
+                            }
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+
+@code {
+
+    IEnumerable<string> versions;
+    string selectedVersion;
+
+
+    [Parameter]
+    public TrakHoundPackage Package { get; set; }
+
+    [Parameter]
+    public TrakHoundManagementClient ManagementClient { get; set; }
+
+    [Parameter]
+    public bool ShowUninstall { get; set; }
+
+    [Parameter]
+    public EventCallback<string> VersionSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<TrakHoundPackage> UninstallClicked { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (Package != null)
+        {
+            selectedVersion = Package.Version;
+
+            versions = await ManagementClient.Packages.GetVersions(Package.Id);
+            versions = versions?.OrderBy(o => o, new VersionComparer());
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+
+    private async void Uninstall()
+    {
+        await UninstallClicked.InvokeAsync(Package);
+    }
+
+    private async void VersionChanged(string version)
+    {
+        selectedVersion = version;
+
+        await VersionSelected.InvokeAsync(version);
+    }
+
+    private static string GetRepositoryBranchLink(TrakHoundPackage package)
+    {
+        var baseUrl = package.GetMetadata(TrakHoundPackage.RepositoryName);
+        var branch = package.GetMetadata(TrakHoundPackage.RepositoryBranchName);
+
+        return Url.Combine(baseUrl, "tree", branch); // May need to revise this as this might only be valid for GitHub
+    }
+
+    private static string GetRepositoryDirectoryLink(TrakHoundPackage package)
+    {
+        var baseUrl = package.GetMetadata(TrakHoundPackage.RepositoryName);
+        var branch = package.GetMetadata(TrakHoundPackage.RepositoryBranchName);
+        var directory = package.GetMetadata(TrakHoundPackage.RepositoryDirectoryName);
+
+        return Url.Combine(baseUrl, "tree", branch, directory); // May need to revise this as this might only be valid for GitHub
+    }
+
+    private static string GetRepositoryCommitLink(TrakHoundPackage package)
+    {
+        var baseUrl = package.GetMetadata(TrakHoundPackage.RepositoryName);
+        var commit = package.GetMetadata(TrakHoundPackage.RepositoryCommitName);
+
+        return Url.Combine(baseUrl, "commit", commit); // May need to revise this as this might only be valid for GitHub
+    }
+
+}

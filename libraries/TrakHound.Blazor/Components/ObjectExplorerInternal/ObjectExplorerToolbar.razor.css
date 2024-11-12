@@ -1,0 +1,51 @@
+.object-explorer-toolbar {
+    padding: 3px 3px;
+}
+
+.object-explorer-toolbar-container {
+    display: grid;
+    grid-template-columns: 1fr max-content;
+}
+
+.object-explorer-toolbar-left {
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-flow: column;
+}
+
+.object-explorer-toolbar-right {
+    padding-left: 5px;
+    border-left: 1px solid #eee;
+}
+
+.object-explorer-toolbar .btn {
+    display: block;
+    height: 30px;
+    min-width: 0 !important;
+    padding: 2px 8px !important;
+    width: 32px;
+    margin-right: 0px !important;
+    /*border: 1px solid #ddd;*/
+}
+
+.object-explorer-toolbar .btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+    .object-explorer-toolbar .btn .icon {
+        margin: 0;
+        font-size: 13px !important;
+    }
+
+.object-explorer-toolbar .btn-add {
+    font-size: 12px;
+    padding: 4px 12px !important;
+    border-radius: 1px;
+    width: auto;
+    margin: 0;
+}
+
+    .object-explorer-toolbar .btn-add .icon {
+        margin-right: 8px;
+    }

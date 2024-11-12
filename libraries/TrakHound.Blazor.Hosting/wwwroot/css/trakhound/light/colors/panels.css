@@ -1,0 +1,9 @@
+:root {
+    --headerBackground: #fff;
+    --pageBackground: linear-gradient(0deg, #fff 0%, #fafafa 50%, #fff 100%);
+    --sidebarBackground: linear-gradient(90deg, #111 10%, #333 100%);
+    --panelBackground: linear-gradient(0deg, rgba(245,245,245,1) 0%, rgba(245,245,245,1) 37%, rgba(252,252,252,1) 100%);
+    --tabHeaderBackground: linear-gradient(0deg, rgb(251,251,251) 0%, rgb(251,251,251) 25%, white 100%);
+    --tableBackground: #fff;
+    --modalBackground: #fff;
+}

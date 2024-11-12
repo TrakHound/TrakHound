@@ -1,0 +1,192 @@
+﻿.blob-content {
+    display: grid;
+    grid-template-rows: max-content max-content max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.hidden-input {
+    display: none;
+}
+
+
+.input-panel {
+    grid-row: 1;
+    padding: 8px 10px 0;
+}
+
+.input-panel-container {
+    display: grid;
+    grid-template-columns: max-content max-content 1fr;
+    grid-column-gap: 10px;
+}
+
+.input-panel-buttons {
+    padding-top: 1px;
+}
+
+.input-panel .btn-save {
+    height: 42px;
+    width: 130px;
+    font-size: 14px;
+    border-radius: 0;
+    padding: 0;
+    margin-right: 5px;
+}
+
+    .input-panel .btn-save .icon {
+        font-size: 16px;
+    }
+
+.input-panel .btn-refresh {
+    height: 42px;
+    width: 42px;
+    font-size: 14px;
+    border-radius: 0;
+    padding: 0;
+}
+
+    .input-panel .btn-refresh .icon {
+        font-size: 16px;
+        margin-right: 0;
+    }
+
+.input-panel .btn-browse {
+    height: 43px;
+    width: 120px;
+    font-size: 14px;
+    border-radius: 0;
+    padding: 0;
+    background: #fafafa;
+    border: 1px solid #ccc;
+}
+
+.input-panel .btn-browse:hover {
+    background: #eee;
+    border: 1px solid #bbb;
+}
+
+    .input-panel .btn-browse .icon {
+        font-size: 16px;
+    }
+
+.input-panel-input ::deep .text-box.small input {
+    height: 44px !important;
+}
+
+
+.query-panel {
+    grid-row: 2;
+    padding: 0 10px 10px;
+}
+
+.query-panel-container {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    border: 1px solid #ddd;
+}
+
+.query-panel .query-label {
+    grid-column: 1;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-right: 1px solid #ddd;
+    border-radius: 2px;
+    color: #777;
+}
+
+.query-panel .btn-query {
+    grid-column: 2;
+    font-size: 12px;
+    text-align: left;
+    padding-top: 8px;
+}
+
+
+.download-panel {
+    grid-row: 3;
+    padding: 0 10px 10px;
+}
+
+.download-panel-container {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    border: 1px solid #ddd;
+}
+
+.download-panel .download-label {
+    grid-column: 1;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-right: 1px solid #ddd;
+    border-radius: 2px;
+    color: #777;
+}
+
+.download-panel .btn-download {
+    grid-column: 2;
+    font-size: 12px;
+    text-align: left;
+    padding-top: 8px;
+}
+
+
+.preview-panel {
+    grid-row: 4;
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+    padding: 0 10px 10px;
+}
+
+    .preview-panel .preview-container {
+        padding: 5px;
+        border: 1px solid #ddd;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .preview-panel .preview-container pre {
+        font-size: 12px;
+        padding: 0 20px;
+        overflow: auto;
+        height: 100%;
+        width: 100%;
+    }
+
+        .preview-panel .preview-container embed {
+            font-size: 12px;
+            padding: 0;
+            overflow: auto;
+            height: 100%;
+            width: 100%;
+        }
+
+    .preview-panel .preview-image {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .preview-panel ::deep .text-area {
+        height: 100%;
+    }
+
+    .preview-panel ::deep .form-group {
+        height: 100%;
+    }
+
+    .preview-panel ::deep textarea {
+        resize: none !important;
+        min-height: 100px;
+        height: 100%;
+        border-radius: 0;
+        background: #fafafa;
+        padding: 10px 20px;
+    }
+
+        .preview-panel ::deep textarea:focus {
+            background: #fff;
+            box-shadow: none;
+        }

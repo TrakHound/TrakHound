@@ -1,0 +1,97 @@
+﻿@page "/settings"
+@inject ITrakHoundInstance instance
+@inject TrakHoundInstanceConfiguration instanceConfiguration
+@inject RemotesConfiguration remotesConfiguration
+@using Radzen
+@using Radzen.Blazor
+@using TrakHound.Blazor.Components
+@using TrakHound.Instances
+@using TrakHound.Instance.Configurations
+
+<TrakHoundPageTitle>Settings - TrakHound Instance</TrakHoundPageTitle>
+
+<div class="settings-page">
+    <div class="header-panel">
+        <div class="header-panel-content">
+            <div class="header-panel-icon">
+                <div class="header-icon-outline">
+                    <span class="icon fa-solid fa-wrench"></span>
+                </div>
+            </div>
+            <div class="header-panel-text">
+                <span class="header-panel-title">Settings</span>
+                <span class="header-panel-subtitle">View & Manage Instance related settings</span>
+            </div>
+        </div>
+    </div>
+
+    @if (!loading)
+    {
+        <div class="toolbar-panel">
+            <button class="btn btn-light" @onclick="Save"><span class="icon fa-solid fa-sharp fa-floppy-disk"></span>Save Changes</button>
+        </div>
+
+        <div class="tabs-panel">
+            <CascadingValue Value="editInstanceConfiguration">
+                <CascadingValue Value="editRemotesConfiguration">
+                    <RadzenTabs>
+                        <Tabs>
+                            <RadzenTabsItem Text="General">
+                                <General />
+                            </RadzenTabsItem>
+                            <RadzenTabsItem Text="Interfaces">
+                                <Interfaces />
+                            </RadzenTabsItem>
+                            <RadzenTabsItem Text="Remotes">
+                                <Remotes />
+                            </RadzenTabsItem>
+                        </Tabs>
+                    </RadzenTabs>
+                </CascadingValue>
+            </CascadingValue>
+        </div>
+    }
+    else
+    {
+        <div class="loading-panel">
+            <Loading Message="@loadingMessage" />
+        </div>
+    }
+
+</div>
+
+@code {
+
+    private TrakHoundInstanceConfiguration editInstanceConfiguration;
+    private RemotesConfiguration editRemotesConfiguration;
+    private bool loading;
+    private string loadingMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        editInstanceConfiguration = instanceConfiguration;
+        editRemotesConfiguration = remotesConfiguration;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Save()
+    {
+        loading = true;
+        loadingMessage = "Saving..";
+        await InvokeAsync(StateHasChanged);
+
+        var baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config");
+
+        editInstanceConfiguration.Save(Path.Combine(baseDir, TrakHoundInstanceConfiguration.Filename));
+        editRemotesConfiguration.Save(Path.Combine(baseDir, RemotesConfiguration.Filename));
+
+        instance.Information.Id = editInstanceConfiguration.InstanceId;
+        instance.Information.Name = editInstanceConfiguration.Name;
+        instance.Information.Description = editInstanceConfiguration.Description;
+
+        loading = false;
+        loadingMessage = null;
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

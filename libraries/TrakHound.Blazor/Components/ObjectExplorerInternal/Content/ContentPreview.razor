@@ -1,0 +1,144 @@
+﻿@inject JavascriptService javascriptService
+@using System.Text
+@using System.Text.Json
+@using TrakHound.Blazor.Services
+
+@if (Content != null && ContentType != null)
+{
+    string textContent;
+    if (ContentType == "application/json") textContent = GetJson(selectedEncoding, Content);
+    else textContent = GetString(selectedEncoding, Content);
+
+    <div class="content-preview">
+        <div class="content-preview-display">
+
+            @if (ContentType != null && !MimeTypes.IsAttachment(ContentType))
+            {
+                if (MimeTypes.IsText(ContentType))
+                {
+                    <div class="preview-container">
+                        <pre>@textContent</pre>
+                    </div>
+                }
+                else if (ContentType.StartsWith("image/"))
+                {
+                    <div class="preview-container">
+                        <img src="@DownloadLink" class="preview-image">
+                    </div>
+                }
+                else
+                {
+                    <div class="preview-container">
+                        <embed src="@DownloadLink" type="@ContentType" />
+                    </div>
+                }
+            }
+
+        </div>
+        <div class="content-preview-toolbar">
+            <div class="toolbar-panel size-toolbar-panel">
+                <span class="content-size">@StringFunctions.ToFileSize(Content.Length)</span>
+            </div>
+            <div class="toolbar-panel buttons-toolbar-panel">
+
+                @if (!string.IsNullOrEmpty(textContent))
+                {
+                    if (!copyClipboard)
+                    {
+                        <button class="btn btn-light btn-copy" @onclick="() => CopyContent(textContent)"><span class="icon fa-regular fa-sharp fa-copy"></span></button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-light btn-copy clipboard" @onclick="() => CopyContent(textContent)"><span class="icon fa-solid fa-sharp fa-check"></span></button>
+                    }
+                }
+
+            </div>
+            <div class="toolbar-panel encoding-toolbar-panel">
+                <RadzenDropDown @bind-Value="@selectedEncoding" Data="@encodings" ValueProperty="Encoding" TextProperty="Name" />
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    private static EncodingItem[] encodings = new EncodingItem[] {
+        new EncodingItem("UTF-8", Encoding.UTF8)
+    };
+
+    struct EncodingItem
+    {
+        public string Name { get; set; }
+        public Encoding Encoding { get; set; }
+        public EncodingItem(string name, Encoding encoding)
+        {
+            Name = name;
+            Encoding = encoding;
+        }
+    }
+
+    private Encoding selectedEncoding;
+    private bool copyClipboard;
+
+    [Parameter]
+    public byte[] Content { get; set; }
+
+    [Parameter]
+    public string ContentType { get; set; }
+
+    [Parameter]
+    public string DownloadLink { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        selectedEncoding = encodings[0].Encoding;
+    }
+
+
+    private static string GetString(System.Text.Encoding encoding, byte[] content)
+    {
+        if (encoding != null && content != null)
+        {
+            try
+            {
+                return encoding.GetString(content);
+            }
+            catch { }
+        }
+
+        return null;
+    }
+
+    private static string GetJson(System.Text.Encoding encoding, byte[] content)
+    {
+        if (encoding != null && content != null)
+        {
+            try
+            {
+                var text = encoding.GetString(content);
+
+                var options = new JsonSerializerOptions()
+                {
+                    WriteIndented = true
+                };
+
+                var jsonElement = JsonSerializer.Deserialize<JsonElement>(text);
+
+                return JsonSerializer.Serialize(jsonElement, options);
+            }
+            catch { }
+        }
+
+        return null;
+    }
+
+    private async void CopyContent(string content)
+    {
+        await javascriptService.CopyClipboard(content);
+        copyClipboard = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

@@ -1,0 +1,385 @@
+﻿@implements IDisposable
+@using TrakHound.Entities;
+@using TrakHound.Requests;
+
+@if (ObjectExplorerService != null && Object != null)
+{
+    var resultCurrentQuery = $"select > from [{Object.GetAbsolutePath()}] order desc take 100;";
+    var currentQueryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultCurrentQuery}";
+
+    var resultQuery = $"select > from [{Object.GetAbsolutePath()}] stop now order desc take 100;";
+    var queryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultQuery}";
+
+    <div class="assignment-content">
+        <div class="input-panel">
+            <div class="input-panel-container">
+                <div class="input-panel-buttons">
+
+                    @if (!publishLoading)
+                    {
+                        <button class="btn btn-sm btn-primary btn-save" @onclick="Save"><span class="icon fa-solid fa-sharp fa-paper-plane"></span>Publish</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-primary btn-save disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Publishing..</button>
+                    }
+
+                    @if (!loading)
+                    {
+                        <button class="btn btn-sm btn-light btn-refresh" @onclick="() => Load(true)"><span class="icon fa-solid fa-sharp fa-rotate"></span></button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-light btn-refresh disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span></button>
+                    }
+
+                </div>
+                <div class="input-panel-input">
+                    <TextBox @bind-Value="@memberPath" PlaceHolder="Member Path.." Enabled="@(!publishLoading)" />
+                </div>
+            </div>
+        </div>
+        <div class="tab-panel">
+
+            @if (!loading)
+            {
+                <RadzenTabs SelectedIndex="@selectedTabIndex" SelectedIndexChanged="SelectedTabIndexChanged">
+                    <Tabs>
+                        <RadzenTabsItem Text="Current">
+                            <Template>
+                                <div class="tab-header">
+                                    <span class="tab-header-icon fa-solid fa-sharp fa-wave-pulse"></span>
+                                    <span class="tab-header-title">Current</span>
+                                </div>
+                            </Template>
+                            <ChildContent>
+                                <div class="content-panel">
+                                    <div class="query-panel">
+                                        <div class="query-panel-container">
+                                            <span class="query-label">Query</span>
+                                            <a href="@currentQueryLink" class="btn btn-link btn-query">@resultCurrentQuery</a>
+                                        </div>
+                                    </div>
+                                    <div class="table-panel">
+                                        <RadzenDataGrid Data="@currentTableItems"
+                                                        TItem="CurrentTableItem"
+                                                        Density="Density.Compact"
+                                                        GridLines="DataGridGridLines.Vertical">
+                                            <Columns>
+                                                <RadzenDataGridColumn TItem="CurrentTableItem" Property="MemberPath" Title="Member">
+                                                    <Template Context="context">
+                                                        <a href="@GetObjectLink(context.MemberPath)" class="member-item">@context.MemberPath</a>
+                                                    </Template>
+                                                </RadzenDataGridColumn>
+                                                <RadzenDataGridColumn TItem="CurrentTableItem" Property="Duration" Title="Duration" Width="100px">
+                                                    <Template Context="context">
+                                                        <span class="duration-cell-value">@context.Duration.ToFormattedString()</span>
+                                                    </Template>
+                                                </RadzenDataGridColumn>
+                                                <RadzenDataGridColumn TItem="CurrentTableItem" Property="Timestamp" Title="Timestamp" Width="150px" />
+                                                <RadzenDataGridColumn TItem="CurrentTableItem" CssClass="remove" Width="70px" Sortable="false">
+                                                    <Template Context="context">
+                                                        <button class="btn-link btn btn-sm" @onclick="() => RemoveClicked(context.MemberPath)">Remove</button>
+                                                    </Template>
+                                                </RadzenDataGridColumn>
+                                                <RadzenDataGridColumn TItem="CurrentTableItem" CssClass="delete" Width="70px" Sortable="false">
+                                                    <Template Context="context">
+                                                        <button class="btn-link btn btn-sm" @onclick="() => DeleteClicked(context.Uuid)">Delete</button>
+                                                    </Template>
+                                                </RadzenDataGridColumn>
+                                            </Columns>
+                                        </RadzenDataGrid>
+                                    </div>
+                                </div>
+                            </ChildContent>
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="Query">
+                            <Template>
+                                <div class="tab-header">
+                                    <span class="tab-header-icon fa-solid fa-sharp fa-magnifying-glass"></span>
+                                    <span class="tab-header-title">Query</span>
+                                </div>
+                            </Template>
+                            <ChildContent>
+                                <div class="content-panel">
+                                    <div class="query-panel">
+                                        <div class="query-panel-container">
+                                            <span class="query-label">Query</span>
+                                            <a href="@queryLink" class="btn btn-link btn-query">@resultQuery</a>
+                                        </div>
+                                    </div>
+                                    <div class="table-panel">
+                                        <RadzenDataGrid Data="@queryTableItems"
+                                                        TItem="QueryTableItem"
+                                                        Density="Density.Compact"
+                                                        GridLines="DataGridGridLines.Vertical">
+                                            <Columns>
+                                                <RadzenDataGridColumn TItem="QueryTableItem" Property="MemberPath" Title="Member">
+                                                    <Template Context="context">
+                                                        <a href="@GetObjectLink(context.MemberPath)" class="member-item">@context.MemberPath</a>
+                                                    </Template>
+                                                </RadzenDataGridColumn>
+                                                <RadzenDataGridColumn TItem="QueryTableItem" Property="Duration" Title="Duration" Width="100px">
+                                                    <Template Context="context">
+                                                        <span class="duration-cell-value">@context.Duration.ToFormattedString()</span>
+                                                    </Template>
+                                                </RadzenDataGridColumn>
+                                                <RadzenDataGridColumn TItem="QueryTableItem" Property="AddTimestamp" Title="Add Timestamp" Width="150px" />
+                                                <RadzenDataGridColumn TItem="QueryTableItem" Property="RemoveTimestamp" Title="Remove Timestamp" Width="150px">
+                                                    <Template Context="context">
+                                                        @if (context.RemoveTimestamp.HasValue)
+                                                        {
+                                                            <span class="timestamp-cell-value">@context.RemoveTimestamp</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="timestamp-cell-value">-</span>
+                                                        }
+                                                    </Template>
+                                                </RadzenDataGridColumn>
+                                                <RadzenDataGridColumn TItem="QueryTableItem" CssClass="delete" Width="70px" Sortable="false">
+                                                    <Template Context="context">
+                                                        <button class="btn-link btn btn-sm" @onclick="() => DeleteClicked(context.Uuid)">Delete</button>
+                                                    </Template>
+                                                </RadzenDataGridColumn>
+                                            </Columns>
+                                        </RadzenDataGrid>
+                                    </div>
+                                </div>
+                            </ChildContent>
+                        </RadzenTabsItem>
+                    </Tabs>
+                </RadzenTabs>
+            }
+            else
+            {
+                <Loading Message="Loading.." />
+            }
+
+        </div>
+    </div>
+}
+
+@code {
+
+    private const int currentTabIndex = 0;
+    private const int queryTabIndex = 1;
+    private int selectedTabIndex;
+    private int previousSelectedTabIndex;
+
+    private IEnumerable<CurrentTableItem> currentTableItems;
+    private IEnumerable<QueryTableItem> queryTableItems;
+    private IEnumerable<TrakHoundAssignment> entities;
+    private TrakHoundAssignment selectedEntity;
+    private string previousObjectUuid;
+    private System.Timers.Timer updateTimer;
+
+    private string memberPath;
+    private bool loading;
+    private bool publishLoading;
+
+    struct CurrentTableItem
+    {
+        public string Uuid { get; set; }
+        public string MemberUuid { get; set; }
+        public string MemberPath { get; set; }
+        public string SourceUuid { get; set; }
+        public TimeSpan Duration => DateTime.Now - Timestamp;
+        public DateTime Timestamp { get; set; }
+    }
+
+    struct QueryTableItem
+    {
+        public string Uuid { get; set; }
+        public string MemberUuid { get; set; }
+        public string MemberPath { get; set; }
+        public TimeSpan Duration { get; set; }
+        public DateTime AddTimestamp { get; set; }
+        public DateTime? RemoveTimestamp { get; set; }
+    }
+
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public ITrakHoundObjectEntity Object { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+
+        updateTimer = new System.Timers.Timer();
+        updateTimer.Interval = 500;
+        updateTimer.Elapsed += (s, a) => InvokeAsync(StateHasChanged);
+        updateTimer.Enabled = true;
+    }
+
+    void IDisposable.Dispose()
+    {
+        if (updateTimer != null) updateTimer.Dispose();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async void SelectedTabIndexChanged(int index)
+    {
+        selectedTabIndex = index;
+        await Load();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || (ObjectExplorerService != null && Object != null && (Object.Uuid != previousObjectUuid || selectedTabIndex != previousSelectedTabIndex)))
+        {
+            currentTableItems = null;
+            queryTableItems = null;
+
+            previousObjectUuid = Object.Uuid;
+            previousSelectedTabIndex = selectedTabIndex;
+            loading = true;
+            await InvokeAsync(StateHasChanged);
+
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                switch (selectedTabIndex)
+                {
+                    case currentTabIndex:
+
+                        entities = await client.Entities.GetCurrentAssignments(Object.GetAbsolutePath());
+                        if (!entities.IsNullOrEmpty())
+                        {
+                            var items = new List<CurrentTableItem>();
+
+                            foreach (var entity in entities.OrderByDescending(o => o.AddTimestamp))
+                            {
+                                var item = new CurrentTableItem();
+                                item.Uuid = entity.Uuid;
+                                item.MemberUuid = entity.MemberUuid;
+                                item.MemberPath = entity.Member;
+                                item.Timestamp = entity.AddTimestamp.ToLocalTime();
+                                items.Add(item);
+                            }
+
+                            currentTableItems = items;
+                        }
+                        break;
+
+                    case queryTabIndex:
+
+                        entities = await client.Entities.GetAssignments(Object.GetAbsolutePath(), 0, 100, TrakHound.SortOrder.Descending);
+                        if (!entities.IsNullOrEmpty())
+                        {
+                            var items = new List<QueryTableItem>();
+
+                            foreach (var entity in entities.OrderByDescending(o => o.AddTimestamp))
+                            {
+                                var item = new QueryTableItem();
+                                item.Uuid = entity.Uuid;
+                                item.MemberUuid = entity.MemberUuid;
+                                item.MemberPath = entity.Member;
+                                item.Duration = entity.Duration;
+                                item.AddTimestamp = entity.AddTimestamp.ToLocalTime();
+                                item.RemoveTimestamp = entity.RemoveTimestamp?.ToLocalTime();
+                                items.Add(item);
+                            }
+
+                            queryTableItems = items;
+                        }
+                        break;
+                }
+            }
+        }
+
+        loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Save()
+    {
+        publishLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(memberPath))
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                if (await client.Entities.PublishAssignment(Object.GetAbsolutePath(), memberPath))
+                {
+                    previousObjectUuid = null;
+                    await Load();
+
+                    ObjectExplorerService.AddNotification(NotificationType.Information, "Assignment Published Successfully", Object.GetAbsolutePath());
+                }
+                else
+                {
+                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Assignment");
+                }
+            }
+        }
+
+        publishLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void CopyClicked(string value)
+    {
+        ObjectExplorerService.AddNotification(NotificationType.Information, "Copied to Clipboard", duration: 5000);
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void RemoveClicked(string path)
+    {
+        if (ObjectExplorerService != null && Object != null)
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                if (await client.Entities.RemoveAssignment(Object.GetAbsolutePath(), path))
+                {
+                    previousObjectUuid = null;
+                    await Load();
+
+                    ObjectExplorerService.AddNotification(NotificationType.Information, "Assignment Removed Successfully", path);
+                }
+                else
+                {
+                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Removing Assignment");
+                }
+            }
+        }
+    }
+
+    private async void DeleteClicked(string uuid)
+    {
+        var client = ObjectExplorerService.GetClient();
+        if (client != null)
+        {
+            if (await client.System.Entities.Objects.Assignment.Delete(uuid, TrakHoundOperationMode.Sync))
+            {
+                previousObjectUuid = null;
+                await Load();
+
+                ObjectExplorerService.AddNotification(NotificationType.Information, "Assignment Deleted Successfully", uuid);
+            }
+            else
+            {
+                ObjectExplorerService.AddNotification(NotificationType.Error, "Error Deleting Assignment");
+            }
+        }
+    }
+
+    private string GetObjectLink(string path)
+    {
+        var query = $"select >> from [{path}]";
+        return ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(query) : null;
+    }
+
+}

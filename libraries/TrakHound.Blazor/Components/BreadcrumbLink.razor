@@ -1,0 +1,55 @@
+﻿@if (!string.IsNullOrEmpty(Link))
+{
+    if (SelectionType == BreadcrumbSelectionType.Link)
+    {
+        <a href="@Link" class="btn btn-sm btn-command breadcrumb-link">@Url.Decode(Display)</a>
+    }
+    else
+    {
+        <button class="btn btn-sm btn-command breadcrumb-link" @onclick="Select">@Url.Decode(Display)</button>
+    }
+}
+else
+{
+    <span class="breadcrumb-organizer">@Url.Decode(Display)</span>
+}
+
+@if (!DividerHidden)
+{
+    @if (!string.IsNullOrEmpty(Root.DividerText))
+    {
+        <span class="divider divider-text">@Root.DividerText</span>
+    }
+    else
+    {
+        <span class="divider divider-icon @Root.DividerIcon"></span>
+    }
+}
+
+@code {
+
+    [CascadingParameter]
+    public BreadcrumbLinks Root { get; set; }
+
+    [Parameter]
+    public string Display { get; set; }
+
+    [Parameter]
+    public string Link { get; set; }
+
+    [Parameter]
+    public BreadcrumbSelectionType SelectionType { get; set; }
+
+    [Parameter]
+    public EventCallback<string> Selected { get; set; }
+
+    [Parameter]
+    public bool DividerHidden { get; set; }
+
+
+    private async void Select()
+    {
+        await Selected.InvokeAsync(Link);
+    }
+
+}

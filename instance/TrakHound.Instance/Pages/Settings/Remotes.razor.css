@@ -1,0 +1,65 @@
+﻿.page {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.toolbar-panel {
+    grid-row: 1;
+    padding: 15px 20px;
+}
+
+.table-panel {
+    grid-row: 2;
+    padding: 0 20px 20px;
+}
+
+.table-panel ::deep .rz-data-grid {
+    height: 100%;
+    overflow: auto;
+}
+
+    .table-panel ::deep .rz-data-grid td {
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .table-panel ::deep .rz-data-grid td:last-child {
+        border-right: none;
+    }
+
+    .table-panel ::deep .rz-data-grid .buttons-cell {
+        padding: 0;
+    }
+
+        .table-panel ::deep .rz-data-grid .buttons-cell .btn {
+            border-radius: 0;
+            height: 40px;
+            width: 100%;
+        }
+
+
+.page ::deep .modal-body {
+    padding: 20px 40px;
+}
+
+.page ::deep .add-modal .form-field {
+    margin-bottom: 10px;
+}
+
+.page ::deep .add-modal .form-field label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+    .page ::deep .add-modal .form-field .rz-textbox {
+        width: 100%;
+        background: #fafafa !important;
+    }
+
+    .page ::deep .add-modal .form-field .rz-textarea {
+        width: 100%;
+        background: #fafafa !important;
+    }

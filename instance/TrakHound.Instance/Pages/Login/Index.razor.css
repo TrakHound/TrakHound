@@ -1,0 +1,349 @@
+﻿.login-container {
+    height: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 0.4fr max-content 1.6fr max-content;
+    grid-template-columns: 1fr max-content 1fr;
+    background: linear-gradient(0deg, rgba(45, 125, 210, 0.65), rgba(45, 125, 210, 1));
+    background: var(--accentVeryDark);
+}
+
+.login-panel {
+    grid-row: 2;
+    grid-column: 2;
+    opacity: 0;
+    animation: fadeIn 0.5s normal forwards;
+    animation-delay: 0.25s;
+    display: grid;
+    grid-template-rows: 1fr max-content;
+    grid-row-gap: 0px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.1);
+/*    border: 1px solid #ccc;*/
+/*    background: var(--accentVeryVeryDark);
+    box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.05);*/
+}
+
+.login-top-panel {
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    grid-template-rows: max-content 1fr;
+    grid-column-gap: 80px;
+    padding: 40px 50px;
+/*    background: linear-gradient(0deg, rgba(45, 125, 210, 0.65), rgba(45, 125, 210, 1));*/
+}
+
+.title-container {
+    grid-row: 1;
+    grid-column: 1;
+    text-align: center;
+    padding: 30px 20px 50px;
+}
+
+    .title-container .title-logo {
+        height: 48px;
+        margin-bottom: 25px;
+    }
+
+    .title-container .title-label {
+        font-size: 20px;
+        font-weight: 400;
+        color: var(--accentVeryLight);
+    }
+
+.connection-container {
+    grid-row: 2;
+    grid-column: 1;
+    text-align: center;
+}
+
+    .connection-container .table {
+        margin: 0;
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+        .connection-container .table td {
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .connection-container .table td:last-child {
+                border-right: none;
+            }
+
+            .connection-container .table td.label {
+                color: var(--accentLight);
+                font-size: 13px;
+                font-weight: bold;
+                padding: 10px 10px;
+            }
+
+            .connection-container .table td.value {
+                color: var(--accentVeryLight);
+                font-size: 14px;
+                text-align: left;
+                padding: 10px 20px;
+            }
+
+
+.input-container {
+    grid-row-start: 1;
+    grid-row-end: 3;
+    grid-column: 2;
+    text-align: left;
+    background: rgba(0, 0, 0, 0.35);
+    box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    min-width: 425px;
+/*    opacity: 0;
+    animation: fadeIn 0.75s normal forwards;
+    animation-delay: 0.5s;*/
+}
+
+    .input-container ::deep input {
+        font-size: 20px !important;
+        line-height: 36px !important;
+        height: 60px !important;
+        padding: 8px 15px !important;
+        background: #fff !important;
+        border: 2px solid var(--accent) !important;
+    }
+
+        .input-container ::deep input:focus {
+            background: var(--accentVeryVeryLight) !important;
+            border: 1px solid var(--accent) !important;
+        }
+
+    .input-container ::deep .text-box .title {
+        color: var(--accentVeryLight) !important;
+    }
+
+    .input-container ::deep .password-box .title {
+        color: var(--accentVeryLight) !important;
+    }
+
+    .input-container .btn-login {
+        width: 100%;
+        font-size: 18px !important;
+        padding: 15px 15px !important;
+        margin-top: 15px;
+    }
+
+        .input-container .btn-login .icon {
+            margin-left: 12px;
+        }
+
+.account-container {
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-size: 16px;
+}
+
+
+.footer-container {
+    grid-row: 4;
+    grid-column-start: 1;
+    grid-column-end: 4;
+    display: grid;
+    grid-template-rows: 1fr max-content;
+    grid-template-columns: 1fr max-content max-content 1fr;
+    grid-column-gap: 80px;
+    grid-row-gap: 15px;
+    padding-top: 30px;
+    padding-bottom: 10px;
+    border-top: 1px solid rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.company-panel {
+    grid-row: 1;
+    grid-column: 2;
+}
+
+.company-container {
+    display: grid;
+    grid-template-columns: 1fr max-content max-content 1fr;
+    grid-column-gap: 10px;
+}
+
+.company-logo-container {
+    grid-column: 2;
+}
+
+.company-logo-image,
+.company-logo-image-dark {
+    height: 30px;
+}
+
+.company-logo-image {
+    display: none;
+}
+
+.footer-container:hover .company-logo-image {
+    display: block;
+}
+
+.company-logo-image-dark {
+    display: block;
+}
+
+.footer-container:hover .company-logo-image-dark {
+    display: none;
+}
+
+.footer-container .footer-label {
+    color: #4d6580;
+    color: #bbb;
+    color: rgba(255, 255, 255, 0.15);
+}
+
+.footer-container:hover .footer-label {
+    color: #607e9f;
+    color: #888;
+    color: rgba(255, 255, 255, 0.5);
+    color: var(--accentVeryLight);
+}
+
+.footer-container .footer-label a {
+    color: #4d6580;
+    color: #bbb;
+    color: rgba(255, 255, 255, 0.15);
+}
+
+.footer-container:hover .footer-label a {
+    color: #607e9f;
+    color: #888;
+    color: rgba(255, 255, 255, 0.5);
+    color: var(--accentVeryLight);
+}
+
+.footer-container .footer-label a:hover {
+    color: var(--accentVeryLight);
+    color: var(--accent);
+}
+
+.company-information-container {
+    grid-column: 3;
+}
+
+.company-information-name {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 18px;
+}
+
+.company-information-website {
+    display: block;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+    .company-information-website a {
+        text-decoration: none;
+    }
+
+        .company-information-website a:hover {
+            text-decoration: underline;
+        }
+
+.contact-panel {
+    grid-row: 1;
+    grid-column: 3;
+}
+
+.contact-information-email {
+    display: block;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+    .contact-information-email a {
+        text-decoration: none;
+    }
+
+        .contact-information-email a:hover {
+            text-decoration: underline;
+        }
+
+.company-social-panel {
+    display: block;
+    padding-top: 5px;
+}
+
+.social-link {
+    font-size: 14px;
+    margin-right: 8px;
+}
+
+    .social-link:hover {
+        color: var(--accentVeryLight) !important;
+        color: var(--accent) !important;
+    }
+
+    .social-link:last-child {
+        margin-right: 0;
+    }
+
+.copyright-panel {
+    grid-row: 2;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    text-align: center;
+}
+
+.copyright {
+    font-size: 11px;
+}
+
+
+.login-container .loading-container {
+    grid-row: 2;
+    grid-column: 2;
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+    animation: fadeIn 0.5s normal forwards;
+    min-height: 250px;
+    width: 400px;
+    padding: 20px;
+}
+
+.login-container .loading-logo-container {
+    grid-row: 1;
+    display: grid;
+    grid-template-columns: 1fr max-content 1fr;
+    padding: 20px;
+}
+
+.login-container .loading-logo {
+    grid-column: 2;
+    height: 35px;
+}
+
+.login-container ::deep .loading-panel {
+    grid-row: 2;
+    display: grid;
+    grid-template-rows: 1fr max-content 1fr;
+    grid-template-columns: 1fr max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+    background: transparent;
+}
+
+    .login-container ::deep .loading-panel .loading-icon {
+        font-size: 30px;
+        color: #607e9f;
+        color: #888;
+        color: var(--accentVeryLight);
+    }
+
+    .login-container ::deep .loading-panel .loading-message {
+        font-size: 16px;
+        color: #607e9f;
+        color: #888;
+        color: var(--accentVeryLight);
+    }

@@ -1,0 +1,101 @@
+﻿.target-node {
+    width: 300px;
+    min-height: 90px;
+    padding: 5px 20px 0px;
+    background: var(--accentVeryLight);
+    border: 1px solid var(--accent);
+    background: #fff;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+}
+
+.diagram-node .target-node:hover {
+    background: var(--accentVeryVeryLight);
+    border: 1px solid var(--accentLight);
+}
+
+.diagram-node.selected .target-node {
+    background: var(--accentVeryLight);
+    border: 1px solid var(--accent);
+}
+
+.target-node .node-type {
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 5px;
+}
+
+.diagram-node.selected .target-node .node-type,
+.diagram-node .target-node:hover .node-type {
+    color: var(--accentLight);
+}
+
+.target-node .node-type .icon {
+    font-size: 10px;
+    margin-right: 8px;
+}
+
+.target-node .node-package {
+    font-size: 11px;
+    font-weight: bold;
+}
+
+    .target-node .node-package .icon {
+        margin-right: 8px;
+        color: rgba(0, 0, 0, 0.4);
+    }
+
+.target-node .node-name {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.target-node .node-id {
+    font-size: 9px;
+    color: rgba(0, 0, 0, 0.25);
+    text-align: center;
+}
+
+.diagram-node.selected .target-node .node-id,
+.diagram-node .target-node:hover .node-id {
+    color: var(--accentLight);
+}
+
+::deep .diagram-port {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border: 1px solid #aaa;
+}
+
+    ::deep .diagram-port:hover {
+        background: var(--accentVeryLight);
+        border: 1px solid var(--accent);
+    }
+
+    ::deep .diagram-port.has-links {
+        background: var(--accentLight);
+        border: 1px solid var(--accentLight);
+    }
+
+    ::deep .diagram-port.driver-input-port {
+        border-radius: 50%;
+        top: 50%;
+        left: -8px;
+    }
+
+    ::deep .diagram-port.redirect-output-port {
+        border-radius: 50%;
+        top: 50%;
+        right: -8px;
+    }
+
+    ::deep .diagram-port.bottom {
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        bottom: -30px;
+    }

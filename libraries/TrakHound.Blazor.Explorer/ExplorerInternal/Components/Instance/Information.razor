@@ -1,0 +1,80 @@
+﻿@using TrakHound.Instances
+
+@if (InstanceInformation != null)
+{
+    <div class="information-panel">
+
+        <div class="properties-panel">
+            <table class="table table-sm">
+                <tbody>
+                    <tr>
+                        <td class="label">Instance ID</td>
+                        <td class="value">@InstanceInformation.Id</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Instance Version</td>
+                        <td class="value">@InstanceInformation.Version</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Instance Name</td>
+                        <td class="value">@InstanceInformation.Name</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Instance Description</td>
+                        <td class="value">@InstanceInformation.Description</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="connection-panel">
+            <table class="table table-sm">
+                <tbody>
+                    <tr>
+                        <td class="label">HTTP Address</td>
+                        <td class="value">@InstanceInformation.GetInterface("HTTP")?.Address</td>
+                    </tr>
+                    <tr>
+                        <td class="label">HTTP Port</td>
+                        <td class="value">@InstanceInformation.GetInterface("HTTP")?.Port</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="environment-panel">
+            <table class="table table-sm">
+                <tbody>
+                    <tr>
+                        <td class="label">Sender</td>
+                        <td class="value">@InstanceInformation.Environment.Sender</td>
+                    </tr>
+                    <tr>
+                        <td class="label">User</td>
+                        <td class="value">@InstanceInformation.Environment.User</td>
+                    </tr>
+                    <tr>
+                        <td class="label">OS Type</td>
+                        <td class="value">@InstanceInformation.Environment.OperatingSystem.Type</td>
+                    </tr>
+                    <tr>
+                        <td class="label">OS Name</td>
+                        <td class="value">@InstanceInformation.Environment.OperatingSystem.Name</td>
+                    </tr>
+                    <tr>
+                        <td class="label">OS Version</td>
+                        <td class="value">@InstanceInformation.Environment.OperatingSystem.Version</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public TrakHoundInstanceInformation InstanceInformation { get; set; }
+
+}

@@ -1,0 +1,62 @@
+﻿.btn-nav-item {
+    font-size: 12px;
+    display: flex;
+    padding: 4px 10px !important;
+    padding: 0 !important;
+    min-width: 175px;
+    align-items: center;
+    min-height: 20px;
+    line-height: 10px;
+    background: none;
+    border: 1px solid transparent;
+    border-bottom: 1px solid var(--borderVeryVeryLight);
+    color: var(--textDark);
+    outline: 0;
+    cursor: pointer;
+}
+
+    .btn-nav-item .nav-link {
+        color: var(--textDark);
+        width: 100%;
+        padding: 10px 20px !important;
+        border-left: 5px solid transparent;
+    }
+
+    .btn-nav-item:hover .nav-link {
+        color: var(--accent);
+    }
+
+    .btn-nav-item .nav-link.active {
+        background: #eee;
+        background: #f8f8f8;
+        border-left: 5px solid var(--accent);
+        color: var(--accent);
+        outline: 0;
+    }
+
+    .btn-nav-item:hover {
+        background: #f8f8f8;
+        color: var(--accent);
+        outline: 0;
+    }
+
+    .btn-nav-item .oi,
+    .btn-nav-item .far,
+    .btn-nav-item .fas {
+        font-size: 14px;
+        margin-right: 15px;
+        color: var(--accent);
+        color: var(--textVeryLight);
+    }
+
+    .btn-nav-item:hover .oi,
+    .btn-nav-item:hover .far,
+    .btn-nav-item:hover .fas {
+        color: var(--accent);
+    }
+
+    .btn-nav-item .nav-link.active .oi,
+    .btn-nav-item .nav-link.active .far,
+    .btn-nav-item .nav-link.active .fas {
+        color: var(--accent);
+    }

@@ -1,0 +1,91 @@
+.toolbar-panel {
+    display: grid;
+    grid-template-columns: max-content max-content 1fr;
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-top: none;
+}
+
+.toolbar-buttons-container {
+    border-right: 1px solid #ddd;
+    padding: 9px 10px 5px;
+}
+
+.toolbar-panel .btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.toolbar-panel .btn.disabled {
+    background: #efefef;
+    color: #aaa !important;
+    border-color: #ddd !important;
+}
+
+    .toolbar-panel .btn.disabled .icon {
+        color: #aaa !important;
+    }
+
+
+.toolbar-panel .btn-start {
+    color: var(--colorGreen);
+    font-size: 14px;
+    width: 110px;
+    padding: 5px;
+}
+
+    .toolbar-panel .btn-start .icon {
+        color: var(--colorGreen);
+    }
+
+.toolbar-panel .btn-start:hover {
+    color: var(--colorGreenLight);
+}
+
+    .toolbar-panel .btn-start:hover .icon {
+        color: var(--colorGreenLight);
+    }
+
+.toolbar-panel .btn-stop {
+    background: var(--colorRed);
+    border-color: var(--colorRed);
+    color: #fff;
+    font-size: 14px;
+    width: 110px;
+    padding: 5px;
+}
+
+    .toolbar-panel .btn-stop .icon {
+        color: var(--colorRed);
+        color: #fff;
+    }
+
+    .toolbar-panel .btn-stop:hover {
+        background: var(--colorRedLight);
+    }
+
+
+.toolbar-status-container {
+    border-right: 1px solid #ddd;
+    padding: 8px 40px;
+}
+
+    .toolbar-status-container .toolbar-status {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 18px;
+    }
+
+    .toolbar-status-container .toolbar-status-timer {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 18px;
+    }
+
+        .toolbar-status-container .toolbar-status-timer .toolbar-status-timestamp {
+            font-size: 12px;
+            margin-left: 10px;
+            font-weight: normal;
+        }

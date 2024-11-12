@@ -1,0 +1,577 @@
+﻿@using TrakHound.Apps
+@using TrakHound.Configurations
+@using TrakHound.Packages
+
+@if (!loading)
+{
+    var addModalClass = $"add-modal add-modal-{stepIndex}";
+    var addConfirmDisabled = addPackage != null ? "" : "disabled";
+    var addLabel = !string.IsNullOrEmpty(ConfigurationService.AddConfiguration.Id) ? "Edit" : "Add";
+    var addButtonLabel = !string.IsNullOrEmpty(ConfigurationService.AddConfiguration.Id) ? "Save Configuration" : "Add Configuration";
+    var addButtonIcon = !string.IsNullOrEmpty(ConfigurationService.AddConfiguration.Id) ? "fa-solid fa-sharp fa-floppy-disk" : "fa-solid fa-sharp fa-square-plus";
+
+    var templateParameters = addPackage?.Metadata?.GetValueOrDefault(".configurationParameters")?.ToString().Split(',');
+
+
+    <div class="add-panel">
+        <div class="form-panel">
+            <RadzenSteps @bind-SelectedIndex="@stepIndex" ShowStepsButtons="false">
+                <Steps>
+                    <RadzenStepsItem Text="Select Package">
+                        <div class="packages-panel">
+                            <PackageSelectBrowser @ref="packageBrowser"
+                                                  Category="@configurationCategory"
+                                                  ManagementClient="@InstanceConfiguration.ManagementClient"
+                                                  @bind-Query="@ConfigurationService.AddPackageQuery"
+                                                  SelectedPackage="@addPackage"
+                                                  SelectedPackageChanged="PackageSelected" />
+                        </div>
+                    </RadzenStepsItem>
+                    <RadzenStepsItem Text="Configuration" Disabled="@(addPackage == null)">
+                        <div class="configuration-panel">
+
+                            <div class="description-container configuration-container">
+                                <div class="form-field">
+                                    <label>Name</label>
+                                    <TextBox @bind-Value=@ConfigurationService.AddConfiguration.Name SpellCheck="false" Class="required" />
+                                </div>
+                            </div>
+
+                            <div class="form-field">
+                                <label>Volume ID</label>
+                                <TextBox @bind-Value=@ConfigurationService.AddConfiguration.VolumeId SpellCheck="false" />
+                            </div>
+
+                            <div class="description-container configuration-container">
+                                <div class="form-field checkbox-field">
+                                    <label>Automatically Update</label>
+                                    <RadzenCheckBox @bind-Value=@ConfigurationService.AddConfiguration.AutoUpdate />
+                                </div>
+                            </div>
+
+                            @if (configurationAppRoute != null)
+                            {
+                                <div class="component-container configuration-container">
+                                    <label class="container-label">Driver Configuration</label>
+                                    <div class="container-content">
+                                        <TrakHoundApp Route="@configurationAppRoute" Parameters="@ConfigurationService.AddConfiguration.Parameters" />
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="parameters-panel configuration-container">
+                                    <div class="parameters-header">
+                                        <span class="parameters-title">Parameters</span>
+                                    </div>
+                                    <table class="parameters-table table table-sm table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Value</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @if (!templateParameters.IsNullOrEmpty())
+                                            {
+                                                foreach (var templateParameter in templateParameters)
+                                                {
+                                                    <tr>
+                                                        <td class="parameter-cell-name">@templateParameter</td>
+
+                                                        @if (templateParameter.Contains("password") || templateParameter.Contains("token"))
+                                                        {
+                                                            <td class="parameter-cell-value"><PasswordBox Value="@GetParameterValue(templateParameter)" ValueChanged="(o) => SetParameterValue(templateParameter, o)" InputName="@GetParameterInputName()" InputElementId="@GetParameterInputId()" InputChangeType="InputChangeType.OnValueChange" /></td>
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="parameter-cell-value"><TextBox Value="@GetParameterValue(templateParameter)" ValueChanged="(o) => SetParameterValue(templateParameter, o)" InputName="@GetParameterInputName()" InputElementId="@GetParameterInputId()" InputChangeType="InputChangeType.OnValueChange" /></td>
+
+                                                        }
+
+                                                        <td class="parameter-cell-buttons"></td>
+                                                    </tr>
+                                                }
+                                            }
+
+                                            @if (!ConfigurationService.AddConfiguration.Parameters.IsNullOrEmpty())
+                                            {
+                                                foreach (var parameter in ConfigurationService.AddConfiguration.Parameters)
+                                                {
+                                                    if (templateParameters == null || !templateParameters.Contains(parameter.Key))
+                                                    {
+                                                        <tr>
+                                                            <td class="parameter-cell-name">@parameter.Key</td>
+                                                            <td class="parameter-cell-value"><TextBox Value="@GetParameterValue(parameter.Key)" ValueChanged="(o) => SetParameterValue(parameter.Key, o)" InputName="@GetParameterInputName()" InputElementId="@GetParameterInputId()" InputChangeType="InputChangeType.OnValueChange" /></td>
+                                                            <td class="parameter-cell-buttons" @onclick="() => RemoveParameter(parameter.Key)"><button class="btn btn-sm btn-command btn-remove"><span class="icon fa-solid fa-sharp fa-delete-right"></span>Remove</button></td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                    <div class="parameter-add-container">
+                                        <label>Add</label>
+                                        <div class="parameter-add-input">
+                                            <TextBox @bind-Value="@addParameterName" />
+                                            <TextBox Value="@GetParameterValue(addParameterName)" ValueChanged="(o) => SetParameterValue(addParameterName, o)" InputChangeType="InputChangeType.OnValueChange" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (!bufferDisabled)
+                            {
+                                <div class="buffer-container configuration-container">
+                                    <label class="container-label">Buffer Configuration</label>
+                                    <div class="container-content">
+
+                                        <div class="form-field">
+                                            <SpinEdit @bind-Value="@ConfigurationService.AddConfiguration.Buffer.Interval" Title="Interval" Units="ms" MinValue="0" Increment="1000" />
+                                        </div>
+
+                                        <div class="form-field">
+                                            <SpinEdit @bind-Value="@ConfigurationService.AddConfiguration.Buffer.RetryInterval" Title="Retry Interval" Units="ms" MinValue="0" Increment="1000" />
+                                        </div>
+
+                                        <div class="form-field">
+                                            <SpinEdit @bind-Value="@ConfigurationService.AddConfiguration.Buffer.MaxItemsPerInterval" Title="Max Items / Interval" MinValue="0" Increment="1000" />
+                                        </div>
+
+                                        <div class="form-field">
+                                            <SpinEdit @bind-Value="@ConfigurationService.AddConfiguration.Buffer.QueuedItemLimit" Title="Queued Item Limit" MinValue="0" Increment="1000" />
+                                        </div>
+
+                                        <div class="form-field checkbox-field">
+                                            <label>File Buffer Enabled</label>
+                                            <RadzenCheckBox @bind-Value=@ConfigurationService.AddConfiguration.Buffer.FileBuffer.Enabled />
+                                        </div>
+
+                                        <div class="form-field">
+                                            <SpinEdit @bind-Value="@ConfigurationService.AddConfiguration.Buffer.FileBuffer.ReadInterval" Title="File Buffer Read Interval" MinValue="0" Increment="1000" />
+                                        </div>
+
+                                        <div class="form-field checkbox-field">
+                                            <label>Acknowledge Sent</label>
+                                            <RadzenCheckBox @bind-Value=@ConfigurationService.AddConfiguration.Buffer.FileBuffer.AcknowledgeSent />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    </RadzenStepsItem>
+                    <RadzenStepsItem Text="Review & Add" Disabled="@(addPackage == null)">
+                        <div class="confirm-panel">
+
+                            <div class="confirm-container">
+                                <label>Package</label>
+                                <table class="table table-sm table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td class="label">Package ID</td>
+                                            <td class="value">@addPackage.Id</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">Package Version</td>
+                                            <td class="value">@GetPackageVersion()</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="confirm-container">
+                                <label>Description</label>
+                                <table class="table table-sm table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td class="label">Name</td>
+                                            <td class="value">@ConfigurationService.AddConfiguration.Name</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="confirm-container">
+                                <label>Parameters</label>
+                                <table class="table table-sm table-bordered">
+                                    <tbody>
+
+                                        @if (ConfigurationService.AddConfiguration.Parameters != null)
+                                        {
+                                            foreach (var property in ConfigurationService.AddConfiguration.Parameters)
+                                            {
+                                                @if (property.Key == "password" || property.Key == "token")
+                                                {
+                                                    <tr>
+                                                        <td class="label">@property.Key</td>
+                                                        <td class="value">**************</td>
+                                                    </tr>
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td class="label">@property.Key</td>
+                                                        <td class="value">@property.Value</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="confirm-container">
+                                <label>Buffer</label>
+                                <table class="table table-sm table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td class="label">Enabled</td>
+                                            <td class="value">@ConfigurationService.AddConfiguration.Buffer.Enabled</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">Interval</td>
+                                            <td class="value">@ConfigurationService.AddConfiguration.Buffer.Interval</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">RetryInterval</td>
+                                            <td class="value">@ConfigurationService.AddConfiguration.Buffer.RetryInterval</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">MaxItemsPerInterval</td>
+                                            <td class="value">@ConfigurationService.AddConfiguration.Buffer.MaxItemsPerInterval</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">QueuedItemsPerInterval</td>
+                                            <td class="value">@ConfigurationService.AddConfiguration.Buffer.QueuedItemsPerInterval</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">QueuedItemLimit</td>
+                                            <td class="value">@ConfigurationService.AddConfiguration.Buffer.QueuedItemLimit</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="confirm-container">
+                                <label>File Buffer</label>
+                                <table class="table table-sm table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td class="label">Enabled</td>
+                                            <td class="value">@ConfigurationService.AddConfiguration.Buffer.FileBuffer.Enabled</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">ReadInterval</td>
+                                            <td class="value">@ConfigurationService.AddConfiguration.Buffer.FileBuffer.ReadInterval</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">AcknowledgeSent</td>
+                                            <td class="value">@ConfigurationService.AddConfiguration.Buffer.FileBuffer.AcknowledgeSent</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </RadzenStepsItem>
+                </Steps>
+            </RadzenSteps>
+        </div>
+        <div class="footer-panel">
+
+            <button class="btn btn-secondary btn-cancel" @onclick="CancelClicked"><span class="icon fa-solid fa-sharp fa-xmark"></span>Cancel</button>
+
+            @if (stepIndex > 0)
+            {
+                var backButtonLabel = "Back";
+                switch (stepIndex)
+                {
+                    case 1: backButtonLabel = "Back : Select Package"; break;
+                    case 2: backButtonLabel = "Back : Configuration"; break;
+                }
+
+                <button class="btn btn-sm btn-light btn-back" @onclick="ModalPreviousClicked"><span class="icon fa-solid fa-sharp fa-chevron-left"></span>@backButtonLabel</button>
+            }
+
+            @if (stepIndex < 2)
+            {
+                var nextButtonLabel = "Next";
+                var nextButtonDisabled = "";
+                switch (stepIndex)
+                {
+                    case 0: 
+                        nextButtonLabel = "Next : Configuration";
+                        nextButtonDisabled = addPackage != null ? "" : "disabled";
+                        break;
+
+                    case 1:
+                        nextButtonLabel = "Next : Review & Add"; 
+                        break;
+                }
+
+                <button class="btn btn-sm btn-primary btn-next @nextButtonDisabled" @onclick="ModalNextClicked">@nextButtonLabel<span class="icon right fa-solid fa-sharp fa-chevron-right"></span></button>
+            }
+            else
+            {
+                <button class="btn btn-sm btn-primary btn-add" @onclick="ModalAddClicked"><span class="icon @addButtonIcon"></span>@addButtonLabel</button>
+            }
+
+        </div>
+    </div>
+}
+else
+{
+    <Loading Message="@loadingMessage" />
+}
+
+@code {
+
+    private const string configurationCategory = "driver";
+    private string configurationAppPackageId;
+    private string configurationAppRoute;
+    private bool bufferDisabled;
+
+    private bool loading;
+    private string loadingMessage;
+
+    private int stepIndex;
+    private PackageSelectBrowser packageBrowser;
+    private TrakHoundPackage addPackage;
+    private string addParameterName;
+
+
+    [CascadingParameter(Name = "InstanceConfiguration")]
+    public InstanceConfiguration InstanceConfiguration { get; set; }
+
+    [CascadingParameter(Name = "ConfigurationService")]
+    public ConfigurationService ConfigurationService { get; set; }
+
+    [Parameter]
+    public EventCallback<ConfigurationService.ConfigurationAddResult> ConfigurationAdded { get; set; }
+
+    [Parameter]
+    public EventCallback Canceled { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        InstanceConfiguration.ManagementClientChanged += ManagementClientChanged;
+    }
+
+    private async void ManagementClientChanged(object sender, EventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+        if (packageBrowser != null)
+        {
+            await packageBrowser.SetManagementClient(InstanceConfiguration.ManagementClient);
+        }
+    }
+
+    private async void PackageSelected(TrakHoundPackage package)
+    {
+        addPackage = package;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ModalAddClicked()
+    {
+        var newConfiguration = string.IsNullOrEmpty(ConfigurationService.AddConfiguration.Id);
+
+        loading = true;
+        loadingMessage = newConfiguration ? "Adding Configuration.." : "Saving Configuration..";
+        await InvokeAsync(StateHasChanged);
+
+        ConfigurationService.AddConfiguration.PackageId = addPackage.Id;
+        ConfigurationService.AddConfiguration.PackageVersion = addPackage.Version;
+
+        // Add Configuration
+        var addResult = await ConfigurationService.CreateConfiguration();
+
+        // Notify Index that configuration was added
+        await ConfigurationAdded.InvokeAsync(addResult);
+    }
+
+    private async void ModalNextClicked()
+    {
+        if (stepIndex == 0)
+        {
+            if (addPackage != null && !addPackage.Metadata.IsNullOrEmpty() && addPackage.Metadata.ContainsKey(".configurationAppRoute"))
+            {
+                // Load Custom Configuration Package
+                configurationAppRoute = addPackage.Metadata[".configurationAppRoute"]?.ToString();
+            }
+
+            if (addPackage != null && !addPackage.Metadata.IsNullOrEmpty() && addPackage.Metadata.ContainsKey(".configurationAppPackageId"))
+            {
+                // Load Custom Configuration Package
+                configurationAppPackageId = addPackage.Metadata[".configurationAppPackageId"]?.ToString();
+
+                await LoadConfigurationPackage(configurationAppPackageId, configurationAppRoute);
+            }
+
+
+            // Add Default Name
+            if (string.IsNullOrEmpty(ConfigurationService.AddConfiguration.Name))
+            {
+                ConfigurationService.AddConfiguration.Name = GetPackageMetadata(addPackage, ".name", null)?.ToString();
+                if (string.IsNullOrEmpty(ConfigurationService.AddConfiguration.Name)) ConfigurationService.AddConfiguration.Name = StringFunctions.GetRandomName();
+            }
+
+            // Add Default VolumeId
+            if (string.IsNullOrEmpty(ConfigurationService.AddConfiguration.VolumeId))
+            {
+                ConfigurationService.AddConfiguration.VolumeId = GetPackageMetadata(addPackage, ".defaultVolumeId", null)?.ToString();
+            }
+
+            // Get flag to Disable Buffer (for Drivers that don't use the Buffer)
+            bufferDisabled = GetPackageMetadata(addPackage, ".bufferDisabled", false).ToBoolean();
+
+            if (!bufferDisabled)
+            {
+                // Load Default Buffer Settings
+                ConfigurationService.AddConfiguration.Buffer.Enabled = true;
+                ConfigurationService.AddConfiguration.Buffer.Interval = GetPackageMetadata(addPackage, ".bufferInterval", 5000).ToInt();
+                ConfigurationService.AddConfiguration.Buffer.RetryInterval = GetPackageMetadata(addPackage, ".bufferRetryInterval", 10000).ToInt();
+                ConfigurationService.AddConfiguration.Buffer.MaxItemsPerInterval = GetPackageMetadata(addPackage, ".bufferMaxItemsPerInterval", 5000).ToInt();
+                ConfigurationService.AddConfiguration.Buffer.QueuedItemLimit = GetPackageMetadata(addPackage, ".bufferQueuedItemLimit", 100000).ToInt();
+                ConfigurationService.AddConfiguration.Buffer.FileBuffer.Enabled = GetPackageMetadata(addPackage, ".fileBufferEnabled", false).ToBoolean();
+                ConfigurationService.AddConfiguration.Buffer.FileBuffer.ReadInterval = GetPackageMetadata(addPackage, ".fileBufferReadInterval", 5000).ToInt();
+                ConfigurationService.AddConfiguration.Buffer.FileBuffer.AcknowledgeSent = GetPackageMetadata(addPackage, ".bufferAcknowledgeSent", false).ToBoolean();
+            }
+            else
+            {
+                ConfigurationService.AddConfiguration.Buffer.Enabled = false;
+            }
+        }
+
+        stepIndex++;
+        loading = false;
+        loadingMessage = null;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task LoadConfigurationPackage(string packageId, string route)
+    {
+        if (!string.IsNullOrEmpty(packageId))
+        {
+            var configurationPackage = InstanceConfiguration.PackageManager.Get(packageId);
+            if (configurationPackage == null)
+            {
+                loading = true;
+                loadingMessage = "Loading Configuration App..";
+                await InvokeAsync(StateHasChanged);
+
+                // Install Package
+                if (!InstanceConfiguration.PackageManager.Packages.Any(o => o.Id == packageId))
+                {
+                    var packageBytes = await InstanceConfiguration.ManagementClient.Packages.DownloadLatest(packageId);
+                    await InstanceConfiguration.PackageManager.Install(packageBytes);
+                }
+
+                // Add App Configuration
+                var appConfigurations = InstanceConfiguration.ConfigurationGroup.ConfigurationProfile.Get<ITrakHoundAppConfiguration>(TrakHoundAppConfiguration.ConfigurationCategory);
+                var matchedConfiguration = appConfigurations?.FirstOrDefault(o => o.Route == route);
+                if (matchedConfiguration == null)
+                {
+                    var appConfiguration = new TrakHoundAppConfiguration();
+                    appConfiguration.Id = Guid.NewGuid().ToString();
+                    appConfiguration.RouterId = "default";
+                    appConfiguration.Route = route;
+                    appConfiguration.PackageId = packageId;
+                    appConfiguration.PackageVersion = "*";
+
+                    InstanceConfiguration.ConfigurationGroup.ConfigurationProfile.Add(appConfiguration, true);
+                }
+
+                await Task.Delay(1000); // Delay to let modules load
+            }
+        }
+    }
+
+
+    private async void ModalPreviousClicked()
+    {
+        stepIndex--;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void CancelClicked()
+    {
+        await Canceled.InvokeAsync();
+    }
+
+
+
+    private string GetPackageVersion()
+    {
+        if (addPackage != null)
+        {
+            return ConfigurationService.AddConfiguration.AutoUpdate ? TrakHound.Packages.TrakHoundPackage.WilcardVersion : addPackage.Version;
+        }
+
+        return null;
+    }
+
+    private object GetPackageMetadata(TrakHoundPackage package, string parameterKey, object defaultValue)
+    {
+        if (package != null && package.Metadata != null && !string.IsNullOrEmpty(parameterKey))
+        {
+            if (package.Metadata.ContainsKey(parameterKey))
+            {
+                return package.Metadata[parameterKey];
+            }
+        }
+
+        return defaultValue;
+    }
+
+    private string GetParameterValue(string key)
+    {
+        if (!string.IsNullOrEmpty(key))
+        {
+            return ConfigurationService.AddConfiguration.Parameters.GetValueOrDefault(key)?.ToString();
+        }
+
+        return null;
+    }
+
+    private string GetParameterInputId()
+    {
+        return Guid.NewGuid().ToString();
+    }
+
+    private string GetParameterInputName()
+    {
+        return Guid.NewGuid().ToString();
+    }
+
+    private void SetParameterValue(string key, string value)
+    {
+        if (!string.IsNullOrEmpty(key))
+        {
+            ConfigurationService.AddConfiguration.Parameters.Remove(key);
+
+            if (!string.IsNullOrEmpty(value))
+            {
+                ConfigurationService.AddConfiguration.Parameters.Add(key, value);
+            }
+        }
+    }
+
+    private void RemoveParameter(string key)
+    {
+        if (!string.IsNullOrEmpty(key))
+        {
+            ConfigurationService.AddConfiguration.Parameters.Remove(key);
+        }
+    }
+
+}

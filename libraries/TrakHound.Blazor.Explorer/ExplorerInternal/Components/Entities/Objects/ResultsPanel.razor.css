@@ -1,0 +1,107 @@
+﻿.results-panel {
+    height: 100%;
+    overflow: hidden;
+}
+
+    .results-panel .results-tabs-container {
+        height: 100%;
+        overflow: hidden;
+        padding-top: 5px;
+    }
+
+        .results-panel .results-tabs-container > ::deep .rz-tabview {
+            height: 100%;
+            overflow: hidden;
+        }
+
+            .results-panel .results-tabs-container > ::deep .rz-tabview > .rz-tabview-panels {
+                height: 100%;
+                overflow: hidden;
+            }
+
+                .results-panel .results-tabs-container > ::deep .rz-tabview > .rz-tabview-panels > .rz-tabview-panel {
+                    height: 100%;
+                    overflow: hidden;
+                    padding: 0px;
+                }
+
+
+            .results-panel .results-tabs-container > ::deep .rz-tabview > .rz-tabview-nav li {
+                padding: 3px 20px;
+                border-top: 1px solid #ddd;
+                border-right: 1px solid #ddd;
+                border-bottom: 0px;
+                border-radius: 0 5px 0 0;
+                text-align: center;
+            }
+
+            .results-panel .results-tabs-container > ::deep .rz-tabview > .rz-tabview-nav > li:hover {
+                border-top: 1px solid #ddd !important;
+                border-right: 1px solid #ddd !important;
+                border-bottom: 0px !important;
+                margin: 0;
+                padding: 3px 20px 2px !important;
+                background: #fafafa;
+            }
+
+            .results-panel .results-tabs-container > ::deep .rz-tabview > .rz-tabview-nav a {
+                padding: 0 !important;
+                min-width: 0 !important;
+                border: none;
+            }
+
+            .results-panel .results-tabs-container > ::deep .rz-tabview > .rz-tabview-nav > .rz-tabview-selected a::before {
+                padding: 0 !important;
+                min-width: 0 !important;
+                transition: none;
+            }
+
+        .results-panel .results-tabs-container ::deep .tab-header {
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .results-panel .results-tabs-container > ::deep .rz-tabview > .rz-tabview-nav > li:hover a {
+            background: none !important;
+        }
+
+        .results-panel .results-tabs-container ::deep .tab-header .tab-header-icon {
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        .results-panel .results-tabs-container ::deep .tab-header .tab-header-title {
+            font-size: 12px;
+        }
+
+        .results-panel .results-tabs-container > ::deep .rz-tabview > .rz-tabview-nav > li .tab-header-icon {
+            font-size: 11px;
+            line-height: 24px;
+            margin-right: 5px;
+        }
+
+        .results-panel .results-tabs-container > ::deep .rz-tabview > .rz-tabview-nav > li .tab-header-title {
+            font-size: 11px;
+        }
+
+        .results-panel .results-tabs-container > ::deep .rz-tabview > .rz-tabview-nav > .rz-tabview-selected .tab-header-title {
+            font-weight: bold;
+        }
+
+        .results-panel .results-tabs-container ::deep .rz-tabview li.rz-tabview-selected a .tab-header-icon {
+            color: var(--accent) !important;
+            font-weight: 600;
+        }
+
+        .results-panel .results-tabs-container ::deep .rz-tabview li.rz-tabview-selected a .tab-header-title {
+            color: var(--accent) !important;
+            font-weight: 600;
+        }
+
+        .results-panel .results-tabs-container ::deep .rz-tabview li:hover a .tab-header-icon {
+            color: var(--accentLight) !important;
+        }
+
+        .results-panel .results-tabs-container ::deep .rz-tabview li:hover a .tab-header-title {
+            color: var(--accentLight) !important;
+        }

@@ -1,0 +1,10 @@
+﻿{
+  "id": "TrakHound.Barcodes.Api",
+  "category": "api",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Api to generate 2D and 3D barcode images",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultRoute": "barcodes"
+  }
+}

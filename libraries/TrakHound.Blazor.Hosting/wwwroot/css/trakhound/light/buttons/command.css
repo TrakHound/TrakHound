@@ -1,0 +1,53 @@
+﻿.btn-command {
+    color: var(--textDark);
+    color: var(--accent);
+    font-size: 14px;
+    transition: none;
+}
+
+    .btn-command:hover {
+        color: var(--accent);
+        color: var(--accentLight);
+        border: 1px solid var(--borderLight);
+        transition: none;
+    }
+
+    .btn-command.active {
+        color: #fff !important;
+        background: var(--accent);
+        border: 1px solid transparent !important;
+        transition: none;
+    }
+
+    .btn-command.disabled {
+        color: #888 !important;
+        transition: none;
+    }
+
+    .btn-command .icon {
+        margin-right: 10px;
+        color: var(--textMild);
+        color: var(--accent);
+        font-size: 14px;
+        transition: none;
+    }
+
+    .btn-command:hover .icon {
+        color: var(--accent);
+        color: var(--accentLight);
+        transition: none;
+    }
+
+    .btn-command.active .icon {
+        color: #fff !important;
+        transition: none;
+    }
+
+    .btn-command.disabled .icon {
+        color: #aaa !important;
+        transition: none;
+    }
+
+    .btn-command.btn-sm {
+        font-size: 12px;
+    }

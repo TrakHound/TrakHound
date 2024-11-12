@@ -1,0 +1,336 @@
+﻿@page "/explorer/{serverId}/entities/objects"
+@rendermode InteractiveServer
+@inject ExplorerService _explorerService
+@inject NotificationService _notificationService
+@inject NavigationManager _navigationManager
+@using TrakHound.Entities.Collections
+@using TrakHound.Instances
+@using TrakHound.Routing
+
+@if (instancesService != null)
+{
+    <CascadingValue Value="this">
+        <CascadingValue Name="InstancesService" Value="@instancesService">
+            <div class="objects-panel">
+
+                <div class="objects-panel-container">
+                    <div class="query-panel">
+                        <RadzenSplitter Orientation="Orientation.Vertical">
+                            <RadzenSplitterPane Min="95px" Size="95px" Collapsible="false">
+                                <div class="objects-toolbar">
+                                    <ToolBar />
+                                </div>
+                            </RadzenSplitterPane>
+                            <RadzenSplitterPane Min="100px" Collapsible="false">
+                                <div class="objects-content">
+                                    <ResultsPanel />
+                                </div>
+                            </RadzenSplitterPane>
+                        </RadzenSplitter>
+                    </div>
+                </div>
+
+                <Modal Class="save-query-modal" Visible="@saveQueryModalVisible">
+                    <HeaderContent>
+                        <span class="modal-header-icon fa-solid fa-sharp fa-memo"></span>
+                        <span class="modal-header-title">Save Query</span>
+                    </HeaderContent>
+                    <BodyContent>
+                        <div class="form-field">
+                            <TextBox Title="Name" @bind-Value="@saveQueryName" />
+                        </div>
+                        <div class="form-field">
+                            <TextArea Title="Description" @bind-Value="@saveQueryDescription" />
+                        </div>
+                    </BodyContent>
+                    <FooterContent>
+
+                        @if (!saveQueryLoading)
+                        {
+                            <button class="btn btn-secondary" @onclick="ModalCancelClicked"><span class="icon fa-solid fa-sharp fa-xmark"></span>Cancel</button>
+                            <button class="btn btn-primary" @onclick="ModalSaveQueryClicked"><span class="icon fa-solid fa-sharp fa-floppy-disk"></span>Save</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary disabled"><span class="icon fa-solid fa-sharp fa-loader"></span>Saving..</button>
+                        }
+
+                    </FooterContent>
+                </Modal>
+
+                <Modal Class="delete-query-modal" Visible="@deleteQueryModalVisible">
+                    <HeaderContent>
+                        <span class="modal-header-icon fa-solid fa-sharp fa-memo"><span class="icon fa-solid fa-sharp fa-delete-right"></span></span>
+                        <span class="modal-header-title">Confirm Delete</span>
+                    </HeaderContent>
+                    <BodyContent>
+
+                        <span class="delete-modal-message">Confirm Deletion of Query?</span>
+                        <span class="delete-modal-item">@deleteQueryName</span>
+
+                    </BodyContent>
+                    <FooterContent>
+
+                        @if (!deleteLoading)
+                        {
+                            <button class="btn btn-secondary" @onclick="ModalCancelClicked"><span class="icon fa-solid fa-sharp fa-xmark"></span>Cancel</button>
+                            <button class="btn btn-danger" @onclick="ModalDeleteQueryClicked"><span class="icon fa-solid fa-sharp fa-trash"></span>Delete</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-danger disabled"><span class="icon fa-solid fa-sharp fa-loader"></span>Deleting..</button>
+                        }
+
+                    </FooterContent>
+                </Modal>
+
+            </div>
+        </CascadingValue>
+    </CascadingValue>
+}
+
+<RadzenNotification />
+
+@code {
+
+    private ExplorerObjectsService instancesService;
+    RadzenSplitterPane sidebarSplitterPane;
+    private SidebarTabs sidebarTabSelected = SidebarTabs.None;
+    private double sidebarTabSize = 350;
+
+    enum SidebarTabs
+    {
+        None = 0,
+        SavedQueries = 1
+    }
+
+    private bool isLoaded;
+    private bool loading;
+    private bool deleteLoading;
+
+    private string previousQuery;
+    private string previousQueryId;
+    private string previousExpression;
+
+    private QueryResponseInformation queryResponse;
+    private TrakHoundEntityCollection _collection;
+
+    private QueryExplorer.QueryInformation savedQuery;
+    private bool saveQueryModalVisible;
+    private string saveQueryName;
+    private string saveQueryDescription;
+    private bool saveQueryLoading;
+
+    private bool deleteQueryModalVisible;
+    private string deleteQueryName;
+    private bool deleteQueryLoading;
+
+    private bool deleteModalVisible;
+    private IEnumerable<string> deleteUuids;
+    private IEnumerable<string> deletePaths;
+
+    private TrakHoundInstanceInformation _server;
+    private ITrakHoundRouterInformation _router;
+    private string _selectedLoadingUuid;
+
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        _navigationManager.LocationChanged += LocationChanged;
+        _explorerService.Loaded += ExplorerLoaded;
+
+        await Load();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async void LocationChanged(object sender, LocationChangedEventArgs args)
+    {
+        await Load();
+    }
+
+    private async void ExplorerLoaded(object sender, EventArgs args)
+    {
+        await Load();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        var query = Url.GetQueryParameter(Explorer.Path, "query");
+
+        if (!isLoaded || forceReload || query != previousQuery)
+        {
+            isLoaded = true;
+            previousQuery = query;
+            loading = true;
+            queryResponse = null;
+
+
+            // Setup InstancesService (for Objects)
+            var client = Explorer.Instances.GetClient(_explorerService.SelectedInstanceId);
+            instancesService = new ExplorerObjectsService(client);
+            instancesService.QueryLoading += async (s, args) => await InvokeAsync(StateHasChanged);
+            instancesService.QueryLoaded += async (s, args) => await InvokeAsync(StateHasChanged);
+
+
+            // Set Explorer Breadcrumbs
+            var breadcrumbItems = new List<BreadcrumbItem>();
+            breadcrumbItems.Add(new BreadcrumbItem(_explorerService.SelectedInstanceId, null));
+            breadcrumbItems.Add(new BreadcrumbItem("Entities", Url.Combine(Explorer.BasePath, _explorerService.SelectedInstanceId, "entities")));
+            breadcrumbItems.Add(new BreadcrumbItem("Objects", null));
+            _explorerService.BreadcrumbItems = breadcrumbItems;
+
+
+
+            if (!string.IsNullOrEmpty(query))
+            {
+                instancesService.SetQuery(query);
+                await instancesService.LoadByQuery(forceReload);
+            }
+            else
+            {
+                instancesService.SetQuery("select >> from [/];");
+                await instancesService.LoadByQuery(forceReload);
+            }
+
+            loading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+
+    private async void SavedQuerySelected(object sender, QueryExplorer.QueryInformation queryInformation)
+    {
+        if (queryInformation != null)
+        {
+            saveQueryName = queryInformation.Name;
+            saveQueryDescription = queryInformation.Description;
+        }
+    }
+
+    private async void SaveQueryClicked(object sender, string query)
+    {
+        // Query = query;
+        // saveQueryModalVisible = true;
+        // await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ModalSaveQueryClicked()
+    {
+        // saveQueryLoading = true;
+        // await InvokeAsync(StateHasChanged);
+
+        // if (!string.IsNullOrEmpty(Query) && !string.IsNullOrEmpty(saveQueryName))
+        // {
+        //     var parameters = new Dictionary<string, string>();
+        //     parameters.Add("name", saveQueryName);
+        //     if (!string.IsNullOrEmpty(saveQueryDescription)) parameters.Add("description", saveQueryDescription);
+
+        //     var client = _explorerService.GetClient(ServerId, RouterId);
+        //     if (client != null)
+        //     {
+        //         var response = await client.Api.Publish("queries", System.Text.Encoding.UTF8.GetBytes(Query), queryParameters: parameters);
+        //         if (response.Success)
+        //         {
+        //             await instancesService.LoadSavedQueries();
+
+        //             var savedId = System.Text.Encoding.UTF8.GetString(response.Content);
+        //             instancesService.SetQueryId(savedId);
+
+        //             _notificationService.Notify(NotificationSeverity.Info, "Query Saved", savedId);
+        //         }
+        //         else
+        //         {
+        //             _notificationService.Notify(NotificationSeverity.Error, "Error Saving Query");
+        //         }
+        //     }
+        // }
+
+        // saveQueryLoading = false;
+        // saveQueryModalVisible = false;
+        // await InvokeAsync(StateHasChanged);
+    }
+
+
+    private async void DeleteQueryClicked(string queryId)
+    {
+        deleteQueryName = queryId; // Should be Name?
+        deleteQueryModalVisible = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ModalDeleteQueryClicked()
+    {
+        // deleteQueryLoading = true;
+        // await InvokeAsync(StateHasChanged);
+
+        // if (!string.IsNullOrEmpty(deleteQueryName))
+        // {
+        //     var client = _explorerService.GetClient(ServerId, RouterId);
+        //     if (client != null)
+        //     {
+        //         var response = await client.Api.Delete($"queries/{deleteQueryName}");
+        //         if (response.Success)
+        //         {
+        //             await instancesService.LoadSavedQueries();
+
+        //             _notificationService.Notify(NotificationSeverity.Info, "Query Deleted", deleteQueryName);
+        //         }
+        //         else
+        //         {
+        //             _notificationService.Notify(NotificationSeverity.Error, "Error Deleting Query");
+        //         }
+        //     }
+        // }
+
+        // deleteQueryLoading = false;
+        // deleteQueryModalVisible = false;
+        // await InvokeAsync(StateHasChanged);
+    }
+
+
+    private async void ModalCancelClicked()
+    {
+        //addModalVisible = false;
+        deleteModalVisible = false;
+        saveQueryModalVisible = false;
+        deleteQueryModalVisible = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    private async void NavigationTabSelected()
+    {
+        if (sidebarTabSelected != SidebarTabs.SavedQueries) sidebarTabSelected = SidebarTabs.SavedQueries;
+        else sidebarTabSelected = SidebarTabs.None;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string GetTabActiveClass(SidebarTabs sidebarTabs)
+    {
+        if (sidebarTabSelected == sidebarTabs) return "active";
+        return null;
+    }
+
+    private string GetTabDisplayClass(SidebarTabs sidebarTabs)
+    {
+        if (sidebarTabSelected != sidebarTabs) return "d-none";
+        return null;
+    }
+
+    private void SplitterResized(RadzenSplitterResizeEventArgs args)
+    {
+        if (args.PaneIndex == 0)
+        {
+            sidebarTabSize = args.NewSize;
+        }
+    }
+
+}

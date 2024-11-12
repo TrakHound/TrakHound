@@ -1,0 +1,10 @@
+﻿{
+  "id": "TrakHound.Entities.Clipboard.Api",
+  "category": "api",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Copy, Cut, and Paste TrakHound Entities",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultRoute": "entities/clipboard"
+  }
+}

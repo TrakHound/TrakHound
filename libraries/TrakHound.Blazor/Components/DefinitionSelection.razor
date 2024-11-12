@@ -1,0 +1,43 @@
+﻿@using TrakHound.Clients
+@using TrakHound.Entities
+
+<div class="definition-selection">
+    <RadzenAutoComplete Value=@Pattern ValueChanged="ValueChanged" Data=@autoComplete TextProperty="Id" LoadData=@OnLoadData FilterDelay="@AutocompleteDelay" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive">
+    
+    </RadzenAutoComplete>
+</div>
+
+@code {
+
+    private IEnumerable<ITrakHoundDefinitionEntity> autoComplete;
+
+
+    [Parameter]
+    public ITrakHoundClient Client { get; set; }
+
+    [Parameter]
+    public string Pattern { get; set; }
+
+    [Parameter]
+    public EventCallback<string> PatternChanged { get; set; }
+
+    [Parameter]
+    public int AutocompleteDelay { get; set; } = 250;
+
+
+    private async Task OnLoadData(LoadDataArgs args)
+    {
+        if (Client != null && !string.IsNullOrEmpty(args.Filter))
+        {
+            autoComplete = await Client.System.Entities.Definitions.Query($"*{args.Filter}*");
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void ValueChanged(string value)
+    {
+        Pattern = value;
+        await PatternChanged.InvokeAsync(value);
+    }
+
+}

@@ -1,0 +1,50 @@
+﻿@inject ExplorerService explorerService
+@using TrakHound.Requests
+
+@if (Definition != null && !Definition.Descriptions.IsNullOrEmpty())
+{
+    <div class="definition-description">
+        <table>
+            <thead>
+                <tr>
+                    <th>Language</th>
+                    <th>Description</th>
+                    <th>Source UUID</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var description in Definition.Descriptions)
+                {
+                    var sourceLink = Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, $"entities/sources?uuid={description.SourceUuid}");
+
+                    <tr>
+                        <td class="language-cell">@description.LanguageCode</td>
+                        <td class="description-cell">@description.Text</td>
+                        <td class="source-cell"><CopyLabel Value="@description.SourceUuid" Link="@sourceLink" CopyClicked="CopyClicked" /></td>
+                        <td class="created-cell">@description.Created.ToLocalTime()</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+    [Parameter]
+    public TrakHoundDefinition Definition { get; set; }
+
+
+    private async void CopyClicked(string value)
+    {
+        // ObjectExplorerService.NotificationService.AddNotification(NotificationType.Information, "Copied to Clipboard", value, duration: 2500);
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

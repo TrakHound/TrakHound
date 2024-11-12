@@ -1,0 +1,212 @@
+.explorer {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.explorer-container {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+/* Explorer Navigation Sidebar */
+.explorer-navigation-sidebar {
+    grid-column: 1;
+    border-right: 1px solid #ddd;
+}
+
+    .explorer-navigation-sidebar .btn {
+        border-radius: 0;
+        width: 40px;
+        height: 36px;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+
+        .explorer-navigation-sidebar .btn .icon {
+            margin-right: 0;
+            font-size: 16px;
+        }
+
+
+/* Main content container */
+.explorer-content {
+    grid-column: 2;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+/* Explorer Treeview Sidebar */
+.explorer-sidebar {
+    min-width: 175px;
+    border-right: 1px solid #f0f0f0;
+    border-right: 1px solid #ddd;
+    height: 100%;
+    overflow: hidden;
+    padding-top: 5px;
+}
+
+.explorer-sidebar-content {
+    display: grid;
+    grid-template-rows: max-content max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.explorer-sidebar-header {
+    grid-row: 1;
+    border-bottom: 1px solid #eee;
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+}
+
+.explorer-sidebar-header-container {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    padding: 3px 20px;
+}
+
+.explorer-sidebar-header-icon {
+    grid-column: 1;
+    width: 45px;
+}
+
+    .explorer-sidebar-header-icon .icon {
+        font-size: 22px;
+        margin-right: 20px;
+        color: var(--accent);
+    }
+
+.explorer-sidebar-header-text {
+    grid-column: 2;
+}
+
+    .explorer-sidebar-header-text .title {
+        display: block;
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 18px;
+    }
+
+    .explorer-sidebar-header-text .subtitle {
+        display: block;
+        font-size: 12px;
+        line-height: 18px;
+        color: #888;
+    }
+
+.explorer-sidebar-toolbar {
+    grid-row: 2;
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-flow: column;
+    border-bottom: 1px solid #eee;
+    padding-top: 2px;
+    padding-left: 2px;
+    padding-bottom: 2px;
+}
+
+    .explorer-sidebar-toolbar .btn {
+        padding: 3px 8px !important;
+        min-width: 0px !important;
+        /*margin-right: 4px;*/
+        /*border: 1px solid #ddd;*/
+    }
+
+    .explorer-sidebar-toolbar .btn:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+        .explorer-sidebar-toolbar .btn .icon {
+            margin-right: 0 !important;
+            font-size: 13px !important;
+        }
+
+.explorer-sidebar-tree {
+    grid-row: 3;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    animation: fadein 0.25s;
+}
+
+
+/* Main Content Panel */
+.explorer-main {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+    border-left: 1px solid #ddd;
+}
+
+
+.explorer-breadcrumbs {
+    grid-row: 1;
+    padding: 5px 10px 5px;
+    border-bottom: 1px solid #ddd;
+}
+
+.explorer-body {
+    grid-row: 2;
+    height: 100%;
+    overflow: hidden;
+    background: #e9ecef;
+}
+
+
+.explorer-page ::deep .add-modal .modal-body {
+    padding: 20px 50px 0;
+}
+
+.explorer-page ::deep .add-modal .form-field {
+    display: block;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+    .explorer-page ::deep .add-modal .form-field label {
+        display: block;
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .explorer-page ::deep .add-modal .form-field .rz-textbox {
+        display: block;
+        width: 100%;
+    }
+
+
+.explorer-content {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
+.explorer-clipboard {
+    overflow: hidden;
+    overflow-y: auto;
+    height: 100%;
+    border-left: 1px solid #ddd;
+    padding-top: 10px;
+}
+
+
+
+.explorer-page ::deep .rz-splitter {
+    height: 100%;
+    overflow: hidden;
+}
+
+.explorer-page ::deep .rz-splitter-pane {
+    height: 100%;
+    overflow: hidden;
+}

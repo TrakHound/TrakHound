@@ -1,0 +1,221 @@
+﻿@using TrakHound.Entities;
+@using TrakHound.Requests;
+
+@if (ObjectExplorerService != null && Object != null)
+{
+    var objectLink = $"explorer/{ObjectExplorerService.InstanceId}/{ObjectExplorerService.RouterId}/entities/objects?uuid={Object.GetAbsolutePath()}";
+
+    var resultQuery = $"select > from [{Object.GetAbsolutePath()}];";
+    var queryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultQuery}";
+
+    <div class="vocabulary-content">
+        <div class="input-panel">
+            <div class="input-panel-container">
+                <div class="input-panel-buttons">
+
+                    @if (!publishLoading)
+                    {
+                        <button class="btn btn-sm btn-primary btn-save" @onclick="Save"><span class="icon fa-solid fa-sharp fa-paper-plane"></span>Publish</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-primary btn-save disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Publishing..</button>
+                    }
+
+                    @if (!loading)
+                    {
+                        <button class="btn btn-sm btn-light btn-refresh" @onclick="() => Load(true)"><span class="icon fa-solid fa-sharp fa-rotate"></span></button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-light btn-refresh disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span></button>
+                    }
+
+                </div>
+                <div class="input-panel-input">
+                    <DefinitionSelection @bind-Pattern="@value" Client="@ObjectExplorerService.GetClient()" />
+                </div>
+                <div class="input-panel-input">
+                    <button class="btn btn-sm btn-light" @onclick="NewDefinitionClicked"><span class="icon fa-solid fa-sharp fa-plus"></span>New..</button>
+                </div>
+            </div>
+        </div>
+        <div class="query-panel">
+            <div class="query-panel-container">
+                <span class="query-label">Query</span>
+                <a href="@queryLink" class="btn btn-link btn-query">@resultQuery</a>
+            </div>
+        </div>
+        <div class="content-panel">
+            <div class="content-panel-container">
+
+                @if (!loading)
+                {
+                    <div class="value-panel">
+                        <span class="value-type">@valueType</span>
+                        <span class="value-definition">@valueDefinitionId</span>
+                        <span class="value-description">@valueDescription</span>
+                    </div>
+
+                    @if (entity != null)
+                    {
+                        var sourceLink = $"explorer/{ObjectExplorerService.InstanceId}/{ObjectExplorerService.RouterId}/entities/sources?uuid={entity.SourceUuid}";
+
+                        <div class="information-panel">
+                            <table class="information-table table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <td class="key">Uuid</td>
+                                        <td class="value">@entity.Uuid</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="key">Object</td>
+                                        <td class="value"><CopyLabel Value="@Object.GetAbsolutePath()" Link="@objectLink" CopyClicked="CopyClicked" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="key">SourceUuid</td>
+                                        <td class="value"><CopyLabel Value="@entity.SourceUuid" Link="@sourceLink" CopyClicked="CopyClicked" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="key">Created (Local)</td>
+                                        <td class="value">@entity.Created.ToLocalDateTime()</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="key">Created (Unix ns)</td>
+                                        <td class="value">@entity.Created</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <Loading Message="Loading.." />
+                }
+
+            </div>
+        </div>
+
+        <ObjectExplorerAddDefinitionModal @bind-Visible="@definitionModalVisible" Created="NewDefinitionCreated" />
+
+    </div>
+}
+
+@code {
+
+    private ITrakHoundObjectVocabularyEntity entity;
+    private string value;
+    private string valueType;
+    private string valueDefinitionId;
+    private string valueDescription;
+    private bool loading;
+    private bool publishLoading;
+    private string previousObjectUuid;
+
+    private bool definitionModalVisible;
+
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public ITrakHoundObjectEntity Object { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || (ObjectExplorerService != null && Object != null && Object.Uuid != previousObjectUuid))
+        {
+            previousObjectUuid = Object.Uuid;
+            loading = true;
+            await InvokeAsync(StateHasChanged);
+
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                entity = await client.System.Entities.Objects.Vocabulary.QueryByObjectUuid(Object.Uuid);
+                value = ObjectExplorerService.GetValue(Object.Uuid);
+
+                if (entity != null)
+                {
+                    var definition = await client.System.Entities.Definitions.ReadByUuid(entity.DefinitionUuid);
+                    if (definition != null)
+                    {
+                        value = definition.Id;
+                        valueType = definition.Type;
+
+                        var definitionDescription = (await client.System.Entities.Definitions.Description.QueryByDefinitionUuid(entity.DefinitionUuid))?.FirstOrDefault(o => o.LanguageCode == "en");
+                        if (definitionDescription != null)
+                        {
+                            valueDescription = definitionDescription.Text;
+                        }
+                    }
+                }
+            }
+        }
+
+        loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Save()
+    {
+        publishLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(value))
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                if (await client.Entities.PublishVocabulary(Object.GetAbsolutePath(), value, false))
+                {
+                    entity = await client.System.Entities.Objects.Vocabulary.QueryByObjectUuid(Object.Uuid);
+
+                    ObjectExplorerService.LoadContent(Object);
+                    ObjectExplorerService.UpdateValue(Object.Uuid);
+
+                    ObjectExplorerService.AddNotification(NotificationType.Information, "Vocabulary Published Successfully", Object.GetAbsolutePath());
+                }
+                else
+                {
+                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Vocabulary");
+                }
+            }
+        }
+
+        publishLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void CopyClicked(string value)
+    {
+        ObjectExplorerService.AddNotification(NotificationType.Information, "Copied to Clipboard", duration: 5000);
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void NewDefinitionClicked()
+    {
+        definitionModalVisible = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void NewDefinitionCreated(TrakHoundDefinition definition)
+    {
+        value = definition.Id;
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

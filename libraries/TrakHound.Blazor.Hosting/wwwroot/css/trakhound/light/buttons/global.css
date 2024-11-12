@@ -1,0 +1,37 @@
+﻿@import url('back.css');
+@import url('command.css');
+@import url('control.css');
+@import url('delete.css');
+@import url('disabled.css');
+@import url('light.css');
+@import url('link.css');
+@import url('nav-item.css');
+@import url('primary.css');
+@import url('remove.css');
+@import url('secondary.css');
+@import url('select.css');
+@import url('tab.css');
+@import url('toolbar.css');
+@import url('touch.css');
+
+.btn {
+    border-radius: 3px;
+}
+
+    .btn .icon {
+        margin-right: 0.8em;
+    }
+
+    .btn .icon.right {
+        margin-left: 0.8em;
+        margin-right: 0;
+    }
+
+        .btn .icon.icon-only {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+    .btn .badge {
+        margin-left: 10px;
+    }

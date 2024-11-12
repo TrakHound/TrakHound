@@ -1,0 +1,276 @@
+﻿.tool-bar {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: max-content 200px 1fr;
+    grid-row-gap: 5px;
+    padding: 5px 0 0px;
+    height: 100%;
+    border-right: 1px solid #ddd;
+}
+
+.tool-bar-buttons-left {
+    grid-row: 1;
+    grid-column: 1;
+    padding-top: 1px;
+    padding-left: 10px;
+    padding-right: 15px;
+}
+
+    .tool-bar-buttons-left .btn {
+        display: inline-block;
+        padding: 3px 8px 2px;
+        font-size: 12px;
+        border-radius: 2px;
+        margin-right: 0px;
+    }
+
+    .tool-bar-buttons-left .btn .icon {
+        margin-right: 0;
+    }
+
+    .tool-bar-buttons-left .btn-query {
+        min-width: 90px;
+        padding: 3px 10px 2px;
+    }
+
+    .tool-bar-buttons-left .btn-query .icon {
+        margin-right: 8px;
+        display: inline-block;
+    }
+
+        .tool-bar-buttons-left .btn-query .icon ::deep .loader {
+            padding-top: 3px;
+            height: 14px;
+            width: 24px;
+        }
+
+        .tool-bar-buttons-left .btn-query .icon ::deep .loader > div {
+            background: white;
+            width: 2.5px;
+            margin-left: 1px;
+        }
+
+        .tool-bar-buttons-left .btn-query.btn-secondary .icon-container {
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .tool-bar-buttons-left .btn-query.btn-secondary .icon {
+            animation: spin 1s linear infinite;
+            margin-right: 0;
+        }
+
+
+.tool-bar-type {
+    grid-row: 1;
+    grid-column: 2;
+    padding-right: 10px;
+}
+
+    .tool-bar-type ::deep .rz-dropdown {
+        height: 27px !important;
+        width: 150px;
+        padding: 3px 10px;
+    }
+
+    .tool-bar-type ::deep .rz-dropdown:hover {
+        cursor: pointer;
+    }
+
+    .tool-bar-type ::deep .rz-dropdown-label {
+        font-size: 12px;
+        line-height: 20px;
+    }
+
+    .tool-bar-type ::deep .rz-dropdown-trigger {
+        height: 27px !important
+    }
+
+    .tool-bar-type ::deep .rz-dropdown-trigger-icon {
+        height: 27px !important;
+        width: 20px !important;
+        line-height: 24px !important;
+        padding: 0;
+        font-size: 18px;
+    }
+
+.tool-bar-response {
+    grid-row: 1;
+    grid-column: 2;
+    padding-top: 6px;
+    padding-right: 10px;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+    color: var(--accent);
+    color: #aaa;
+    font-size: 12px;
+}
+
+.response-duration {
+    font-size: 13px;
+}
+
+.response-count {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.response-label {
+    font-size: 11px;
+}
+
+.response-duration-value {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+
+.tool-bar-buttons-right {
+    grid-row: 1;
+    grid-column: 4;
+    padding-top: 1px;
+    padding-left: 10px;
+    padding-right: 5px;
+    text-align: right;
+}
+
+    .tool-bar-buttons-right .btn {
+        display: inline-block;
+        padding: 3px 8px 2px;
+        font-size: 12px;
+        border-radius: 2px;
+        margin-right: 5px;
+    }
+
+.tool-bar-input {
+    grid-row: 2;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    height: 100%;
+    overflow: hidden;
+    /*padding-bottom: 10px;*/
+    border-bottom: 1px solid #ddd;
+}
+
+    .tool-bar-input ::deep .text-area {
+        height: 100%;
+        margin: 0 !important;
+    }
+
+    .tool-bar-input ::deep .text-area div {
+        height: 100%;
+    }
+
+    .tool-bar-input ::deep textarea {
+        width: 100%;
+        height: 100%;
+        font-size: 14px !important;
+        font-family: Consolas;
+        line-height: 20px;
+        min-height: 36px;
+        padding: 10px 15px;
+        resize: none;
+        border: 1px solid transparent;
+        border-radius: 0;
+/*        background: var(--accent);
+        color: white;*/
+background: #fafafa;
+        /*font-weight: 600;*/
+    }
+
+        .tool-bar-input ::deep textarea:focus {
+            border: 1px solid var(--accentLight);
+            background: #fff;
+        }
+
+        .tool-bar-query-input {
+            border-top: 1px solid #ddd;
+            height: 100%;
+            /*padding-top: 5px;*/
+        }
+
+.tool-bar-expression-input {
+    height: 100%;
+    padding: 0 10px 8px;
+}
+
+.tool-bar-uuid-input {
+    padding: 0 10px;
+}
+
+.filter-bar {
+    margin-bottom: 15px;
+    display: grid;
+    grid-template-columns: max-content max-content max-content max-content 1fr max-content max-content;
+    padding-left: 123px;
+    padding-right: 20px;
+}
+
+.search-type {
+    grid-column: 2;
+}
+
+.query-type {
+    grid-column: 3;
+    padding-left: 20px;
+}
+
+.subscribe-container {
+    grid-column: 4;
+    padding-left: 20px;
+}
+
+.timestamps-container {
+    grid-column: 4;
+}
+
+.timestamp-container {
+    display: inline-block;
+}
+
+    .timestamp-container label {
+        font-size: 14px;
+        padding-left: 20px;
+        padding-right: 6px;
+    }
+
+    .timestamp-container ::deep .rz-calendar input {
+        font-size: 15px;
+        padding: 0 20px;
+        height: 33px;
+        max-width: 175px;
+    }
+
+    .timestamp-container ::deep .rz-calendar-button .rz-button-icon-left {
+        color: var(--accent);
+        font-size: 20px;
+    }
+
+    .timestamp-container ::deep .rz-calendar-button:hover .rz-button-icon-left {
+        color: var(--accentLight);
+    }
+
+.results {
+    grid-column: 6;
+    display: inline-block;
+}
+
+    .results .results-label {
+        font-size: 13px;
+        line-height: 35px;
+        color: var(--accent);
+    }
+
+.paging {
+    grid-column: 7;
+    display: inline-block;
+    padding-left: 20px;
+}
+
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}

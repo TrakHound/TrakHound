@@ -1,0 +1,151 @@
+﻿@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using TrakHound.Entities
+
+<div class="server-tree-view">
+    
+    @if (ObjectExplorerService != null)
+    {
+        var objects = ObjectExplorerService.GetTargetObjects();
+        if (!objects.IsNullOrEmpty())
+        {
+            var comparer = new TrakHoundObjectComparer();
+            var namespaces = objects.Select(o => o.Namespace).Distinct();
+
+            <TrakHound.Blazor.Components.TreeView SelectedId="@ObjectExplorerService.SelectedObjectUuid">
+                <CascadingValue Value="this">
+
+                    @foreach (var ns in namespaces)
+                    {
+                        var namespaceId = $"NAMESPACE:{ns}";
+                        var namespaceObjects = objects.Where(o => o.Namespace == ns);
+                        var directoryObjects = namespaceObjects.Where(o => o.ContentType == TrakHoundObjectContentTypes.Directory)?.OrderBy(o => o.Name, comparer).ToList();
+                        var contentObjects = namespaceObjects.Where(o => o.ContentType != TrakHoundObjectContentTypes.Directory)?.OrderBy(o => o.Name, comparer).ToList();
+
+                        var isExpanded = ObjectExplorerService.GetNamespaceExpanded(namespaceId);
+
+                        <TrakHound.Blazor.Components.TreeItem Id="@namespaceId" Title="@ns" Icon="fa-solid fa-sharp fa-globe" IsExpandable="true" IsExpanded="@isExpanded" Expanded="ExpandNamespace" Collapsed="CollapseNamespace">
+                            <ChildContent>
+
+                                @if (!contentObjects.IsNullOrEmpty())
+                                {
+                                    if (namespaceObjects.Count() > OverscanCount)
+                                    {
+                                        <Virtualize TItem="ITrakHoundObjectEntity" Items="contentObjects" Context="model" OverscanCount="@OverscanCount">
+                                            <ObjectExplorerTreeItem IsRoot="true" Object="@model" />
+                                        </Virtualize>
+                                    }
+                                    else
+                                    {
+                                        foreach (var model in contentObjects)
+                                        {
+                                            <ObjectExplorerTreeItem IsRoot="true" Object="@model" />
+                                        }
+                                    }
+                                }
+
+                                @if (!directoryObjects.IsNullOrEmpty())
+                                {
+                                    if (namespaceObjects.Count() > OverscanCount)
+                                    {
+                                        <Virtualize TItem="ITrakHoundObjectEntity" Items="directoryObjects" Context="model" OverscanCount="@OverscanCount">
+                                            <ObjectExplorerTreeItem IsRoot="true" Object="@model" />
+                                        </Virtualize>
+                                    }
+                                    else
+                                    {
+                                        foreach (var model in directoryObjects)
+                                        {
+                                            <ObjectExplorerTreeItem IsRoot="true" Object="@model" />
+                                        }
+                                    }
+                                }
+
+                            </ChildContent>
+                            <ContextMenu>
+                                <ContextMenuItem Text="Query" Clicked="() => QueryNamespace(ns)" />
+                                <ContextMenuSeparator />
+                                <ContextMenuItem Text="Paste" Clicked="() => PasteNamespace(ns)" />
+                                <ContextMenuSeparator />
+                                <ContextMenuItem Text="Add Object.." Clicked="() => AddNamespaceObject(ns)" />
+                            </ContextMenu>
+                        </TrakHound.Blazor.Components.TreeItem>
+                    }
+
+                </CascadingValue>
+            </TrakHound.Blazor.Components.TreeView>
+        }
+    }
+
+</div>
+
+@code {
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public int OverscanCount { get; set; } = 100;
+
+
+    protected override void OnInitialized()
+    {
+        ObjectExplorerService.NamespaceExpanded += NamespaceExpanded;
+        ObjectExplorerService.NamespaceCollapsed += NamespaceCollapsed;
+    }
+
+    private void QueryNamespace(string ns)
+    {
+        var resultQuery = $"select >> from [{ns}:/]";
+        var queryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultQuery}";
+
+        navigationManager.NavigateTo(queryLink);
+    }
+
+    private async void PasteNamespace(string ns)
+    {
+        var path = $"{ns}:/";
+        if (await ObjectExplorerService.Paste(path))
+        {
+            ObjectExplorerService.AddNotification(NotificationType.Information, "Objects Pasted Successfuly", path);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void AddNamespaceObject(string ns)
+    {
+        ObjectExplorerService.AddService.AddObject($"{ns}:/");
+    }
+
+    private async void NamespaceExpanded(object sender, string ns)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ExpandNamespace(string ns)
+    {
+        var isExpanded = ObjectExplorerService.GetNamespaceExpanded(ns);
+        if (!isExpanded)
+        {
+            ObjectExplorerService.ExpandNamespace(ns);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void NamespaceCollapsed(object sender, string ns)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void CollapseNamespace(string ns)
+    {
+        var isExpanded = ObjectExplorerService.GetNamespaceExpanded(ns);
+        if (isExpanded)
+        {
+            ObjectExplorerService.CollapseNamespace(ns);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

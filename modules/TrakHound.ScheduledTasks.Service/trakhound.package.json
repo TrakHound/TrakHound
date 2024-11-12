@@ -1,0 +1,12 @@
+﻿{
+  "id": "TrakHound.ScheduledTasks.Service",
+  "category": "service",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Schedule Functions to run at a schedule using a CRON pattern",
+    "repository": "https://github.com/TrakHound/TrakHound",
+    "repositoryDirectory": "modules/TrakHound.ScheduledTasks.Service",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultVolumeId": "trakhound.scheduled-tasks"
+  }
+}

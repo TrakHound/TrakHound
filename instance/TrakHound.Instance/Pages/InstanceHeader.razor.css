@@ -1,0 +1,190 @@
+﻿.instance-header {
+    grid-row: 1;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    background-color: #004890;
+    background: linear-gradient(180deg, #2464a8 0%, #1b4b7e 100%);
+/*    background: linear-gradient(180deg, var(--accentDark) 0%, var(--accentVeryDark) 100%);
+    background: linear-gradient(180deg, var(--accent) 0%, var(--accentDark) 100%);*/
+/*    background: linear-gradient(180deg, var(--accentDark) 0%, var(--accent) 100%);
+    background: linear-gradient(180deg, var(--accentVeryDark) 0%, var(--accentDark) 100%);
+    background: linear-gradient(180deg, var(--accentVeryVeryDark) 0%, var(--accentVeryDark) 100%);*/
+    height: 51px;
+    z-index: 0;
+}
+
+    .instance-header .gloss-back {
+        background: linear-gradient(180deg, var(--background-color-light) 0%, var(--header-background-color) 70%);
+        position: absolute;
+        width: 100%;
+        height: 51px;
+        top: 0;
+        z-index: 1;
+        opacity: 0.7;
+    }
+
+    .instance-header .gloss-front {
+        background: linear-gradient(90deg, var(--background-color-light) 0%, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0) 70%, var(--background-color-light) 100%);
+        position: absolute;
+        width: 100%;
+        height: 51px;
+        top: 0;
+        z-index: 2;
+        opacity: 0.75;
+    }
+
+    .instance-header .instance-header-container {
+        display: grid;
+        grid-template-columns: max-content max-content max-content max-content max-content 1fr max-content;
+        z-index: 3;
+    }
+
+
+    .instance-header .instance-header-logo-container {
+        grid-column: 1;
+        z-index: 5;
+        padding: 10px 15px;
+        border-right: 1px solid var(--accentDark);
+    }
+
+    .instance-header .instance-header-logo {
+        height: 26px;
+    }
+
+    .instance-header .instance-header-title-container {
+        grid-column: 2;
+        text-align: center;
+        line-height: 48px;
+        color: #fff;
+        z-index: 7;
+        padding-left: 15px;
+        padding-right: 30px;
+        border-right: 1px solid var(--accentDark);
+    }
+
+    .instance-header .instance-header-title {
+        font-size: 24px;
+        font-weight: 500;
+        font-family: Roboto;
+    }
+
+    .instance-header .instance-header-information-container {
+        grid-column: 3;
+        text-align: left;
+        color: var(--accentVeryLight);
+        z-index: 7;
+        padding-top: 9px;
+        padding-left: 20px;
+        padding-right: 30px;
+        border-right: 1px solid var(--accentDark);
+    }
+
+        .instance-header .instance-header-information-container span {
+            display: block;
+            font-size: 11px;
+            line-height: 14px;
+        }
+
+    .instance-header .instance-header-application-container {
+        grid-column: 4;
+        text-align: left;
+        color: var(--accentVeryLight);
+        z-index: 7;
+        padding-top: 9px;
+        padding-left: 20px;
+        padding-right: 30px;
+        border-right: 1px solid var(--accentDark);
+    }
+
+        .instance-header .instance-header-application-container span {
+            display: block;
+            font-size: 11px;
+            line-height: 14px;
+        }
+
+    .instance-header .instance-header-status-container {
+        grid-column: 5;
+        text-align: left;
+        color: var(--accentVeryLight);
+        z-index: 7;
+        padding-top: 9px;
+        padding-left: 20px;
+        padding-right: 30px;
+        border-right: 1px solid var(--accentDark);
+    }
+
+        .instance-header .instance-header-status-container span {
+            display: block;
+            font-size: 11px;
+            line-height: 14px;
+        }
+
+        .instance-header .instance-header-status-container .instance-header-status {
+            display: block;
+            font-size: 11px;
+            line-height: 14px;
+        }
+
+        .instance-header .instance-header-status-container .instance-header-status-icon {
+            display: inline-block;
+            font-size: 11px;
+            line-height: 11px;
+            margin-right: 6px;
+        }
+
+    .instance-header .instance-header-buttons {
+        display: grid;
+        grid-auto-columns: max-content;
+        grid-auto-flow: column;
+        grid-column: 7;
+        z-index: 7;
+        height: 100%;
+    }
+
+        .instance-header .instance-header-buttons .btn {
+            display: block;
+            height: 100%;
+            border: none;
+            border-radius: 0;
+            transition: none;
+            padding: 0px 20px;
+            color: #fff;
+            font-size: 14px;
+            line-height: 48px;
+            vertical-align: middle;
+            border-left: 1px solid var(--accentDark);
+            margin: 0;
+        }
+
+            .instance-header .instance-header-buttons .btn:hover {
+                background: var(--accent);
+            }
+
+            .instance-header .instance-header-buttons .btn:focus {
+                outline: none;
+                box-shadow: none;
+            }
+
+        .instance-header .instance-header-buttons .btn-settings .icon {
+            color: #fff;
+            font-size: 20px;
+            line-height: 48px;
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+        .instance-header .instance-header-buttons .btn-logout {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+            .instance-header .instance-header-buttons .btn-logout .icon {
+                color: #fff;
+                font-size: 18px;
+                line-height: 18px;
+                margin-right: 0;
+                margin-left: 15px;
+            }
+
+            .instance-header .instance-header-buttons .btn-logout:hover .icon {
+                color: #fff;
+            }

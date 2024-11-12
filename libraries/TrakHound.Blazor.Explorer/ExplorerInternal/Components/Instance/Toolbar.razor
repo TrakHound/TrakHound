@@ -1,0 +1,94 @@
+﻿@implements IDisposable
+@rendermode InteractiveServer
+@inject ExplorerService explorerService
+@using TrakHound.Instances
+
+@if (InstanceInformation != null)
+{
+    var startDisabled = InstanceInformation.Status == TrakHound.Instances.TrakHoundInstanceStatus.Stopped ? "" : "disabled";
+    var startLabel = InstanceInformation.Status == TrakHound.Instances.TrakHoundInstanceStatus.Starting ? "Starting.." : "Start";
+    var startIcon = InstanceInformation.Status == TrakHound.Instances.TrakHoundInstanceStatus.Starting ? "fa-solid fa-sharp fa-loader spin" : "fa-solid fa-sharp fa-play";
+
+    var stopDisabled = InstanceInformation.Status == TrakHound.Instances.TrakHoundInstanceStatus.Started ? "" : "disabled";
+    var stopLabel = InstanceInformation.Status == TrakHound.Instances.TrakHoundInstanceStatus.Stopping ? "Stopping.." : "Stop";
+    var stopIcon = InstanceInformation.Status == TrakHound.Instances.TrakHoundInstanceStatus.Stopping ? "fa-solid fa-sharp fa-loader spin" : "fa-solid fa-sharp fa-stop";
+    
+    
+    var lastUpdatedAgo = DateTime.UtcNow - InstanceInformation.LastUpdated;
+
+    <div class="toolbar-panel">
+        <div class="toolbar-buttons-container">
+            <button class="btn btn-light btn-start @startDisabled" @onclick="StartClicked"><span class="icon @startIcon"></span>@startLabel</button>
+            <button class="btn btn-light btn-stop @stopDisabled" @onclick="StopClicked"><span class="icon @stopIcon"></span>@stopLabel</button>
+        </div>
+        <div class="toolbar-status-container">
+            <label class="toolbar-status">@InstanceInformation.Status</label>
+            <label class="toolbar-status-timer">@lastUpdatedAgo.ToFormattedString()<span class="toolbar-status-timestamp">@InstanceInformation.LastUpdated.ToLocalTime()</span></label>
+        </div>
+    </div>
+}
+
+@code {
+
+    private System.Timers.Timer updateTimer;
+
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+    [Parameter]
+    public TrakHoundInstanceInformation InstanceInformation { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        updateTimer = new System.Timers.Timer();
+        updateTimer.Interval = 500;
+        updateTimer.Elapsed += UpdateTimerElapsed;
+        updateTimer.Start();
+    }
+
+    void IDisposable.Dispose()
+    {
+        try
+        {
+            if (updateTimer != null) updateTimer.Dispose();
+        }
+        catch { }
+    }
+
+    private async void UpdateTimerElapsed(object sender, System.Timers.ElapsedEventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    private async void StartClicked()
+    {
+        var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+        if (client != null)
+        {
+            InstanceInformation.Status = TrakHoundInstanceStatus.Starting;
+            await InvokeAsync(StateHasChanged);
+
+            await Task.Delay(50);
+
+            await client.System.Instances.Start(explorerService.SelectedInstanceId);
+        }
+    }
+
+    private async void StopClicked()
+    {
+        var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+        if (client != null)
+        {
+            InstanceInformation.Status = TrakHoundInstanceStatus.Stopping;
+            await InvokeAsync(StateHasChanged);
+
+            await Task.Delay(50);
+
+            await client.System.Instances.Stop(explorerService.SelectedInstanceId);
+        }
+    }
+
+}

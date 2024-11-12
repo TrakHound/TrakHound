@@ -1,0 +1,258 @@
+﻿@page "/explorer/{instanceId}/apps/{appId}"
+@inject ExplorerService explorerService
+@inject NavigationManager navigationManager
+@using TrakHound.Apps
+
+@if (appInformation != null)
+{
+    <div class="app-page">
+
+        <div class="header-panel">
+            <div class="header-content">
+                <div class="header-icon-container">
+                    <span class="header-icon fa-solid fa-sharp fa-browsers"></span>
+                </div>
+                <div class="header-description-container">
+                    <span class="header-title">App</span>
+                    <span class="header-id">@appInformation.Route</span>
+                    <span class="header-description">@appInformation.Id</span>
+                </div>
+                <div class="header-package-icon-container">
+
+                    @if (!string.IsNullOrEmpty(appInformation.PackageIcon))
+                    {
+                        <img class="header-package-icon" src="@appInformation.PackageIcon" />
+                    }
+                    else
+                    {
+                        <span class="header-package-icon fa-solid fa-sharp fa-box"></span>
+                    }
+
+                </div>
+                <div class="header-package-container">
+                    <span class="header-title">Package</span>
+                    <span class="header-package">@appInformation.PackageId</span>
+                    <span class="header-version">@appInformation.PackageVersion</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="information-panel">
+            <div>
+                <table class="table table-sm">
+                    <tbody>
+                        <tr>
+                            <td class="label">ID</td>
+                            <td class="value">@appInformation.Id</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Package ID</td>
+                            <td class="value">@appInformation.PackageId</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Package Version</td>
+                            <td class="value">@appInformation.PackageVersion</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Package Build Date</td>
+                            <td class="value">@appInformation.PackageBuildDate.ToLocalTime()</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Package Hash</td>
+                            <td class="value">@appInformation.PackageHash</td>
+                        </tr>
+                        <tr>
+                            <td class="label">TrakHound Version</td>
+                            <td class="value">@appInformation.TrakHoundVersion</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            @if (appInformation.Repository != null)
+            {
+                <div>
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <td class="label">Repository</td>
+                                <td class="value"><a href="@appInformation.Repository" target="_blank">@appInformation.Repository</a></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Repository Branch</td>
+                                <td class="value"><a href="@GetRepositoryBranchLink(appInformation)" target="_blank">@appInformation.RepositoryBranch</a></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Repository Directory</td>
+                                <td class="value"><a href="@GetRepositoryDirectoryLink(appInformation)" target="_blank">@appInformation.RepositoryDirectory</a></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Repository Commit</td>
+                                <td class="value"><a href="@GetRepositoryCommitLink(appInformation)" target="_blank">@appInformation.RepositoryCommit</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+        </div>
+
+        @if (!appInformation.Pages.IsNullOrEmpty())
+        {
+            <div class="pages-panel">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th>Route</th>
+                            <th>Description</th>
+                            <th>ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var pageInformation in appInformation.Pages.OrderBy(o => o.Route))
+                        {
+                            var viewLink = GetViewLink(pageInformation);
+                            var navigateLink = GetNavigateLink(appInformation, pageInformation);
+
+                            <tr>
+                                <td class="buttons view"><a href="@viewLink" class="btn btn-sm btn-link"><span class="icon fa-regular fa-sharp fa-circle-info"></span>View</a></td>
+                                <td class="buttons navigate"><a href="@navigateLink" target="_blank" class="btn btn-sm btn-link"><span class="icon fa-regular fa-sharp fa-link"></span>Navigate</a></td>
+                                <td class="route">@pageInformation.Route</td>
+                                <td class="description">@pageInformation.Description</td>
+                                <td class="id">@pageInformation.Id</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(appInformation.PackageReadMe))
+        {
+            <div class="readme-panel">
+                <MarkdownContent Markdown="@appInformation.PackageReadMe" />
+            </div>
+        }
+
+    </div>
+}
+
+@code {
+
+    private TrakHoundAppInformation appInformation;
+    private string previousAppId;
+    private string previewLink;
+
+
+    [Parameter]
+    public string InstanceId { get; set; }
+
+    [Parameter]
+    public string AppId { get; set; }
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        var route = "{instanceId}/apps/{appId}";
+
+        InstanceId = explorerService.SelectedInstanceId;
+        AppId = Url.GetRouteParameter(Explorer.Path, route, "appId");
+
+        if (AppId != previousAppId)
+        {
+            previousAppId = AppId;
+
+            await explorerService.LoadInstance(Explorer.Instances, explorerService.SelectedInstanceId);
+
+            previewLink = null;
+
+            var informations = explorerService.GetApps(InstanceId);
+            if (!informations.IsNullOrEmpty())
+            {
+                var server = explorerService.GetServer(InstanceId);
+                if (server != null)
+                {
+                    appInformation = informations.FirstOrDefault(o => o.Id == AppId);
+                    if (appInformation != null)
+                    {
+                        var baseUrl = navigationManager.BaseUri;
+                        previewLink = Url.Combine(baseUrl, appInformation.Route);
+
+                        // var httpInterface = server.GetInterface("HTTP");
+                        // if (httpInterface != null)
+                        // {
+                        //     var baseUrl = httpInterface.GetBaseUrl();
+                        //     previewLink = Url.Combine(baseUrl, appInformation.Route);
+                        // }
+
+                        var breadcrumbItems = new List<BreadcrumbItem>();
+                        breadcrumbItems.Add(new BreadcrumbItem(explorerService.SelectedInstanceId, null));
+                        breadcrumbItems.Add(new BreadcrumbItem("Apps", Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "apps")));
+                        breadcrumbItems.Add(new BreadcrumbItem(appInformation.Route, null));
+                        explorerService.BreadcrumbItems = breadcrumbItems;
+                    }
+                }
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private string GetViewLink(TrakHoundAppPageInformation pageInformation)
+    {
+        if (pageInformation != null)
+        {
+            return Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "apps", AppId, "pages", pageInformation.Id);
+        }
+
+        return null;
+    }
+
+    private string GetNavigateLink(TrakHoundAppInformation app, TrakHoundAppPageInformation pageInformation)
+    {
+        if (app != null)
+        {
+            return Url.Combine(app.Route, pageInformation.Route);
+        }
+
+        return null;
+    }
+
+    private static string GetRepositoryBranchLink(TrakHoundAppInformation information)
+    {
+        var baseUrl = information.Repository;
+        var branch = information.RepositoryBranch;
+
+        return Url.Combine(baseUrl, "tree", branch); // May need to revise this as this might only be valid for GitHub
+    }
+
+    private static string GetRepositoryDirectoryLink(TrakHoundAppInformation information)
+    {
+        var baseUrl = information.Repository;
+        var branch = information.RepositoryBranch;
+        var directory = information.RepositoryDirectory;
+
+        return Url.Combine(baseUrl, "tree", branch, directory); // May need to revise this as this might only be valid for GitHub
+    }
+
+    private static string GetRepositoryCommitLink(TrakHoundAppInformation information)
+    {
+        var baseUrl = information.Repository;
+        var commit = information.RepositoryCommit;
+
+        return Url.Combine(baseUrl, "commit", commit); // May need to revise this as this might only be valid for GitHub
+    }
+
+}

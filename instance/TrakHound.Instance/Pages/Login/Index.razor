@@ -1,0 +1,214 @@
+﻿@page "/_admin/login"
+@inherits TrakHoundComponentBase
+@inject NavigationManager navigationManager
+@inject ITrakHoundInstance instance
+@inject Services.AdminAuthenticationService authenticationService
+@inject TrakHound.Blazor.Services.JavascriptService javascript
+@using TrakHound.Instances
+@using TrakHound.Instance.Services
+@using TrakHound.Blazor.Components
+
+<TrakHoundPageTitle>Login - TrakHound Instance</TrakHoundPageTitle>
+
+<div class="login-container">
+
+    @if (!loading)
+    {
+        <div class="login-panel">
+            <div class="login-top-panel">
+                <div class="title-container">
+                    <div class="title-logo-container">
+                        <img class="title-logo" src="@GetLocation("img/trakhound-logo-v5-03-text.svg")" />
+                    </div>
+                    <div class="title-label-container">
+                        <span class="title-label">Sign in as Instance Admin</span>
+                    </div>
+                </div>
+                <div class="connection-container">
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <td class="label">Instance ID</td>
+                                <td class="value">@instance.Id</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Instance Version</td>
+                                <td class="value">@instance.Version</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Hostname</td>
+                                <td class="value">@instance.Information?.GetInterface("HTTP").Address</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="input-container">
+
+                    <TextBox InputElementId="@usernameInputId" Class="username-input" @bind-Value="@username" Title="Username" InputType="text" InputName="trakhound-instance-admin-username" Submitted="UsernameSumitted" SpellCheck="false" Size="Size.Large" />
+
+                    <PasswordBox InputElementId="@passwordInputId" Class="password-input" @bind-Value="@password" Title="Password" InputName="trakhound-instance-admin-password" Submitted="PasswordSumitted" Size="Size.Large" />
+
+                    @if (authenticationService.IsSetup())
+                    {
+                        <button class="btn-login btn btn-primary" @onclick="Submit">Sign In<span class="icon fa-solid fa-sharp fa-right-to-bracket"></span></button>
+                    }
+                    else
+                    {
+                        <button class="btn-login btn btn-primary" @onclick="Submit">Setup<span class="icon fa-solid fa-sharp fa-check"></span></button>
+                    }
+
+                </div>
+            </div>
+        </div>
+        <div class="footer-container">
+            <div class="company-panel">
+                <div class="company-container">
+                    <div class="company-logo-container">
+                        <img class="company-logo-image" src="@GetLocation("img/trakhound-logo-v5-01-footer.svg")" />
+                        <img class="company-logo-image-dark" src="@GetLocation("img/trakhound-logo-v5-01-footer-dark.svg")" />
+                    </div>
+                    <div class="company-information-container">
+                        <span class="company-information-name footer-label">TrakHound Inc.</span>
+                        <span class="company-information-website footer-label"><a href="http://www.trakhound.com" target="_blank">www.trakhound.com</a></span>
+                    </div>
+                </div>
+            </div>
+            <div class="contact-panel">
+                <div class="contact-email-panel">
+                    <span class="contact-information-email footer-label"><a href="mailto:info@trakhound.com">info@trakhound.com</a></span>
+                </div>
+                <div class="contact-social-panel">
+                    <a href="https://github.com/TrakHound" target="_blank" class="social-link footer-label"><span class="fa-brands fa-github"></span></a>
+                    <a href="https://www.linkedin.com/company/trakhound" target="_blank" class="social-link footer-label"><span class="fa-brands fa-linkedin"></span></a>
+                    <a href="https://twitter.com/TrakHound" target="_blank" class="social-link footer-label"><span class="fa-brands fa-twitter"></span></a>
+                </div>
+            </div>
+            <div class="copyright-panel">
+                <span class="copyright footer-label">Copyright (c) 2024 TrakHound Inc., All Rights Reserved.</span>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="loading-container">
+            <div class="loading-logo-container">
+                <img class="loading-logo" src="@GetLocation("img/trakhound-logo-v5-03-text-login.svg")" />
+            </div>
+            <Loading Message="Logging in.." />
+        </div>
+    }
+
+</div>
+
+@code {
+
+    private readonly string usernameInputId = Guid.NewGuid().ToString();
+    private readonly string passwordInputId = Guid.NewGuid().ToString();
+    private string username;
+    private string password;
+    private bool loading;
+    private string message;
+
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string LinkId { get; set; }
+
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await javascript.FocusElement(usernameInputId);
+    }
+
+
+    private async void UsernameSumitted()
+    {
+        if (!string.IsNullOrEmpty(username))
+        {
+            if (!string.IsNullOrEmpty(password))
+            {
+                await Submit();
+            }
+            else
+            {
+                await javascript.FocusElement(passwordInputId);
+            }
+        }
+    }
+
+    private async void PasswordSumitted()
+    {
+        if (!string.IsNullOrEmpty(password))
+        {
+            if (!string.IsNullOrEmpty(username))
+            {
+                await Submit();
+            }
+            else
+            {
+                await javascript.FocusElement(usernameInputId);
+            }
+        }
+    }
+
+
+    private async Task Submit()
+    {
+        loading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (authenticationService.IsSetup())
+        {
+            var result = await authenticationService.Login(username, password);
+            if (result.Success)
+            {
+                NavigateOnLogin();
+            }
+            else
+            {
+                // Show Login Error
+                message = result.Message;
+
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        else
+        {
+            var result = await authenticationService.Setup(username, password);
+            if (result.Success)
+            {
+                NavigateOnLogin();
+            }
+            else
+            {
+                // Show Login Error
+                message = result.Message;
+
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+    }
+
+    private void NavigateOnLogin()
+    {
+        if (!string.IsNullOrEmpty(LinkId))
+        {
+            var link = LinkStore.Get(LinkId);
+            if (!string.IsNullOrEmpty(link))
+            {
+                navigationManager.NavigateTo(link);
+            }
+            else
+            {
+                navigationManager.NavigateTo("_admin/explorer");
+            }
+        }
+        else
+        {
+            navigationManager.NavigateTo("_admin/explorer");
+        }
+    }
+
+}

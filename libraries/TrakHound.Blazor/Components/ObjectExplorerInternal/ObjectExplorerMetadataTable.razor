@@ -1,0 +1,56 @@
+﻿@using TrakHound.Entities
+
+@if (Object != null)
+{
+    var metadataEntities = ObjectExplorerService.GetObjectMetadata(Object.Uuid);
+    if (!metadataEntities.IsNullOrEmpty())
+    {
+        var oMetadataEntities = metadataEntities.OrderBy(o => o.Name);
+
+        <table class="metadata-table table table-sm">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Value</th>
+                    <th>Value Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var metadata in oMetadataEntities)
+                {
+                    var description = ObjectExplorerService.GetDefinitionDescription(metadata.DefinitionUuid);
+                    var valueDescription = ObjectExplorerService.GetDefinitionDescription(metadata.ValueDefinitionUuid);
+
+                    <tr>
+                        <td class="name">@metadata.Name</td>
+                        <td class="description">@description?.Text</td>
+                        <td class="value">@metadata.Value</td>
+                        <td class="value-description">@valueDescription?.Text</td>
+                        <td class="delete"><button class="btn btn-remove" @onclick="() => DeleteClicked(metadata.EntityUuid, metadata.Name)"><span class="icon fa-solid fa-sharp fa-minus"></span></button></td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    }
+}
+
+@code {
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public ITrakHoundObjectEntity Object { get; set; }
+
+
+    private async void DeleteClicked(string entityUuid, string name)
+    {
+        await ObjectExplorerService.DeleteMetadata(entityUuid, name);
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

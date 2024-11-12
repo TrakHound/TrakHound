@@ -1,0 +1,190 @@
+﻿@using TrakHound.Entities
+@using TrakHound.Requests
+@inject TrakHound.Blazor.Services.JavascriptService javascript
+
+@if (ObjectExplorerService != null)
+{
+    var label = ObjectExplorerService.AddService.IsEdit ? "Edit" : "Add";
+
+    @if (!definitionModalVisible)
+    {
+        <div class="add-modal-panel">
+
+            <Modal Class="add-modal" Visible="@ObjectExplorerService.AddService.ModalVisible">
+                <HeaderContent>
+                    <span class="modal-header-icon fa-solid fa-sharp fa-square-plus"></span>
+                    <span class="modal-header-title">@label Object</span>
+                </HeaderContent>
+                <BodyContent>
+
+                    @if (!ObjectExplorerService.AddService.ModalLoading)
+                    {
+                        if (!ObjectExplorerService.AddService.IsEdit)
+                        {
+                            <RadzenTabs RenderMode="TabRenderMode.Server" SelectedIndexChanged="TabChanged">
+                                <Tabs>
+                                    <RadzenTabsItem Text="Basic">
+                                        <div class="form-field">
+                                            <label>Path</label>
+                                            <TextBox InputElementId="@addInputId" Value=@pathInput ValueChanged="PathUpdated" />
+                                            <span class="path-output">@pathOutput</span>
+                                        </div>
+                                        <div class="form-field">
+                                            <label>Content Type</label>
+                                            <RadzenDropDown @bind-Value=@ObjectExplorerService.AddService.Data.ContentType Data="@contentTypes" />
+                                        </div>
+                                        <div class="form-field">
+                                            <label>Definition</label>
+                                            <DefinitionSelection Client="@ObjectExplorerService.GetClient()" @bind-Pattern=@ObjectExplorerService.AddService.Data.DefinitionId />
+                                            <button class="btn btn-sm btn-light" @onclick=NewDefinitionClicked><span class="icon fa-solid fa-sharp fa-plus"></span>New Definition</button>
+                                        </div>
+                                    </RadzenTabsItem>
+                                    <RadzenTabsItem Text="JSON">
+                                        <div class="form-field">
+                                            <label>Path</label>
+                                            <TextBox Value=@pathInput ValueChanged="PathUpdated" />
+                                            <span class="path-output">@pathOutput</span>
+                                        </div>
+                                        <div class="form-field">
+                                            <TextArea ElementId="import-json-text-area" @bind-Value=@ObjectExplorerService.AddService.Data.ImportJson />
+                                        </div>
+                                    </RadzenTabsItem>
+                                </Tabs>
+                            </RadzenTabs>
+                        }
+                        else
+                        {
+                            <div class="edit-container">
+                                <div class="form-field">
+                                    <label>Path</label>
+                                    <TextBox Enabled="false" @bind-Value=@ObjectExplorerService.AddService.Data.Path />
+                                </div>
+                                <div class="form-field">
+                                    <label>Content Type</label>
+                                    <RadzenDropDown @bind-Value=@ObjectExplorerService.AddService.Data.ContentType Data="@contentTypes" />
+                                </div>
+                                <div class="form-field">
+                                    <label>Definition ID</label>
+                                    <DefinitionSelection Client="@ObjectExplorerService.GetClient()" @bind-Pattern=@ObjectExplorerService.AddService.Data.DefinitionId />
+                                    <button class="btn btn-sm btn-light" @onclick=NewDefinitionClicked><span class="icon fa-solid fa-sharp fa-plus"></span>New Definition</button>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="loading-panel">
+                            <ArraySpinner />
+                        </div>
+                    }
+
+                </BodyContent>
+                <FooterContent>
+
+                    @if (!ObjectExplorerService.AddService.ModalLoading)
+                    {
+                        <button class="btn btn-secondary" @onclick="ObjectExplorerService.AddService.ModalCancel"><span class="icon fa-solid fa-sharp fa-xmark"></span>Cancel</button>
+                        <button class="btn btn-primary" @onclick="ObjectExplorerService.AddService.ModalConfirm"><span class="icon fa-solid fa-sharp fa-plus"></span>@label</button>
+                    }
+                    else
+                    {
+                        var loadingLabel = ObjectExplorerService.AddService.IsEdit ? "Applying Edit.." : "Adding...";
+                        <button class="btn btn-primary disabled"><span class="icon fa-solid fa-sharp fa-loader"></span>@loadingLabel</button>
+                    }
+
+                </FooterContent>
+            </Modal>
+
+        </div>
+    }
+    else
+    {
+        <ObjectExplorerAddDefinitionModal @bind-Visible="@definitionModalVisible" Created="NewDefinitionCreated" />
+    }
+}
+
+@code {
+
+    private readonly string addInputId = Guid.NewGuid().ToString();
+    private bool addFirstRender;
+
+    private string pathInput;
+    private string pathOutput;
+
+    private IEnumerable<string> contentTypes = Enum.GetValues<TrakHoundObjectContentType>().Select(o => o.ToString());
+    private bool definitionModalVisible;
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+
+    protected override void OnParametersSet()
+    {
+        if (ObjectExplorerService != null && ObjectExplorerService.AddService != null)
+        {
+            pathInput = ObjectExplorerService.AddService.Data.Path;
+            pathOutput = ObjectExplorerService.AddService.Data.Path;
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (ObjectExplorerService != null && ObjectExplorerService.AddService != null)
+        {
+            if (ObjectExplorerService.AddService.ModalVisible)
+            {
+                if (addFirstRender)
+                {
+                    addFirstRender = false;
+
+                    //Console.WriteLine("ObjectExplorerAddModal.OnAfterRenderAsync()");
+
+                    // pathInput = ObjectExplorerService.AddService.Data.Path;
+                    // pathOutput = ObjectExplorerService.AddService.Data.Path;
+
+                    await javascript.FocusElement(addInputId);
+                }
+            }
+            else
+            {
+                addFirstRender = true;
+            }
+        }
+    }
+
+    private void TabChanged(int tabIndex)
+    {
+        switch (tabIndex)
+        {
+            case 1: ObjectExplorerService.AddService.SetMode(ObjectExplorerAddService.AddMode.Json); break;
+            case 2: ObjectExplorerService.AddService.SetMode(ObjectExplorerAddService.AddMode.Advanced); break;
+            default: ObjectExplorerService.AddService.SetMode(ObjectExplorerAddService.AddMode.Basic); break;
+        }
+    }
+
+    private async void PathUpdated(string value)
+    {
+        pathInput = value;
+
+        var ns = TrakHoundPath.GetNamespace(value);
+        if (string.IsNullOrEmpty(ns)) ns = TrakHoundNamespace.DefaultNamespace;
+        var partialPath = TrakHoundPath.GetPartialPath(value);
+        pathOutput = TrakHoundPath.SetNamespace(ns, partialPath);
+
+        ObjectExplorerService.AddService.Data.Path = pathOutput;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void NewDefinitionClicked()
+    {
+        definitionModalVisible = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void NewDefinitionCreated(TrakHoundDefinition definition)
+    {
+        ObjectExplorerService.AddService.Data.DefinitionId = definition.Id;
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

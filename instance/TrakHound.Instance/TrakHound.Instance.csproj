@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<ApplicationIcon>__TemplateIcon.ico</ApplicationIcon>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Remove="nlog.config" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="nlog.config">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.1" />
+		<PackageReference Include="NLog.Web.AspNetCore" Version="5.3.14" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\libraries\TrakHound.Blazor.Explorer\TrakHound.Blazor.Explorer.csproj" />
+		<ProjectReference Include="..\..\libraries\TrakHound.Blazor.Hosting\TrakHound.Blazor.Hosting.csproj" />
+		<ProjectReference Include="..\..\libraries\TrakHound.Blazor.Instance\TrakHound.Blazor.Instance.csproj" />
+		<ProjectReference Include="..\..\libraries\TrakHound.Blazor\TrakHound.Blazor.csproj" />
+		<ProjectReference Include="..\TrakHound.Instances\TrakHound.Instances.csproj" />
+	</ItemGroup>
+
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<RemoveDir Directories="wwwroot/_packages" />
+	</Target>
+
+</Project>

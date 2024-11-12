@@ -1,0 +1,68 @@
+﻿@if (ConfigurationService != null)
+{
+    if (!ConfigurationService.TableItems.IsNullOrEmpty())
+    {
+        <div class="table-panel">
+            <RadzenDataGrid Data="@ConfigurationService.TableItems" TItem="ConfigurationService.TableItem" Density="Density.Compact" AllowSorting="true" AllowColumnResize="true">
+                <Columns>
+                    <RadzenDataGridColumn TItem="ConfigurationService.TableItem" CssClass="edit" Width="80px" Sortable="false">
+                        <Template Context="context">
+                            <button class="btn btn-sm btn-link" @onclick="(o) => TableEditClicked(context)"><span class="icon fa-regular fa-sharp fa-pen-to-square"></span>Edit</button>
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="ConfigurationService.TableItem" Property="Id" Title="ID" CssClass="id" Width="275px" />
+                    <RadzenDataGridColumn TItem="ConfigurationService.TableItem" Property="Name" Title="Name" CssClass="name" Width="200px" />
+                    @* <RadzenDataGridColumn TItem="ConfigurationService.TableItem" Property="Description" Title="Description" CssClass="description" /> *@
+                    <RadzenDataGridColumn TItem="ConfigurationService.TableItem" Property="PackageId" Title="Package ID" CssClass="package-id" Width="300px" />
+                    <RadzenDataGridColumn TItem="ConfigurationService.TableItem" Property="PackageVersion" Title="Package Version" CssClass="package-version" Width="150px" />
+                    <RadzenDataGridColumn TItem="ConfigurationService.TableItem" />
+                    <RadzenDataGridColumn TItem="ConfigurationService.TableItem" CssClass="buttons" Width="110px" Sortable="false">
+                        <Template Context="context">
+                            <button class="btn btn-sm btn-command btn-remove" @onclick="(o) => TableRemoveClicked(context)"><span class="icon fa-regular fa-sharp fa-delete-right"></span>Remove</button>
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        </div>
+    }
+}
+
+
+@code {
+
+    [CascadingParameter(Name = "InstanceConfiguration")]
+    public InstanceConfiguration InstanceConfiguration { get; set; }
+
+    [CascadingParameter(Name = "ConfigurationService")]
+    public ConfigurationService ConfigurationService { get; set; }
+
+    [Parameter]
+    public EventCallback<string> EditClicked { get; set; }
+
+    [Parameter]
+    public EventCallback<string> RemoveClicked { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        ConfigurationService.Load();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void RefreshClicked()
+    {
+        ConfigurationService.Load();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void TableEditClicked(ConfigurationService.TableItem tableItem)
+    {
+        await EditClicked.InvokeAsync(tableItem.Id);
+    }
+
+    private async void TableRemoveClicked(ConfigurationService.TableItem tableItem)
+    {
+        await RemoveClicked.InvokeAsync(tableItem.Id);
+    }
+
+}

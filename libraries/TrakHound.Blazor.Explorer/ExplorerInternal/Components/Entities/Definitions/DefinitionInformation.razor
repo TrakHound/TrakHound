@@ -1,0 +1,62 @@
+﻿@inject ExplorerService explorerService
+@using TrakHound.Requests
+
+@if (Definition != null)
+{
+    var definitionLink = Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, $"entities/definitions?uuid={Definition.Uuid}");
+    var definitionParentLink = Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, $"entities/definitions?uuid={Definition.ParentUuid}");
+    var sourceLink = Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, $"entities/sources?uuid={Definition.SourceUuid}");
+
+    <div class="definition-information">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="label">UUID</td>
+                    <td class="value"><CopyLabel Value="@Definition.Uuid" Link="@definitionLink" CopyClicked="CopyClicked" /></td>
+                </tr>
+                <tr>
+                    <td class="label">ID</td>
+                    <td class="value"><CopyLabel Value="@Definition.Id" CopyClicked="CopyClicked" /></td>
+                </tr>
+                <tr>
+                    <td class="label">Type</td>
+                    <td class="value"><CopyLabel Value="@Definition.Type" CopyClicked="CopyClicked" /></td>
+                </tr>
+
+                @if (!string.IsNullOrEmpty(Definition.ParentUuid))
+                {
+                    <tr>
+                        <td class="label">Parent UUID</td>
+                        <td class="value"><CopyLabel Value="@Definition.ParentUuid" Link="@definitionParentLink" CopyClicked="CopyClicked" /></td>
+                    </tr>
+                }
+
+                <tr>
+                    <td class="label">Source UUID</td>
+                    <td class="value"><CopyLabel Value="@Definition.SourceUuid" Link="@sourceLink" CopyClicked="CopyClicked" /></td>
+                </tr>
+                <tr>
+                    <td class="label">Created</td>
+                    <td class="value">@Definition.Created.ToLocalTime()</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+    [Parameter]
+    public TrakHoundDefinition Definition { get; set; }
+
+
+    private async void CopyClicked(string value)
+    {
+        // ObjectExplorerService.NotificationService.AddNotification(NotificationType.Information, "Copied to Clipboard", value, duration: 2500);
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

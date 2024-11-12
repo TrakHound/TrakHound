@@ -1,0 +1,18 @@
+﻿{
+  "id": "TrakHound.Http.Drivers",
+  "category": "driver",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Drivers for HTTP to communicate with other TrakHound Instances for use in the TrakHound Framework",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".name": "http",
+    ".configurationParameters": "hostname,port,path,useSsl",
+    ".bufferInterval": 1000,
+    ".bufferRetryInterval": 1000,
+    ".bufferMaxItemsPerInterval": 1000,
+    ".bufferQueuedItemLimit": 100000,
+    ".fileBufferEnabled": true,
+    ".fileBufferReadInterval": 0,
+    ".bufferAcknowledgeSent": false
+  }
+}

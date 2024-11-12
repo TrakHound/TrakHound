@@ -1,0 +1,218 @@
+.run-panel {
+    display: grid;
+    grid-template-rows: max-content max-content 1fr;
+    grid-row-gap: 10px;
+    padding: 10px 20px 0;
+    height: 100%;
+    overflow: hidden;
+    background: #fff;
+}
+
+.header-panel {
+    grid-row: 1;
+}
+
+.status-panel {
+    grid-row: 2;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 10px 40px;
+}
+
+.status-panel-container {
+    display: grid;
+    grid-template-columns: max-content max-content max-content 1fr;
+    grid-column-gap: 30px;
+}
+
+.status-icon-container {
+    grid-column: 1;
+    padding-top: 5px;
+}
+
+.status-icon {
+    font-size: 22px;
+}
+
+.status-panel.completed .status-icon {
+    color: var(--accent);
+}
+
+.status-panel.started .status-icon,
+.status-panel.running .status-icon {
+    color: var(--colorGreen);
+}
+
+.status-panel.wait .status-icon {
+    color: var(--colorOrange);
+}
+
+.status-panel.stopped .status-icon,
+.status-panel.error .status-icon {
+    color: var(--colorRed);
+}
+
+.status-description-container {
+    grid-column: 2;
+    border-right: 1px solid #eee;
+    padding-right: 60px;
+}
+
+.status-type {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.status-description {
+    display: block;
+    font-size: 12px;
+    color: #888;
+}
+
+.status-metrics-container {
+    grid-column: 3;
+}
+
+.status-ago {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+    .status-ago .icon {
+        font-size: 12px;
+        color: #aaa;
+        margin-right: 12px;
+    }
+
+.status-duration {
+    display: block;
+    font-size: 12px;
+    color: #333;
+}
+
+    .status-duration .icon {
+        font-size: 12px;
+        color: #aaa;
+        margin-right: 12px;
+    }
+
+
+.information-panel {
+    grid-row: 3;
+}
+
+    .information-panel .table {
+        background: #fafafa;
+        border: 1px solid #ddd;
+    }
+
+        .information-panel .table td {
+            font-size: 12px;
+            padding: 5px 15px;
+        }
+
+            .information-panel .table td.label {
+                width: 175px;
+                font-weight: bold;
+                border-right: 1px solid #ddd;
+            }
+
+            .information-panel .table td.value {
+                background: #fff;
+                border-bottom-color: #ddd;
+            }
+
+
+.tab-panel {
+    grid-row: 3;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .tab-panel ::deep .rz-tabview {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .tab-panel ::deep .rz-tabview-panels {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .tab-panel ::deep .rz-tabview-panel {
+        height: 100%;
+        overflow: hidden;
+        padding: 0;
+        padding-top: 10px;
+    }
+
+.log-panel {
+    height: 100%;
+    overflow: hidden;
+}
+
+    .log-panel ::deep .rz-data-grid {
+        height: 100%;
+        overflow: auto;
+    }
+
+        .log-panel ::deep .rz-data-grid th {
+            padding: 0;
+            background: #f8f8f8;
+        }
+
+            .log-panel ::deep .rz-data-grid th > div {
+                padding: 8px 10px;
+            }
+
+        .log-panel ::deep .rz-data-grid .rz-column-title {
+            padding: 0;
+        }
+
+        .log-panel ::deep .rz-data-grid .rz-column-title-content {
+            padding: 0;
+            font-size: 12px;
+            font-family: inherit;
+            line-height: normal;
+            letter-spacing: normal;
+        }
+
+        .log-panel ::deep .rz-data-grid td {
+            padding: 3px 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+            .log-panel ::deep .rz-data-grid td .rz-cell-data {
+                padding: 0;
+                font-size: 12px;
+            }
+
+
+.output-parameters .table {
+    background: #fafafa;
+    border: 1px solid #ddd;
+    width: 100%;
+}
+
+    .output-parameters .table th {
+        font-size: 14px;
+        padding: 8px 20px;
+        background: #f4f4f4;
+        border-bottom: 1px solid #ddd !important;
+    }
+
+    .output-parameters .table td {
+        font-size: 13px;
+        padding: 8px 20px;
+        background: #fafafa;
+    }
+
+        .output-parameters .table td.key {
+            font-weight: bold;
+            border-right: 1px solid #ddd;
+        }

@@ -1,0 +1,115 @@
+﻿@implements IDisposable
+@inject ExplorerService explorerService
+@using TrakHound.Instances
+
+@if (instanceInformation != null)
+{
+    <div class="instance-page">
+        <div class="header-panel">
+            <Header InstanceInformation="@instanceInformation" />
+        </div>
+        <div class="toolbar-panel">
+            <Toolbar InstanceInformation="@instanceInformation" />
+        </div>
+        <div class="tab-panel">
+            <RadzenTabs>
+                <Tabs>
+                    <RadzenTabsItem Text="Information">
+                        <div class="information-panel">
+                            <Information InstanceInformation="@instanceInformation" />
+                        </div>
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Log">
+                        <div class="log-panel">
+                            <Log InstanceInformation="@instanceInformation" />
+                        </div>
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Buffers">
+                        <div class="buffers-panel">
+                            <Buffers InstanceInformation="@instanceInformation" />
+                        </div>
+                    </RadzenTabsItem>
+                </Tabs>
+            </RadzenTabs>
+        </div>
+    </div>
+}
+
+@code {
+
+    private string previousInstanceId;
+    private TrakHoundInstanceInformation instanceInformation;
+    private ITrakHoundConsumer<TrakHoundInstanceInformation> statusConsumer;
+
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    void IDisposable.Dispose()
+    {
+        if (statusConsumer != null) statusConsumer.Dispose();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || explorerService.SelectedInstanceId != previousInstanceId)
+        {
+            previousInstanceId = explorerService.SelectedInstanceId;
+
+            if (statusConsumer != null) statusConsumer.Dispose();
+
+            // Set Explorer Breadcrumbs
+            var breadcrumbItems = new List<BreadcrumbItem>();
+            breadcrumbItems.Add(new BreadcrumbItem(explorerService.SelectedInstanceId, null));
+            explorerService.BreadcrumbItems = breadcrumbItems;
+
+            await explorerService.LoadInstance(Explorer.Instances, explorerService.SelectedInstanceId, forceReload);
+
+            instanceInformation = Explorer.Instances.GetInstance(explorerService.SelectedInstanceId);
+
+            var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+            if (client != null)
+            {
+                // Subscribe to any new Updates
+                statusConsumer = await client.System.Instances.Subscribe(explorerService.SelectedInstanceId);
+                if (statusConsumer != null)
+                {
+                    statusConsumer.Received += StatusUpdated;
+                }
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void StatusUpdated(object sender, TrakHoundInstanceInformation information)
+    {
+        instanceInformation = information;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void StartClicked()
+    {
+        var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+        if (client != null)
+        {
+            await client.System.Instances.Start(explorerService.SelectedInstanceId); 
+        }
+    }
+
+    private async void StopClicked()
+    {
+        var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+        if (client != null)
+        {
+            await client.System.Instances.Stop(explorerService.SelectedInstanceId);
+        }
+    }
+
+}

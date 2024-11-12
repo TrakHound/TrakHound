@@ -1,0 +1,22 @@
+﻿<div class="object-query-input">
+    <RadzenAutoComplete Value=@Query Change=@OnChange Data=@autoComplete />
+</div>
+
+@code {
+
+    private IEnumerable<string> autoComplete = new string[] { "uuid:{OBJECT_UUID}", "id:{OBJECT_UUID}", "version:{OBJECT_VERSION}", "meta:{METADATA_NAME}={METADATA_VALUE}" };
+
+
+    [Parameter]
+    public string Query { get; set; }
+
+    [Parameter]
+    public EventCallback<string> QueryChanged { get; set; }
+
+
+    private async void OnChange(object obj)
+    {
+        
+    }
+
+}

@@ -1,0 +1,26 @@
+.list-menu {
+    padding: 0;
+}
+
+.list-menu ::deep a {
+    display: block;
+    padding: 10px 20px;
+    margin: 0;
+    border-bottom: 1px solid #ddd;
+    border-right: 5px solid transparent;
+    color: #555;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+    .list-menu ::deep a:hover {
+        background: #f4f4f4;
+        color: #333;
+    }
+
+    .list-menu ::deep a.active {
+        background: #f0f0f0;
+        color: var(--accent);
+        border-right: 5px solid var(--accent);
+    }

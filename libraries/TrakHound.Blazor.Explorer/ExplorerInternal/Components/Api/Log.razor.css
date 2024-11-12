@@ -1,0 +1,121 @@
+.log-panel {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.toolbar-panel {
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-flow: column;
+    grid-column-gap: 10px;
+    border-bottom: 1px solid #ddd;
+    padding: 12px 10px 8px;
+}
+
+.toolbar-panel .btn .icon {
+    margin: 0;
+}
+
+/*.content-panel {
+    grid-row: 2;
+    background: #334;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    padding: 20px;
+}
+
+.content-panel p {
+    color: #eee;
+    overflow: auto;
+    overflow-wrap: unset;
+    font-size: 13px;
+    margin: 0;
+    margin-bottom: 1px;
+}*/
+
+
+.content-panel {
+    grid-row: 2;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    background: #192b4d;
+    padding-bottom: 50px;
+}
+
+    .content-panel .table {
+        padding: 0;
+        margin: 0;
+        border: none;
+    }
+
+        .content-panel .table td {
+            font-size: 12px;
+            padding: 3px 20px;
+            background: #192b4d;
+            border-color: #002b80;
+            color: #e6eeff;
+        }
+
+        .content-panel .table tr:hover td {
+            background: var(--accent);
+        }
+
+        .content-panel .table td.level {
+            width: 120px;
+        }
+
+        .content-panel .table td.timestamp {
+            width: 300px;
+        }
+
+        .content-panel .table td.message p {
+            margin: 0;
+        }
+
+
+        .content-panel .table tr.debug td {
+            background: #2d4c86;
+            color: #e6eeff;
+        }
+
+        .content-panel .table tr.debug:hover td {
+            background: var(--accent);
+        }
+
+        .content-panel .table tr.warning td {
+            background: #ff6600;
+            border-color: #cc5200;
+            color: #e6eeff;
+        }
+
+        .content-panel .table tr.warning:hover td {
+            background: #ff8533;
+        }
+
+        .content-panel .table tr.error td {
+            background: #ff0000;
+            border-color: #cc0000;
+            color: #e6eeff;
+        }
+
+        .content-panel .table tr.error:hover td {
+            background: #ff3333;
+        }
+
+        .content-panel .table tr.critical td {
+            background: #ff0000;
+            border-color: #cc0000;
+            color: #e6eeff;
+        }
+
+        .content-panel .table tr.critical:hover td {
+            background: #ff3333;
+        }
+
+/*        .content-panel .table tr:last-child td {
+            border-bottom: none !important;
+        }*/

@@ -1,0 +1,181 @@
+﻿.licenses-page {
+    display: grid;
+    grid-template-rows: max-content max-content max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.header-panel {
+    grid-row: 1;
+    padding: 20px 25px 10px;
+}
+
+.header-panel-content {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-column-gap: 20px;
+}
+
+.header-panel-icon {
+    grid-column: 1;
+    width: 50px;
+}
+
+.header-icon-outline {
+    border: 2px solid var(--accent);
+    border-radius: 25px;
+    height: 50px;
+    width: 50px;
+    padding: 10px;
+    padding-top: 9px;
+    padding-left: 12px;
+}
+
+.header-panel-icon .icon {
+    font-size: 26px;
+    margin: 0;
+    color: var(--accent);
+}
+
+.header-panel-text {
+    grid-column: 2;
+    padding-top: 8px;
+}
+
+    .header-panel-text .header-panel-title {
+        display: block;
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 20px;
+    }
+
+    .header-panel-text .header-panel-subtitle {
+        display: block;
+        font-size: 12px;
+        line-height: 20px;
+        color: #888;
+    }
+
+
+.toolbar-panel {
+    grid-row: 2;
+    padding: 20px 25px 0px;
+}
+
+.toolbar-panel .btn {
+    font-size: 14px;
+}
+
+.device-panel {
+    grid-row: 3;
+    padding: 10px 25px 10px;
+}
+
+.device-panel-container {
+    display: grid;
+    grid-template-columns: max-content max-content max-content 1fr;
+    grid-column-gap: 10px;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    padding: 8px 8px 8px 20px;
+}
+
+.device-panel label {
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 38px;
+}
+
+.device-panel .btn .icon {
+    margin-right: 0;
+}
+
+.device-panel .device-id-output {
+    font-weight: bold;
+    font-size: 14px;
+    font-family: Consolas;
+    background: var(--accentVeryVeryLight);
+    background: rgba(0, 0, 0, 0.035);
+    padding: 8px 20px 2px;
+}
+
+.content-panel {
+    padding: 10px 0 10px 25px;
+}
+
+.license-toolbar-panel {
+    margin-top: 15px;
+}
+
+.license-toolbar-container {
+    display: grid;
+    grid-template-columns: max-content 1fr 1fr;
+    grid-column-gap: 15px;
+    max-width: 1200px;
+    padding: 10px 0 0;
+}
+
+.license-toolbar-buttons .btn {
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+.table-panel {
+    grid-row: 4;
+    height: 100%;
+    overflow: hidden;
+    padding: 10px 0 0;
+}
+
+    .table-panel ::deep .rz-data-grid {
+        height: 100%;
+        overflow: auto;
+    }
+
+        .table-panel ::deep .rz-data-grid th {
+            padding: 0px 5px;
+            border-right: 1px solid #ddd;
+        }
+
+            .table-panel ::deep .rz-data-grid th:last-child {
+                border-right: none;
+            }
+
+        .table-panel ::deep .rz-data-grid td {
+            padding: 5px 10px;
+            border-right: 1px solid #ddd;
+        }
+
+        .table-panel ::deep .rz-data-grid tr:last-child td {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table-panel ::deep .rz-data-grid td:last-child {
+            border-right: none;
+        }
+
+        .table-panel ::deep .rz-data-grid .rz-cell-data {
+            font-size: 12px;
+            line-height: 26px;
+        }
+
+        .table-panel ::deep .rz-dropdown {
+            width: 100%;
+        }
+
+    .table-panel ::deep .status-container .icon {
+        margin-right: 8px;
+    }
+
+    .table-panel ::deep .status-container.active {
+        color: var(--colorGreen);
+    }
+
+    .table-panel ::deep .status-container.inactive {
+        color: var(--colorRed);
+    }
+
+    .table-panel ::deep .rz-data-grid td.assignment-id .rz-cell-data {
+        font-size: 11px;
+        color: #888;
+    }

@@ -1,0 +1,55 @@
+﻿.definitions-page {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.toolbar-panel {
+    grid-row: 1;
+    padding: 10px 10px 3px;
+    border-bottom: 1px solid #ddd;
+}
+
+.toolbar-container {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-column-gap: 15px;
+}
+
+.toolbar-buttons {
+    grid-column: 1;
+    padding-top: 1px;
+}
+
+.btn-query {
+    font-size: 14px;
+    padding: 8px 20px;
+    border-radius: 2px;
+}
+
+.toolbar-query {
+    grid-column: 2;
+}
+
+
+.content-panel {
+    grid-row: 2;
+    height: 100%;
+    overflow: auto;
+    padding: 20px 50px 100px;
+}
+
+.panel {
+    display: block;
+    margin-bottom: 40px;
+}
+
+.panel-label {
+    display: block;
+    font-size: 28px;
+    font-weight: bold;
+    color: #ccc;
+    margin-bottom: 10px;
+}
+

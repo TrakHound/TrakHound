@@ -1,0 +1,59 @@
+﻿@inject ITrakHoundInstance instance
+@inject RemotesConfiguration remotesConfiguration
+@using Radzen.Blazor
+@using TrakHound.Blazor.Components
+@using TrakHound.Instance.Configurations
+@using TrakHound.Instances
+@using TrakHound.Management
+@using TrakHound.Packages
+
+<div class="browse-panel">
+    <div class="toolbar-panel">
+        <div class="toolbar-panel-container">
+            <div class="toolbar-panel-remote">
+                <RadzenDropDown TValue="RemoteConfiguration" TextProperty="Name" Data="@remotesConfiguration.Remotes" Placeholder="Select Remote.." Value="@selectedRemoteConfiguration" ValueChanged="RemoteSelected" />
+            </div>
+            <div class="toolbar-panel-category">
+                <RadzenDropDown Data="@categories" Placeholder="Select Package Category.." @bind-Value="@selectedCategory" />
+            </div>
+        </div>
+    </div>
+    <div class="browser-panel">
+        <PackageInstallBrowser PackageManager="@instance.PackageManager" ManagementClient="@managementClient" Category="@selectedCategory" PackageInstalled="PackageInstalled" />
+    </div>
+</div>
+
+@code {
+
+    private IEnumerable<string> categories = new string[] { "Bundle", "App", "Api", "Function", "Service", "Driver", "Identity", "Configuration" };
+    private string selectedCategory;
+
+    private TrakHoundManagementClient managementClient;
+    private RemoteConfiguration selectedRemoteConfiguration;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        selectedRemoteConfiguration = remotesConfiguration?.Remotes?.FirstOrDefault();
+        await RemoteSelected(selectedRemoteConfiguration);
+    }
+
+    private async Task RemoteSelected(RemoteConfiguration remoteConfiguration)
+    {
+        selectedRemoteConfiguration = remoteConfiguration;
+        managementClient = new Management.TrakHoundManagementClient(selectedRemoteConfiguration.BaseUrl, selectedRemoteConfiguration.Organization);
+
+        // if (!string.IsNullOrEmpty(remoteConfiguration.AccessTokenName) && !string.IsNullOrEmpty(remoteConfiguration.AccessTokenCode))
+        // {
+        //     await managementClient.Authentication.LoginAccessToken(remoteConfiguration.AccessTokenName, remoteConfiguration.AccessTokenCode);
+        // }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void PackageInstalled(TrakHoundPackage package)
+    {
+        await instance.InstallPackage(package, false);
+    }
+
+}

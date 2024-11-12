@@ -1,0 +1,10 @@
+﻿{
+  "id": "TrakHound.HomePage.App",
+  "category": "app",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Default Home Page for TrakHound Instance",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultRoute": "/"
+  }
+}

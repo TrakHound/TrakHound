@@ -1,0 +1,38 @@
+.source-information {
+    display: grid;
+    grid-template-rows: max-content max-content 1fr;
+    grid-template-columns: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .source-information td {
+        line-height: 22px;
+    }
+
+    .source-information .label {
+        font-size: 12px;
+        font-weight: bold;
+        color: #555;
+        padding-right: 10px;
+        min-width: 120px;
+        vertical-align: top;
+        border-right: 1px solid #f8f8f8;
+        border-bottom: 1px solid #f8f8f8;
+    }
+
+    .source-information tr:hover .label {
+        color: var(--accentLight);
+    }
+
+    .source-information .value {
+        font-size: 12px;
+        color: #000;
+        padding-left: 10px;
+        border-bottom: 1px solid #f8f8f8;
+    }
+
+        .source-information .value a {
+            font-size: 12px;
+            text-decoration: none;
+        }

@@ -1,0 +1,41 @@
+﻿/*@font-face {
+    font-family: 'Roboto';
+    src: url("../../../../fonts/");
+}*/
+
+@font-face {
+    font-family: 'Inter';
+    src: url("../../../../fonts/inter.ttf");
+}
+
+/*@font-face {
+    font-family: 'DS-Digi-Bold';
+    src: url("_content/TrakHound.UI.Blazor/fonts/digital-display/Digital-Display.ttf");
+}*/
+
+
+
+/*@font-face {
+    font-family: 'DS-Digi';
+    src: url("../fonts/ds-digi/DS-DIGI.TTF");
+}
+
+@font-face {
+    font-family: 'DS-Digi-Bold';
+    src: url("../fonts/ds-digi/DS-DIGIB.TTF");
+}
+
+@font-face {
+    font-family: 'High-Summit';
+    src: url("../fonts/high-summit/High-Summit.TTF");
+}
+
+@font-face {
+    font-family: 'Mr-Dafoe';
+    src: url("../fonts/mr-dafoe/mr-dafoe.ttf");
+}
+
+@font-face {
+    font-family: 'sometimes';
+    src: url("../fonts/sometimes/sometimes.ttf");
+}*/

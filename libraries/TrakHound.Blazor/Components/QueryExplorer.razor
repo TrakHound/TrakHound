@@ -1,0 +1,52 @@
+﻿@using TrakHound.Clients
+
+<div class="query-explorer">
+    <div class="query-explorer-header">
+        <span class="icon fa-solid fa-sharp fa-clipboard-question"></span>
+        <span class="title">Queries</span>
+    </div>
+    <div class="query-explorer-content">
+
+        @if (!Queries.IsNullOrEmpty())
+        {
+            <TreeView SelectedId="@SelectedQueryId">
+                <TrakHound.Blazor.Components.QueryExplorerInternal.QueryExplorerTreeItem Root="" Queries="@Queries" QuerySelected="SelectQuery" QueryDeleted="QueryDeleted" />
+            </TreeView>
+        }
+    </div>
+</div>
+
+@code {
+
+    public class QueryInformation
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Query { get; set; }
+    }
+
+    [Parameter]
+    public IEnumerable<QueryInformation> Queries { get; set; }
+
+    [Parameter]
+    public string SelectedQueryId { get; set; }
+
+    [Parameter]
+    public EventCallback<QueryInformation> QuerySelected { get; set; }
+
+    [Parameter]
+    public EventCallback<string> QueryDeleted { get; set; }
+
+
+    private async void SelectQuery(QueryInformation queryInformation)
+    {
+        if (queryInformation != null)
+        {
+            // SelectedQueryId = queryInformation.Id;
+            await QuerySelected.InvokeAsync(queryInformation);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

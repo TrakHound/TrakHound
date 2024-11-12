@@ -1,0 +1,203 @@
+﻿@implements IDisposable
+@inject ITrakHoundInstance instance
+@using Radzen
+@using Radzen.Blazor
+@using TrakHound.Blazor.Components
+@using TrakHound.Instance.Configurations
+@using TrakHound.Instances
+@using TrakHound.Security
+
+<div class="profiles-panel">
+
+    <div class="add-toolbar-panel toolbar-panel">
+        <div class="add-toolbar-panel-buttons">
+
+            @if (!saving)
+            {
+                <button class="btn btn-primary btn-save" @onclick="AddClicked"><span class="icon fa-solid fa-sharp fa-plus"></span>Add Profile</button>
+            }
+            else
+            {
+                <button class="btn btn-primary btn-save disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Saving..</button>
+            }
+
+        </div>
+        <div class="add-toolbar-panel-id">
+            <TextBox PlaceHolder="Enter Profile ID.." @bind-Value=@addId />
+        </div>
+        <div class="add-toolbar-panel-provider">
+            <RadzenDropDown @bind-Value=@addProviderId
+                            Data=@instance.SecurityManager.GetProviders()
+                            TextProperty="Id" ValueProperty="Id"
+                            Placeholder="Select Identity Provider.." Style="width: 100%;" />
+        </div>
+        <div class="add-toolbar-panel-priority">
+            <label>Priority</label>
+            <SpinEdit @bind-Value=@addPriority />
+        </div>
+    </div>
+
+    <div class="filter-toolbar-panel toolbar-panel">
+        <div class="filter-toolbar-panel-buttons">
+
+            @if (!loading)
+            {
+                <button class="btn btn-light btn-refresh" @onclick="Load"><span class="icon fa-solid fa-sharp fa-rotate-right"></span></button>
+            }
+            else
+            {
+                <button class="btn btn-secondary btn-refresh"><span class="icon fa-solid fa-sharp fa-loader spin"></span></button>
+            }
+
+        </div>
+        <div class="filter-toolbar-panel-search">
+            <TextBox Value="@selectedQuery" ValueChanged="QueryChanged" PlaceHolder="Search Profiles.." />
+        </div>
+    </div>
+
+    <div class="table-panel">
+
+        @if (!loading)
+        {
+            if (!tableItems.IsNullOrEmpty())
+            {
+                <RadzenDataGrid Data="@tableItems" TItem="TableItem" Density="Density.Compact" AllowSorting="true" AllowColumnResize="true">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="TableItem" Property="Id" Title="ID" CssClass="id" />
+                        <RadzenDataGridColumn TItem="TableItem" Property="ProviderId" Title="ProviderId" CssClass="provider" Width="120px" />
+                        <RadzenDataGridColumn TItem="TableItem" Property="Priority" Title="Priority" CssClass="priority" Width="100px" />
+                        <RadzenDataGridColumn TItem="TableItem" />
+                        <RadzenDataGridColumn TItem="TableItem" CssClass="buttons" Width="100px" Sortable="false">
+                            <Template Context="context">
+                                <button class="btn btn-sm btn-link btn-remove" @onclick="o => DeleteClicked(context)"><span class="icon fa-regular fa-sharp fa-xmark"></span>Delete</button>
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            }
+            else
+            {
+
+            }
+        }
+        else
+        {
+            <Loading Message="Loading Profiles.." />
+        }
+
+    </div>
+
+</div>
+
+@code {
+
+    private string addId;
+    private string addProviderId;
+    private int addPriority;
+
+    private string selectedQuery;
+    private bool saving;
+    private bool loading = true;
+    private DelayEvent queryDelay = new DelayEvent(50);
+
+    private IEnumerable<TrakHoundSecurityProfile> profiles;
+    private IEnumerable<TableItem> tableItems;
+
+
+    class TableItem
+    {
+        public string Id { get; set; }
+
+        public string ProviderId { get; set; }
+
+        public int Priority { get; set; }
+    }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        queryDelay.Elapsed += QueryDelayElapsed;
+        await Load();
+    }
+
+    void IDisposable.Dispose()
+    {
+        queryDelay.Dispose();
+    }
+
+    private async Task Load()
+    {
+        loading = true;
+        tableItems = null;
+        await InvokeAsync(StateHasChanged);
+
+        profiles = instance.SecurityManager.GetProfiles();
+        Filter();
+
+        loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void Filter()
+    {
+        tableItems = null;
+
+        var profiles = instance.SecurityManager.GetProfiles();
+        if (!profiles.IsNullOrEmpty())
+        {
+            var items = new List<TableItem>();
+
+            foreach (var profile in profiles)
+            {
+                var item = new TableItem();
+                item.Id = profile.Id;
+                item.ProviderId = profile.ProviderId;
+                item.Priority = profile.Priority;
+                items.Add(item);
+            }
+
+            tableItems = items;
+        }
+    }
+
+    private async void AddClicked()
+    {
+        saving = true;
+        await InvokeAsync(StateHasChanged);
+
+        var profile = new TrakHoundSecurityProfile();
+        profile.Id = addId;
+        profile.ProviderId = addProviderId;
+        profile.Priority = addPriority;
+
+        instance.SecurityManager.AddProfile(profile);
+
+        saving = false;
+        Filter();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void RefreshClicked()
+    {
+        await Load();
+    }
+
+    private void DeleteClicked(TableItem item)
+    {
+        instance.SecurityManager.RemoveProfile(item.Id);
+        Filter();
+    }
+
+    private void QueryChanged(string query)
+    {
+        selectedQuery = query;
+        queryDelay.Set();
+    }
+
+    private async void QueryDelayElapsed(object sender, EventArgs args)
+    {
+        Filter();
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

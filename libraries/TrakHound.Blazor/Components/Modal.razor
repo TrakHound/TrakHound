@@ -1,0 +1,74 @@
+﻿@if (Visible)
+{
+    <div class="modal" style="display: block;">
+        <div id="@Id" class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg @Class">
+            <div class="modal-content">
+                <div class="modal-header @HeaderClass" style="@HeaderStyle">
+                    @HeaderContent
+                </div>
+                <div class="modal-body @BodyClass" style="@BodyStyle">
+                    @BodyContent
+                </div>
+                <div class="modal-footer @FooterClass" style="@FooterStyle">
+                    @FooterContent
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public string Class { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+
+    [Parameter]
+    public string HeaderClass { get; set; }
+
+    [Parameter]
+    public string HeaderStyle { get; set; }
+
+    [Parameter]
+    public string BodyClass { get; set; }
+
+    [Parameter]
+    public string BodyStyle { get; set; }
+
+    [Parameter]
+    public string FooterClass { get; set; }
+
+    [Parameter]
+    public string FooterStyle { get; set; }
+
+    [Parameter]
+    public RenderFragment BodyContent { get; set; }
+
+    [Parameter]
+    public RenderFragment HeaderContent { get; set; }
+
+    [Parameter]
+    public RenderFragment FooterContent { get; set; }
+
+
+    private async Task Show()
+    {
+        Visible = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task Hide()
+    {
+        Visible = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

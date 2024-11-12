@@ -1,0 +1,302 @@
+﻿@rendermode InteractiveServer
+@implements IDisposable
+@inject NavigationManager navigationManager
+@inject ExplorerService explorerService
+@inject ExplorerTreeViewService explorerTreeService
+@using TrakHound.Blazor.ExplorerInternal.Components
+@using TrakHound.Clients
+@using TrakHound.Configurations
+@using TrakHound.Management
+
+<div class="explorer">
+    @if (explorer != null)
+    {
+        <CascadingValue Name="Explorer" Value="@explorer">
+            <div class="explorer-container">
+                <div class="explorer-content">
+                    <RadzenSplitter>
+                        <RadzenSplitterPane Size="350px" Collapsed="@(sidebarTabSelected == SidebarTabs.None)" Collapsible="false">
+                            <div class="explorer-sidebar @GetTabDisplayClass(SidebarTabs.Navigation)">
+                                <div class="explorer-sidebar-content">
+                                    <div class="explorer-sidebar-header">
+                                        <div class="explorer-sidebar-header-container">
+                                            <div class="explorer-sidebar-header-icon">
+                                                <span class="icon fa-regular fa-sharp fa-list-tree"></span>
+                                            </div>
+                                            <div class="explorer-sidebar-header-text">
+                                                <span class="title">Explorer</span>
+                                                <span class="subtitle">Browse App, API, Functions, Services, & Entities</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="explorer-sidebar-toolbar">
+
+                                        @if (!loading)
+                                        {
+                                            <button class="btn btn-toolbar" @onclick="Refresh"><span class="icon fa-solid fa-sharp fa-rotate"></span></button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-toolbar"><span class="icon fa-solid fa-sharp fa-loader spin"></span></button>
+                                        }
+
+                                        @* <button class="btn btn-sm btn-toolbar" @onclick="explorerTreeService.ExpandAll"><span class="icon fa-solid fa-sharp fa-layer-plus"></span></button> *@
+                                        <button class="btn btn-sm btn-toolbar" @onclick="explorerTreeService.CollapseAll"><span class="icon fa-solid fa-sharp fa-layer-minus"></span></button>
+
+                                    </div>
+                                    <div class="explorer-sidebar-tree">
+                                        <ExplorerTreeView />
+                                    </div>
+                                </div>
+                            </div>
+                        </RadzenSplitterPane>
+                        <RadzenSplitterPane Min="25%" Collapsible="false">
+                            <div class="explorer-main">
+                                <div class="explorer-breadcrumbs">
+                                    <BreadcrumbLinks>
+                                        <BreadcrumbLink Display="Explorer" Link="@BasePath" />
+
+                                        @if (!explorerService.BreadcrumbItems.IsNullOrEmpty())
+                                        {
+                                            foreach (var breadcrumbItem in explorerService.BreadcrumbItems)
+                                            {
+                                                <BreadcrumbLink Display="@breadcrumbItem.Display" Link="@breadcrumbItem.Link" />
+                                            }
+                                        }
+
+                                    </BreadcrumbLinks>
+                                </div>
+                                <div class="explorer-body">
+
+                                    @switch (Url.GetRouteParameter(Path, "{instanceId}/{page}", "page"))
+                                    {
+                                        case "apps":
+
+                                            if (Url.GetRouteParameter(Path, "{instanceId}/{page}/{appId}/pages/{pageId}", "pageId") != null)
+                                            {
+                                                <TrakHound.Blazor.ExplorerInternal.Components.Apps.Pages.Index />
+                                            }
+                                            else if (Url.GetRouteParameter(Path, "{instanceId}/{page}/{appId}", "appId") != null)
+                                            {
+                                                <TrakHound.Blazor.ExplorerInternal.Components.Apps.App />
+                                            }
+                                            else
+                                            {
+                                                <TrakHound.Blazor.ExplorerInternal.Components.Apps.Index />
+                                            }
+                                            break;
+
+                                        case "api":
+
+                                            if (Url.GetRouteParameter(Path, "{instanceId}/{page}/{requestType}/{apiId}/{endpointId}", "endpointId") != null)
+                                            {
+                                                <TrakHound.Blazor.ExplorerInternal.Components.Api.Endpoint.Index />
+                                            }
+                                            else if (Url.GetRouteParameter(Path, "{instanceId}/{page}/{requestType}/{apiId}", "apiId") != null)
+                                            {
+                                                <TrakHound.Blazor.ExplorerInternal.Components.Api.Api />
+                                            }          
+                                            else
+                                            {
+                                                <TrakHound.Blazor.ExplorerInternal.Components.Api.Index />
+                                            }
+                                            break;
+
+                                        case "functions":
+
+                                            if (Url.GetRouteParameter(Path, "{instanceId}/functions/{functionId}/runs/{runId}", "runId") != null)
+                                            {
+                                                <TrakHound.Blazor.ExplorerInternal.Components.Functions.Function.Runs.Index />
+                                            }
+                                            else if (Url.GetRouteParameter(Path, "{instanceId}/functions/{functionId}", "functionId") != null)
+                                            {
+                                                <TrakHound.Blazor.ExplorerInternal.Components.Functions.Function.Index />
+                                            }
+                                            else
+                                            {
+                                                <TrakHound.Blazor.ExplorerInternal.Components.Functions.Index />
+                                            }
+                                            break;
+
+                                        case "services":
+
+                                            if (Url.GetRouteParameter(Path, "{instanceId}/services/{serviceId}", "serviceId") != null)
+                                            {
+                                                <TrakHound.Blazor.ExplorerInternal.Components.Services.Service.Index />
+                                            }
+                                            else
+                                            {
+                                                <TrakHound.Blazor.ExplorerInternal.Components.Services.Index />
+                                            }
+                                            break;
+
+                                        case "entities":
+                                            <TrakHound.Blazor.ExplorerInternal.Components.Entities.Index />
+                                            break;
+
+                                        default:
+                                            <TrakHound.Blazor.ExplorerInternal.Components.Instance.Index />
+                                            break;
+                                    }
+
+                                </div>
+                            </div>
+                        </RadzenSplitterPane>
+                    </RadzenSplitter>
+                </div>
+            </div>
+        </CascadingValue>
+    }
+</div>
+
+<Notifications Items="@notifications" />
+
+
+@code {
+
+    private TrakHound.Blazor.Explorer explorer;
+
+    private readonly List<Notifications.NotificationItem> notifications = new List<Notifications.NotificationItem>();
+    private System.Timers.Timer _notificationTimer;
+
+    private bool loading;
+    private SidebarTabs sidebarTabSelected = SidebarTabs.Navigation;
+
+    enum SidebarTabs
+    {
+        None = 0,
+        Navigation = 1
+    }
+
+
+    [Parameter]
+    public IInstanceManager Instances { get; set; }
+
+    [Parameter]
+    public string BasePath { get; set; }
+
+    [Parameter]
+    public string Path { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        explorer = this;
+
+        navigationManager.LocationChanged += LocationChanged;
+        explorerService.PageUpdated += PageUpdated;
+
+
+        _notificationTimer = new System.Timers.Timer();
+        _notificationTimer.Interval = 500;
+        _notificationTimer.Elapsed += NotificationTimerElapsed;
+        _notificationTimer.Start();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        explorerService.SelectedInstanceId = GetInstanceId(Path);
+        // if (explorerService.SelectedInstanceId == null)
+        // {
+        //     explorerService.SelectedInstanceId = Instances?.GetInstances()?.FirstOrDefault()?.Id;
+        //     if (explorerService.SelectedInstanceId != null)
+        //     {
+        //         await explorerService.LoadInstance(Instances, explorerService.SelectedInstanceId);
+
+        //         Path = explorerService.SelectedInstanceId;
+        //         navigationManager.NavigateTo(Url.Combine(BasePath, Path));
+
+        //         await InvokeAsync(StateHasChanged);
+        //     }
+        // }
+    }
+
+    private async void LocationChanged(object sender, LocationChangedEventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    void IDisposable.Dispose()
+    {
+        if (_notificationTimer != null) _notificationTimer.Dispose();
+    }
+
+    private async void Refresh()
+    {
+        if (explorerService.SelectedInstanceId != null)
+        {
+            loading = true;
+            await InvokeAsync(StateHasChanged);
+
+            await explorerService.LoadInstance(Instances, explorerService.SelectedInstanceId, true);
+
+            loading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void PageUpdated(object sender, EventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    private async void NavigationTabSelected()
+    {
+        if (sidebarTabSelected != SidebarTabs.Navigation) sidebarTabSelected = SidebarTabs.Navigation;
+        else sidebarTabSelected = SidebarTabs.None;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string GetTabActiveClass(SidebarTabs sidebarTabs)
+    {
+        if (sidebarTabSelected == sidebarTabs) return "active";
+        return null;
+    }
+
+    private string GetTabDisplayClass(SidebarTabs sidebarTabs)
+    {
+        if (sidebarTabSelected != sidebarTabs) return "d-none";
+        return null;
+    }
+
+    private static string GetInstanceId(string path)
+    {
+        return Url.GetFirstFragment(path);
+    }
+
+    private static string GetPage(string path)
+    {
+        return Url.GetFirstFragment(Url.RemoveFirstFragment(path));
+    }
+
+
+    public void AddNotification(NotificationType type, string message)
+    {
+        var notification = new Notifications.NotificationItem();
+        notification.Type = type;
+        notification.Message = message;
+        notification.Timestamp = DateTime.Now;
+        notification.TTL = TimeSpan.FromSeconds(5);
+        notifications.Add(notification);
+    }
+
+    private async void NotificationTimerElapsed(object sender, System.Timers.ElapsedEventArgs args)
+    {
+        if (!notifications.IsNullOrEmpty())
+        {
+            var now = DateTime.Now;
+            var ids = notifications.Where(o => (now - o.Timestamp) > o.TTL).Select(o => o.Id).ToList();
+            if (!ids.IsNullOrEmpty())
+            {
+                foreach (var id in ids)
+                {
+                    notifications.RemoveAll(o => o.Id == id);
+                }
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

@@ -1,0 +1,90 @@
+﻿@if (!string.IsNullOrEmpty(Source))
+{
+    var frameStyle = GetFrameStyle();
+
+    <div class="preview-panel">
+        <div class="toolbar-panel">
+            <div class="toolbar-panel-content">
+                <div class="toolbar-panel-left">
+                    <a href="@Source" target="_blank" class="header-link">@Source</a>
+                </div>
+                <div class="toolbar-panel-center">
+                </div>
+                <div class="toolbar-panel-right">
+                    <RadzenDropDown TValue="double" Data="@zoomLevels" @bind-Value="@zoom">
+                        <Template Context="context">
+                            @context.ToString("P0")
+                        </Template>
+                    </RadzenDropDown>
+                    <button class="btn btn-sm btn-light" @onclick="ZoomIn"><span class="icon fa-solid fa-sharp fa-plus"></span></button>
+                    <button class="btn btn-sm btn-light" @onclick="ZoomOut"><span class="icon fa-solid fa-sharp fa-minus"></span></button>
+                </div>
+            </div>
+        </div>
+        <div class="frame-panel">
+            <iframe src="@Source" class="preview" style="@frameStyle" />
+        </div>
+    </div>
+}
+
+@code {
+
+    private double zoom = 1;
+    private IEnumerable<double> zoomLevels = new double[]
+    {
+        2,
+        1.75,
+        1.5,
+        1.25,
+        1.1,
+        1,
+        0.9,
+        0.75,
+        0.5,
+        0.25
+    };
+
+
+    [Parameter]
+    public string Source { get; set; }
+
+
+    private async void ZoomIn()
+    {
+        zoom += 0.1;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ZoomOut()
+    {
+        zoom -= 0.1;
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    private string GetFrameStyle()
+    {
+        var size = Math.Round(100 / zoom, 5);
+        var scale = Math.Round(zoom, 5);
+
+        var s = "";
+
+        s += $"width: {size}%;";
+        s += $"height: {size}%;";
+
+        s += $"-ms-transform: scale({scale});";
+        s += $"-moz-transform: scale({scale});";
+        s += $"-o-transform: scale({scale});";
+        s += $"-webkit-transform: scale({scale});";
+        s += $"transform: scale({scale});";
+
+        s += "-ms-transform-origin: 0 0;";
+        s += "-moz-transform-origin: 0 0;";
+        s += "-o-transform-origin: 0 0;";
+        s += "-webkit-transform-origin: 0 0;";
+        s += "transform-origin: 0 0;";
+
+        return s;
+    }
+
+}

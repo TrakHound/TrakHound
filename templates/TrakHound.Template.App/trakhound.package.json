@@ -1,0 +1,9 @@
+﻿{
+  "id": "$projectname$",
+  "category": "app",
+  "metadata": {
+    "publisher": "",
+    "description": "",
+    ".defaultRoute": "$approute$"
+  }
+}

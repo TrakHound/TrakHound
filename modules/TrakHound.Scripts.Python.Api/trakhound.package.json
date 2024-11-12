@@ -1,0 +1,13 @@
+﻿{
+  "id": "TrakHound.Scripts.Python.Api",
+  "category": "api",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "API to Run Python Scripts for use in the TrakHound Framework",
+    "repository": "https://github.com/TrakHound/TrakHound",
+    "repositoryDirectory": "modules/TrakHound.Scripts.Python.Api",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultRoute": "scripts/python/api",
+    ".defaultVolumeId": "trakhound.scripts.python"
+  }
+}

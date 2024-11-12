@@ -1,0 +1,12 @@
+﻿{
+  "id": "TrakHound.GitHub.Api",
+  "category": "api",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "API for interacting with GitHub repositories",
+    "repository": "https://github.com/TrakHound/TrakHound",
+    "repositoryDirectory": "modules/TrakHound.GitHub.Api",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultRoute": "github/api"
+  }
+}

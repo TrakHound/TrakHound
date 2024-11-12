@@ -1,0 +1,46 @@
+.collapse-panel {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+}
+
+.collapse-panel-toolbar {
+    grid-row: 1;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    border: 1px solid #eee;
+}
+
+.collapse-panel-toolbar-button {
+    border-right: 1px solid #eee;
+}
+
+.collapse-panel-toolbar-button .btn {
+    padding: 0 10px;
+    line-height: 28px;
+}
+
+    .collapse-panel-toolbar-button .btn:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .collapse-panel-toolbar-button .btn .icon {
+        margin: 0;
+        font-size: 14px;
+        color: #aaa;
+    }
+
+    .collapse-panel-toolbar-button .btn:hover .icon {
+        color: var(--accentLight);
+    }
+
+.collapse-panel-toolbar-title {
+    font-size: 12px;
+    line-height: 30px;
+    padding: 0 20px;
+    color: #888;
+}
+
+.collapse-panel-content {
+    grid-row: 2;
+}

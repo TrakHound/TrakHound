@@ -1,0 +1,221 @@
+﻿@inject TrakHoundDownloadService downloadService
+@inject IJSRuntime javascript
+@using TrakHound.Blazor.Services
+@using TrakHound.Entities;
+@using TrakHound.Requests
+
+@if (Object != null)
+{
+    var objectLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction($"select >> from [{Object.GetAbsolutePath()}]") : null;
+
+    var resultQuery = $"select > from [{Object.GetAbsolutePath()}]";
+    var queryLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(resultQuery) : null;
+
+    <div class="blob-content">
+
+        <div class="hidden-input">
+            <InputFile OnChange="FileChanged" id="@fileInputId" name="file" />
+        </div>
+
+        <div class="input-panel">
+            <div class="input-panel-container">
+                <div class="input-panel-buttons">
+
+                    @if (!publishLoading)
+                    {
+                        <button class="btn btn-sm btn-primary btn-save" @onclick="Save"><span class="icon fa-solid fa-sharp fa-paper-plane"></span>Publish</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-primary btn-save disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Publishing..</button>
+                    }
+
+                    @if (!loading)
+                    {
+                        <button class="btn btn-sm btn-light btn-refresh" @onclick="() => Load(true)"><span class="icon fa-solid fa-sharp fa-rotate"></span></button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-light btn-refresh disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span></button>
+                    }
+
+                </div>
+                <div class="input-panel-input">
+                    <button class="btn bt-light btn-browse" @onclick="BrowseClicked"><span class="icon fa-solid fa-sharp fa-magnifying-glass"></span>Browse..</button>
+                </div>
+                <div class="input-panel-input">
+                    <TextBox Value="@filename" />
+                </div>
+            </div>
+        </div>
+        <div class="query-panel">
+            <div class="query-panel-container">
+                <span class="query-label">Query</span>
+                <a href="@queryLink" class="btn btn-link btn-query">@resultQuery</a>
+            </div>
+        </div>
+        <div class="download-panel">
+            <div class="download-panel-container">
+                <span class="download-label">Download</span>
+                <a href="@downloadLink" target="_blank" class="btn btn-link btn-download">@downloadLink</a>
+            </div>
+        </div>
+        <div class="preview-panel">
+
+            @if (!loading)
+            {
+                <ContentPreview Content="@contentBytes" ContentType="@contentType" DownloadLink="@downloadLink" />
+            }
+            else
+            {
+                <Loading Message="Loading.." />
+            }
+
+        </div>
+    </div>
+}
+
+@code {
+
+    private string fileInputId = Guid.NewGuid().ToString();
+
+    private string downloadKey;
+    private string previousObjectUuid;
+    private string text;
+    private bool loading;
+    private bool publishLoading;
+    private IBrowserFile addFile;
+
+    private string filename;
+    private string contentType;
+    private byte[] contentBytes;
+    private string downloadLink;
+
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public ITrakHoundObjectEntity Object { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || (ObjectExplorerService != null && Object != null && Object.Uuid != previousObjectUuid))
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                previousObjectUuid = Object.Uuid;
+                downloadLink = null;
+                loading = true;
+                await InvokeAsync(StateHasChanged);
+
+                var blob = await client.Entities.GetBlob(Object.GetAbsolutePath());
+                if (blob != null)
+                {
+                    filename = blob.Filename;
+                    contentType = blob.ContentType;
+
+                    if (blob.Size < 10000000)
+                    {
+                        contentBytes = await client.Entities.GetBlobBytes(blob.Object);
+                    }
+
+                    downloadLink = GetDownloadLink(blob.Object);
+                }
+            }
+        }
+
+        loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void BrowseClicked()
+    {
+        try
+        {
+            await javascript.InvokeVoidAsync("JsFunctions.clickElement", fileInputId);
+        }
+        catch (Exception) { }
+    }
+
+    private async void FileChanged(InputFileChangeEventArgs e)
+    {
+        addFile = e.File;
+        filename = e.File.Name;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Save()
+    {
+        publishLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (Object != null && addFile != null)
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                try
+                {
+                    var inputStream = addFile.OpenReadStream(addFile.Size);
+                    var outputStream = new MemoryStream();
+                    await inputStream.CopyToAsync(outputStream);
+                    outputStream.Seek(0, SeekOrigin.Begin);
+
+                    var path = Object.GetAbsolutePath();
+                    filename = addFile.Name;
+                    if (!MimeTypes.TryGetMimeType(filename, out var contentType))
+                    {
+                        contentType = "application/octet-stream";
+                    }
+
+                    if (await client.Entities.PublishBlob(path, outputStream, contentType, filename))
+                    {
+                        previousObjectUuid = null;
+
+                        ObjectExplorerService.LoadContent(Object);
+                        ObjectExplorerService.UpdateValue(Object.Uuid);
+
+                        await Load();
+
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Blob Published Successfully", path);
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Blob");
+                    }
+                }
+                catch { }
+            }
+        }
+
+        publishLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private static string GetDownloadLink(string path)
+    {
+        if (path != null)
+        {
+            var url = "entities/objects/blob/download";
+            url = Url.AddQueryParameter(url, "objectPath", path);
+
+            return url;
+        }
+
+        return null;
+    }
+
+}

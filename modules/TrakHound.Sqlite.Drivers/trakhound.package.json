@@ -1,0 +1,20 @@
+﻿{
+  "id": "TrakHound.Sqlite.Drivers",
+  "category": "driver",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Local SQLite Drivers for temporary/demonstration use in the TrakHound Framework",
+    "repository": "https://github.com/TrakHound/TrakHound",
+    "repositoryDirectory": "modules/TrakHound.Sqlite.Drivers",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".name": "sqlite",
+    ".configurationParameters": "directory",
+    ".bufferInterval": 5000,
+    ".bufferRetryInterval": 10000,
+    ".bufferMaxItemsPerInterval": 1000,
+    ".bufferQueuedItemLimit": 100000,
+    ".fileBufferEnabled": false,
+    ".fileBufferReadInterval": 0,
+    ".bufferAcknowledgeSent": false
+  }
+}

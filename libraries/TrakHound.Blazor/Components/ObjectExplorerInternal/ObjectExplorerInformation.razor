@@ -1,0 +1,249 @@
+﻿@inject TrakHound.Blazor.Services.EntityClipboardService entityClipboardService
+@using TrakHound.Entities
+
+@if (Object != null && ObjectExplorerService != null)
+{
+    var contentType = Object.ContentType.ConvertEnum<TrakHoundObjectContentType>();
+
+    var definition = ObjectExplorerService.GetDefinition(Object.DefinitionUuid);
+    var definitionDescription = ObjectExplorerService.GetDefinitionDescription(Object.DefinitionUuid);
+    
+    var sourceChain = ObjectExplorerService.GetSourceChain(Object.SourceUuid);
+
+    var icon = TrakHoundObjectIcon.Get(contentType);
+    var title = Object.ContentType;
+    var description = "";
+
+    var namespaceQuery = $"select >> from [{Object.Namespace}:/]";
+    var namespaceLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(namespaceQuery) : null;
+
+    var objectPathQuery = $"select >> from [{Object.GetAbsolutePath()}]";
+    var objectPathLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(objectPathQuery) : null;
+
+    var objectUuidQuery = $"select >> from [uuid={Object.Uuid}]";
+    var objectUuidLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(objectUuidQuery) : null;
+
+    var parentUuidQuery = $"select >> from [uuid={Object.ParentUuid}]";
+    var parentUuidLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(parentUuidQuery) : null;
+
+
+    var definitionLink = "#";
+    if (ObjectExplorerService.DefinitionsQueryLinkFunction != null) definitionLink = ObjectExplorerService.DefinitionsQueryLinkFunction(Object.DefinitionUuid);
+
+    var sourceLink = "#";
+    if (ObjectExplorerService.SourcesQueryLinkFunction != null) sourceLink = ObjectExplorerService.SourcesQueryLinkFunction(Object.SourceUuid);
+
+    <div class="object-information">
+
+        <div class="breadcrumbs-panel">
+            <ObjectExplorerBreadcrumbs Object=@Object />
+        </div>
+
+        <div class="header-panel">
+            <div class="header-panel-container">
+                <div class="icon-container">
+                    <span class="icon @icon"></span>
+                </div>
+                <div class="title-container">
+                    <span class="title">@title</span>
+                </div>
+                <div class="description-container">
+                    <span class="description">@description</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="toolbar-panel">
+            <div class="toolbar-panel-container">
+
+                @if (!refreshLoading)
+                {
+                    <button class="btn btn-light" @onclick="RefreshClicked"><span class="icon fa-solid fa-sharp fa-rotate"></span>Refresh</button>
+                }
+                else
+                {
+                    <button class="btn btn-light disabled"><span class="icon fa-solid fa-sharp fa-rotate spin"></span>Refresh</button>
+                }
+
+                <button class="btn btn-light" @onclick="EditClicked"><span class="icon fa-solid fa-sharp fa-pen-to-square"></span>Edit</button>
+                <button class="btn btn-light btn-remove" @onclick="DeleteClicked"><span class="icon fa-regular fa-sharp fa-trash"></span>Delete</button>
+            </div>
+        </div>
+
+        <div class="content-panel">
+
+            @if (!refreshLoading)
+            {
+                <div class="description-panel">
+                    <span class="panel-label">Description</span>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="label">Namespace</td>
+                                <td class="value"><CopyLabel Value="@Object.Namespace" Link="@namespaceLink" CopyClicked="CopyClicked" /></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Path</td>
+                                <td class="value"><CopyLabel Value="@Object.GetAbsolutePath()" Link="@objectPathLink" CopyClicked="CopyClicked" /></td>
+                            </tr>
+                            <tr>
+                                <td class="label">UUID</td>
+                                <td class="value"><CopyLabel Value="@Object.Uuid" Link="@objectUuidLink" CopyClicked="CopyClicked" /></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Name</td>
+                                <td class="value"><CopyLabel Value="@Object.Name" CopyClicked="CopyClicked" /></td>
+                            </tr>
+                            <tr>
+                                <td class="label">ContentType</td>
+                                <td class="value"><CopyLabel Value="@Object.ContentType" CopyClicked="CopyClicked" /></td>
+                            </tr>
+
+                            @if (!string.IsNullOrEmpty(Object.DefinitionUuid))
+                            {
+                                <tr>
+                                    <td class="label">Definition UUID</td>
+                                    <td class="value"><CopyLabel Value="@Object.DefinitionUuid" Link="@definitionLink" CopyClicked="CopyClicked" /></td>
+                                </tr>
+                            }
+
+                            @if (definition != null)
+                            {
+                                <tr>
+                                    <td class="label">Definition ID</td>
+                                    <td class="value"><CopyLabel Value="@definition.Id" Link="@definitionLink" CopyClicked="CopyClicked" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Type</td>
+                                    <td class="value definition-breadcrumb-cell">
+                                        <ObjectExplorerTypeBreadcrumbs Definition="@definition" />
+                                    </td>
+                                </tr>
+
+                                @if (definitionDescription != null)
+                                {
+                                    <tr>
+                                        <td class="label">Description</td>
+                                        <td class="value">@definitionDescription.Text</td>
+                                    </tr>
+                                }
+                            }
+
+                            @if (!string.IsNullOrEmpty(Object.ParentUuid))
+                            {
+                                <tr>
+                                    <td class="label">Parent UUID</td>
+                                    <td class="value"><CopyLabel Value="@Object.ParentUuid" Link="@parentUuidLink" CopyClicked="CopyClicked" /></td>
+                                </tr>
+                            }
+
+                            <tr>
+                                <td class="label">Source UUID</td>
+                                <td class="value"><CopyLabel Value="@Object.SourceUuid" Link="@sourceLink" CopyClicked="CopyClicked" /></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Created</td>
+                                <td class="value">@Object.Created.ToLocalDateTime()</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="metadata-panel">
+                    <div class="metadata-panel-container">
+                        <div class="metadata-header-container">
+                            <span class="panel-label">Metadata</span>
+                        </div>
+                        <div class="metadata-toolbar-container">
+                            <button class="btn btn-light" @onclick="AddMetadataClicked"><span class="icon fa-solid fa-sharp fa-plus"></span>Add Metadata</button>
+                        </div>
+                        <div class="metadata-table-container">
+                            <ObjectExplorerMetadataTable Object="@Object" />
+                        </div>
+                    </div>
+                </div>
+
+                @if (definition != null)
+                {
+                    <div class="inheritance-panel">
+                        <span class="panel-label">Type Inheritance</span>
+                        <ObjectExplorerInheritanceTable Definition="@definition" />
+                    </div>
+                }
+
+                @if (!sourceChain.IsNullOrEmpty())
+                {
+                    <div class="source-panel">
+                        <span class="panel-label">Source</span>
+                        <ObjectExplorerSourceTable SourceChain="@sourceChain" />
+                    </div>
+                }
+            }
+            else
+            {
+                <Loading Message="Loading.." />
+            }
+
+        </div>
+
+        <ObjectExplorerAddMetadataModal Object="@Object" @bind-Visible="@addMetadataModal" />
+
+    </div>
+}
+
+@code {
+
+    private bool refreshLoading;
+    private bool addMetadataModal;
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [CascadingParameter]
+    private Index Index { get; set; }
+
+    [Parameter]
+    public ITrakHoundObjectEntity Object { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    private async void CopyClicked(string value)
+    {
+        ObjectExplorerService.NotificationService.AddNotification(NotificationType.Information, "Copied to Clipboard", value, duration: 2500);
+        await InvokeAsync(StateHasChanged);
+    }    
+
+    public async void RefreshClicked()
+    {
+        refreshLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        await ObjectExplorerService.RefreshObject(Object);
+        await ObjectExplorerService.LoadAdditional(Object);
+        
+        refreshLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void EditClicked()
+    {
+        ObjectExplorerService.AddService.EditObject(Object);
+    }
+
+    public void DeleteClicked()
+    {
+        ObjectExplorerService.DeleteService.DeleteObject(Object);
+    }
+
+    private async void AddMetadataClicked()
+    {
+        addMetadataModal = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

@@ -1,0 +1,73 @@
+﻿.developer-panel {
+    height: 100%;
+    overflow: hidden;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
+    .developer-panel > ::deep .rz-tabview {
+        height: 100%;
+        overflow: hidden;
+    }
+
+        .developer-panel > ::deep .rz-tabview > .rz-tabview-panels {
+            height: 100%;
+            overflow: hidden;
+        }
+
+            .developer-panel > ::deep .rz-tabview > .rz-tabview-panels > .rz-tabview-panel {
+                height: 100%;
+                overflow: hidden;
+                padding: 0px;
+            }
+
+.developer-language-panel {
+    padding: 20px;
+    background: #fcfcfc;
+    height: 100%;
+    overflow: auto;
+}
+
+.developer-code-panel {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    grid-template-columns: max-content 1fr;
+    margin-bottom: 20px;
+}
+
+.developer-code-toolbar {
+    grid-row-start: 1;
+    grid-row-end: 3;
+    grid-column: 1;
+    border-right: 1px solid #eee;
+    padding: 15px 20px;
+}
+
+.developer-code-information {
+    border-bottom: 1px solid #eee;
+    padding: 5px 20px;
+}
+
+.developer-code-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+}
+
+.developer-code-body {
+    background: #345;
+    color: #fff;
+    font-size: 13px;
+    overflow: auto;
+    height: 100%;
+}
+
+    .developer-code-body pre {
+        padding: 15px 25px;
+        margin-bottom: 0;
+        max-height: 250px;
+    }

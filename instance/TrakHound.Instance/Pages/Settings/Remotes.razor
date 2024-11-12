@@ -1,0 +1,184 @@
+﻿@using Radzen.Blazor
+@using TrakHound.Instance.Configurations
+@using TrakHound.Blazor.Components
+
+@if (!loading)
+{
+    <div class="page">
+        <div class="toolbar-panel">
+            <button class="btn btn-sm btn-light" @onclick="AddClicked"><span class="icon fa-solid fa-sharp fa-signal"></span>Add Remote Source</button>
+        </div>
+        <div class="table-panel">
+            <RadzenDataGrid Data="@tableItems">
+                <Columns>
+                    <RadzenDataGridColumn TItem="TableItem" Property="Id" Title="Id" />
+                    <RadzenDataGridColumn TItem="TableItem" Property="Name" Title="Name" />
+                    <RadzenDataGridColumn TItem="TableItem" Property="BaseUrl" Title="Base URL" />
+                    <RadzenDataGridColumn TItem="TableItem" Property="Organization" Title="Organization" />
+                    <RadzenDataGridColumn TItem="TableItem" />
+                    <RadzenDataGridColumn TItem="TableItem" CssClass="buttons-cell" Width="120px">
+                        <Template Context="context">
+                            <button class="btn btn-sm btn-command btn-remove" @onclick="() => RemoveClicked(context)"><span class="icon fa-solid fa-sharp fa-delete-right"></span>Remove</button>
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        </div>
+
+        <Modal Class="add-modal" Visible="@addModalVisible">
+            <HeaderContent>
+                <span class="modal-header-icon fa-solid fa-sharp fa-signal"></span>
+                <span class="modal-header-title">Add Remote</span>
+            </HeaderContent>
+            <BodyContent>
+                <div class="form-field">
+                    <label>ID</label>
+                    <RadzenTextBox @bind-Value=@addId />
+                </div>
+                <div class="form-field">
+                    <label>Name</label>
+                    <RadzenTextBox @bind-Value=@addName />
+                </div>
+                <div class="form-field">
+                    <label>Base URL</label>
+                    <RadzenTextArea @bind-Value=@addBaseUrl />
+                </div>
+                <div class="form-field">
+                    <label>Organization</label>
+                    <RadzenTextBox @bind-Value=@addOrganization />
+                </div>
+            </BodyContent>
+            <FooterContent>
+
+                @if (!addModalLoading)
+                {
+                    <button class="btn btn-secondary" @onclick="ModalCancelClicked"><span class="icon fa-solid fa-sharp fa-xmark"></span>Cancel</button>
+                    <button class="btn btn-primary" @onclick="ModalAddClicked"><span class="icon fa-solid fa-sharp fa-plus"></span>Add</button>
+                }
+                else
+                {
+                    <button class="btn btn-primary disabled"><span class="icon fa-solid fa-sharp fa-loader"></span>Adding..</button>
+                }
+
+            </FooterContent>
+        </Modal>
+
+    </div>
+}
+else
+{
+    <Loading Message="Loading Remotes.." />
+}
+
+@code {
+
+    [CascadingParameter]
+    public RemotesConfiguration Configuration { get; set; }
+
+    private IEnumerable<TableItem> tableItems;
+    private bool loading;
+    private bool loaded;
+
+    private bool addModalVisible;
+    private bool addModalLoading;
+    private string addId;
+    private string addName;
+    private string addBaseUrl;
+    private string addOrganization;
+
+    private class TableItem
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string BaseUrl { get; set; }
+        public string Organization { get; set; }
+    }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+
+    private async Task Load(bool forceLoad = false)
+    {
+        if (!loaded || forceLoad)
+        {
+            loaded = true;
+            loading = true;
+            await InvokeAsync(StateHasChanged);
+
+            var items = new List<TableItem>();
+
+            if (Configuration != null && !Configuration.Remotes.IsNullOrEmpty())
+            {
+                foreach (var remoteConfiguration in Configuration.Remotes)
+                {
+                    var item = new TableItem();
+                    item.Id = remoteConfiguration.Id;
+                    item.Name = remoteConfiguration.Name;
+                    item.BaseUrl = remoteConfiguration.BaseUrl;
+                    item.Organization = remoteConfiguration.Organization;
+                    items.Add(item);
+                }
+            }
+
+            loading = false;
+            tableItems = items;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+
+    private async void AddClicked()
+    {
+        addModalVisible = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ModalAddClicked()
+    {
+        addModalLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (!string.IsNullOrEmpty(addId) && !string.IsNullOrEmpty(addName) && !string.IsNullOrEmpty(addBaseUrl))
+        {
+            var remoteConfiguration = new RemoteConfiguration();
+            remoteConfiguration.Id = addId;
+            remoteConfiguration.Name = addName;
+            remoteConfiguration.BaseUrl = addBaseUrl;
+            remoteConfiguration.Organization = addOrganization;
+
+            var remoteConfigurations = Configuration?.Remotes?.ToList();
+            if (remoteConfigurations == null) remoteConfigurations = new List<RemoteConfiguration>();
+            remoteConfigurations.RemoveAll(o => o.Id == remoteConfiguration.Id);
+            remoteConfigurations.Add(remoteConfiguration);
+            Configuration.Remotes = remoteConfigurations;
+        }
+
+        addModalLoading = false;
+        addModalVisible = false;
+        await Load(true);
+    }
+
+    private async void ModalCancelClicked()
+    {
+        addModalLoading = false;
+        addModalVisible = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void RemoveClicked(TableItem tableItem)
+    {
+        if (!Configuration.Remotes.IsNullOrEmpty())
+        {
+            var remoteConfigurations = Configuration?.Remotes?.ToList();
+            remoteConfigurations.RemoveAll(o => o.Id == tableItem.Id);
+            Configuration.Remotes = remoteConfigurations;
+
+            await Load(true);
+        }
+    }
+
+}

@@ -1,0 +1,56 @@
+﻿.apps-page {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 120px);
+    grid-auto-rows: max-content;
+    grid-row-gap: 20px;
+    grid-column-gap: 20px;
+}
+
+.app-panel {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--accentVeryVeryDark);
+    border-radius: 2px;
+    width: 120px;
+    text-transform: none;
+    text-decoration: none;
+}
+
+.app-panel:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--accentLight);
+    cursor: pointer;
+}
+
+.app-container {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 60px 1fr;
+    padding: 10px 5px;
+}
+
+.app-icon {
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+    .app-icon img {
+        max-width: 48px;
+        max-height: 48px;
+    }
+
+.app-title {
+    text-align: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--accentVeryLight);
+    overflow-wrap: anywhere;
+}
+
+.app-panel:hover .app-title {
+    color: var(--accentLight);
+}

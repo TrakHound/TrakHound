@@ -1,0 +1,117 @@
+﻿@page "/packages"
+@layout Layout
+@inherits TrakHoundComponentBase
+
+<TrakHoundPageTitle>TrakHound - Packages</TrakHoundPageTitle>
+
+<div class="packages-page">
+    <div class="header-container">
+        <Header />
+    </div>
+    <div class="body-container">
+        <div class="search-container">
+            <div class="search-button">
+                <button class="btn btn-primary btn-search" @onclick="Load"><span class="icon fa-solid fa-sharp fa-magnifying-glass"></span>Search</button>
+            </div>
+            <div class="search-input">
+                <TextBox @bind-Value="@query" Submitted="Load" />
+            </div>
+        </div>
+        <div class="filter-container">
+        </div>
+        <div class="results-container">
+
+            @if (!packages.IsNullOrEmpty())
+            {
+                <div class="packages-list">
+
+                    @foreach (var package in packages)
+                    {
+                        var updatedAgo = (DateTime.Now - package.BuildDate).ToFormattedString();
+
+                        <div class="package-panel">
+                            <div class="package-icon">
+                                <img src="@package.GetMetadata(".image")" />
+                            </div>
+                            <div class="package-header">
+                                <div class="package-title">@package.Id</div>
+                                <div class="package-publisher">
+                                    <span class="package-publisher-label">by:</span>
+                                    <span class="package-publisher-value">@package.GetMetadata("publisher")</span>
+                                </div>
+                            </div>
+                            <div class="package-badges">
+                                <div class="package-badge">.NET 5.0</div>
+                                <div class="package-badge">.NET Core 2.0</div>
+                                <div class="package-badge">.NET Standard 2.0</div>
+                                <div class="package-badge">.NET Framework 4.6.1</div>
+                            </div>
+                            <div class="package-information">
+                                <div class="package-downloads">
+                                    <span class="package-downloads-icon fa-regular fa-sharp fa-arrow-down-to-line"></span>
+                                    <span class="package-downloads-count">88,476</span>
+                                    <span class="package-downloads-label">total downloads</span>
+                                </div>
+                                <div class="package-updated">
+                                    <span class="package-updated-icon fa-regular fa-sharp fa-clock-rotate-left"></span>
+                                    <span class="package-updated-label">last updated</span>
+                                    <span class="package-updated-value">@updatedAgo</span>
+                                    <span class="package-updated-ago">ago</span>
+                                </div>
+                                <div class="package-version">
+                                    <span class="package-updated-icon fa-regular fa-sharp fa-flag"></span>
+                                    <span class="package-updated-label">Latest version:</span>
+                                    <span class="package-updated-value">@package.Version</span>
+                                </div>
+                            </div>
+                            <div class="package-tags">
+                                <div class="package-tag-icon">
+                                    <span class="icon fa-regular fa-sharp fa-tag"></span>
+                                </div>
+                                <div class="package-tag-list">
+                                    <span class="package-tag">mtconnect</span>
+                                    <span class="package-tag">iiot</span>
+                                    <span class="package-tag">iot</span>
+                                    <span class="package-tag">cnc</span>
+                                </div>
+                            </div>
+                            <div class="package-description">
+                                <p>@package.GetMetadata("description")</p>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <p>No Packages Found</p>
+            }
+
+        </div>
+    </div>
+    <div class="footer-container">
+        <Footer />
+    </div>
+</div>
+
+@code {
+
+    private TrakHound.Management.TrakHoundManagementClient managementClient;
+    private string query;
+    private IEnumerable<TrakHound.Packages.TrakHoundPackage> packages;
+
+
+    protected override void OnInitialized()
+    {
+        managementClient = new Management.TrakHoundManagementClient("https://www.trakhound.com/management");
+    }
+
+    private async Task Load()
+    {
+        packages = await managementClient.Packages.QueryLatestByOrganization("Public");
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

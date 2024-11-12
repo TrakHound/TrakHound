@@ -1,0 +1,21 @@
+:root {
+    /* TrakHound Blue Colors */
+    --accent: #e6f2ff;
+    --accent: #0056b3;
+    --accent: #0063cc;
+    /*--accent: #004080;*/
+    /*--accent: #0073e6;*/
+    --accentLight: #00aaff;
+    --accentKindaLight: #1a8cff;
+    --accentVeryLight: #cce6ff;
+    --accentVeryVeryLight: #e9f2fc;
+    --accentMild: #0079f2;
+    --accentDark: #0066cc;
+    --accentBackground: linear-gradient(0deg, #007bf7 0%, #0073e6 25%, #0073e6 50%, #0073e6 75%, #007bf7 100%);
+    /* New Colors (3-4-2024) */
+    --accent: #2870bd;
+    --accentLight: #428ad7;
+    --accentDark: #1b4b7e;
+    --accentVeryDark: #123254;
+    --accentVeryVeryDark: #09192a;
+}

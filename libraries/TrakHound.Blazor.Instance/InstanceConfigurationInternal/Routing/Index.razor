@@ -1,0 +1,126 @@
+﻿@using TrakHound.Blazor.Diagrams
+@using TrakHound.Blazor.Diagrams.Components
+@using TrakHound.Blazor.Diagrams.Components.Widgets
+@using TrakHound.Blazor.Diagrams.Core.PathGenerators;
+@using TrakHound.Blazor.Diagrams.Core.Routers;
+@using TrakHound.Blazor.Diagrams.Options;
+@using TrakHound.Blazor.Instance.InstanceConfigurationInternal.Components
+
+@{
+    var loadingClass = _loading || _saveLoading ? "" : "hidden";
+}
+
+<div class="routing-panel configuration-table-panel">
+
+    <div class="breadcrumb-panel">
+        <BreadcrumbLinks>
+            <BreadcrumbLink Display="Home" />
+            <BreadcrumbLink Display="Routers" />
+        </BreadcrumbLinks>
+    </div>
+
+    <div class="header-panel">
+        <div class="header-panel-container">
+            <div class="header-panel-icon-container">
+                <span class="header-panel-icon fa-regular fa-chart-network"></span>
+            </div>
+            <div class="header-panel-information-container">
+                <span class="header-panel-title">Routing</span>
+                <span class="header-panel-description">Used to route requests to Drivers</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-panel">
+        <div class="content-container">
+
+            <div class="diagram-sidebar">
+                <RadzenTabs>
+                    <Tabs>
+                        <RadzenTabsItem Text="Routers">
+                            <div class="router-target-item-list">
+
+                                @if (!_routerConfigurations.IsNullOrEmpty())
+                                {
+                                    foreach (var configuration in _routerConfigurations.Values)
+                                    {
+                                        <div class="router-target-item" @onclick="() => AddRouterTarget(configuration)">
+                                            <span class="router-target-item-type"><span class="icon fa-sharp fa-regular fa-crosshairs-simple"></span>Router Target</span>
+                                            <span class="router-target-item-name">@configuration.Name</span>
+                                            <span class="router-target-item-description">@configuration.Description</span>
+                                            <span class="router-target-item-id">@configuration.Id</span>
+                                        </div>
+                                    }
+                                }
+
+                                <div class="loading-cover @loadingClass"></div>
+
+                            </div>
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="Drivers">
+                            <div class="driver-target-item-list">
+
+                                @if (!_driverConfigurations.IsNullOrEmpty())
+                                {
+                                    foreach (var configuration in _driverConfigurations.Values)
+                                    {
+                                        <div class="driver-target-item" @onclick="() => AddDriverTarget(configuration)">
+                                            <span class="driver-target-item-type"><span class="icon fa-sharp fa-regular fa-crosshairs-simple"></span>Driver Target</span>
+                                            <span class="driver-target-item-name">@configuration.Name</span>
+                                            <span class="driver-target-item-description">@configuration.Description</span>
+                                            <span class="driver-target-item-id">@configuration.Id</span>
+                                        </div>
+                                    }
+                                }
+
+                                <div class="loading-cover @loadingClass"></div>
+
+                            </div>
+                        </RadzenTabsItem>
+                    </Tabs>
+                </RadzenTabs>
+            </div>
+
+            <div class="diagram-toolbar">
+
+                @if (!_loading)
+                {
+                    <button class="btn btn-toolbar btn-refresh" @onclick="Load"><span class="icon fa-solid fa-sharp fa-rotate"></span></button>
+                }
+                else
+                {
+                    <button class="btn btn-toolbar btn-refresh disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span></button>
+                }
+
+                @if (!_saveLoading)
+                {
+                    <button class="btn btn-primary btn-save" @onclick="Save"><span class="icon fa-solid fa-sharp fa-floppy-disk"></span>Save</button>
+                }
+                else
+                {
+                    <button class="btn btn-primary btn-save disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Saving..</button>
+                }
+
+                <button class="btn btn-toolbar btn-create" @onclick="AddRouter"><span class="icon fa-solid fa-sharp fa-plus"></span>Router</button>
+                <button class="btn btn-toolbar btn-create" @onclick="AddRoute"><span class="icon fa-solid fa-sharp fa-plus"></span>Route</button>
+                <button class="btn btn-toolbar btn-create" @onclick="AddRedirect"><span class="icon fa-solid fa-sharp fa-plus"></span>Redirect</button>
+            </div>
+
+            <div class="diagram-container">
+                <CascadingValue Value="Diagram" IsFixed="true">
+                    <DiagramCanvas>
+                        <Widgets>
+                            <SelectionBoxWidget />
+                            <GridWidget Size="@_gridSize" Mode="GridMode.Line" GridColor="rgba(0, 0, 0, 0.025)" BackgroundColor="#eee" ZoomThreshold="0.4" />
+                        </Widgets>
+                    </DiagramCanvas>
+                </CascadingValue>
+                <div class="loading-cover @loadingClass"></div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<TrakHound.Blazor.Components.Notifications Items="@notificationService.Notifications" />

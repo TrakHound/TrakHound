@@ -1,0 +1,16 @@
+﻿<div class="page-menu-section">
+    <label class="page-menu-section-label">@Label</label>
+    <div class="page-menu-section-content">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string Label { get; set; }
+
+}

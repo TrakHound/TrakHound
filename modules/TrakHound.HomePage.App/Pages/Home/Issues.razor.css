@@ -1,0 +1,109 @@
+﻿.issues-panel {
+    height: 100%;
+    display: grid;
+    grid-template-rows: max-content 1fr;
+}
+
+.issues-toolbar {
+    padding: 5px 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: left;
+}
+
+    .issues-toolbar a {
+        font-size: 14px;
+        text-decoration: none;
+    }
+
+.issues-list {
+    padding: 10px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.issue-panel {
+    display: block;
+    padding: 5px 20px 10px;
+    margin-bottom: 10px;
+    min-height: 70px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+}
+
+.issue-container {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    grid-template-columns: max-content 1fr max-content;
+    grid-row-gap: 5px;
+    grid-column-gap: 20px;
+}
+
+    .issue-panel:hover {
+        background: var(--accentDark);
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid var(--accent);
+        cursor: pointer;
+    }
+
+    .issue-panel .issue-icon {
+        grid-row-start: 1;
+        grid-row-end: 3;
+        grid-column: 1;
+        padding-top: 5px;
+        width: 20px;
+    }
+
+        .issue-panel .issue-icon .icon {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.2);
+            color: var(--colorGreenLight);
+        }
+
+    .issue-panel .issue-header {
+        grid-row: 1;
+        grid-column-start: 2;
+        grid-column-end: 4;
+        text-align: left;
+    }
+
+    .issue-panel .issue-title {
+        font-size: 12px;
+        font-weight: bold;
+        color: var(--accentVeryLight);
+    }
+
+    .issue-panel .issue-content {
+        grid-row: 2;
+        grid-column: 2;
+        text-align: left;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .issue-panel .issue-number {
+        font-size: 14px;
+        color: var(--accentLight);
+    }
+
+    .issue-panel .issue-updated {
+        font-size: 11px;
+        margin-left: 5px;
+        color: var(--accentVeryLight);
+    }
+
+    .issue-panel .issue-icons {
+        grid-row: 2;
+        grid-column: 3;
+        text-align: right;
+    }
+
+    .issue-panel .issue-comments {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .issue-panel .issue-comments .icon {
+        margin-right: 8px;
+    }

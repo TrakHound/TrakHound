@@ -1,0 +1,416 @@
+﻿@implements IDisposable
+@using TrakHound.Entities
+@using TrakHound.Messages
+
+@if (ObjectExplorerService != null && Object != null)
+{
+    var objectLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction($"select >> from [{Object.Path}]") : null;
+
+    var resultQuery = $"select > from [{Object.Path}]";
+    var queryLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(resultQuery) : null;
+
+    <div class="message-content">
+        <div class="input-panel">
+            <div class="input-panel-container">
+
+                <div class="input-panel-buttons mapping-buttons">
+
+                    @if (!publishMappingLoading)
+                    {
+                        <button class="btn btn-sm btn-light btn-save btn-map-save" @onclick="SaveMapping"><span class="icon fa-solid fa-sharp fa-link"></span>Map</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-light btn-save btn-map-save disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Mapping..</button>
+                    }
+
+                    @if (!loading)
+                    {
+                        <button class="btn btn-sm btn-light btn-refresh" @onclick="() => Load(true)"><span class="icon fa-solid fa-sharp fa-rotate"></span></button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-light btn-refresh disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span></button>
+                    }
+
+                </div>
+
+                <div class="input-panel-buttons subscribe-buttons">
+
+                    @if (messageConsumer != null)
+                    {
+                        <button class="btn btn-light btn-subscribe" @onclick="Unsubscribe"><span class="icon fa-solid fa-pause"></span>Unsubscribe</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary btn-subscribe" @onclick="Subscribe"><span class="icon fa-solid fa-play"></span>Subscribe</button>
+                    }
+
+                </div>
+
+                <div class="input-panel-top">
+                    <div class="input-panel-input content-broker-input">
+                        <RadzenDropDown @bind-Value="@brokerId" Data="@brokers" ValueProperty="Id" TextProperty="Name" Disabled="@publishMappingLoading" />
+                    </div>
+                    <div class="input-panel-input content-topic-input">
+                        <TextBox @bind-Value="@topic" PlaceHolder="Topic" Enabled="@(!publishMappingLoading)" />
+                    </div>
+                </div>
+
+                <div class="input-panel-bottom">
+                    <div class="input-panel-input content-type-input">
+                        <TextBox @bind-Value="@contentType" PlaceHolder="Content Type.." Enabled="@(!publishMappingLoading)" />
+                    </div>
+                    <div class="input-panel-input retain-input">
+                        <RadzenDropDown @bind-Value="@retain" Data="@retainOptions" Disabled="@publishMappingLoading" />
+                    </div>
+                    <div class="input-panel-input qos-input">
+                        <RadzenDropDown @bind-Value="@qos" Data="@qualityOfServiceLevels" Disabled="@publishMappingLoading" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="content-panel">
+            <div class="content-panel-container">
+
+                @if (!loading)
+                {
+                    if (messageResponse.IsValid)
+                    {
+                        var messageAgo = TimeSpan.FromTicks((UnixDateTime.Now - messageResponse.Timestamp) / 100).ToDetailedFormattedString();
+
+                        <div class="message-response-panel">
+                            <div class="message-response-information">
+                                <div class="message-response-topic-label">Topic</div>
+                                <div class="message-response-topic">@messageResponse.Topic</div>
+                                <div class="message-response-ago"><span class="ago-value">@messageAgo</span><span class="ago-label">ago</span></div>
+                                <div class="message-response-timestamp">@messageResponse.Timestamp.ToLocalDateTime().ToISO8601String()</div>
+
+                                @if (messageResponse.Retain)
+                                {
+                                    <div class="message-response-retained">Retained</div>                                
+                                }
+
+                            </div>
+                            <div class="message-response-tabs">
+
+                                @if (entity != null)
+                                {
+                                    var sourceLink = $"explorer/{ObjectExplorerService.InstanceId}/{ObjectExplorerService.RouterId}/entities/sources?uuid={entity.SourceUuid}";
+
+                                    <RadzenTabs RenderMode="TabRenderMode.Client">
+                                        <Tabs>
+                                            <RadzenTabsItem Text="Payload">
+                                                <Template>
+                                                    <div class="tab-header">
+                                                        <span class="tab-header-icon fa-regular fa-sharp fa-file-binary"></span>
+                                                        <span class="tab-header-title">Payload</span>
+                                                    </div>
+                                                </Template>
+                                                <ChildContent>
+                                                    <div class="payload-panel">
+                                                        <ContentPreview ContentType="@entity.ContentType" Content="@messageContent" />
+                                                    </div>
+                                                </ChildContent>
+                                            </RadzenTabsItem>
+                                            <RadzenTabsItem Text="Broker">
+                                                <Template>
+                                                    <div class="tab-header">
+                                                        <span class="tab-header-icon fa-regular fa-sharp fa-file-binary"></span>
+                                                        <span class="tab-header-title">Broker</span>
+                                                    </div>
+                                                </Template>
+                                                <ChildContent>
+                                                    <div class="broker-panel">
+
+                                                        @if (broker != null)
+                                                        {
+                                                            <table class="table">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="name-cell">ID</td>
+                                                                        <td class="value-cell">@broker.Id</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="name-cell">Name</td>
+                                                                        <td class="value-cell">@broker.Name</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="name-cell">Description</td>
+                                                                        <td class="value-cell">@broker.Description</td>
+                                                                    </tr>
+
+                                                                    @if (!broker.Metadata.IsNullOrEmpty())
+                                                                    {
+                                                                        foreach (var metadata in broker.Metadata)
+                                                                        {
+                                                                            <tr>
+                                                                                <td class="name-cell">@metadata.Key</td>
+                                                                                <td class="value-cell">@metadata.Value</td>
+                                                                            </tr>
+                                                                        }
+                                                                    }
+
+                                                                </tbody>
+                                                            </table>
+                                                        }
+
+                                                    </div>
+                                                </ChildContent>
+                                            </RadzenTabsItem>
+                                            <RadzenTabsItem Text="Sender">
+                                                <Template>
+                                                    <div class="tab-header">
+                                                        <span class="tab-header-icon fa-regular fa-sharp fa-file-binary"></span>
+                                                        <span class="tab-header-title">Sender</span>
+                                                    </div>
+                                                </Template>
+                                                <ChildContent>
+                                                    <div class="sender-panel">
+
+                                                    </div>
+                                                </ChildContent>
+                                            </RadzenTabsItem>
+                                        </Tabs>
+                                    </RadzenTabs>
+                                }
+
+                            </div>
+                        </div>
+                    }
+
+                    <div class="message-publish-panel">
+                        <div class="message-publish-content">
+                            <TextArea @bind-Value="@publishContent" />
+                        </div>
+                        <div class="message-publish-toolbar">
+
+                            @if (!publishMessageLoading)
+                            {
+                                <button class="btn btn-sm btn-primary btn-save btn-message-save" @onclick="SaveMessage"><span class="icon fa-solid fa-sharp fa-paper-plane"></span>Publish</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-sm btn-primary btn-save btn-message-save disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Publishing..</button>
+                            }
+
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <Loading Message="Loading.." />
+                }
+
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    private bool[] retainOptions = new bool[] { false, true };
+    private int[] qualityOfServiceLevels = new int[] { 0, 1, 2 };
+    private IEnumerable<TrakHoundMessageBroker> brokers;
+    private ITrakHoundConsumer<TrakHoundMessageResponse> messageConsumer;
+
+
+    private ITrakHoundObjectMessageEntity entity;
+    private TrakHoundMessageResponse messageResponse;
+    private byte[] messageContent;
+    private string publishContent;
+    private string brokerId;
+    private string topic;
+    private string contentType = "text/plain";
+    private bool retain;
+    private int qos;
+    private bool loading;
+    private bool publishMappingLoading;
+    private bool publishMessageLoading;
+    private string previousObjectUuid;
+
+    private TrakHoundMessageBroker broker;
+    private string previousBrokerId;
+
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public ITrakHoundObjectEntity Object { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    void IDisposable.Dispose()
+    {
+        Unsubscribe(); 
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || (ObjectExplorerService != null && Object != null && Object.Uuid != previousObjectUuid))
+        {
+            brokers = null;
+            previousObjectUuid = Object.Uuid;
+            loading = true;
+            await InvokeAsync(StateHasChanged);
+
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                // Get List of Brokers
+                brokers = await client.System.Messages.QueryBrokers();
+
+                // Get Mapping Entity
+                entity = await client.System.Entities.Objects.Message.QueryByObjectUuid(Object.Uuid);
+                if (entity != null)
+                {
+                    brokerId = entity.BrokerId;
+                    topic = entity.Topic;
+                    contentType = entity.ContentType;
+                    retain = entity.Retain;
+                    qos = entity.Qos;
+                }
+            }
+
+            loading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task Subscribe()
+    {
+        if (messageConsumer != null)
+        {
+            messageConsumer.Received -= MessageReceived;
+            messageConsumer.Dispose();
+        }
+
+        if (entity != null)
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                var topics = new string[] { entity.Topic };
+                messageConsumer = await client.System.Messages.Subscribe(entity.BrokerId, null, topics, entity.Qos);
+                if (messageConsumer != null)
+                {
+                    await MessageReceived(messageConsumer.InitialValue);
+                    messageConsumer.Received += MessageReceived;
+                }
+            }
+        }
+    }
+
+    private async void Unsubscribe()
+    {
+        if (messageConsumer != null)
+        {
+            messageConsumer.Received -= MessageReceived;
+            messageConsumer.Dispose();
+            messageConsumer = null;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void MessageReceived(object sender, TrakHoundMessageResponse response)
+    {
+        await MessageReceived(response);
+    }
+
+    private async Task MessageReceived(TrakHoundMessageResponse response)
+    {
+        messageResponse = response;
+        messageContent = response.GetContentBytes();
+
+        // Get Broker
+        if (response.BrokerId != previousBrokerId)
+        {
+            if (!string.IsNullOrEmpty(response.BrokerId) && !brokers.IsNullOrEmpty())
+            {
+                broker = brokers.FirstOrDefault(o => o.Id == response.BrokerId);
+            }
+
+            previousBrokerId = response.BrokerId;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void SaveMapping()
+    {
+        publishMappingLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(brokerId) && !string.IsNullOrEmpty(topic))
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                if (await client.Entities.PublishMessageMapping(Object.GetAbsolutePath(), brokerId, topic, contentType, retain, qos))
+                {
+                    ObjectExplorerService.LoadContent(Object);
+                    ObjectExplorerService.UpdateValue(Object.Uuid);
+
+                    await Load(true);
+
+                    ObjectExplorerService.AddNotification(NotificationType.Information, "Message Mapping Published Successfully", Object.GetAbsolutePath());
+                }
+                else
+                {
+                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Message Mapping");
+                }
+            }
+        }
+
+        publishMappingLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void SaveMessage()
+    {
+        publishMessageLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(publishContent))
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                if (await client.Entities.PublishMessageContent(Object.GetAbsolutePath(), publishContent, retain, qos))
+                {
+                    ObjectExplorerService.LoadContent(Object);
+                    ObjectExplorerService.UpdateValue(Object.Uuid);
+
+                    ObjectExplorerService.AddNotification(NotificationType.Information, "Message Published Successfully", Object.GetAbsolutePath());
+                }
+                else
+                {
+                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Message");
+                }
+            }
+        }
+
+        publishMessageLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void CopyClicked(string value)
+    {
+        ObjectExplorerService.AddNotification(NotificationType.Information, "Copied to Clipboard", duration: 5000);
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

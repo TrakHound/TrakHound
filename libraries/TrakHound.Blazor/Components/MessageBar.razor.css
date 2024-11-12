@@ -1,0 +1,7 @@
+﻿.message-bar {
+    text-align: center;
+    border-bottom-width: 2px;
+    padding: 7px 10px;
+    font-size: 13px;
+    font-weight: bold;
+}

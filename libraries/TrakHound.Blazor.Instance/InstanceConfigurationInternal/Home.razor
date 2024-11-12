@@ -1,0 +1,258 @@
+﻿@using TrakHound.Api
+@using TrakHound.Apps
+@using TrakHound.Configurations
+@using TrakHound.Drivers
+@using TrakHound.Functions
+@using TrakHound.Routing
+@using TrakHound.Security
+@using TrakHound.Services
+
+@if (InstanceConfiguration != null && InstanceConfiguration.ConfigurationGroup != null)
+{
+    var appConfigurations = InstanceConfiguration.ConfigurationGroup.ConfigurationProfile.Get<TrakHoundAppConfiguration>(TrakHoundAppConfiguration.ConfigurationCategory);
+    var appPackages = InstanceConfiguration.ConfigurationGroup.Packages?.Where(o => o.Category == "app");
+    var appConfigurationCount = !appConfigurations.IsNullOrEmpty() ? appConfigurations.Count() : 0;
+    var appPackageCount = !appPackages.IsNullOrEmpty() ? appPackages.Count() : 0;
+
+    var apiConfigurations = InstanceConfiguration.ConfigurationGroup.ConfigurationProfile.Get<TrakHoundApiConfiguration>(TrakHoundApiConfiguration.ConfigurationCategory);
+    var apiPackages = InstanceConfiguration.ConfigurationGroup.Packages?.Where(o => o.Category == "api");
+    var apiConfigurationCount = !apiConfigurations.IsNullOrEmpty() ? apiConfigurations.Count() : 0;
+    var apiPackageCount = !apiPackages.IsNullOrEmpty() ? apiPackages.Count() : 0;
+
+    var functionConfigurations = InstanceConfiguration.ConfigurationGroup.ConfigurationProfile.Get<TrakHoundFunctionConfiguration>(TrakHoundFunctionConfiguration.ConfigurationCategory);
+    var functionPackages = InstanceConfiguration.ConfigurationGroup.Packages?.Where(o => o.Category == "function");
+    var functionConfigurationCount = !functionConfigurations.IsNullOrEmpty() ? functionConfigurations.Count() : 0;
+    var functionPackageCount = !functionPackages.IsNullOrEmpty() ? functionPackages.Count() : 0;
+
+    var serviceConfigurations = InstanceConfiguration.ConfigurationGroup.ConfigurationProfile.Get<TrakHoundServiceConfiguration>(TrakHoundServiceConfiguration.ConfigurationCategory);
+    var servicePackages = InstanceConfiguration.ConfigurationGroup.Packages?.Where(o => o.Category == "service");
+    var serviceConfigurationCount = !serviceConfigurations.IsNullOrEmpty() ? serviceConfigurations.Count() : 0;
+    var servicePackageCount = !servicePackages.IsNullOrEmpty() ? servicePackages.Count() : 0;
+
+    var routerConfigurations = InstanceConfiguration.ConfigurationGroup.ConfigurationProfile.Get<TrakHoundRouterConfiguration>(TrakHoundRouterConfiguration.ConfigurationCategory);
+    var routerConfigurationCount = !routerConfigurations.IsNullOrEmpty() ? routerConfigurations.Count() : 0;
+
+    var driverConfigurations = InstanceConfiguration.ConfigurationGroup.ConfigurationProfile.Get<TrakHoundDriverConfiguration>(TrakHoundDriverConfiguration.ConfigurationCategory);
+    var driverPackages = InstanceConfiguration.ConfigurationGroup.Packages?.Where(o => o.Category == "driver");
+    var driverConfigurationCount = !driverConfigurations.IsNullOrEmpty() ? driverConfigurations.Count() : 0;
+    var driverPackageCount = !driverPackages.IsNullOrEmpty() ? driverPackages.Count() : 0;
+
+    var identityConfigurations = InstanceConfiguration.ConfigurationGroup.ConfigurationProfile.Get<TrakHoundIdentityProviderConfiguration>(TrakHoundIdentityProviderConfiguration.ConfigurationCategory);
+    var identityPackages = InstanceConfiguration.ConfigurationGroup.Packages?.Where(o => o.Category == "identity");
+    var identityConfigurationCount = !identityConfigurations.IsNullOrEmpty() ? identityConfigurations.Count() : 0;
+    var identityPackageCount = !identityPackages.IsNullOrEmpty() ? identityPackages.Count() : 0;
+
+    <div class="profile-page">
+
+        <div class="category-panel">
+            <div class="category-container">
+                <div class="category-icon">
+                    <span class="icon fa-solid fa-sharp fa-browsers"></span>
+                </div>
+                <div class="category-label">
+                    <label>Apps</label>
+                    <span class="description">User Interfaces to view and interact with information</span>
+                </div>
+                <div class="category-content">
+                    <table class="count-table">
+                        <tbody>
+                            <tr>
+                                <td class="label">Configurations</td>
+                                <td class="value">@appConfigurationCount</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Packages</td>
+                                <td class="value">@appPackageCount</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <a href="@GetLink("apps")" class="category-click-panel"></a>
+        </div>
+
+        <div class="category-panel">
+            <div class="category-container">
+                <div class="category-icon">
+                    <span class="icon fa-solid fa-sharp fa-circle-location-arrow"></span>
+                </div>
+                <div class="category-label">
+                    <label>API</label>
+                    <span class="description">Endpoints to Query, Subscribe, Publish, and Delete</span>
+                </div>
+                <div class="category-content">
+                    <table class="count-table">
+                        <tbody>
+                            <tr>
+                                <td class="label">Configurations</td>
+                                <td class="value">@apiConfigurationCount</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Packages</td>
+                                <td class="value">@apiPackageCount</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <a href="@GetLink("api")" class="category-click-panel"></a>
+        </div>
+
+        <div class="category-panel">
+            <div class="category-container">
+                <div class="category-icon">
+                    <span class="icon fa-solid fa-sharp fa-code"></span>
+                </div>
+                <div class="category-label">
+                    <label>Functions</label>
+                    <span class="description">Run a short lived process to import, export, and/or transform</span>
+                </div>
+                <div class="category-content">
+                    <table class="count-table">
+                        <tbody>
+                            <tr>
+                                <td class="label">Configurations</td>
+                                <td class="value">@functionConfigurationCount</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Packages</td>
+                                <td class="value">@functionPackageCount</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <a href="@GetLink("functions")" class="category-click-panel"></a>
+        </div>
+
+        <div class="category-panel">
+            <div class="category-container">
+                <div class="category-icon">
+                    <span class="icon fa-solid fa-sharp fa-gears"></span>
+                </div>
+                <div class="category-label">
+                    <label>Services</label>
+                    <span class="description">Connect and read data from external sources with long lived processes</span>
+                </div>
+                <div class="category-content">
+                    <table class="count-table">
+                        <tbody>
+                            <tr>
+                                <td class="label">Configurations</td>
+                                <td class="value">@serviceConfigurationCount</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Packages</td>
+                                <td class="value">@servicePackageCount</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <a href="@GetLink("services")" class="category-click-panel"></a>
+        </div>
+
+        <div class="category-panel">
+            <div class="category-container">
+                <div class="category-icon">
+                    <span class="icon fa-regular fa-chart-network"></span>
+                </div>
+                <div class="category-label">
+                    <label>Routing</label>
+                    <span class="description">Used to route requests to Drivers</span>
+                </div>
+                <div class="category-content">
+                    <table class="count-table">
+                        <tbody>
+                            <tr>
+                                <td class="label">Routers</td>
+                                <td class="value">@routerConfigurationCount</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <a href="@GetLink("routing")" class="category-click-panel"></a>
+        </div>
+
+        <div class="category-panel">
+            <div class="category-container">
+                <div class="category-icon">
+                    <span class="icon fa-solid fa-sharp fa-right-left-large"></span>
+                </div>
+                <div class="category-label">
+                    <label>Drivers</label>
+                    <span class="description">Handle routable requests to external systems</span>
+                </div>
+                <div class="category-content">
+                    <table class="count-table">
+                        <tbody>
+                            <tr>
+                                <td class="label">Configurations</td>
+                                <td class="value">@driverConfigurationCount</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Packages</td>
+                                <td class="value">@driverPackageCount</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <a href="@GetLink("drivers")" class="category-click-panel"></a>
+        </div>
+
+        <div class="category-panel">
+            <div class="category-container">
+                <div class="category-icon">
+                    <span class="icon fa-solid fa-sharp fa-lock-keyhole"></span>
+                </div>
+                <div class="category-label">
+                    <label>Identity</label>
+                    <span class="description">Authentication & Authorization using an external provider</span>
+                </div>
+                <div class="category-content">
+                    <table class="count-table">
+                        <tbody>
+                            <tr>
+                                <td class="label">Configurations</td>
+                                <td class="value">@identityConfigurationCount</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Packages</td>
+                                <td class="value">@identityPackageCount</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <a href="@GetLink("identity")" class="category-click-panel"></a>
+        </div>
+
+    </div>
+}
+
+@code {
+
+    [CascadingParameter(Name = "InstanceConfiguration")]
+    public InstanceConfiguration InstanceConfiguration { get; set; }
+
+
+    private async Task Load()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void RefreshClicked()
+    {
+        await Load();
+    }
+
+    string GetLink(string path)
+    {
+        var url = Url.Combine(InstanceConfiguration.BasePath, path);
+        url = Url.AddQueryParameter(url, "groupId", InstanceConfiguration.ConfigurationGroup.Id);
+        return url;
+    }
+
+}

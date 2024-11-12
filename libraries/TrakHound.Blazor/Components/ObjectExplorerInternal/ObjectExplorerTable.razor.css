@@ -1,0 +1,96 @@
+﻿.object-table-panel {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.toolbar-panel {
+    grid-row: 1;
+    padding: 10px;
+}
+
+    .toolbar-panel .toolbar-panel-container {
+        display: grid;
+        grid-template-columns: max-content 1fr max-content;
+    }
+
+    .toolbar-panel .toolbar-panel-filter {
+        grid-column: 1;
+    }
+
+    .toolbar-panel .toolbar-panel-filter ::deep .rz-dropdown {
+        width: 400px;
+    }
+
+    .toolbar-panel .toolbar-panel-export {
+        grid-column: 3;
+    }
+
+        .toolbar-panel .toolbar-panel-export .btn-export-excel {
+            font-size: 12px;
+        }
+
+            .toolbar-panel .toolbar-panel-export .btn-export-excel .icon {
+                color: green;
+                font-size: 16px;
+            }
+
+        .toolbar-panel .toolbar-panel-export .btn-export-csv {
+            font-size: 12px;
+        }
+
+            .toolbar-panel .toolbar-panel-export .btn-export-csv .icon {
+                font-size: 16px;
+            }
+
+        .toolbar-panel .toolbar-panel-export .btn-export-json {
+            font-size: 12px;
+        }
+
+            .toolbar-panel .toolbar-panel-export .btn-export-json .icon {
+                color: black;
+                font-size: 16px;
+            }
+
+.table-panel {
+    grid-row: 2;
+    height: 100%;
+    overflow: hidden;
+    overflow-x: auto;
+}
+
+    .table-panel ::deep .rz-data-grid {
+        height: 100%;
+        width: auto;
+    }
+
+    .table-panel ::deep .rz-data-grid .rz-group-header {
+        padding: 8px 10px;
+    }
+
+    .table-panel ::deep .rz-cell-data {
+        font-size: 12px;
+    }
+
+.loading-panel {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr max-content 1fr;
+    grid-template-columns: 1fr max-content 1fr;
+}
+
+.loading-panel-container {
+    grid-row: 2;
+    grid-column: 2;
+    text-align: center;
+    opacity: 0;
+    animation: fadeIn 0.25s forwards;
+    animation-delay: 0.25s;
+}
+
+    .loading-panel label {
+        display: block;
+        font-size: 14px;
+        color: var(--accent);
+    }

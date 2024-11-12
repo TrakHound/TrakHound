@@ -1,0 +1,626 @@
+﻿@implements IDisposable
+@inject ExplorerService explorerService
+@inject TrakHoundDownloadService downloadService
+@inject JavascriptService javascriptService
+@inject IJSRuntime javascript
+@inject NavigationManager navigationManager
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using TrakHound.Api
+@using TrakHound.Blazor.Services
+
+<div class="hidden-input">
+    <InputFile OnChange="BodyFileChanged" id="@fileInputId" name="file" />
+</div>
+
+<div class="run-panel">
+    <div class="request-panel">
+        <div class="request-run-container">
+
+            @if (!loading)
+            {
+                @if (Endpoint.Type == "Subscribe")
+                {
+                    @if (responseConsumer != null)
+                    {
+                        <button class="btn btn-light btn-run" @onclick="Unsubscribe"><span class="icon fa-solid fa-pause"></span>Unsubscribe</button>
+                        <div class="listening">
+                            <ListeningIndicator />
+                        </div>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary btn-run" @onclick="RunRequest"><span class="icon fa-solid fa-play"></span>Subscribe</button>
+                    }
+                }
+                else
+                {
+                    <button class="btn btn-primary btn-run" @onclick="RunRequest"><span class="icon fa-solid fa-play"></span>Run</button>
+                }
+            }
+            else
+            {
+                <button class="btn btn-primary btn-run btn-loading"><span class="icon loading-icon fa-regular fa-loader"></span>Running..</button>
+            }
+
+        </div>
+        <div class="request-method-container @requestMethod?.ToLower()">
+            <span class="request-method">@requestMethod</span>
+        </div>
+        <div class="request-toolbar-container">
+
+            @if (!requestUrlClipboard)
+            {
+                <button class="btn btn-command btn-copy" @onclick="CopyRequestUrl"><span class="icon fa-regular fa-sharp fa-copy"></span></button>
+            }
+            else
+            {
+                <button class="btn btn-command btn-copy clipboard" @onclick="CopyRequestUrl"><span class="icon fa-solid fa-sharp fa-check"></span></button>
+            }
+            
+        </div>
+        <div class="request-url-container">
+            <a href="@requestUrl" target="_blank" class="request-url">@requestUrl</a>
+        </div>
+    </div>
+
+    @if (!Endpoint.Parameters.IsNullOrEmpty())
+    {
+        <div class="request-parameters-panel">
+            <CollapsePanel Title="Request Parameters" IsCollapsed="@requestParametersCollapsed" Collapsed="RequestParametersCollapsed" Expanded="RequestParametersExpanded">
+                <div class="request-parameters">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>DataType</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var parameter in Endpoint.Parameters)
+                            {
+                                string parameterValue = null;
+                                switch (parameter.Type)
+                                {
+                                    case "Route": parameterValue = routeParameterValues.ContainsKey(parameter.Name) ? routeParameterValues[parameter.Name] : null; break;
+                                    case "Query": parameterValue = queryParameterValues.ContainsKey(parameter.Name) ? queryParameterValues[parameter.Name] : null; break;
+                                    case "Body": parameterValue = bodyParameterValue; break;
+                                }
+
+                                string defaultParameterValue = parameter.DefaultValue ?? "null";
+
+                                <tr>
+                                    <td class="name-cell">@parameter.Name</td>
+                                    <td class="data-type-cell">@parameter.DataType</td>
+                                    <td class="value-cell">
+
+                                        @switch (parameter.Type)
+                                        {
+                                            case "Route":
+                                                <TextBox Value="@parameterValue" ValueChanged="(o) => RouteParameterValueChanged(parameter.Name, o)" Submitted="RunRequest" SpellCheck="false" PlaceHolder="@defaultParameterValue" />
+                                                break;
+
+                                            case "Query":
+                                                <TextBox Value="@parameterValue" ValueChanged="(o) => QueryParameterValueChanged(parameter.Name, o)" Submitted="RunRequest" SpellCheck="false" PlaceHolder="@defaultParameterValue" />
+                                                break;
+
+                                            case "Body":
+
+                                                @if (parameter.DataType == "Byte[]" || parameter.DataType == "Stream")
+                                                {
+                                                    var uploadTypeClass = uploadType.ToString().ToLower();
+
+                                                    <div class="body-upload @uploadTypeClass">
+                                                        <div class="body-upload-toolbar">
+                                                            <RadzenDropDown @bind-Value="@uploadType" Data="@uploadTypes" />
+                                                        </div>
+                                                        <div class="body-upload-content">
+
+                                                            @switch (uploadType)
+                                                            {
+                                                                case UploadType.Text:
+                                                                    <RadzenTextArea Value="@parameterValue" ValueChanged="(o) => BodyParameterValueChanged(parameter.Name, o, parameter.DataType)" spellcheck="false" MaxLength="1000000" />
+                                                                    break;
+
+                                                                case UploadType.File:
+                                                                    <div class="body-upload-file">
+                                                                        <div class="body-upload-file-button">
+                                                                            <button class="btn btn-browse" @onclick="BrowseClicked"><span class="icon fa-solid fa-sharp fa-magnifying-glass"></span>Browse..</button>
+                                                                        </div>
+                                                                        <div class="body-upload-file-size">
+                                                                            <span>@uploadFilesize</span>
+                                                                        </div>
+                                                                        <div class="body-upload-file-path">
+                                                                            <TextBox Value="@uploadFilename" />
+                                                                        </div>
+                                                                    </div>
+                                                                    break;
+                                                            }
+
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <RadzenTextArea Value="@parameterValue" ValueChanged="(o) => BodyParameterValueChanged(parameter.Name, o, parameter.DataType)" spellcheck="false" MaxLength="1000000" />
+                                                }
+
+                                                break;
+                                        }
+
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </CollapsePanel>
+        </div>
+    }
+
+    @if (response.IsValid())
+    {
+        var statusCodeClass = response.Success ? "success" : "error";
+
+        <div class="response-information @statusCodeClass">
+            <table class="table table-sm">
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Status</td>
+                        <td class="value-cell">
+
+                            @if (response.Success)
+                            {
+                                <span class="response-icon fa-solid fa-sharp fa-circle-check response-success"></span>
+                            }
+                            else
+                            {
+                                <span class="response-icon fa-solid fa-sharp fa-circle-xmark response-error"></span>
+                            }
+
+                        </td>
+                        <td class="label-cell">Status Code</td>
+                        <td class="value-cell">@response.StatusCode</td>
+                        <td class="label-cell">Content Type</td>
+                        <td class="value-cell">@response.ContentType</td>
+                        <td class="label-cell">Content Size</td>
+                        <td class="value-cell">@responseSize.ToFileSize()</td>
+                        <td class="label-cell">Duration</td>
+                        <td class="value-cell">@responseDuration.ToDetailedFormattedString()</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @if (!response.Parameters.IsNullOrEmpty())
+        {
+            <div class="response-parameters-panel">
+                <CollapsePanel Title="Response Parameters" IsCollapsed="@responseParametersCollapsed" Collapsed="ResponseParametersCollapsed" Expanded="ResponseParametersExpanded">
+                    <div class="response-parameters">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Key</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var parameter in response.Parameters)
+                                {
+                                    <tr>
+                                        <td class="parameter-key">@parameter.Key</td>
+                                        <td class="parameter-value">@parameter.Value</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </CollapsePanel>
+            </div>
+        }
+
+        @if (response.Content != null)
+        {
+            <div class="response-content">
+                <ResponseContent Content="@responseBytes" ContentType="@response.ContentType" DownloadLink="@requestUrl" />
+            </div>
+        }
+    }
+
+</div>
+
+@code {
+
+    private readonly string fileInputId = Guid.NewGuid().ToString();
+    private readonly Dictionary<string, string> routeParameterValues = new Dictionary<string, string>();
+    private readonly Dictionary<string, string> queryParameterValues = new Dictionary<string, string>();
+    private string bodyParameterValue;
+    private string bodyParameterType;
+    private byte[] requestBody;
+    private IBrowserFile requestFile;
+
+    private UploadType[] uploadTypes = Enum.GetValues<UploadType>();
+    private UploadType uploadType;
+    private string uploadFilename;
+    private string uploadFilesize;
+
+    private string requestUrl;
+    private bool requestUrlClipboard;
+    private string requestMethod;
+    private string originalRoute;
+    private string requestRoute;
+    private string downloadKey;
+
+
+    private TrakHoundApiResponse response;
+    private byte[] responseBytes;
+    private string responseMessage;
+    private long responseSize;
+    private TimeSpan responseDuration;
+    private ITrakHoundConsumer<TrakHoundApiResponse> responseConsumer;
+
+    private bool requestParametersCollapsed;
+    private bool responseParametersCollapsed;
+
+    private bool loading;
+
+    private string previousHash;
+
+    enum UploadType
+    {
+        Text,
+        File
+    }
+
+
+    [Parameter]
+    public string ServerId { get; set; }
+
+    [Parameter]
+    public string RequestType { get; set; }
+
+    [Parameter]
+    public TrakHoundApiInformation Api { get; set; }
+
+    [Parameter]
+    public TrakHoundApiControllerInformation Controller { get; set; }
+
+    [Parameter]
+    public TrakHoundApiEndpointInformation Endpoint { get; set; }
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        var hash = $"{ServerId}:{Api?.Id}:{Endpoint?.Id}";
+        if (hash != previousHash)
+        {
+            previousHash = hash;
+
+            requestBody = null;
+            requestFile = null;
+            bodyParameterValue = null;
+            routeParameterValues.Clear();
+            queryParameterValues.Clear();
+
+            response = default;
+            responseBytes = null;
+            responseMessage = null;
+            responseDuration = TimeSpan.Zero;
+        }
+
+
+        loading = false;
+        if (responseConsumer != null) responseConsumer.Dispose();
+
+        if (Endpoint != null && RequestType != null)
+        {
+            switch (RequestType.ToLower())
+            {
+                case ApiRequestTypes.Route:
+                    originalRoute = Url.Combine(Api.Route, Controller.Route);
+                    if (Endpoint.Route != "/") originalRoute = Url.Combine(originalRoute, Endpoint.Route);
+                    break;
+
+                case ApiRequestTypes.Package:
+                    originalRoute = Endpoint.Route;
+                    break;
+            }
+
+            requestRoute = originalRoute;
+        }
+
+        await UpdateRequestUrl();
+    }
+
+    void IDisposable.Dispose()
+    {
+        try
+        {
+            if (responseConsumer != null)
+            {
+                responseConsumer.Received -= ResponseReceived;
+                responseConsumer.Dispose();
+            }
+        }
+        catch { }
+    }
+
+
+    private async void RouteParameterValueChanged(string parameterName, string parameterValue)
+    {
+        routeParameterValues.Remove(parameterName);
+        routeParameterValues.Add(parameterName, parameterValue);
+        await UpdateRequestUrl();
+    }
+
+    private async void QueryParameterValueChanged(string parameterName, string parameterValue)
+    {
+        queryParameterValues.Remove(parameterName);
+        queryParameterValues.Add(parameterName, parameterValue);
+        await UpdateRequestUrl();
+    }
+
+    private async void BodyParameterValueChanged(string parameterName, string parameterValue, string parameterDataType)
+    {
+        requestBody = null;
+        requestFile = null;
+        uploadFilename = null;
+        uploadFilesize = null;
+
+        bodyParameterValue = parameterValue;
+
+        switch (parameterDataType)
+        {
+            case "Byte[]": bodyParameterType = "application/octet-stream"; break;
+            case "Stream": bodyParameterType = "application/octet-stream"; break;
+            case "String": bodyParameterType = "text/plain"; break;
+            default: bodyParameterType = "application/json"; break;
+        }
+
+        await UpdateRequestUrl();
+    }
+
+    private async void BrowseClicked()
+    {
+        try
+        {
+            await javascript.InvokeVoidAsync("JsFunctions.clickElement", fileInputId);
+        }
+        catch (Exception) { }
+    }
+
+    private async void BodyFileChanged(InputFileChangeEventArgs e)
+    {
+        bodyParameterValue = null;
+
+        requestFile = e.File;
+        uploadFilename = e.File.Name;
+        uploadFilesize = e.File.Size.ToFileSize();
+        bodyParameterType = "application/octet-stream";
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task UpdateRequestUrl()
+    {
+        requestUrlClipboard = false;
+
+        var instance = Explorer.Instances.GetInstance(ServerId);
+        if (instance != null)
+        {
+            var baseUrl = navigationManager.BaseUri;
+
+            var requestType = Endpoint.Type.ConvertEnum<TrakHoundApiRouteType>();
+            requestRoute = originalRoute;
+
+            if (!string.IsNullOrEmpty(bodyParameterValue))
+            {
+                requestMethod = "POST";
+            }
+            else
+            {
+                switch (requestType)
+                {
+                    case TrakHoundApiRouteType.Subscribe: requestMethod = "GET"; break;
+                    case TrakHoundApiRouteType.Publish: requestMethod = "PUT"; break;
+                    case TrakHoundApiRouteType.Delete: requestMethod = "PUT"; break;
+                    default: requestMethod = "GET"; break;
+                }
+            }
+
+            if (!routeParameterValues.IsNullOrEmpty())
+            {
+                foreach (var parameter in routeParameterValues)
+                {
+                    requestRoute = Url.AddRouteParameter(requestRoute, originalRoute, parameter.Key, parameter.Value);
+                }
+            }
+
+            switch (RequestType.ToLower())
+            {
+                case ApiRequestTypes.Route:
+                    requestUrl = Url.Combine(baseUrl, requestRoute);
+                    break;
+
+                case ApiRequestTypes.Package:
+                    requestUrl = Url.Combine(baseUrl, "api");
+                    requestUrl = Url.Combine(requestUrl, Api.PackageId);
+                    if (requestRoute != "/") requestUrl = Url.Combine(requestUrl, requestRoute);
+                    break;
+            }
+
+            switch (requestType)
+            {
+                case TrakHoundApiRouteType.Subscribe:
+                    requestUrl = requestUrl.Replace("http", "ws");
+                    requestUrl = requestUrl.Replace("https", "wss");
+                    requestUrl = Url.Combine(requestUrl, "subscribe");
+                    break;
+                case TrakHoundApiRouteType.Publish:
+                    requestUrl = Url.Combine(requestUrl, "publish");
+                    break;
+                case TrakHoundApiRouteType.Delete:
+                    requestUrl = Url.Combine(requestUrl, "delete");
+                    break;
+            }
+
+            if (!queryParameterValues.IsNullOrEmpty())
+            {
+                foreach (var parameter in queryParameterValues)
+                {
+                    requestUrl = Url.AddQueryParameter(requestUrl, parameter.Key, parameter.Value);
+                }
+            }
+
+            if (RequestType.ToLower() == ApiRequestTypes.Package) requestUrl = Url.AddQueryParameter(requestUrl, "packageVersion", Api.PackageVersion);
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void CopyRequestUrl()
+    {
+        await javascriptService.CopyClipboard(requestUrl);
+        requestUrlClipboard = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    private async void RunRequest()
+    {
+        loading = true;
+        response = default;
+        responseBytes = null;
+        responseMessage = null;
+        responseSize = 0;
+        responseDuration = TimeSpan.Zero;
+        await InvokeAsync(StateHasChanged);
+
+        var stpw = System.Diagnostics.Stopwatch.StartNew();
+
+        var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+        if (client != null)
+        {
+            var route = Endpoint.Route;
+            var parameters = queryParameterValues;
+            Stream stream = null;
+            byte[] requestBodyBytes = null;
+            string contentType = bodyParameterType;
+
+            // Add Body (InputFile)
+            if (requestFile != null)
+            {
+                stream = requestFile.OpenReadStream(requestFile.Size);
+            }
+            else if (!string.IsNullOrEmpty(bodyParameterValue))
+            {
+                requestBodyBytes = System.Text.Encoding.UTF8.GetBytes(bodyParameterValue);
+                stream = new MemoryStream(requestBodyBytes);
+            }
+
+            switch (Endpoint.Type)
+            {
+                case "Query":
+                    response = await client.Api.Query(requestRoute, requestBodyBytes, contentType, queryParameters: parameters);
+                    break;
+
+                case "Subscribe":
+                    responseConsumer = await client.Api.Subscribe(requestRoute, requestBodyBytes, contentType, parameters);
+                    if (responseConsumer != null)
+                    {
+                        ResponseReceived(responseConsumer, responseConsumer.InitialValue);
+                        responseConsumer.Received += ResponseReceived;
+                    }
+                    break;
+
+                case "Publish":
+                    response = await client.Api.Publish(requestRoute, stream, contentType, parameters);
+                    break;
+
+                case "Delete":
+                    response = await client.Api.Delete(requestRoute, stream, contentType, parameters);
+                    break;
+            }
+
+            ProcessResponse(response);
+        }
+
+        stpw.Stop();
+
+        loading = false;
+        responseMessage = $"Response in {stpw.Elapsed.ToDetailedFormattedString()}";
+        responseDuration = stpw.Elapsed;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Unsubscribe()
+    {
+        if (responseConsumer != null) responseConsumer.Dispose();
+        responseConsumer = null;
+
+        responseMessage = $"Unsubscribed from Endpoint";
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ResponseReceived(object sender, TrakHoundApiResponse response)
+    {
+        this.response = response;
+        ProcessResponse(response);
+
+        responseMessage = $"Last Response Recevied at {DateTime.Now}";
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void ProcessResponse(TrakHoundApiResponse response)
+    {
+        if (response.IsValid())
+        {
+            try
+            {
+                if (response.Content != null)
+                {
+                    responseSize = response.Content.Length;
+
+                    if (MimeTypes.IsText(response.ContentType))
+                    {
+                        responseBytes = response.GetContentBytes();
+                    }
+                }
+            }
+            catch { }            
+        }
+    }
+
+    private async void RequestParametersCollapsed()
+    {
+        requestParametersCollapsed = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void RequestParametersExpanded()
+    {
+        requestParametersCollapsed = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ResponseParametersCollapsed()
+    {
+        responseParametersCollapsed = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ResponseParametersExpanded()
+    {
+        responseParametersCollapsed = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

@@ -1,0 +1,22 @@
+﻿@using TrakHound.Blazor.Diagrams.Components.Renderers;
+
+<div class="target-node">
+    <h5 class="node-type"><span class="icon fa-sharp fa-regular fa-crosshairs-simple"></span>Target</h5>
+    <h5 class="node-package"><span class="icon fa-sharp fa-solid fa-box"></span>@Node.Type</h5>
+    <h5 class="node-name">@Node.Name</h5>
+    <h5 class="node-id">@Node.ConfigurationId</h5>
+
+    @{
+        var routerInputPort = Node.Ports.FirstOrDefault(o => o.GetType() == typeof(DriverInputPort));
+        <PortRenderer @key="routerInputPort" Port="routerInputPort" Class="driver-input-port" />
+
+        var redirectOutputPort = Node.Ports.FirstOrDefault(o => o.GetType() == typeof(RedirectPort));
+        <PortRenderer @key="redirectOutputPort" Port="redirectOutputPort" Class="redirect-output-port" />
+    }
+
+</div>
+
+@code {
+    // This gets filled by the library
+    [Parameter] public TargetNode Node { get; set; } = null!;
+}

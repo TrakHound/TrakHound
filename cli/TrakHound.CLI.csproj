@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>trakhound-cli</AssemblyName>
+		<OutputType>Exe</OutputType>
+		<TargetFrameworks>net8.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="LibGit2Sharp" Version="0.30.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\libraries\TrakHound.Packages.DotNet\TrakHound.Packages.DotNet.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="cli.config.yaml">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,103 @@
+﻿@page "/_admin/configuration"
+@page "/_admin/configuration/{*path}"
+@inject ITrakHoundInstance instance
+@inject RemotesConfiguration remotesConfiguration
+@using Radzen
+@using Radzen.Blazor
+@using TrakHound.Blazor.Components
+@using TrakHound.Instance.Configurations
+@using TrakHound.Instances
+@using TrakHound.Management
+@using TrakHound.Packages
+
+<TrakHoundPageTitle>Configuration - TrakHound Instance</TrakHoundPageTitle>
+
+<div class="configuration-page">
+    <div class="header-panel">
+        <div class="header-panel-content">
+            <div class="header-panel-icon">
+                <div class="header-icon-outline">
+                    <span class="icon fa-regular fa-sharp fa-sliders"></span>
+                </div>
+            </div>
+            <div class="header-panel-text">
+                <span class="header-panel-title">Configuration</span>
+                <span class="header-panel-subtitle">Manage configurations for Apps, Api, Functions, Services, and Routing</span>
+            </div>
+        </div>
+    </div>
+    <div class="toolbar-panel">
+        <div class="toolbar-panel-remote">
+            <RadzenDropDown TValue="RemoteConfiguration" TextProperty="Name" Data="@remotesConfiguration.Remotes" Placeholder="Select Remote.." Value="@selectedRemoteConfiguration" ValueChanged="RemoteSelected" />
+        </div>
+    </div>
+    <div class="content-panel">
+
+        @if (configurationGroup != null)
+        {
+            <TrakHound.Blazor.Instance.InstanceConfiguration ConfigurationGroup="@configurationGroup"
+                                                             ManagementClient="@managementClient"
+                                                             PackageManager="@instance.PackageManager"
+                                                             BasePath="_admin/configuration"
+                                                             Path="@Path"
+                                                             />
+        }
+
+    </div>
+</div>
+
+
+@code {
+
+    private InstanceConfigurationGroup configurationGroup;
+    private TrakHoundManagementClient managementClient;
+    private RemoteConfiguration selectedRemoteConfiguration;
+
+
+    [Parameter]
+    public string Path { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        configurationGroup = new InstanceConfigurationGroup();
+        configurationGroup.Id = Guid.NewGuid().ToString();
+        configurationGroup.ConfigurationProfile = instance.ConfigurationProfile;
+        configurationGroup.PackageAdded += PackageAdded;
+
+        selectedRemoteConfiguration = remotesConfiguration?.Remotes?.FirstOrDefault();
+        await RemoteSelected(selectedRemoteConfiguration);
+    }
+
+
+    private async Task RemoteSelected(RemoteConfiguration remoteConfiguration)
+    {
+        selectedRemoteConfiguration = remoteConfiguration;
+        managementClient = new Management.TrakHoundManagementClient(selectedRemoteConfiguration.BaseUrl, selectedRemoteConfiguration.Organization);
+
+        // if (!string.IsNullOrEmpty(remoteConfiguration.AccessTokenName) && !string.IsNullOrEmpty(remoteConfiguration.AccessTokenCode))
+        // {
+        //     await managementClient.Authentication.LoginAccessToken(remoteConfiguration.AccessTokenName, remoteConfiguration.AccessTokenCode);
+        // }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void PackageAdded(object sender, TrakHoundPackagesFileItem packageItem)
+    {
+        var package = instance.PackageManager.Get(packageItem.Id, packageItem.Version);
+        if (package == null)
+        {
+            var results = await instance.PackageManager.Install(packageItem.Id, packageItem.Version);
+            // if (results.Success)
+            // {
+
+            // }
+            // else
+            // {
+                
+            // }
+        }
+    }
+
+}

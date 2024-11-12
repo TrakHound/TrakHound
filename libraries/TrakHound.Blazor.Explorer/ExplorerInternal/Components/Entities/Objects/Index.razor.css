@@ -1,0 +1,203 @@
+﻿.objects-panel {
+    grid-row: 2;
+    height: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr max-content;
+}
+
+.objects-panel-sidebar {
+    grid-column: 2;
+    border-left: 1px solid #ddd;
+}
+
+    .objects-panel-sidebar .btn {
+        border-radius: 0;
+        text-align: center;
+        width: 40px;
+        height: 36px;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+
+        .objects-panel-sidebar .btn .icon {
+            margin-right: 0;
+            font-size: 16px;
+        }
+
+.objects-panel-container {
+    grid-column: 1;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+
+.objects-navigation-bar {
+    grid-row: 1;
+    padding-left: 20px;
+    padding-top: 0px;
+    margin-bottom: 2px;
+    height: 31px;
+}
+
+.objects-toolbar {
+    grid-row: 2;
+    height: 100%;
+}
+
+.objects-toolbar-content {
+    display: grid;
+    grid-template-columns: 1fr max-content;
+}
+
+.objects-toolbar-right {
+    padding-right: 10px;
+}
+
+.objects-toolbar ::deep .rz-badge {
+    background: var(--accentLight) !important;
+    margin-left: 7px;
+}
+
+.objects-toolbar ::deep .rz-menu {
+    background: #fff;
+    color: var(--accent);
+    padding-left: 10px;
+}
+
+.objects-toolbar ::deep .rz-navigation-item-link,
+.objects-toolbar ::deep .rz-navigation-item-text,
+.objects-toolbar ::deep .rz-navigation-item-icon {
+    color: inherit !important;
+}
+
+.objects-toolbar ::deep .rz-menu > .rz-navigation-item > .rz-navigation-item-wrapper > .rz-navigation-item-link {
+    border-right: 1px solid #eee;
+    padding-right: 20px;
+    margin-right: 10px;
+}
+
+.objects-toolbar ::deep .rz-navigation-item-link:hover {
+    color: var(--accentLight) !important;
+}
+
+.objects-toolbar ::deep .rz-navigation-item-text {
+    font-size: 13px;
+}
+
+.objects-toolbar ::deep .rz-navigation-item-icon {
+    font-size: 17px;
+}
+
+.objects-toolbar ::deep .rz-navigation-item-icon-children {
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+
+
+.objects-content {
+    height: 100%;
+    overflow: hidden;
+    border-top: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
+    .objects-content > ::deep .rz-tabview {
+        height: 100%;
+        overflow: hidden;
+    }
+
+        .objects-content > ::deep .rz-tabview > .rz-tabview-panels {
+            height: 100%;
+            overflow: hidden;
+        }
+
+            .objects-content > ::deep .rz-tabview > .rz-tabview-panels > .rz-tabview-panel {
+                height: 100%;
+                overflow: hidden;
+                padding: 0px;
+            }
+
+        .objects-content > ::deep .rz-tabview > .rz-tabview-nav li {
+            padding: 0;
+        }
+
+            .objects-content > ::deep .rz-tabview > .rz-tabview-nav li a {
+                padding: 5px 15px;
+            }
+
+                .objects-content > ::deep .rz-tabview > .rz-tabview-nav li a .tab-header .icon {
+                    margin-right: 5px;
+                    font-size: 12px;
+                    line-height: 24px;
+                    display: inline-block;
+                }
+
+                .objects-content > ::deep .rz-tabview > .rz-tabview-nav li a .tab-header .title {
+                    font-size: 12px;
+                    display: inline-block;
+                }
+
+
+.objects-searchbar {
+    grid-row: 3;
+    border-bottom: 1px solid #eee;
+    padding-top: 5px;
+}
+
+.query-panel {
+    height: 100%;
+    overflow: hidden;
+}
+
+.queries-panel {
+    height: 100%;
+    overflow: hidden;
+    border-left: 1px solid #ddd;
+}
+
+
+.objects-panel ::deep .delete-modal .modal-body {
+    padding: 20px 40px;
+}
+
+.objects-panel ::deep .delete-modal .modal-header-icon {
+    color: #aaa;
+    margin-left: 3px;
+}
+
+    .objects-panel ::deep .delete-modal .modal-header-icon .icon {
+        color: var(--colorRed);
+        left: 10px;
+        top: 15px;
+    }
+
+.objects-panel ::deep .delete-modal-message {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.objects-panel ::deep .delete-modal-items {
+    overflow: auto;
+    max-height: 400px;
+}
+
+    .objects-panel ::deep .delete-modal-items p {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 0;
+        word-break: break-all;
+    }
+
+.objects-panel ::deep .delete-modal .btn-danger.disabled .icon {
+    animation: spin 1s linear infinite;
+}
+
+
+.objects-panel ::deep .save-query-modal .modal-body {
+    padding: 20px 40px;
+}

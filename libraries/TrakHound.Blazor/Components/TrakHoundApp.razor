@@ -1,0 +1,37 @@
+﻿@using TrakHound.Blazor.Layouts
+
+<div class="trakhound-app">
+
+    @if (RouteData != null)
+    {
+        <CascadingValue Name="AppId" Value="@RouteData.AppId">
+            <CascadingValue Name="Client" Value="@RouteData.Client">
+                <CascadingValue Name="BaseUrl" Value="@RouteData.BaseUrl">
+                    <CascadingValue Name="BasePath" Value="@RouteData.BasePath">
+                        <CascadingValue Name="BaseLocation" Value="@RouteData.BaseLocation">
+                            <CascadingValue Name="Parameters" Value="@Parameters">
+
+                                <TrakHoundHeadContent>
+                                    <TrakHoundPackageStylesheets AppId="@RouteData.AppId" />
+                                </TrakHoundHeadContent>
+
+                                <RouteView RouteData="@RouteData.Data" />
+
+                                <TrakHoundPackageScripts />
+
+                            </CascadingValue>
+                        </CascadingValue>
+                    </CascadingValue>
+                </CascadingValue>
+            </CascadingValue>
+        </CascadingValue>
+    }
+    else
+    {
+        if (NotFound != null)
+        {
+            @NotFound
+        }
+    }
+
+</div>

@@ -1,0 +1,2 @@
+# Services
+Services are used to run **long-lived** processes that can be used to process, import, or export data through a persistent connection to an external data source. Services are designed to be stored as a Package and are loaded as a Module into a TrakHound Instance.

@@ -1,0 +1,56 @@
+﻿@inherits TrakHoundComponentBase
+@using TrakHound.Management
+@using TrakHound.Packages
+
+<div class="packages-panel">
+    <div class="packages-toolbar">
+        <a href="@GetPath("packages")">View All</a>
+    </div>
+    <div class="packages-list">
+
+        @if (!latestPackages.IsNullOrEmpty())
+        {
+            foreach (var package in latestPackages)
+            {
+                var image = package.GetMetadata(".image");
+
+                <div class="package-panel">
+                    <div class="package-icon">
+
+                        @if (!string.IsNullOrEmpty(image))
+                        {
+                            <img src="@image" class="icon" />
+                        }
+                        else
+                        {
+                            <span class="icon fa-solid fa-sharp fa-box"></span>
+                        }
+
+                    </div>
+                    <div class="package-title">
+                        <span class="package-id">@package.Id</span>
+                        <span class="package-publisher">@package.GetMetadata("publisher")</span>
+                    </div>
+                    <div class="package-information">
+                        <span class="package-description">@package.GetMetadata("description")</span>
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
+</div>
+
+@code {
+
+    private IEnumerable<TrakHoundPackage> latestPackages;
+
+    protected async override Task OnInitializedAsync()
+    {
+        var managementClient = new TrakHoundManagementClient("https://www.trakhound.com/management");
+        latestPackages = await managementClient.Packages.QueryLatestByOrganization("Public");
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

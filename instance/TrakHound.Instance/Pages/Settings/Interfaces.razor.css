@@ -1,0 +1,11 @@
+﻿.page {
+    height: 100%;
+    overflow: auto;
+    width: 100%;
+    max-width: 600px;
+    padding: 40px 50px 100px;
+}
+
+    .page ::deep .spin-edit {
+        width: 150px;
+    }

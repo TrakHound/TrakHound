@@ -1,0 +1,35 @@
+﻿@using TrakHound.Api
+
+@if (Information != null && !Information.Responses.IsNullOrEmpty())
+{
+    <table class="table table-sm table-bordered">
+        <thead>
+            <tr>
+                <th>Status Code</th>
+                <th>Content-Type</th>
+                <th>Schema</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var response in Information.Responses)
+            {
+                <tr>
+                    <td class="status-code-cell">@response.StatusCode</td>
+                    <td class="content-type-cell">@response.ContentType</td>
+                    <td class="schema-cell">
+                        <pre>@response.Schema.ToJson(true)</pre>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+@code {
+
+    [Parameter]
+    public TrakHoundApiEndpointInformation Information { get; set; }
+
+}

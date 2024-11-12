@@ -1,0 +1,18 @@
+﻿@page "/_admin"
+@page "/_admin/explorer"
+@page "/_admin/explorer/{*path}"
+@rendermode InteractiveServer
+@inject InstanceManager instances
+@using TrakHound
+@using TrakHound.Management
+
+<TrakHoundPageTitle>Explorer - TrakHound Instance</TrakHoundPageTitle>
+
+<TrakHound.Blazor.Explorer Instances="@instances" BasePath="_admin/explorer" Path="@Path" />
+
+@code {
+
+    [Parameter]
+    public string Path { get; set; }
+
+}

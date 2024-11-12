@@ -1,0 +1,124 @@
+.information-panel {
+    display: grid;
+    grid-template-rows: max-content max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.header-panel {
+    grid-row: 1;
+    padding: 0px 10px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+    .header-panel .icon {
+        font-size: 16px;
+        color: #aaa;
+        margin-right: 5px;
+    }
+
+    .header-panel .title {
+        font-size: 14px;
+        font-weight: bold;
+        color: #333;
+        margin-right: 10px;
+    }
+
+    .header-panel .subtitle {
+        font-size: 12px;
+        color: #888;
+    }
+
+.toolbar-panel {
+    grid-row: 2;
+    padding: 10px 0px;
+}
+
+    .toolbar-panel .btn {
+        font-size: 14px;
+        padding: 10px 20px;
+        border-radius: 2px;
+    }
+
+        .toolbar-panel .btn:focus {
+            box-shadow: none;
+        }
+
+.table-panel {
+    grid-row: 3;
+    padding: 0 0 10px;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .table-panel ::deep .buttons .rz-cell-data {
+        height: 22px;
+    }
+
+    .table-panel ::deep .rz-switch-circle {
+        background: #ddd;
+    }
+
+    .table-panel ::deep .rz-switch-checked .rz-switch-circle {
+        background: var(--colorGreenHover);
+    }
+
+    .table-panel ::deep .rz-switch-circle::before {
+        background: #888;
+    }
+
+    .table-panel ::deep .rz-switch-checked .rz-switch-circle::before {
+        background: var(--colorGreen);
+    }
+
+    .table-panel ::deep .rz-switch-checked .rz-switch-circle:hover:not(.rz-disabled):before {
+        box-shadow: none;
+    }
+
+
+.information-panel ::deep .modal .modal-body {
+    padding: 20px 40px;
+    height: 100%;
+    overflow: hidden;
+}
+
+.information-panel ::deep .modal .btn.disabled .icon {
+    animation: spin 1s linear infinite;
+}
+
+.information-panel ::deep .form-field {
+    display: block;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+    .information-panel ::deep .form-field > label {
+        display: block;
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .information-panel ::deep .form-field .rz-textbox {
+        display: block;
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .information-panel ::deep .form-field .rz-textarea {
+        display: block;
+        width: 100%;
+        min-height: 100px;
+        font-size: 14px;
+    }
+
+.information-panel .template-buttons {
+    display: block;
+    padding: 10px 0;
+}
+
+.information-panel .instructions {
+    display: block;
+    font-size: 14px;
+    color: #555;
+}

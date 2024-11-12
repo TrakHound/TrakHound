@@ -1,0 +1,18 @@
+:root {
+    --tableHeaderBackground: #fafafa;
+    --tableHeaderTextColor: var(--textDark);
+    --tableHeaderIconColor: var(--textLight);
+    --tableHeaderBorderColor: var(--borderVeryLight);
+    --tableHeaderHoverBackground: inherit;
+    --tableHeaderHoverTextColor: var(--accent);
+    --tableHeaderHoverIconColor: inherit;
+    --tableHeaderHoverBorderColor: inherit;
+    --tableBackground: white;
+    --tableTextColor: var(--textDark);
+    --tableIconColor: var(--textLight);
+    --tableBorderColor: var(--borderVeryLight);
+    --tableHoverBackground: #fafafa;
+    --tableHoverTextColor: inherit;
+    --tableHoverIconColor: inherit;
+    --tableHoverBorderColor: inherit;
+}

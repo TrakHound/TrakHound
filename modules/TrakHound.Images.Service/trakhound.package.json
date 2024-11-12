@@ -1,0 +1,9 @@
+﻿{
+  "id": "TrakHound.Images.Service",
+  "category": "service",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Service Store Images & Generate High Quality, Low Quality, and Thumbnail versions",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png"
+  }
+}

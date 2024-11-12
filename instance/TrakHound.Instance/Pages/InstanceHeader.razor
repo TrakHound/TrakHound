@@ -1,0 +1,107 @@
+﻿@rendermode InteractiveServer
+@implements IDisposable
+@inject ITrakHoundInstance instance
+@inject AdminAuthenticationService authenticationService
+@inject NavigationManager navigationManager
+@using TrakHound.Instances
+@using TrakHound.Instance.Services
+
+@{
+    var statusIcon = "";
+    switch (instance.Status)
+    {
+        case TrakHoundInstanceStatus.Started: statusIcon = "fa-solid fa-sharp fa-play"; break;
+        case TrakHoundInstanceStatus.Starting: statusIcon = "fa-solid fa-sharp fa-loader spin"; break;
+        case TrakHoundInstanceStatus.Stopped: statusIcon = "fa-solid fa-sharp fa-stop"; break;
+        case TrakHoundInstanceStatus.Stopping: statusIcon = "fa-solid fa-sharp fa-loader spin"; break;
+        case TrakHoundInstanceStatus.Error: statusIcon = "fa-solid fa-sharp fa-triangle-exclamation"; break;
+    }
+
+    var timerTimestamp = instance.LastUpdated.ToLocalTime();
+    var timerDuration = DateTime.Now - timerTimestamp;
+    var timer = $"{timerTimestamp} ({timerDuration.ToSimpleFormattedString()})";
+}
+
+<div class="instance-header">
+    <div class="gloss-back"></div>
+    <div class="gloss-front"></div>
+    <div class="instance-header-container">
+        <div class="instance-header-logo-container">
+            <img class="instance-header-logo" src="img/trakhound-logo-v5-01.svg" />
+        </div>
+        <div class="instance-header-title-container">
+            <span class="instance-header-title">TrakHound</span>
+        </div>
+        <div class="instance-header-information-container">
+
+            @if (!string.IsNullOrEmpty(instance.Information?.Name))
+            {
+                <span class="instance-header-name"><b>@instance.Information?.Name</b> (@instance.Id)</span>
+            }
+            else
+            {
+                <span class="instance-header-id"><b>@instance.Id</b></span>          
+            }
+
+            <span class="instance-header-host">@instance.Information?.GetInterface("HTTP")?.GetBaseUrl()</span>
+        </div>
+        <div class="instance-header-application-container">
+            <span class="instance-header-label"><b>Version</b></span>
+            <span class="instance-header-version">@instance.Version</span>
+        </div>
+        <div class="instance-header-status-container">
+            <span class="instance-header-status"><span class="instance-header-status-icon @statusIcon"></span><b>@instance.Status</b></span>
+            <span class="instance-header-timer">@timer</span>
+        </div>
+        <div class="instance-header-buttons">
+            <a href="settings" class="btn btn-settings"><span class="icon fa-solid fa-sharp fa-wrench"></span></a>
+
+            @if (instance.Configuration.AdminAuthenticationEnabled)
+            {
+                <button class="btn btn-logout" @onclick="Logout">Sign Out<span class="icon fa-solid fa-sharp fa-right-to-bracket"></span></button>
+            }
+
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private readonly System.Timers.Timer updateTimer = new System.Timers.Timer();
+
+
+    protected override void OnInitialized()
+    {
+        instance.Started += Updated;
+        instance.Starting += Updated;
+        instance.Stopped += Updated;
+        instance.Stopping += Updated;
+
+        updateTimer.Interval = 1000;
+        updateTimer.Elapsed += UpdateTimerElapsed;
+        updateTimer.Start();
+    }
+
+    void IDisposable.Dispose()
+    {
+        if (updateTimer != null) updateTimer.Dispose();
+    }
+
+    private async void Logout()
+    {
+        var token = await authenticationService.GetToken();
+        await authenticationService.Logout(token);
+        navigationManager.NavigateTo("_admin/login");
+    }
+
+    private async void UpdateTimerElapsed(object sender, System.Timers.ElapsedEventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Updated(object sender, EventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

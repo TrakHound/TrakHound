@@ -1,0 +1,165 @@
+﻿@typeparam TItem
+
+@{
+    var size = Size == Size.Small ? "small" : "";
+    var disabledClass = Enabled ? "" : "disabled";
+}
+
+<div id="@ElementId" class="spin-edit form-group @size @Class @disabledClass">
+
+    @if (!string.IsNullOrEmpty(Title))
+    {
+        <label class="title">
+            @Title
+            @if (!string.IsNullOrEmpty(SubTitle))
+            {
+                <span class="subtitle small">@SubTitle</span>                        
+            }
+        </label>  
+    }
+
+    <div class="spin-edit-group" style="@Style">
+        <div class="spin-edit-input">
+
+            @if (Enabled)
+            {
+                <input id="@InputElementId" class="form-control" type="text" value="@Value" @onchange="InputValueChanged" placeholder="@NullText" />
+            }
+            else
+            {
+                <input id="@InputElementId" class="form-control" type="text" value="@Value" placeholder="@NullText" disabled />
+            }
+
+        </div>
+        <div class="spin-edit-buttons">
+
+            @if (Enabled)
+            {
+                <button class="spin-edit-btn-top btn btn-command" tabindex="-1" @onclick="IncrementValue"><span class="icon fas fa-angle-up"></span></button>
+                <button class="spin-edit-btn-bottom btn btn-command" tabindex="-1" @onclick="DecrementValue"><span class="icon fas fa-angle-down"></span></button>
+            }
+            else
+            {
+                <button class="spin-edit-btn-top btn btn-command" tabindex="-1" @onclick="IncrementValue" disabled><span class="icon fas fa-angle-up"></span></button>
+                <button class="spin-edit-btn-bottom btn btn-command" tabindex="-1" @onclick="DecrementValue" disabled><span class="icon fas fa-angle-down"></span></button>
+            }
+
+        </div>
+
+        @if (!string.IsNullOrEmpty(Units))
+        {
+            <div class="spin-edit-units">
+                <span class="units">@Units</span>
+            </div>
+        }
+
+    </div>
+
+</div>
+
+
+@code {
+
+    [Parameter]
+    public bool Enabled { get; set; } = true;
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string SubTitle { get; set; }
+
+    [Parameter]
+    public string Units { get; set; }
+
+    [Parameter]
+    public TItem Value { get; set; }
+
+    [Parameter]
+    public EventCallback<TItem> ValueChanged { get; set; }
+
+    [Parameter]
+    public string NullText { get; set; }
+
+    [Parameter]
+    public double Increment { get; set; } = 1;
+
+    [Parameter]
+    public double MaxValue { get; set; } = double.MaxValue;
+
+    [Parameter]
+    public double MinValue { get; set; } = 0;
+    
+    [Parameter]
+    public string ElementId { get; set; }
+
+    [Parameter]
+    public string InputElementId { get; set; }
+
+    [Parameter]
+    public string Class { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+
+    [Parameter]
+    public Size Size { get; set; }
+
+
+    private async void InputValueChanged(ChangeEventArgs args)
+    {
+        if (args.Value != null)
+        {
+            var sValue = args.Value.ToString();
+            if (double.TryParse(sValue, out var value))
+            {
+                await SetValue(value);
+            }
+        }
+    }
+
+    private async Task SetValue(double value)
+    {
+        var val = value;
+        val = Math.Max(val, MinValue);
+        val = Math.Min(val, MaxValue);
+
+        try
+        {
+            Value = (TItem)Convert.ChangeType(val, typeof(TItem));
+        }
+        catch { }
+
+        await ValueChanged.InvokeAsync(Value);
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    private async void IncrementValue()
+    {
+        if (Value != null)
+        {
+            var sValue = Value.ToString();
+            if (double.TryParse(sValue, out var value))
+            {
+                var val = value + Increment;
+                await SetValue(val);
+            }
+        }
+    }
+
+    private async void DecrementValue()
+    {
+        if (Value != null)
+        {
+            var sValue = Value.ToString();
+            if (double.TryParse(sValue, out var value))
+            {
+                var val = value - Increment;
+                await SetValue(val);
+            }
+        }
+    }
+
+}

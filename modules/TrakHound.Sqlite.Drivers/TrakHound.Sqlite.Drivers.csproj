@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\libraries\TrakHound.Drivers\TrakHound.Drivers.csproj" />
+		<ProjectReference Include="..\..\libraries\TrakHound.Utilities.Sqlite\TrakHound.Utilities.Sqlite.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Entities\Objects\ObjectLinkDriver.cs" />
+	  <Compile Remove="Entities\Objects\ObjectSequenceDriver.cs" />
+	  <Compile Remove="Entities\Objects\ObjectStateDriver-old.cs" />
+	  <Compile Remove="Entities\Objects\ObjectTimeGroupDriver.cs" />
+	  <Compile Remove="Entities\Objects\ObjectTimeHashDriver.cs" />
+	  <Compile Remove="Entities\Objects\ObjectTimeSequenceDriver.cs" />
+	  <Compile Remove="Entities\Objects\ObjectTimeSetDriver.cs" />
+	  <Compile Remove="Entities\Objects\ObjectTimeWikiDriver.cs" />
+	  <Compile Remove="Entities\Objects\ObjectWikiDriver.cs" />
+	  <Compile Remove="Models\Objects\DatabaseObjectTimeGroup.cs" />
+	  <Compile Remove="Models\Objects\DatabaseObjectTimeHash.cs" />
+	  <Compile Remove="Models\Objects\DatabaseObjectTimeSequence - Copy.cs" />
+	  <Compile Remove="Models\Objects\DatabaseObjectTimeSequence.cs" />
+	  <Compile Remove="Models\Objects\DatabaseObjectTimeSet.cs" />
+	  <Compile Remove="Models\Objects\DatabaseObjectTimeWiki.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Scripts\GetDefinitionChildren.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Scripts\GetSourceChain.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Scripts\GetObjectPath.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Scripts\GetObjectQueryChildren.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Scripts\GetDefinitionRoots.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Scripts\GetObjectRoots.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Scripts\GetObjectChildren.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+</Project>

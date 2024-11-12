@@ -1,0 +1,70 @@
+﻿@implements IDisposable
+@inject JavascriptService javascriptService
+@using TrakHound.Blazor.Services
+@using TrakHound.Logging
+
+<div class="log-table">
+
+    @{
+        var logLines = GetLogLines();
+        if (!logLines.IsNullOrEmpty())
+        {
+            <table class="table table-sm">
+                <tbody>
+
+                    @for (var i = 0; i < logLines.Count; i++)
+                    {
+                        var logLine = logLines[i];
+                        var level = logLine.LogLevel.ToString();
+                        var levelClass = level.ToLower();
+                        var levelId = i == logLines.Count - 1 ? lastLogElementId : "";
+
+                        <tr id="@levelId" class="@levelClass">
+                            <td class="level">@level</td>
+                            <td class="timestamp">@logLine.Timestamp.ToDateTime().ToISO8601String()</td>
+                            <td class="message"><p>@logLine.Message</p></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+    }
+
+</div>
+
+@code {
+
+    private const string lastLogElementId = "last-log-entry";
+    private const int maxLogLines = 1000;
+
+    private List<TrakHoundLogItem> logLines = new List<TrakHoundLogItem>();
+    private DelayEvent _logDelay = new DelayEvent(50);
+    private readonly object _lock = new object();
+
+
+    protected override void OnInitialized()
+    {
+        _logDelay.Elapsed += LogUpdated;
+    }
+
+    void IDisposable.Dispose()
+    {
+        _logDelay.Elapsed -= LogUpdated;
+    }
+
+    private List<TrakHoundLogItem> GetLogLines()
+    {
+        lock (_lock)
+        {
+            return logLines.OrderBy(o => o.Timestamp).ToList();
+        }
+    }
+
+    private async void LogUpdated(object sender, EventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+        await javascriptService.ScrollIntoView(lastLogElementId);
+    }
+
+}

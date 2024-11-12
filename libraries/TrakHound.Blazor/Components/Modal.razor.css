@@ -1,0 +1,88 @@
+﻿@keyframes modal-fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.modal {
+    background: rgba(0,0,0,0.7);
+    opacity: 0;
+    animation: modal-fade-in 0.15s forwards;
+}
+
+    .modal .modal-content {
+        background: var(--modalBackground);
+        border-radius: 0 !important;
+        display: grid;
+        grid-template-rows: max-content 1fr max-content;
+        overflow: hidden;
+    }
+
+    .modal .modal-header {
+        grid-row: 1;
+        font-size: 14px;
+        color: var(--textPrimary);
+        text-align: left;
+        justify-content: normal;
+    }
+
+        .modal .modal-header ::deep .modal-header-icon {
+            display: inline-block;
+            font-size: 16px;
+            color: var(--accent);
+            margin-right: 10px;
+        }
+
+            .modal .modal-header ::deep .modal-header-icon > .icon {
+                position: absolute;
+                left: 30px;
+                top: 8px;
+                font-size: 12px;
+            }
+
+        .modal .modal-header ::deep .modal-header-title {
+            display: inline-block;
+            font-size: 14px;
+        }
+
+    .modal .modal-body {
+        overflow-y: initial;
+        padding: 0;
+        color: var(--textPrimary);
+    }
+
+    .modal .modal-footer {
+        padding: 5px;
+    }
+
+        .modal .modal-footer ::deep .btn-primary {
+            font-size: 14px;
+            padding: 4px 20px;
+            border-radius: 2px;
+            height: 40px;
+        }
+
+        .modal .modal-footer ::deep .btn-light {
+            font-size: 13px;
+            padding: 4px 20px;
+            border-radius: 2px;
+            height: 40px;
+        }
+
+        .modal .modal-footer ::deep .btn-danger {
+            font-size: 13px;
+            padding: 4px 20px;
+            border-radius: 2px;
+            height: 40px;
+        }
+
+        .modal .modal-footer ::deep .btn-secondary {
+            font-size: 13px;
+            padding: 4px 20px;
+            border-radius: 2px;
+            height: 40px;
+        }

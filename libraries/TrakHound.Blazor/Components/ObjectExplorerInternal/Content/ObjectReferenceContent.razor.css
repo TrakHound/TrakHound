@@ -1,0 +1,105 @@
+﻿.reference-content {
+    display: grid;
+    grid-template-rows: max-content max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+.input-panel {
+    grid-row: 1;
+    padding: 8px 10px 0;
+}
+
+.input-panel-container {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-column-gap: 10px;
+}
+
+.input-panel-buttons {
+    padding-top: 1px;
+}
+
+.input-panel .btn-save {
+    height: 42px;
+    width: 130px;
+    font-size: 14px;
+    border-radius: 0;
+    padding: 0;
+    margin-right: 5px;
+}
+
+    .input-panel .btn-save .icon {
+        font-size: 16px;
+    }
+
+.input-panel .btn-refresh {
+    height: 42px;
+    width: 42px;
+    font-size: 14px;
+    border-radius: 0;
+    padding: 0;
+}
+
+    .input-panel .btn-refresh .icon {
+        font-size: 16px;
+        margin-right: 0;
+    }
+
+.input-panel-input ::deep .text-box.small input {
+    height: 44px !important;
+}
+
+
+.query-panel {
+    grid-row: 2;
+    padding: 0 10px 10px;
+}
+
+.query-panel-container {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    border: 1px solid #ddd;
+}
+
+.query-panel .query-label {
+    grid-column: 1;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-right: 1px solid #ddd;
+    border-radius: 2px;
+    color: #777;
+}
+
+.query-panel .btn-query {
+    grid-column: 2;
+    font-size: 12px;
+    text-align: left;
+    padding-top: 8px;
+}
+
+
+.target-panel {
+    grid-row: 3;
+    height: 100%;
+    overflow: auto;
+    padding: 0 20px;
+    border-top: 1px solid #eee;
+    background: #fff;
+}
+
+.target-header-panel {
+    padding: 10px;
+}
+
+.target-header {
+    font-weight: bold;
+    font-size: 16px;
+    color: #555;
+}
+
+.target-information-panel {
+    padding: 15px 0 0;
+}

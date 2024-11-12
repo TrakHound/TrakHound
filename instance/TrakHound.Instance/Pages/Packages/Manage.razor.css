@@ -1,0 +1,116 @@
+﻿.installed-panel {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.toolbar-panel {
+    grid-row: 1;
+    padding: 12px 20px;
+}
+
+.toolbar-panel-container {
+    display: grid;
+    grid-template-columns: max-content max-content 1fr;
+    grid-column-gap: 15px;
+}
+
+.toolbar-panel-refresh {
+    grid-column: 1;
+    padding-top: 3px;
+}
+
+    .toolbar-panel-refresh .btn {
+        font-size: 14px;
+        width: 120px;
+        margin-right: 10px;
+    }
+
+        .toolbar-panel-refresh .btn:last-child {
+            margin-right: 0px;
+        }
+
+.toolbar-panel-category {
+    grid-column: 2;
+    padding-top: 2px;
+}
+
+.toolbar-panel-query {
+    grid-column: 3;
+}
+
+.toolbar-panel ::deep .text-box {
+    margin: 0;
+}
+
+.table-panel {
+    grid-row: 2;
+    height: 100%;
+    overflow: hidden;
+    padding: 0 20px 20px;
+}
+
+    .table-panel ::deep .table-panel {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .table-panel ::deep .rz-data-grid {
+        height: 100%;
+        overflow: auto;
+    }
+
+        .table-panel ::deep .rz-data-grid td {
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            padding: 0px !important;
+        }
+
+            .table-panel ::deep .rz-data-grid td:last-child {
+                border-right: none;
+            }
+
+            .table-panel ::deep .rz-data-grid td .rz-cell-data {
+                font-size: 12px;
+                line-height: 12px;
+                padding: 1px 10px;
+            }
+
+    .table-panel ::deep .buttons {
+        padding: 0 !important;
+    }
+
+        .table-panel ::deep .buttons .rz-cell-data {
+            padding: 0 !important;
+        }
+
+        .table-panel ::deep .buttons .btn-remove {
+            padding: 0;
+            border-radius: 0;
+            border: none;
+            height: 20px;
+            width: 100%;
+        }
+
+            .table-panel ::deep .buttons .btn-remove .icon {
+                font-size: 12px;
+            }
+
+.loading-panel {
+    grid-row: 2;
+    height: 100%;
+    overflow: hidden;
+}
+
+.loading-panel-container {
+    display: grid;
+    grid-template-rows: 1fr max-content 1fr;
+    grid-template-columns: 1fr max-content 1fr;
+    height: 100%;
+}
+
+.loading-panel ::deep .loading-indicator {
+    grid-row: 2;
+    grid-column: 2;
+}

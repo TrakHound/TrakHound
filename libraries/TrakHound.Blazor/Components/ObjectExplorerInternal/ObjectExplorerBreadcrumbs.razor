@@ -1,0 +1,34 @@
+﻿@using TrakHound.Entities
+
+@if (ObjectExplorerService != null && Object != null)
+{
+    var rootQuery = $"select >> from [/]";
+    var rootLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(rootQuery) : null;
+
+    var pathParts = TrakHoundPath.GetPaths(Object.Path);
+
+    <div class="object-breadcrumbs">
+        <BreadcrumbLinks DividerText="/">
+
+            <BreadcrumbLink Display="/" Link="@rootLink" SelectionType="BreadcrumbSelectionType.Link" DividerHidden="true" />
+
+            @foreach (var pathPart in pathParts)
+            {
+                var objectPathQuery = $"select >> from [{Object.Namespace}:{pathPart}]";
+                var objectPathLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(objectPathQuery) : null;
+
+                <BreadcrumbLink Display="@TrakHoundPath.GetObject(pathPart)" Link="@objectPathLink" SelectionType="BreadcrumbSelectionType.Link" />
+            }
+        </BreadcrumbLinks>
+    </div>
+}
+
+@code {
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public ITrakHoundObjectEntity Object { get; set; }
+
+}

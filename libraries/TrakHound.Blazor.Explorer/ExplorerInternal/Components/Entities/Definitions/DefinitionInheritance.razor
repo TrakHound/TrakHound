@@ -1,0 +1,46 @@
+﻿@inject ExplorerService explorerService
+@using TrakHound.Requests
+
+@if (!Definitions.IsNullOrEmpty())
+{
+    <table class="inheritance-table table table-sm">
+        <thead>
+            <tr>
+                <th></th>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Source UUID</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var definition in Definitions.Reverse())
+            {
+                var definitionlink = Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, $"entities/definitions?uuid={definition.Uuid}");
+                var sourceLink = Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, $"entities/sources?uuid={definition.SourceUuid}");
+
+                <tr>
+                    <td class="view"><a href="@definitionlink">View</a></td>
+                    <td class="id">@definition.Id</td>
+                    <td class="type">@definition.Type</td>
+                    <td class="description">@definition.GetDescription("en")</td>
+                    <td class="source"><a href="@sourceLink">@definition.SourceUuid</a></td>
+                    <td class="created">@definition.Created.ToLocalTime()</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+@code {
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+    [Parameter]
+    public IEnumerable<TrakHoundDefinition> Definitions { get; set; }
+
+}

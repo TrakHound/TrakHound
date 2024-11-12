@@ -1,0 +1,16 @@
+﻿.explorer-page {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.explorer-header {
+    grid-row: 1;
+}
+
+.explorer-body {
+    grid-row: 2;
+    height: 100%;
+    overflow: hidden;
+}

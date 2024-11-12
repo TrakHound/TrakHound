@@ -1,0 +1,30 @@
+﻿.table {
+    background: #fafafa;
+    border: 1px solid #eee;
+}
+
+th {
+    font-size: 12px;
+    font-weight: bold;
+    border: none !important;
+    border-right: 1px solid #eee !important;
+    padding: 2px 10px;
+}
+
+td {
+    font-size: 12px;
+    padding: 2px 10px;
+    background: #fff;
+}
+
+.type-cell {
+    width: 100px;
+}
+
+.name-cell {
+    width: 200px;
+}
+
+.data-type-cell {
+    width: 150px;
+}

@@ -1,0 +1,34 @@
+﻿@inherits TrakHoundComponentBase
+
+<div class="object-qr-code">
+    <img src="@GetImageSource()" />
+</div>
+
+@code {
+
+    [Parameter]
+    public string Path { get; set; }
+
+    [Parameter]
+    public int Size { get; set; }
+
+    [Parameter]
+    public string Foreground { get; set; }
+
+    [Parameter]
+    public string Background { get; set; }
+
+
+    private string GetImageSource()
+    {
+        var url = "barcodes";
+        url = Url.AddQueryParameter(url, "path", Path);
+        url = Url.AddQueryParameter(url, "type", "qr");
+        url = Url.AddQueryParameter(url, "height", Size.ToString());
+        url = Url.AddQueryParameter(url, "width", Size.ToString());
+        url = Url.AddQueryParameter(url, "foreground", Foreground);
+        url = Url.AddQueryParameter(url, "background", Background);
+        return GetUrl(url);
+    }
+
+}

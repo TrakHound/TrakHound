@@ -1,0 +1,26 @@
+﻿.browse-panel {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.toolbar-panel {
+    grid-row: 1;
+    padding: 15px 20px 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.toolbar-panel-container {
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-flow: column;
+    grid-column-gap: 20px;
+}
+
+.browser-panel {
+    grid-row: 2;
+    height: 100%;
+    overflow: hidden;
+    padding-left: 10px;
+}

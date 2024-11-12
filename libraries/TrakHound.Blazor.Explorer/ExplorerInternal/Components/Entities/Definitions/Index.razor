@@ -1,0 +1,152 @@
+﻿@page "/explorer/{instanceId}/entities/definitions"
+@inject ExplorerService explorerService
+@using TrakHound.Requests
+
+@if (!loading)
+{
+    <div class="definitions-page">
+        <div class="toolbar-panel">
+            <div class="toolbar-container">
+                <div class="toolbar-buttons">
+                    <button class="btn btn-primary btn-query" @onclick="QueryClicked"><span class="icon fa-solid fa-sharp fa-magnifying-glass"></span>Query</button>
+                </div>
+                <div class="toolbar-query">
+                    <TextBox PlaceHolder="Definition UUID.." />
+                </div>
+            </div>
+        </div>
+        <div class="content-panel">
+
+            @if (definition != null)
+            {
+                <div class="panel">
+                    <span class="panel-label">Information</span>
+                    <DefinitionInformation Definition="@definition" />
+                </div>
+
+                <div class="panel">
+                    <span class="panel-label">Description</span>
+                    <DefinitionDescription Definition="@definition" />
+                </div>
+
+                @if (!parentDefinitions.IsNullOrEmpty())
+                {
+                    <div class="panel">
+                        <span class="panel-label">Inheritance</span>
+                        <DefinitionInheritance Definitions="@parentDefinitions" />
+                    </div>
+                }
+
+                @if (!sourceChain.IsNullOrEmpty())
+                {
+                    <div class="panel">
+                        <span class="panel-label">Source</span>
+                        <DefinitionSource SourceChain="@sourceChain" />
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+}
+else
+{
+    <Loading Message="@loadingMessage" />
+}
+
+@code {
+
+    private TrakHoundDefinition definition;
+    private IEnumerable<TrakHoundDefinition> parentDefinitions;
+    private IEnumerable<TrakHoundSource> sourceChain;
+    private string previousInstanceId;
+    private string previousUuid;
+
+    private bool loading;
+    private string loadingMessage;
+
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+    [Parameter]
+    public string InstanceId { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "uuid")]
+    public string Uuid { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async void LocationChanged(object sender, LocationChangedEventArgs args)
+    {
+        await Load();
+    }
+
+    private async void ExplorerLoaded(object sender, EventArgs args)
+    {
+        await Load();
+    }
+
+    private async void QueryClicked()
+    {
+        await Load(true);
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || explorerService.SelectedInstanceId != previousInstanceId || Uuid != previousUuid)
+        {
+            definition = null;
+            previousInstanceId = explorerService.SelectedInstanceId;
+            previousUuid = Uuid;
+
+            // Set Explorer Breadcrumbs
+            var breadcrumbItems = new List<BreadcrumbItem>();
+            breadcrumbItems.Add(new BreadcrumbItem(explorerService.SelectedInstanceId, null));
+            breadcrumbItems.Add(new BreadcrumbItem("Entities", null));
+            breadcrumbItems.Add(new BreadcrumbItem("Definitions", null));
+            explorerService.BreadcrumbItems = breadcrumbItems;
+
+            if (!string.IsNullOrEmpty(Uuid))
+            {
+                loading = true;
+                loadingMessage = "Loading Definition..";
+                await InvokeAsync(StateHasChanged);
+
+                await explorerService.LoadInstance(Explorer.Instances, explorerService.SelectedInstanceId);
+
+                var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+                if (client != null)
+                {
+                    // Load Definition
+                    definition = await client.Entities.GetDefinitionByUuid(Uuid);
+                    if (definition != null)
+                    {
+                        // Load Parent Definitions (for Inheritance)
+                        parentDefinitions = await client.Entities.GetParentDefinitionsByUuid(Uuid);
+
+                        // Load Source Chain
+                        sourceChain = await client.Entities.GetSourceChain(definition.SourceUuid);
+                    }
+                }
+
+                await Task.Delay(250); // Show Loading. Looks weird without it
+            }
+
+            loading = false;
+            loadingMessage = null;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

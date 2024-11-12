@@ -1,0 +1,10 @@
+﻿{
+  "id": "TrakHound.Images.Api",
+  "category": "api",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Store Images & Generate High Quality, Low Quality, and Thumbnail versions",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultRoute": "images"
+  }
+}

@@ -1,0 +1,14 @@
+﻿@using System.Reflection
+
+<TrakHoundBlazorRouter>
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData.Data" DefaultLayout="@typeof(BlankLayout)" />
+        <FocusOnNavigate RouteData="@routeData.Data" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Error - TrakHound Instance</PageTitle>
+        <LayoutView Layout="@typeof(BlankLayout)">
+            <TrakHound.Instance.Pages.InstanceErrorPage />
+        </LayoutView>
+    </NotFound>
+</TrakHoundBlazorRouter>

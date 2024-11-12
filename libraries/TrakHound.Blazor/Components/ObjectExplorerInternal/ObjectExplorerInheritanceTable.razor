@@ -1,0 +1,47 @@
+﻿@using TrakHound.Entities
+
+@if (ObjectExplorerService != null && Definition != null)
+{
+    var inheritedDefinitions = ObjectExplorerService.GetInheritedDefinitions(Definition.Uuid);
+
+    var definitions = new List<ITrakHoundDefinitionEntity>();
+    if (!inheritedDefinitions.IsNullOrEmpty()) definitions.AddRange(inheritedDefinitions.Reverse());
+    definitions.Add(Definition);
+
+    <table class="inheritance-table table table-sm">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var definition in definitions)
+            {
+                var link = "#";
+                if (ObjectExplorerService.DefinitionsQueryLinkFunction != null) link = ObjectExplorerService.DefinitionsQueryLinkFunction(definition.Uuid);
+
+                var description = ObjectExplorerService.GetDefinitionDescription(definition.Uuid);
+
+                <tr>
+                    <td class="view"><a href="@link">View</a></td>
+                    <td class="type">@definition.Type</td>
+                    <td class="description">@description?.Text</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+@code {
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public ITrakHoundDefinitionEntity Definition { get; set; }
+
+}

@@ -1,0 +1,138 @@
+﻿.package-information {
+}
+
+.identity-panel {
+    display: grid;
+    grid-template-columns: max-content 1fr max-content;
+    grid-column-gap: 30px;
+    margin-bottom: 25px;
+}
+
+    .identity-panel .icon-container {
+        text-align: center;
+        border: 1px solid #eee;
+        padding: 3px;
+    }
+
+        .identity-panel .icon-container span.icon {
+            font-size: 40px;
+            line-height: 50px;
+            color: var(--accent);
+            height: 50px;
+            width: 50px;
+        }
+
+        .identity-panel .icon-container img.icon {
+            max-height: 50px;
+            max-width: 50px;
+        }
+
+
+    .identity-panel .title {
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 20px;
+        display: block;
+        margin-top: 8px;
+    }
+
+    .identity-panel .publisher {
+        font-size: 12px;
+        line-height: 20px;
+        display: block;
+        color: #555;
+    }
+
+
+
+.license-panel {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-column-gap: 40px;
+    margin-bottom: 30px;
+    padding: 10px 20px;
+    background: var(--accentVeryVeryLight);
+    border: 1px solid var(--accentLight);
+    border-radius: 2px;
+}
+
+    .license-panel .license-buttons .btn-license {
+        border: 1px solid var(--accent);
+        font-size: 12px;
+        color: var(--accent);
+        padding: 8px 20px;
+    }
+
+    .license-panel .license-product-description {
+        display: block;
+        color: var(--accent);
+        font-size: 12px;
+    }
+
+    .license-panel .license-product-id {
+        display: block;
+        color: var(--accent);
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+
+.version-panel {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    padding-top: 15px;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+    .version-panel .label {
+        margin-right: 15px;
+        font-size: 12px;
+        font-weight: bold;
+        line-height: 28px;
+    }
+
+    .version-panel ::deep .rz-dropdown {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 31px;
+        top: -5px;
+    }
+
+        .version-panel ::deep .rz-dropdown .rz-dropdown-label {
+            padding: 4px 20px !important;
+            font-size: 14px;
+            line-height: 28px;
+        }
+
+        .version-panel ::deep .rz-dropdown .rz-dropdown-trigger {
+            padding: 0 !important;
+        }
+
+
+.description-panel {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    font-size: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+
+.properties-panel {
+}
+
+    .properties-panel table td {
+        font-size: 12px;
+        padding-top: 3px !important;
+        padding-bottom: 3px !important;
+        border-bottom: 1px solid #f8f8f8;
+    }
+
+        .properties-panel table td.label {
+            font-weight: bold;
+            padding-right: 15px;
+            vertical-align: top;
+        }

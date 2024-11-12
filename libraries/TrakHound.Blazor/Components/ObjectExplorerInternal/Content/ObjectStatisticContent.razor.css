@@ -1,0 +1,193 @@
+﻿.statistic-content {
+    display: grid;
+    grid-template-rows: max-content max-content max-content 1fr;
+    grid-template-columns: 1fr max-content;
+    height: 100%;
+    overflow: hidden;
+}
+
+.input-panel {
+    grid-row: 1;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    padding: 8px 10px 0;
+}
+
+.input-panel-container {
+    display: grid;
+    grid-template-columns: max-content 210px 210px 1fr max-content;
+    grid-column-gap: 10px;
+}
+
+.input-panel-buttons {
+    padding-top: 1px;
+}
+
+.input-panel-time-range {
+    width: 180px;
+}
+
+.input-panel-input {
+
+}
+
+.input-panel-type {
+
+}
+
+.input-panel .btn-save {
+    height: 42px;
+    width: 130px;
+    font-size: 14px;
+    border-radius: 0;
+    padding: 0;
+    margin-right: 5px;
+}
+
+    .input-panel .btn-save .icon {
+        font-size: 16px;
+    }
+
+.input-panel .btn-refresh {
+    height: 42px;
+    width: 42px;
+    font-size: 14px;
+    border-radius: 0;
+    padding: 0;
+}
+
+    .input-panel .btn-refresh .icon {
+        font-size: 16px;
+        margin-right: 0;
+    }
+
+.input-panel-input ::deep .text-box.small input {
+    height: 44px !important;
+}
+
+.input-panel-type ::deep .rz-dropdown {
+    width: 125px;
+    height: 44px !important;
+    font-size: 14px;
+    line-height: 30px;
+    margin: 0;
+}
+
+.input-panel-type ::deep .rz-dropdown-trigger {
+    height: 44px !important;
+}
+
+.input-panel-time-range ::deep .rz-calendar input {
+    font-size: 14px;
+    padding: 0 10px 0 15px;
+    height: 44px;
+    line-height: 44px;
+    width: 210px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+}
+
+.input-panel-time-range ::deep .rz-calendar-button .rz-button-icon-left {
+    color: var(--accent);
+    font-size: 20px;
+}
+
+.input-panel-time-range ::deep .rz-calendar-button:hover .rz-button-icon-left {
+    color: var(--accentLight);
+}
+
+
+.query-panel {
+    grid-row: 2;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    padding: 0 10px 10px;
+}
+
+.query-panel-container {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    border: 1px solid #ddd;
+}
+
+.query-panel .query-label {
+    grid-column: 1;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-right: 1px solid #ddd;
+    border-radius: 2px;
+    color: #777;
+}
+
+.query-panel .btn-query {
+    grid-column: 2;
+    font-size: 12px;
+    text-align: left;
+    padding-top: 8px;
+}
+
+
+.range-panel {
+    grid-row: 3;
+    grid-column: 1;
+    padding: 0 15px 8px;
+}
+
+.range-panel-container {
+    display: grid;
+    grid-template-columns: max-content max-content 1fr;
+    grid-column-gap: 15px;
+}
+
+.range-panel label {
+    font-size: 12px;
+    line-height: 36px;
+    color: #555;
+}
+
+.range-panel-input ::deep .rz-dropdown {
+    width: 125px;
+    height: 44px !important;
+    font-size: 14px;
+    line-height: 30px;
+    margin: 0;
+}
+
+.range-panel-input ::deep .rz-dropdown-trigger {
+    height: 44px !important;
+}
+
+
+.query-type-panel {
+    grid-row: 3;
+    grid-column: 2;
+    padding: 0 15px 8px;
+}
+
+
+.table-panel {
+    grid-row: 4;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    height: 100%;
+    overflow: hidden;
+    padding: 0 10px 10px;
+}
+
+    .table-panel ::deep .rz-data-grid {
+        height: 100%;
+        width: auto;
+    }
+
+    .table-panel ::deep th {
+        border-bottom: 1px solid #ddd !important;
+    }
+
+    .table-panel ::deep td {
+        border-bottom: 1px solid #ddd !important;
+    }
+
+    .table-panel ::deep td .rz-cell-data {
+        font-size: 12px;
+    }

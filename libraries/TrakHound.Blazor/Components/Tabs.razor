@@ -1,0 +1,171 @@
+﻿@using TrakHound
+
+<CascadingValue Value="this">
+    <div class="tabs @Class">
+        <div class="tabs-header">
+            <div class="tabs-header-container">
+
+                @if (Pages != null && Pages.Any())
+                {
+                    var oPages = Pages.OrderBy(o => o.Index);
+
+                    foreach (var tabPage in oPages)
+                    {
+                        var active = tabPage == ActivePage ? "active" : "";
+
+                        <button type="button" class="tab-header @active" @onclick="() => ActivatePage(tabPage)">
+
+                            @if (TabHeaderTemplate != null)
+                            {
+                                @TabHeaderTemplate(tabPage)
+                            }
+                            else
+                            {
+                                <span class="icon @tabPage.Icon"></span>
+                                <span class="title">@tabPage.Title</span>
+                                <span class="badge badge-danger">@tabPage.Badge</span>
+                            }
+
+                        </button>
+                    }
+                }
+
+            </div>
+        </div>
+        <div class="tabs-body">
+            @if (ChildContent != null)
+            {
+                @ChildContent                
+            }
+        </div>
+    </div>
+</CascadingValue>
+
+@code {
+
+    private int selectedIndex = 0;
+    private int previousSelectedIndex = -1;
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment<TabPage> TabHeaderTemplate { get; set; }
+
+    [Parameter]
+    public string Class { get; set; }
+
+    [Parameter]
+    public Dictionary<string, string> Links { get; set; }
+
+    [Parameter]
+    public int SelectedIndex
+    {
+        get
+        {
+            return selectedIndex;
+        }
+        set
+        {
+            selectedIndex = value;
+
+            if (selectedIndex != previousSelectedIndex && Pages != null && selectedIndex > -1 && selectedIndex <= Pages.Count - 1)
+            {
+                previousSelectedIndex = selectedIndex;
+                ActivatePage(Pages?[selectedIndex]);
+            }
+        }
+    }
+
+    [Parameter]
+    public EventCallback<int> SelectedIndexChanged { get; set; }
+
+    [Parameter]
+    public string SelectedTab
+    {
+        get
+        {
+            return Pages?[selectedIndex].Id;
+        }
+        set
+        {
+            SelectedIndex = Pages != null ? Pages.FindIndex(o => o.Id == value) : 0;
+        }
+    }
+
+    [Parameter]
+    public EventCallback<string> SelectedTabChanged { get; set; }
+
+    //[Parameter]
+    //public EventCallback<string> TabSelected { get; set; }
+
+    public TabPage ActivePage { get; set; }
+    public List<TabPage> Pages = new();
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    internal async Task AddPage(TabPage tabPage)
+    {
+        Pages.Add(tabPage);
+        Pages = Pages.OrderBy(o => o.Index).ToList();
+
+        selectedIndex = Pages.IndexOf(ActivePage);
+        previousSelectedIndex = selectedIndex;
+
+        if (Pages.Count == 1)
+        {
+            previousSelectedIndex = -1;
+            SelectedIndex = 0;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    internal async Task RemovePage(TabPage tabPage)
+    {
+        if (Pages.Contains(tabPage))
+        {
+            var i = Pages.IndexOf(tabPage);
+
+            Pages.Remove(tabPage);
+
+            if (i == selectedIndex) SelectedIndex = 0;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    internal async Task UpdatePage(TabPage tabPage)
+    {
+        if (tabPage != null)
+        {
+            var i = Pages.IndexOf(tabPage);
+            if (i >= 0)
+            {
+                Pages.RemoveAt(i);
+                Pages.Insert(i, tabPage);
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    async Task ActivatePage(TabPage tabPage)
+    {
+        if (tabPage != null)
+        {
+            ActivePage = tabPage;
+
+            await SelectedTabChanged.InvokeAsync(tabPage.Id);
+            //await TabSelected.InvokeAsync(tabPage.Id);
+            await SelectedIndexChanged.InvokeAsync(Pages.IndexOf(tabPage));
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

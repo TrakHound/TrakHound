@@ -1,0 +1,34 @@
+﻿@using TrakHound.Instances
+
+@if (InstanceInformation != null)
+{
+    <div class="header-panel">
+        <div class="header-content">
+            <div class="header-icon-container">
+                <span class="header-icon fa-solid fa-sharp fa-server"></span>
+            </div>
+            <div class="header-description-container">
+                <span class="header-title">Instance</span>
+                <span class="header-id">@InstanceInformation.Id</span>
+                <span class="header-name">@InstanceInformation.Name</span>
+                <span class="header-description">@InstanceInformation.Description</span>
+            </div>
+            <div class="header-connection-icon-container">
+                <span class="header-connection-icon fa-solid fa-sharp fa-wifi"></span>
+            </div>
+            <div class="header-connection-container">
+                <span class="header-title">Connection</span>
+                <span class="header-package">@InstanceInformation.GetInterface("HTTP")?.Address</span>
+                <span class="header-version">@InstanceInformation.GetInterface("HTTP")?.Port</span>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+
+    [Parameter]
+    public TrakHoundInstanceInformation InstanceInformation { get; set; }
+
+}

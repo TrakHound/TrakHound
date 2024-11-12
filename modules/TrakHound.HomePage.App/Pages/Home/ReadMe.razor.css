@@ -1,0 +1,51 @@
+﻿.readme-panel {
+    height: 100%;
+    overflow: auto;
+    padding: 50px;
+    color: var(--accentVeryLight);
+}
+
+    .readme-panel ::deep a {
+        color: var(--accentKindaLight);
+    }
+
+    .readme-panel ::deep p {
+        font-size: 13px;
+    }
+
+.readme-panel ::deep h1 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+    .readme-panel ::deep h2 {
+        margin-top: 40px;
+        margin-bottom: 10px;
+    }
+
+    .readme-panel ::deep h3 {
+        margin-top: 30px;
+        margin-bottom: 10px;
+    }
+
+    .readme-panel ::deep li {
+        background: none;
+        font-size: 13px;
+    }
+
+    .readme-panel ::deep table {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .readme-panel ::deep table th {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 4px 15px;
+        font-size: 13px;
+    }
+
+        .readme-panel ::deep table td {
+            padding: 2px 15px;
+            font-size: 13px;
+            border-right: 1px solid rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+        }

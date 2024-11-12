@@ -1,0 +1,26 @@
+﻿<div class="context-menu-item" @onclick="Click">
+    <span class="context-menu-item-icon @Icon"></span>
+    <span class="context-menu-item-text">@Text</span>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public string Icon { get; set; }
+
+    [Parameter]
+    public string Link { get; set; }
+
+    [Parameter]
+    public EventCallback Clicked { get; set; }
+
+
+    private async void Click()
+    {
+        await Clicked.InvokeAsync();
+    }
+
+}

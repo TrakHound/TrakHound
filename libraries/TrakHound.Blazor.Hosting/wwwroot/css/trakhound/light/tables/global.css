@@ -1,0 +1,268 @@
+.table {
+    background: var(--tableBackground);
+    border-color: var(--borderVeryLight);
+}
+
+.table-head {
+    margin-bottom: 0;
+}
+
+.table-card {
+    border-radius: 2px;
+}
+
+    .table-card .card-header {
+        border-bottom: none;
+        border-color: var(--borderLight);
+        padding: 5px 10px;
+        font-size: 12px;
+        color: var(--textDark);
+        background: var(--panelBackground);
+    }
+
+        .table-card .card-header .oi {
+            color: var(--textLight);
+            font-size: 12px;
+            margin-right: 10px;
+        }
+
+
+    .table-card .card-body {
+        padding: 0;
+    }
+
+    .table-card .table {
+        margin-bottom: 0;
+    }
+
+.data-table {
+    background: var(--tableBackground);
+    color: var(--textDark);
+    font-size: 12px;
+}
+
+    .data-table > .card {
+        background: none;
+    }
+
+    .data-table.table {
+        color: var(--textDark);
+        border-color: var(--borderDark) !important;
+    }
+
+    .data-table .column {
+/*        @include th-panel;*/
+        color: var(--textDark);
+        font-size: 12px;
+        font-weight: normal;
+        text-align: center;
+    }
+
+.table-row {
+    padding-left: 20px !important;
+    line-height: 12px;
+    font-size: 0.8rem;
+}
+
+
+.settings-table .table-row {
+    font-size: 14px;
+}
+
+.table thead th {
+    border: 1px solid var(--borderVeryLight);
+}
+
+.table thead tr:first-child {
+    border-top: none !important;
+}
+
+.table-row.total {
+    background: #f8f8f8;
+    font-weight: bold;
+}
+
+
+.table-row .btn-sm {
+    padding: 2px 8px;
+}
+
+.table-row .links {
+    float: left;
+    padding-top: 2px;
+    margin-right: 10px;
+}
+
+.table-row td .color {
+    height: 15px;
+    width: 15px;
+    display: block;
+}
+
+.table-row .commands a {
+    color: var(--textLight);
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+
+    .table-row .commands a:hover {
+        color: var(--accent);
+    }
+
+    .table-row .commands a .oi {
+        margin-right: 5px;
+    }
+
+.table-row .commands-container {
+    height: 100%;
+    padding: 0;
+}
+
+.table-row .commands {
+    height: 100%;
+}
+
+    .table-row .commands .btn-command {
+        height: 30px;
+        line-height: 24px;
+        margin: 5px;
+        font-size: 14px;
+    }
+
+        .table-row .commands .btn-command:first-child {
+            margin-right: 0;
+        }
+
+        .table-row .commands .btn-command:last-child {
+            margin-left: 0;
+        }
+
+
+.column {
+    border: 1px solid var(--borderLight);
+    border-bottom-color: var(--borderLight) !important; /* For Bootstrap */
+    border-radius: 2px;
+    /*background: var(--panelBackground);*/
+    color: var(--textDark);
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.column-sortable:hover {
+    background: #efefef;
+    cursor: pointer;
+    color: var(--trakhoundBlue);
+}
+
+.column-sortable .oi, .column-sortable .fa {
+    margin-left: 1.2em;
+    margin-right: -20px;
+    color: var(--trakhoundBlue);
+    font-size: 1em;
+    width: 20px;
+}
+
+.commands-column {
+    min-width: 150px;
+}
+
+.header-column {
+    min-width: 300px;
+}
+
+.reload-column {
+    width: 115px;
+}
+
+.remove-column {
+    width: 120px;
+}
+
+.table .identifier {
+    color: var(--textDark);
+    font-family: Consolas;
+    font-size: 1.25em;
+    padding: 0 1em;
+}
+
+.table-row .device-header {
+    text-align: left;
+}
+
+.table-row .commands-container {
+    height: 60px;
+    width: 120px;
+}
+
+    .table-row .commands-container .btn-command {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        border: none;
+        transition: none;
+    }
+
+        .table-row .commands-container .btn-command:hover {
+            border: none;
+            transition: none;
+        }
+
+        .table-row .commands-container .btn-command .oi,
+        .table-row .commands-container .btn-command .fas {
+            margin-right: 10px;
+        }
+
+.table-row .device-header .image-container {
+    float: left;
+    width: 100px;
+    text-align: center;
+}
+
+.table-row .device-header .device-image {
+    max-height: 50px;
+    max-width: 80px;
+    opacity: 0.75;
+}
+
+.table-row .device-header .device-logo {
+    max-height: 20px;
+    max-width: 120px;
+}
+
+.table-row .device-header .device-description {
+    margin-right: 1em;
+    margin-top: 0.5rem;
+    font-size: 0.75em;
+    color: var(--textDark);
+}
+
+    .table-row .device-header .device-description:only-child {
+        margin-left: 20px;
+    }
+
+    .table-row .device-header .device-description p {
+        margin: 0;
+    }
+
+    .table-row .device-header .device-description .label {
+        color: var(--textLight);
+        margin-right: 10px;
+    }
+
+.table-row .commands-container .custom-checkbox label::before {
+    height: 1.5em;
+    width: 1.5em;
+    cursor: pointer;
+}
+
+.table-row .commands-container .custom-checkbox label::after {
+    height: 1.5em;
+    width: 1.5em;
+    cursor: pointer;
+}
+
+.table-card .table .table-row td:last-child {
+    padding-right: 15px !important;
+}

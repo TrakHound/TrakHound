@@ -1,0 +1,131 @@
+﻿@inject TrakHound.Blazor.Services.EntityClipboardService entityClipboardService
+@using TrakHound.Entities
+
+@if (Object != null && ObjectExplorerService != null)
+{
+    var contentType = Object.ContentType.ConvertEnum<TrakHoundObjectContentType>();
+
+    var definition = ObjectExplorerService.GetDefinition(Object.DefinitionUuid);
+    var definitionDescription = ObjectExplorerService.GetDefinitionDescription(Object.DefinitionUuid);
+
+    var icon = TrakHoundObjectIcon.Get(contentType);
+    var title = Object.ContentType;
+
+    var objectPathQuery = $"select >> from [{Object.Namespace}:{Object.Path}]";
+    var objectPathLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(objectPathQuery) : null;
+
+    var objectUuidQuery = $"select >> from [uuid={Object.Uuid}]";
+    var objectUuidLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(objectUuidQuery) : null;
+
+    var parentUuidQuery = $"select >> from [uuid={Object.ParentUuid}]";
+    var parentUuidLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(parentUuidQuery) : null;
+
+
+    var definitionLink = "#";
+    if (ObjectExplorerService.DefinitionsQueryLinkFunction != null) definitionLink = ObjectExplorerService.DefinitionsQueryLinkFunction(Object.DefinitionUuid);
+
+    var sourceLink = "#";
+    if (ObjectExplorerService.SourcesQueryLinkFunction != null) sourceLink = ObjectExplorerService.SourcesQueryLinkFunction(Object.SourceUuid);
+
+
+    <div class="object-information">
+        <div class="description-panel">
+            <span class="panel-label">Description</span>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="label">Namespace</td>
+                        <td class="value"><CopyLabel Value="@Object.Namespace" CopyClicked="CopyClicked" /></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Path</td>
+                        <td class="value"><CopyLabel Value="@Object.Path" Link="@objectPathLink" CopyClicked="CopyClicked" /></td>
+                    </tr>
+                    <tr>
+                        <td class="label">UUID</td>
+                        <td class="value"><CopyLabel Value="@Object.Uuid" Link="@objectUuidLink" CopyClicked="CopyClicked" /></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Name</td>
+                        <td class="value"><CopyLabel Value="@Object.Name" CopyClicked="CopyClicked" /></td>
+                    </tr>
+                    <tr>
+                        <td class="label">ContentType</td>
+                        <td class="value"><CopyLabel Value="@Object.ContentType" CopyClicked="CopyClicked" /></td>
+                    </tr>
+
+                    @if (!string.IsNullOrEmpty(Object.DefinitionUuid))
+                    {
+                        <tr>
+                            <td class="label">Definition UUID</td>
+                            <td class="value"><CopyLabel Value="@Object.DefinitionUuid" Link="@definitionLink" CopyClicked="CopyClicked" /></td>
+                        </tr>
+                    }
+
+                    @if (definition != null)
+                    {
+                        <tr>
+                            <td class="label">Definition ID</td>
+                            <td class="value"><CopyLabel Value="@definition.Id" Link="@definitionLink" CopyClicked="CopyClicked" /></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Type</td>
+                            <td class="value definition-breadcrumb-cell">
+                                <ObjectExplorerTypeBreadcrumbs Definition="@definition" />
+                            </td>
+                        </tr>
+
+                        @if (definitionDescription != null)
+                        {
+                            <tr>
+                                <td class="label">Description</td>
+                                <td class="value">@definitionDescription.Text</td>
+                            </tr>
+                        }
+                    }
+
+                    @if (!string.IsNullOrEmpty(Object.ParentUuid))
+                    {
+                        <tr>
+                            <td class="label">ParentUuid</td>
+                            <td class="value"><CopyLabel Value="@Object.ParentUuid" Link="@parentUuidLink" CopyClicked="CopyClicked" /></td>
+                        </tr>
+                    }
+
+                    <tr>
+                        <td class="label">Source</td>
+                        <td class="value"><CopyLabel Value="@Object.SourceUuid" Link="@sourceLink" CopyClicked="CopyClicked" /></td>
+                    </tr>
+
+                    <tr>
+                        <td class="label">Created</td>
+                        <td class="value">@Object.Created.ToLocalDateTime()</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public ITrakHoundObjectEntity Object { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    private async void CopyClicked(string value)
+    {
+        ObjectExplorerService.NotificationService.AddNotification(NotificationType.Information, "Copied to Clipboard", value, duration: 2500);
+        await InvokeAsync(StateHasChanged);
+    }    
+
+}

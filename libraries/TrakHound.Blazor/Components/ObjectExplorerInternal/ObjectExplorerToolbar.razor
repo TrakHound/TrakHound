@@ -1,0 +1,50 @@
+﻿@{
+    var hiddenIcon = ObjectExplorerService.HiddenShown ? "fa-regular fa-sharp fa-eye-slash" : "fa-regular fa-sharp fa-eye";
+}
+
+<div class="object-explorer-toolbar">
+    <div class="object-explorer-toolbar-container">
+        <div class="object-explorer-toolbar-left">
+            <button class="btn btn-sm btn-light btn-add" title="Add" @onclick="AddClicked"><span class="icon fa-solid fa-sharp fa-plus"></span>Add</button>
+            <button class="btn btn-sm btn-toolbar" title="Copy" @onclick="CopyClicked"><span class="icon fa-solid fa-sharp fa-copy"></span></button>
+            <button class="btn btn-sm btn-toolbar" title="Paste" @onclick="PasteClicked"><span class="icon fa-solid fa-sharp fa-paste"></span></button>
+            <button class="btn btn-sm btn-toolbar" title="Collapse All" @onclick="ObjectExplorerService.CollapseAll"><span class="icon fa-solid fa-sharp fa-layer-minus"></span></button>
+            <button class="btn btn-sm btn-toolbar" title="Toggle Hidden" @onclick="ObjectExplorerService.ToggleHidden"><span class="icon @hiddenIcon"></span></button>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+
+    private void AddClicked()
+    {
+        ObjectExplorerService.AddService.AddObject();
+    }
+
+    private async void CopyClicked()
+    {
+        var selectedPath = ObjectExplorerService.SelectedObject?.Path;
+        if (selectedPath != null && await ObjectExplorerService.Copy(selectedPath))
+        {
+            ObjectExplorerService.AddNotification(NotificationType.Information, "Object Copied to Clipboard", selectedPath);
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void PasteClicked()
+    {
+        var selectedPath = ObjectExplorerService.SelectedObject?.Path;
+        if (selectedPath != null && await ObjectExplorerService.Paste(selectedPath))
+        {
+            ObjectExplorerService.AddNotification(NotificationType.Information, "Object Pasted to Clipboard", selectedPath);
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

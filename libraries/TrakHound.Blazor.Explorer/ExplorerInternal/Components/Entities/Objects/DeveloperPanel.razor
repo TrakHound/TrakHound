@@ -1,0 +1,85 @@
+﻿@if (InstancesService != null)
+{
+    <div class="developer-panel">
+        <RadzenTabs TabPosition="TabPosition.Left">
+            <Tabs>
+                <RadzenTabsItem Text="C#">
+                    <div class="developer-language-panel">
+
+                        <div class="developer-code-panel">
+                            <div class="developer-code-toolbar">
+                                <button class="btn btn-sm btn-light"><span class="icon fa-regular fa-sharp fa-copy"></span>Copy</button>
+                            </div>
+                            <div class="developer-code-information">
+                                <span class="developer-code-title">Return results from Query</span>
+                            </div>
+                            <div class="developer-code-body">
+                                <pre>@GetQueryCode()</pre>
+                            </div>
+                        </div>
+
+                        <div class="developer-code-panel">
+                            <div class="developer-code-toolbar">
+                                <button class="btn btn-sm btn-light"><span class="icon fa-regular fa-sharp fa-copy"></span>Copy</button>
+                            </div>
+                            <div class="developer-code-information">
+                                <span class="developer-code-title">Create Subscription for the results from Query</span>
+                            </div>
+                            <div class="developer-code-body">
+                                <pre>@GetSubscribeCode()</pre>
+                            </div>
+                        </div>
+
+                    </div>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Python">
+
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Javascript">
+
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+    </div>
+}
+
+@code {
+
+    [CascadingParameter(Name = "InstancesService")]
+    public ExplorerObjectsService InstancesService { get; set; }
+
+
+    private string GetQueryCode()
+    {
+        var template = GetTemplate("Query", "Objects");
+        if (template != null)
+        {
+            return template.Replace("{query}", InstancesService.Query);
+        }
+
+        return null;
+    }
+
+    private string GetSubscribeCode()
+    {
+        var template = GetTemplate("Subscribe", "Objects");
+        if (template != null)
+        {
+            return template.Replace("{query}", InstancesService.Query);
+        }
+
+        return null;
+    }
+
+    private static string GetTemplate(string basePath, string name)
+    {
+        // if (!string.IsNullOrEmpty(basePath) && !string.IsNullOrEmpty(name))
+        // {
+        //     var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DeveloperTemplates", basePath, $"{name}.txt");
+        //     return File.ReadAllText(path);
+        // }
+
+        return null;
+    }
+
+}

@@ -1,0 +1,150 @@
+﻿@inject ExplorerService explorerService
+@using TrakHound.Entities.Collections
+@using TrakHound.Entities.QueryEngines
+
+@if (InstancesService != null)
+{
+    if (!InstancesService.IsQueryLoading)
+    {
+        <div class="results-panel">
+            <div class="results-tabs-container">
+
+                <RadzenTabs RenderMode="TabRenderMode.Client">
+                    <Tabs>
+
+                        @if (InstancesService.QueryResponse.Success)
+                        {
+                             if (!InstancesService.QueryResponse.Results.IsNullOrEmpty())
+                             {
+                                Func<string, string> objectsQueryLinkFunction = (o) =>
+                                {
+                                    var objectsQuery = Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "entities", "objects");
+                                    return Url.AddQueryParameter(objectsQuery, "query", o);
+                                };
+                                Func<string, string> definitionsQueryLinkFunction = (o) =>
+                                {
+                                    var definitionsQuery = Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "entities", "definitions");
+                                    return Url.AddQueryParameter(definitionsQuery, "uuid", o);
+                                };
+                                Func<string, string> sourcesQueryLinkFunction = (o) =>
+                                {
+                                    var sourcesQuery = Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "entities", "sources");
+                                    return Url.AddQueryParameter(sourcesQuery, "uuid", o);
+                                };
+
+
+                                 foreach (var queryResult in InstancesService.QueryResponse.Results)
+                                {
+                                    if (queryResult.Rows != null)
+                                    {
+                                        if (queryResult.Schema == "trakhound.entities.objects.target")
+                                        {
+                                            var objects = new List<ITrakHoundObjectEntity>();
+                                            var rowCount = queryResult.Rows.GetLength(0);
+                                            var columnCount = queryResult.Rows.GetLength(1);
+
+                                            for (var i = 0; i < rowCount; i++)
+                                            {
+                                                var row = new object[columnCount];
+                                                for (var j = 0; j < columnCount; j++)
+                                                {
+                                                    row[j] = queryResult.Rows[i, j];
+                                                }
+
+                                                var objectEntity = TrakHoundObjectEntity.FromArray(row);
+                                                if (objectEntity.IsValid) objects.Add(objectEntity);
+                                            }
+
+                                            if (!objects.IsNullOrEmpty())
+                                            {
+                                                var tabText = $"Objects ({objects.Count()})";
+
+                                                <RadzenTabsItem Text="@tabText">
+                                                    <Template>
+                                                        <div class="tab-header">
+                                                            <span class="tab-header-icon @TrakHoundObjectIcon.Get(TrakHoundObjectContentType.Directory)"></span>
+                                                            <span class="tab-header-title">@tabText</span>
+                                                        </div>
+                                                    </Template>
+                                                    <ChildContent>
+                                                        <ObjectExplorer BaseUrl="@Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId)"
+                                                                        Client="@InstancesService.Client"
+                                                                        Objects="@objects"
+                                                                        QueryChanged="InstancesService.SetQuery"
+                                                                        ObjectsQueryLinkFunction="@objectsQueryLinkFunction"
+                                                                        DefinitionsQueryLinkFunction="@definitionsQueryLinkFunction"
+                                                                        SourcesQueryLinkFunction="@sourcesQueryLinkFunction" />
+                                                    </ChildContent>
+                                                </RadzenTabsItem>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var tabText = queryResult.Schema != null ? queryResult.Schema : "Results";
+                                            tabText = $"{tabText} ({queryResult.RowCount})";
+
+                                            <RadzenTabsItem Text="Results">
+                                                <Template>
+                                                    <div class="tab-header">
+                                                        <span class="tab-header-icon fa-solid fa-sharp fa-table-pivot"></span>
+                                                        <span class="tab-header-title">@tabText</span>
+                                                    </div>
+                                                </Template>
+                                                <ChildContent>
+                                                      <ContentResults Result="@queryResult" />
+                                                </ChildContent>
+                                            </RadzenTabsItem>
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (InstancesService.QueryConsumer == null)
+                        {
+                            var text = $"Objects";
+
+                            <RadzenTabsItem Text="@text">
+                                <Template>
+                                    <div class="tab-header">
+                                        <span class="tab-header-icon @TrakHoundObjectIcon.Get(TrakHoundObjectContentType.Directory)"></span>
+                                        <span class="tab-header-title">@text</span>
+                                    </div>
+                                </Template>
+                                <ChildContent>
+                                    <ObjectExplorer Client="@InstancesService.Client" QueryChanged="InstancesService.SetQuery" />
+                                </ChildContent>
+                            </RadzenTabsItem>
+                        }
+
+                    </Tabs>
+                </RadzenTabs>
+
+            </div>
+        </div>
+    }
+    else
+    {
+        <Loading Message="Loading Query.." />
+    }
+}
+
+@code {
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+    [CascadingParameter(Name = "InstancesService")]
+    public ExplorerObjectsService InstancesService { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        InstancesService.QueryLoaded += ExplorerQueryLoaded;
+    }
+
+    private async void ExplorerQueryLoaded(object sender, EventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<TargetFrameworks>net8.0</TargetFrameworks>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<TargetFrameworks>net8.0</TargetFrameworks>
+		<DebugSymbols>false</DebugSymbols>
+		<DebugType>None</DebugType>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AssemblyName>TrakHound.Packaging.DotNet</AssemblyName>
+		<RootNamespace>TrakHound.Packaging</RootNamespace>
+		<Configurations>Debug;Release;Package</Configurations>
+		<Description>Contains classes for Packaging DotNet Projects for the TrakHound Framework</Description>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\TrakHound.Common\TrakHound.Common.csproj" />
+	</ItemGroup>
+
+</Project>

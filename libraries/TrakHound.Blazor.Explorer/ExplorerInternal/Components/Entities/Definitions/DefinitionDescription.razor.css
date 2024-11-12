@@ -1,0 +1,36 @@
+.definition-description {
+    border-top: 1px solid #ddd !important;
+    border-left: 1px solid #ddd !important;
+    border-bottom: 1px solid #ddd !important;
+}
+
+.definition-description table {
+    width: 100%;
+}
+
+    .definition-description th {
+        font-size: 12px;
+        color: #555;
+        border-right: 1px solid #ddd !important;
+        border-bottom: 1px solid #ddd !important;
+        padding: 5px 10px;
+    }
+
+    .definition-description td {
+        font-size: 13px;
+        color: #333;
+        padding: 5px 10px;
+        border-right: 1px solid #ddd !important;
+    }
+
+        .definition-description td a {
+            text-decoration: none;
+        }
+
+    .definition-description .view {
+        width: 50px;
+    }
+
+    .definition-description ::deep .type {
+        font-weight: bold;
+    }

@@ -1,0 +1,70 @@
+﻿@inject ExplorerService explorerService
+
+@if (Explorer != null)
+{
+    <div class="menu-page">
+        <div class="header-panel">
+            <div class="header-content">
+                <div class="header-icon">
+                    <span class="icon fa-solid fa-sharp fa-database"></span>
+                </div>
+                <div class="header-text">
+                    <span class="header-name">Entities</span>
+                    <span class="header-description">View &amp; Edit Entity information</span>
+                </div>
+            </div>
+        </div>
+        <div class="content-panel">
+
+            <a href="@Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "entities/objects")" class="menu-item">
+                <div class="menu-item-container">
+                    <div class="menu-item-icon-container">
+                        <span class="menu-item-icon fa-sharp fa-solid fa-sitemap" />
+                    </div>
+                    <div class="menu-item-title-container">
+                        <span class="menu-item-title">Objects</span>
+                    </div>
+                    <div class="menu-item-description-container">
+                        <p class="menu-item-description">Represents Physical or Logical items.</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="@Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "entities/definitions")" class="menu-item">
+                <div class="menu-item-container">
+                    <div class="menu-item-icon-container">
+                        <span class="menu-item-icon fa-sharp fa-solid fa-book" />
+                    </div>
+                    <div class="menu-item-title-container">
+                        <span class="menu-item-title">Definitions</span>
+                    </div>
+                    <div class="menu-item-description-container">
+                        <p class="menu-item-description">Type definitions that can be used to add context</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="@Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "entities/sources")" class="menu-item">
+                <div class="menu-item-container">
+                    <div class="menu-item-icon-container">
+                        <span class="menu-item-icon fa-sharp fa-regular fa-file-certificate" />
+                    </div>
+                    <div class="menu-item-title-container">
+                        <span class="menu-item-title">Sources</span>
+                    </div>
+                    <div class="menu-item-description-container">
+                        <p class="menu-item-description">Record of where data was sourced from</p>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+}
+
+@code {
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+}

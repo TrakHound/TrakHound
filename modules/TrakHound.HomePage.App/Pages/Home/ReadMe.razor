@@ -1,0 +1,16 @@
+﻿<div class="readme-panel">
+    <MarkdownContent Markdown="@readme" />
+</div>
+
+@code {
+
+    private string readme;
+
+    protected async override Task OnInitializedAsync()
+    {
+        readme = await TrakHound.Http.RestRequest.Get("https://raw.githubusercontent.com/TrakHound/MTConnect.NET/refs/heads/master/README.md");
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

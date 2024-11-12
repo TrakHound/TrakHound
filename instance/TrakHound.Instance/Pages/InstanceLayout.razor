@@ -1,0 +1,76 @@
+﻿@inherits LayoutComponentBase
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+@inject Services.AdminAuthenticationService authenticationService
+@inject TrakHoundInstanceConfiguration instanceConfiguration
+@layout BlankLayout
+@using TrakHound.Instances
+@using TrakHound.Instance.Services
+
+@if (loaded)
+{
+    <div class="instance-page">
+        <div class="instance-header">
+            <InstanceHeader />
+        </div>
+        <div class="instance-sidebar">
+            <NavLink Match="NavLinkMatch.Prefix" href="_admin/explorer" class="btn btn-command btn-navigation">
+                <span class="icon fa-solid fa-sharp fa-list-tree"></span>
+                <span class="text">Explorer</span>
+            </NavLink>
+            <NavLink Match="NavLinkMatch.Prefix" href="_admin/packages" class="btn btn-command btn-navigation">
+                <span class="icon fa-solid fa-sharp fa-box"></span>
+                <span class="text">Packages</span>
+            </NavLink>
+            <NavLink Match="NavLinkMatch.Prefix" href="_admin/configuration" class="btn btn-command btn-navigation">
+                <span class="icon fa-regular fa-sharp fa-sliders"></span>
+                <span class="text">Config</span>
+            </NavLink>
+            <NavLink Match="NavLinkMatch.Prefix" href="_admin/deployments" class="btn btn-command btn-navigation">
+                <span class="icon fa-solid fa-sharp fa-rocket"></span>
+                <span class="text">Deploy</span>
+            </NavLink>
+            <NavLink Match="NavLinkMatch.Prefix" href="_admin/security" class="btn btn-command btn-navigation">
+                <span class="icon fa-solid fa-sharp fa-lock-keyhole"></span>
+                <span class="text">Security</span>
+            </NavLink>
+            <NavLink Match="NavLinkMatch.Prefix" href="_admin/licenses" class="btn btn-command btn-navigation">
+                <span class="icon fa-solid fa-sharp fa-key"></span>
+                <span class="text">Licenses</span>
+            </NavLink>
+        </div>
+        <div class="instance-body">
+            @Body
+        </div>
+    </div>
+}
+
+@code {
+
+    private bool loaded;
+
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (await authenticationService.IsAuthenticated())
+        {
+            if (!loaded)
+            {
+                loaded = true;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        else
+        {
+            var requestedUri = new Uri(navigationManager.Uri);
+            var linkId = Guid.NewGuid().ToString();
+            LinkStore.Add(linkId, Url.GetRelativeTo(instanceConfiguration.BasePath, requestedUri.PathAndQuery));
+
+            var navigateUrl = "_admin/login";
+            navigateUrl = Url.AddQueryParameter(navigateUrl, "linkId", linkId);
+
+            navigationManager.NavigateTo(navigateUrl);
+        }
+    }
+
+}

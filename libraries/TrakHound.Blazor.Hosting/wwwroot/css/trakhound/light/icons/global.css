@@ -1,0 +1,65 @@
+@font-face {
+    font-family: 'icomoon';
+    src: url('icomoon.eot?pb7fzd#iefix');
+    src: url('icomoon.eot?pb7fzd#iefix') format('embedded-opentype'), url('icomoon.ttf?pb7fzd') format('truetype'), url('icomoon.woff?pb7fzd') format('woff'), url('icomoon.svg?pb7fzd#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+[class^="th-"], [class*=" th-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    display: inline-block;
+    transform: scale(1.7) !important;
+    font-family: 'icomoon' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+.th-mode-auto:before {
+    content: "\e902";
+}
+
+.th-mode-block-skip:before {
+    content: "\e903";
+}
+
+.th-mode-dry-run:before {
+    content: "\e904";
+}
+
+.th-mode-edit:before {
+    content: "\e905";
+}
+
+.th-mode-jog:before {
+    content: "\e906";
+}
+
+.th-mode-machine-lock:before {
+    content: "\e907";
+}
+
+.th-mode-mdi:before {
+    content: "\e908";
+}
+
+.th-mode-single-block:before {
+    content: "\e909";
+}
+
+.th-cnc-01:before {
+    content: "\e900";
+}
+
+.th-v5-01:before {
+    content: "\e901";
+}

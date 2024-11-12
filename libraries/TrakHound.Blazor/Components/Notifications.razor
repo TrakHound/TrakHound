@@ -1,0 +1,74 @@
+﻿<div class="notifications">
+
+    @if (!Items.IsNullOrEmpty())
+    {
+        foreach (var item in Items.OrderByDescending(o => o.Timestamp).Take(MaxItems))
+        {
+            var itemClass = "";
+            var iconClass = "";
+
+            switch (item.Type)
+            {
+                case NotificationType.Information:
+                    itemClass = "information";
+                    iconClass = "fa-solid fa-sharp fa-exclamation-circle"; 
+                    break;
+                case NotificationType.Warning:
+                    itemClass = "warning";
+                    iconClass = "fa-solid fa-sharp fa-exclamation-triangle"; 
+                    break;
+                case NotificationType.Error:
+                    itemClass = "error";
+                    iconClass = "fa-solid fa-sharp fa-exclamation-triangle";
+                    break;
+            }
+
+            <div class="notification-item @itemClass">
+                <div class="notification-item-icon-container">
+                    <span class="notification-item-icon @iconClass"></span>
+                </div>
+                <div class="notification-item-message-container">
+                    <span class="notification-item-message">@item.Message</span>
+                </div>
+                <div class="notification-item-details-container">
+                    <span class="notification-item-details">@item.Details</span>
+                </div>
+@*                 <div class="notification-item-timestamp-container">
+                    <span class="notification-item-timestamp">@item.Timestamp</span>
+                </div> *@
+            </div>
+        }
+    }
+
+</div>
+
+@code {
+
+    public struct NotificationItem
+    {
+        public string Id { get; }
+
+        public NotificationType Type { get; set; }
+
+        public string Message { get; set; }
+
+        public string Details { get; set; }
+
+        public DateTime Timestamp { get; set; }
+
+        public TimeSpan TTL { get; set; }
+
+
+        public NotificationItem()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+    }
+
+    [Parameter]
+    public IEnumerable<NotificationItem> Items { get; set; }
+
+    [Parameter]
+    public int MaxItems { get; set; } = 3;
+
+}

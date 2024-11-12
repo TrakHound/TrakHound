@@ -1,0 +1,12 @@
+﻿{
+  "id": "TrakHound.Entities.Api",
+  "category": "api",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Entities Api for accessing Entity Requests and publishing Entity Entries in the TrakHound Framework",
+    "repository": "https://github.com/TrakHound/TrakHound",
+    "repositoryDirectory": "modules/TrakHound.Entities.Api",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultRoute": "entities"
+  }
+}

@@ -1,0 +1,52 @@
+﻿@using TrakHound.Api
+
+@if (Api != null && Endpoint != null)
+{
+    <table class="table table-sm">
+        <tbody>
+            <tr>
+                <td class="label">Api ID</td>
+                <td class="value">@Api.Id</td>
+            </tr>
+            <tr>
+                <td class="label">Api Package ID</td>
+                <td class="value">@Api.PackageId</td>
+            </tr>
+            <tr>
+                <td class="label">Api Package Version</td>
+                <td class="value">@Api.PackageVersion</td>
+            </tr>
+            <tr>
+                <td class="label">Endpoint ID</td>
+                <td class="value">@Endpoint.Id</td>
+            </tr>
+            <tr>
+                <td class="label">Endpoint Type</td>
+                <td class="value">@Endpoint.Type</td>
+            </tr>
+            <tr>
+                <td class="label">Route</td>
+                <td class="value">@Endpoint.Route</td>
+            </tr>
+
+            @if (!string.IsNullOrEmpty(Endpoint.Description))
+            {
+                <tr>
+                    <td class="label">Description</td>
+                    <td class="value">@Endpoint.Description</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+@code {
+
+    [Parameter]
+    public TrakHoundApiInformation Api { get; set; }
+
+    [Parameter]
+    public TrakHoundApiEndpointInformation Endpoint { get; set; }
+
+}

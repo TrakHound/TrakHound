@@ -1,0 +1,176 @@
+﻿@if (!Queries.IsNullOrEmpty())
+{
+    foreach (var query in Queries.OrderBy(o => o.Name))
+    {
+        if (query.Name != null && TrakHoundPath.GetParentPath(query.Name) == Root || (TrakHoundPath.IsRoot(query.Name) && Root == "/"))
+        {
+            <TreeItem Id="@query.Id" Title="@query.Name" Subtitle="@query.Description" CssClass="query" Icon="fa-regular fa-sharp fa-magnifying-glass" Selected="SelectItem">
+                <ContextMenu>
+                    <ContextMenuItem Text="Delete" Clicked="() => DeleteItem(query.Id)" />
+                </ContextMenu>
+            </TreeItem>
+        }
+    }
+
+    var roots = GetRoots(Root, Queries);
+    if (!roots.IsNullOrEmpty())
+    {
+        foreach (var root in roots.OrderBy(o => o.Name))
+        {
+            <TreeItem Title="@root.Name" Icon="fa-regular fa-sharp fa-folder" CssClass="folder">
+                <ChildContent>
+                    <QueryExplorerTreeItem Root="@root.Path" Queries="@Queries" QuerySelected="QuerySelected" QueryDeleted="QueryDeleted" />
+                </ChildContent>
+            </TreeItem>
+        }
+    }
+}
+
+@code {
+
+    struct PathInformation
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Parent { get; set; }
+        public string ParentPath { get; set; }
+        public string Path { get; set; }
+        public string RelativePath { get; set; }
+    }
+
+    struct RootInformation
+    {
+        public string Name { get; set; }
+        public string Path { get; set; }
+    }
+
+    [Parameter]
+    public string Root { get; set; }
+
+    [Parameter]
+    public IEnumerable<QueryExplorer.QueryInformation> Queries { get; set; }
+
+    [Parameter]
+    public EventCallback<QueryExplorer.QueryInformation> QuerySelected { get; set; }
+
+    [Parameter]
+    public EventCallback<string> QueryDeleted { get; set; }
+
+
+    private IEnumerable<PathInformation> GetPathInformation()
+    {
+        var informations = new List<PathInformation>();
+
+        if (!Queries.IsNullOrEmpty())
+        {
+            foreach (var query in Queries)
+            {
+                var information = new PathInformation();
+                information.Name = Path.GetFileName(query.Name);
+                information.ParentPath = TrakHoundPath.GetParentPath(query.Name);
+                information.Path = query.Name;
+                informations.Add(information);
+            }
+        }
+
+        return informations;
+    }
+
+    private static IEnumerable<RootInformation> GetRoots(string rootPath, IEnumerable<QueryExplorer.QueryInformation> queries)
+    {
+        var roots = new Dictionary<string, RootInformation>();
+
+        if (!queries.IsNullOrEmpty())
+        {
+            foreach (var query in queries)
+            {
+                if (!string.IsNullOrEmpty(query.Name))
+                {
+                    if (!string.IsNullOrEmpty(rootPath))
+                    {
+                        //var parentPath = TrakHoundPath.GetParentPath(query.Name);
+                        //if (TrakHoundPath.IsChildOf(rootPath, parentPath))
+                        if (TrakHoundPath.IsChildOf(rootPath, query.Name))
+                        {
+                            //Console.WriteLine($"IsChildOf : {rootPath} => {query.Name}");
+
+                            var relativePath = Path.GetRelativePath(rootPath, query.Name).Replace("\\", "/");
+                            if (relativePath != null && relativePath != query.Name)
+                            {
+                                //Console.WriteLine($"GetRelativePath : {rootPath} => {query.Name} = {relativePath}");
+
+                                var childRoot = TrakHoundPath.GetRoot(relativePath);
+                                if (childRoot != null && childRoot != Path.GetFileName(query.Name))
+                                {
+                                    var root = new RootInformation();
+                                    root.Path = TrakHoundPath.Combine(rootPath, childRoot);
+                                    root.Name = childRoot;
+                                    if (!roots.ContainsKey(root.Path)) roots.Add(root.Path, root);
+                                }
+                            }
+                        }
+
+
+
+                        //var parentPath = TrakHoundPath.GetParentPath(query.Name);
+                        //if (parentPath == rootPath)
+                        //{
+                        ////    var root = new RootInformation();
+                        ////    root.Path = Path.GetDirectoryName(query.Name).Replace("\\", "/");
+                        ////    root.Name = Path.GetFileName(root.Path);
+                        ////    roots.Add(root);
+                        ////}
+                        ////else
+                        ////{
+                            
+                        //}
+
+                        //if (TrakHoundPath.IsChildOf(rootPath, query.Name))
+                        //{
+                        //    var relativePath = Path.GetRelativePath(rootPath, query.Name);
+                        //    if (relativePath != null)
+                        //    {
+                        //        var childRoot = TrakHoundPath.GetRoot(relativePath);
+                        //        if (childRoot != null && childRoot != Path.GetFileName(query.Name))
+                        //        {
+                        //            var root = new RootInformation();
+                        //            root.Path = Path.GetDirectoryName(query.Name).Replace("\\", "/");
+                        //            root.Name = Path.GetFileName(root.Path);
+                        //            roots.Add(root);
+                        //        }
+                        //    }
+                        //}
+                    }
+                    else
+                    {
+                        var childRoot = TrakHoundPath.GetRoot(query.Name);
+                        if (childRoot != null && childRoot != query.Name)
+                        {
+                            var root = new RootInformation();
+                            root.Path = childRoot;
+                            root.Name = childRoot;
+                            if (!roots.ContainsKey(root.Path)) roots.Add(root.Name, root);
+                        }
+                    }
+                }
+            }
+        }
+
+        return roots.Values;
+    }
+
+    private async void SelectItem(string id)
+    {
+        var query = Queries?.FirstOrDefault(o => o.Id == id);
+        if (query != null)
+        {
+            await QuerySelected.InvokeAsync(query);
+        }
+    }
+
+    private async void DeleteItem(string id)
+    {
+        await QueryDeleted.InvokeAsync(id);
+    }
+
+}

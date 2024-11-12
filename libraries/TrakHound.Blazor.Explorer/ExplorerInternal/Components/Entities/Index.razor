@@ -1,0 +1,41 @@
+﻿<div class="entities-panel">
+
+    @{
+        var path = Explorer.Path;
+
+        if (path != null)
+        {
+            var queryIndex = path.IndexOf('?');
+            if (queryIndex > 0) path = path.Substring(0, queryIndex);
+        }
+
+        var page = Url.GetRouteParameter(path, "{instanceId}/entities/{page}", "page");
+
+        @switch (page)
+        {
+            case "objects":
+                <TrakHound.Blazor.ExplorerInternal.Components.Entities.Objects.Index />
+                break;
+
+            case "definitions":
+                <TrakHound.Blazor.ExplorerInternal.Components.Entities.Definitions.Index />
+                break;
+
+            case "sources":
+                <TrakHound.Blazor.ExplorerInternal.Components.Entities.Sources.Index />
+                break;
+
+            default:
+                <MenuPage />
+                break;
+        }
+    }
+
+</div>
+
+@code {
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+}

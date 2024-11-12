@@ -1,0 +1,131 @@
+﻿@using TrakHound.Blazor.Components.ObjectExplorerInternal.Content
+@using TrakHound.Entities
+
+@if (Object != null)
+{
+    var contentType = Object.ContentType.ConvertEnum<TrakHoundObjectContentType>();
+
+    var icon = TrakHoundObjectIcon.Get(contentType);
+    var title = Object.ContentType;
+    var description = "";
+
+    <div class="object-content-panel">
+        <div class="header-panel">
+            <div class="header-content-type-container">
+                <div class="icon-container">
+                    <span class="icon @icon"></span>
+                </div>
+                <div class="title-container">
+                    <span class="title">@title</span>
+                </div>
+                <div class="description-container">
+                    <span class="description">@description</span>
+                </div>
+            </div>
+            <div class="header-breadcrumbs-container">
+                <ObjectExplorerBreadcrumbs Object=@Object />
+            </div>
+        </div>
+        <div class="content-panel">
+
+            @switch (contentType)
+            {
+                case TrakHoundObjectContentType.Assignment:
+                    <ObjectAssignmentContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Blob:
+                    <ObjectBlobContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Boolean:
+                    <ObjectBooleanContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Duration:
+                    <ObjectDurationContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Event:
+                    <ObjectEventContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Group:
+                    <ObjectGroupContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Hash:
+                    <ObjectHashContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Log:
+                    <ObjectLogContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Message:
+                    <ObjectMessageContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.MessageQueue:
+                    <ObjectMessageQueueContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Number:
+                    <ObjectNumberContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Observation:
+                    <ObjectObservationContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Queue:
+                    <ObjectQueueContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Reference:
+                    <ObjectReferenceContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Set:
+                    <ObjectSetContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.State:
+                    <ObjectStateContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Statistic:
+                    <ObjectStatisticContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.String:
+                    <ObjectStringContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.TimeRange:
+                    <ObjectTimeRangeContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Timestamp:
+                    <ObjectTimestampContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.Vocabulary:
+                    <ObjectVocabularyContent Object="@Object" />
+                    break;
+
+                case TrakHoundObjectContentType.VocabularySet:
+                    <ObjectVocabularySetContent Object="@Object" />
+                    break;
+            }
+
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public ITrakHoundObjectEntity Object { get; set; }
+
+}

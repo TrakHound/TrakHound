@@ -1,0 +1,106 @@
+﻿@inject NavigationManager navigationManager
+@inject ExplorerService explorerService
+
+@if (InstancesService != null)
+{
+    var subscribeDisabled = InstancesService.QueryConsumer != null ? "disabled" : "";
+    var unsubscribeDisabled = InstancesService.QueryConsumer != null ? "" : "disabled";
+
+    <div class="tool-bar">
+        <div class="tool-bar-buttons-left">
+
+            @if (!InstancesService.IsQueryLoading)
+            {
+                if (InstancesService.QueryConsumer == null)
+                {
+                    <button class="btn-query btn btn-sm btn-primary" @onclick=Query><span class="icon fa-solid fa-sharp fa-magnifying-glass"></span>Query</button>
+                    <button class="btn btn-sm btn-light" @onclick=Subscribe><span class="icon fa-solid fa-sharp fa-play"></span></button>
+                    <button class="btn btn-sm btn-light" @onclick=Home><span class="icon fa-regular fa-sharp fa-home"></span></button>
+                }
+                else
+                {
+                    <button class="btn-query btn btn-sm btn-primary disabled"><span class="icon"><ListeningIndicator /></span>Subscribed..</button>
+                    <button class="btn btn-sm btn-light" @onclick=Unsubscribe><span class="icon fa-solid fa-sharp fa-pause"></span></button>
+                    <button class="btn btn-sm btn-light" @onclick=Home><span class="icon fa-regular fa-sharp fa-home"></span></button>
+                }
+            }
+            else
+            {
+                <button class="btn-query btn btn-sm btn-secondary"><div class="icon-container"><span class="icon fa-solid fa-sharp fa-loader spin"></span></div>Loading..</button>
+                <button class="btn btn-sm btn-light" disabled><span class="icon fa-solid fa-sharp fa-play"></span></button>
+                <button class="btn btn-sm btn-light" disabled><span class="icon fa-regular fa-sharp fa-home"></span></button>
+            }
+
+        </div>
+        <div class="tool-bar-response">
+            @if (InstancesService.QueryResponseInformation != null)
+            {
+                var resultCount = InstancesService.QueryResponseInformation.Count;
+                var resultDuration = $"{InstancesService.QueryResponseInformation.Duration.TotalSeconds.ToString("N3")} seconds";
+
+                <span class="response-duration">(<span class="response-count">@resultCount</span><span class="response-label"> Results in </span><span class="response-duration-value">@resultDuration</span>)</span>
+            }
+        </div>
+        <div class="tool-bar-input">
+            <div class="tool-bar-query-input">
+                <TextArea Value="@InstancesService.Query" ValueChanged="OnQueryChanged" SpellCheck="false" Rows="1" />
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    QueryType queryType = QueryType.Query;
+    EntityQuery entityQuery;
+
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+    [CascadingParameter(Name = "InstancesService")]
+    public ExplorerObjectsService InstancesService { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        if (InstancesService != null) InstancesService.QueryUpdated += async (s, a) => await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Query()
+    {
+        await InstancesService.LoadByQuery(true);
+    }
+
+    private async void Subscribe()
+    {
+        await InstancesService.SubscribeByQuery();
+    }
+
+    private void Unsubscribe()
+    {
+        InstancesService.Unsubscribe();
+    }
+
+    private async void Home()
+    {
+        var homeQuery = await InstancesService.GetHomeQuery();
+        var queryLink = $"{Explorer.BasePath}/{explorerService.SelectedInstanceId}/entities/objects?query={homeQuery}";
+        navigationManager.NavigateTo(queryLink);
+
+        // queryType = QueryType.Query;
+        // await InstancesService.LoadHomeQuery(true);
+    }
+
+    private async void OnQueryChanged(string query)
+    {
+        InstancesService.SetQuery(query);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void SaveQueryClicked()
+    {
+        InstancesService.SaveQuery();
+    }
+
+}

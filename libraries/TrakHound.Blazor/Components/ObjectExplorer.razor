@@ -1,0 +1,224 @@
+﻿@implements IDisposable
+@using TrakHound.Blazor.Components.ObjectExplorerInternal
+@using TrakHound.Clients
+@using TrakHound.Entities
+
+@if (objectExplorerService != null)
+{
+    <div class="object-results">
+        <CascadingValue Name="ObjectExplorerService" Value="objectExplorerService">
+            <RadzenSplitter>
+                <RadzenSplitterPane Size="550px" Min="100px" Collapsible="false">
+                    <div class="objects-tree-view">
+                        <div class="objects-tree-toolbar">
+                            <ObjectExplorerToolbar />
+                        </div>
+                        <div class="objects-tree-content">
+                            <ObjectExplorerTreeView />
+                        </div>
+                    </div>
+                </RadzenSplitterPane>
+                <RadzenSplitterPane Min="25%" Collapsible="false">
+
+                    <div class="objects-content">
+
+                        @if (objectExplorerService.SelectedObject != null)
+                        {
+                            if (objectExplorerService.SelectedObject.ContentType != TrakHoundObjectContentTypes.Directory)
+                            {
+                                <RadzenTabs RenderMode="TabRenderMode.Client">
+                                    <Tabs>
+                                        <RadzenTabsItem Text="Content">
+                                            <Template>
+                                                <div class="tab-header">
+                                                    <span class="tab-header-icon fa-solid fa-sharp fa-file-code"></span>
+                                                    <span class="tab-header-title">Content</span>
+                                                </div>
+                                            </Template>
+                                            <ChildContent>
+                                                <ObjectExplorerContentView Object="@objectExplorerService.SelectedObject" />
+                                            </ChildContent>
+                                        </RadzenTabsItem>
+                                        <RadzenTabsItem Text="Object">
+                                            <Template>
+                                                <div class="tab-header">
+                                                    <span class="tab-header-icon fa-solid fa-sharp fa-circle-info"></span>
+                                                    <span class="tab-header-title">Object</span>
+                                                </div>
+                                            </Template>
+                                            <ChildContent>
+                                                <ObjectExplorerInformation Object="@objectExplorerService.SelectedObject" />
+                                            </ChildContent>
+                                        </RadzenTabsItem>
+                                    </Tabs>
+                                </RadzenTabs>
+                            }
+                            else
+                            {
+                                <RadzenTabs RenderMode="TabRenderMode.Client">
+                                    <Tabs>
+                                        <RadzenTabsItem Text="Object">
+                                            <Template>
+                                                <div class="tab-header">
+                                                    <span class="tab-header-icon fa-solid fa-sharp fa-circle-info"></span>
+                                                    <span class="tab-header-title">Object</span>
+                                                </div>
+                                            </Template>
+                                            <ChildContent>
+                                                <ObjectExplorerInformation Object="@objectExplorerService.SelectedObject" />
+                                            </ChildContent>
+                                        </RadzenTabsItem>
+                                        <RadzenTabsItem Text="Json">
+                                            <Template>
+                                                <div class="tab-header">
+                                                    <span class="tab-header-icon fa-solid fa-sharp fa-code"></span>
+                                                    <span class="tab-header-title">Json</span>
+                                                </div>
+                                            </Template>
+                                            <ChildContent>
+                                                <TrakHound.Blazor.Components.ObjectExplorerInternal.Content.ObjectDirectoryJson Object="@objectExplorerService.SelectedObject" />
+                                            </ChildContent>
+                                        </RadzenTabsItem>
+                                    </Tabs>
+                                </RadzenTabs>
+                            }                           
+                        }
+
+                    </div>
+
+                </RadzenSplitterPane>
+            </RadzenSplitter>
+            <ObjectExplorerAddModal />
+            <ObjectExplorerDeleteModal />
+
+        </CascadingValue>
+
+    </div>
+
+    <TrakHound.Blazor.Components.Notifications Items="@objectExplorerService.NotificationService.Notifications" />
+}
+
+@code {
+
+    private ObjectExplorerService objectExplorerService;
+    private string query;
+    private string objectsHash;
+    private ThrottleEvent updateDelay;
+    private bool loaded;
+
+
+    [Parameter]
+    public string BaseUrl { get; set; }
+
+    [Parameter]
+    public ITrakHoundClient Client { get; set; }
+
+    [Parameter]
+    public string Query { get; set; }
+
+    [Parameter]
+    public string QueryId { get; set; }
+
+    [Parameter]
+    public string Expression { get; set; }
+
+    [Parameter]
+    public IEnumerable<ITrakHoundObjectEntity> Objects { get; set; }
+
+    [Parameter]
+    public EventCallback<string> QueryChanged { get; set; }
+
+    [Parameter]
+    public Func<string, string> ObjectsQueryLinkFunction { get; set; }
+
+    [Parameter]
+    public Func<string, string> DefinitionsQueryLinkFunction { get; set; }
+
+    [Parameter]
+    public Func<string, string> TransactionsQueryLinkFunction { get; set; }
+
+    [Parameter]
+    public Func<string, string> SourcesQueryLinkFunction { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        updateDelay = new ThrottleEvent(250);
+        updateDelay.Elapsed += UpdateDelayElapsed;
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    void IDisposable.Dispose()
+    {
+        try
+        {
+            if (updateDelay != null) updateDelay.Dispose();
+        }
+        catch { }
+    }
+
+    private async Task Load()
+    {
+        if (Client != null)
+        {
+            if (objectExplorerService == null)
+            {
+                objectExplorerService = new ObjectExplorerService(BaseUrl, Client);
+                objectExplorerService.Updated += async (s, a) => { await InvokeAsync(StateHasChanged); };
+                objectExplorerService.TargetObjectsUpdated += async (s, a) => { await InvokeAsync(StateHasChanged); };
+                objectExplorerService.SelectedObjectChanged += async (s, a) => { await InvokeAsync(StateHasChanged); };
+                objectExplorerService.ValueUpdated += async (s, a) => { await InvokeAsync(StateHasChanged); };
+                objectExplorerService.QueryChanged += (s, q) => QueryChanged.InvokeAsync(q);
+
+                objectExplorerService.ObjectsQueryLinkFunction = ObjectsQueryLinkFunction;
+                objectExplorerService.DefinitionsQueryLinkFunction = DefinitionsQueryLinkFunction;
+                objectExplorerService.TransactionsQueryLinkFunction = TransactionsQueryLinkFunction;
+                objectExplorerService.SourcesQueryLinkFunction = SourcesQueryLinkFunction;
+            }
+
+            if (!string.IsNullOrEmpty(Expression))
+            {
+                await objectExplorerService.LoadByExpression(Expression);
+            }
+            else if (!string.IsNullOrEmpty(Query))
+            {
+                await objectExplorerService.LoadByQuery(Query);
+            }
+            else if (!Objects.IsNullOrEmpty())
+            {
+                var newHash = GetObjectsHash(Objects);
+                if (newHash != objectsHash)
+                {
+                    await objectExplorerService.LoadObjects(Objects);
+                    objectsHash = newHash;
+                }
+            }
+        }
+    }
+
+    private async void UpdateDelayElapsed(object sender, EventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private static string GetObjectsHash(IEnumerable<ITrakHoundObjectEntity> objects)
+    {
+        if (!objects.IsNullOrEmpty())
+        {
+            var uuids = objects.Select(o => o.Uuid);
+            return string.Join(";", uuids).ToMD5Hash();
+        }
+
+        return null;
+    }
+
+}

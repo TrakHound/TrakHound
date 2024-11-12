@@ -1,0 +1,34 @@
+﻿.btn-light {
+    background: white;
+    border: 1px solid var(--borderLight);
+    border-radius: 2px;
+    color: var(--textMild);
+}
+
+    .btn-light:hover {
+        background: #eee;
+        border: 1px solid #ccc;
+    }
+
+    .btn-light:disabled {
+        color: #aaa !important;
+    }
+
+    .btn-light .icon {
+        color: var(--accent);
+    }
+
+.btn-light-success {
+    background: white;
+    border: 1px solid var(--borderLight);
+    font-size: 0.75em;
+}
+
+    .btn-light-success:hover {
+        background: #eee;
+        border: 1px solid #ccc;
+    }
+
+    .btn-light-success .icon {
+        color: var(--colorGreen);
+    }

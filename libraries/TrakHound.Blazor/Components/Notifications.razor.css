@@ -1,0 +1,128 @@
+.notifications {
+    position: absolute;
+    bottom: 10px;
+    right: 0px;
+}
+
+.notification-item {
+    display: grid;
+    grid-template-rows: max-content 1fr max-content;
+    grid-template-columns: max-content 1fr;
+    background: #eee;
+    border-right: none;
+    min-height: 70px;
+    min-width: 400px;
+    margin-bottom: 8px;
+}
+
+.notification-item-icon-container {
+    grid-row-start: 1;
+    grid-row-end: 4;
+    grid-column: 1;
+    padding: 15px 20px 0;
+}
+
+.notification-item-icon {
+    font-size: 24px;
+}
+
+
+.notification-item-message-container {
+    grid-row: 1;
+    grid-column: 2;
+    padding: 10px 0 0 0;
+}
+
+.notification-item-message {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+.notification-item-details-container {
+    grid-row: 2;
+    grid-column: 2;
+    padding: 0;
+}
+
+.notification-item-details {
+    font-size: 13px;
+}
+
+
+.notification-item-timestamp-container {
+    grid-row: 3;
+    grid-column: 2;
+    text-align: right;
+    padding: 0 10px;
+}
+
+.notification-item-timestamp {
+    font-size: 11px;
+}
+
+
+/* Information */
+.notification-item.information {
+    background: var(--accentVeryLight);
+}
+
+    .notification-item.information .notification-item-icon {
+        color: var(--accent);
+    }
+
+    .notification-item.information .notification-item-message {
+        color: var(--accent);
+    }
+
+    .notification-item.information .notification-item-details {
+        color: var(--accent);
+    }
+
+.notification-item.information .notification-item-timestamp {
+    color: var(--accent);
+}
+
+
+/* Warning */
+.notification-item.warning {
+    background: var(--colorOrangeVeryLight);
+}
+
+    .notification-item.warning .notification-item-icon {
+        color: var(--colorOrangeDark);
+    }
+
+    .notification-item.warning .notification-item-message {
+        color: var(--colorOrangeDark);
+    }
+
+    .notification-item.warning .notification-item-details {
+        color: var(--colorOrangeDark);
+    }
+
+    .notification-item.warning .notification-item-timestamp {
+        color: var(--colorOrangeDark);
+    }
+
+
+/* Error */
+.notification-item.error {
+    background: var(--colorRedVeryLight);
+}
+
+    .notification-item.error .notification-item-icon {
+        color: var(--colorRedDark);
+    }
+
+    .notification-item.error .notification-item-message {
+        color: var(--colorRedDark);
+    }
+
+    .notification-item.error .notification-item-details {
+        color: var(--colorRedDark);
+    }
+
+    .notification-item.error .notification-item-timestamp {
+        color: var(--colorRedDark);
+    }

@@ -1,0 +1,262 @@
+.add-panel {
+    display: grid;
+    grid-template-rows: 1fr max-content;
+    height: 100%;
+    overflow: hidden;
+}
+
+.form-panel {
+    grid-row: 1;
+    height: 100%;
+    overflow: hidden;
+    padding-top: 10px;
+}
+
+.footer-panel {
+    grid-row: 2;
+    padding: 20px;
+    background: #fafafa;
+    border-top: 1px solid #ddd;
+}
+
+
+.packages-panel {
+    height: 100%;
+    overflow: hidden;
+}
+
+.configuration-panel {
+    padding: 0 20px 100px;
+    height: 100%;
+    overflow: auto;
+}
+
+    .configuration-panel .checkbox-field {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        grid-column-gap: 20px;
+    }
+
+    .configuration-panel ::deep .text-box.small.required input {
+        font-size: 13px !important;
+        background: var(--accentVeryVeryLight) !important;
+        border: 1px solid var(--accentLight) !important;
+    }
+
+    .configuration-panel ::deep .spin-edit.small input {
+        font-size: 13px !important;
+    }
+
+.configuration-container {
+    padding-top: 25px;
+    padding-bottom: 0px;
+    width: auto;
+    max-width: 1000px;
+}
+
+    .configuration-container .container-label {
+        margin-bottom: 10px;
+        font-size: 13px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    .configuration-container .container-content {
+        padding: 15px;
+        border: 1px solid #eee;
+    }
+
+.confirm-panel {
+    padding: 20px 40px;
+    width: auto;
+    max-width: 1000px;
+}
+
+.confirm-container {
+    margin-bottom: 25px;
+}
+
+.confirm-panel label {
+    font-size: 12px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+    .confirm-panel .table td {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+
+    .confirm-panel .table td.label {
+        font-size: 12px;
+        font-weight: bold;
+        width: 250px;
+    }
+
+
+.parameters-panel {
+    width: auto;
+    max-width: 1000px;
+}
+
+.parameters-header {
+    margin-bottom: 10px;
+}
+
+.parameters-title {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+    .parameters-title .icon {
+        font-size: 14px;
+        margin-right: 10px;
+        color: var(--accent);
+    }
+
+.parameters-panel .parameters-table {
+    margin: 0;
+}
+
+    .parameters-panel .parameters-table th {
+        border-bottom: 1px solid #ddd;
+        font-size: 13px;
+        font-weight: bold;
+        background: #f8f8f8;
+        padding: 2px 15px;
+    }
+
+    .parameters-panel .parameters-table td {
+        font-size: 14px;
+    }
+
+    .parameters-panel .parameters-table .parameter-cell-name {
+        padding: 2px 15px;
+        line-height: 26px;
+        font-size: 13px !important;
+        min-width: 150px;
+    }
+
+    .parameters-panel .parameters-table .parameter-cell-value {
+        padding: 0;
+    }
+
+        .parameters-panel .parameters-table .parameter-cell-value ::deep .text-box,
+        .parameters-panel .parameters-table .parameter-cell-value ::deep .password-box {
+            margin: 0;
+            padding: 0;
+            height: 26px !important;
+        }
+
+        .parameters-panel .parameters-table .parameter-cell-value ::deep .form-group {
+            margin: 0;
+            padding: 0;
+            height: 26px !important;
+        }
+
+        .parameters-panel .parameters-table .parameter-cell-value ::deep .text-box input,
+        .parameters-panel .parameters-table .parameter-cell-value ::deep .password-box input {
+            border: 1px solid var(--accentLight) !important;
+            border-radius: 0;
+            margin: 0 !important;
+            padding: 0 15px !important;
+            line-height: 12px !important;
+            height: 26px !important;
+            font-size: 13px !important;
+            background: var(--accentVeryVeryLight) !important;
+        }
+
+            .parameters-panel .parameters-table .parameter-cell-value ::deep .text-box input:focus,
+            .parameters-panel .parameters-table .parameter-cell-value ::deep .password-box input:focus {
+                outline: none;
+                box-shadow: inset 0px 0px 1px 1px var(--accent);
+                border: 1px solid var(--accentLight) !important;
+                border-radius: 0;
+            }
+
+    .parameters-panel .parameters-table .parameter-cell-buttons {
+        padding: 0;
+        width: 110px;
+    }
+
+        .parameters-panel .parameters-table .parameter-cell-buttons .btn {
+            border-radius: 0;
+            border: none;
+            height: 30px;
+            width: 100%;
+            font-size: 12px !important;
+        }
+
+.parameters-panel .parameter-add-container {
+    border: 1px solid #ddd;
+    border-top: none;
+    padding: 10px;
+}
+
+    .parameters-panel .parameter-add-container label {
+        display: block;
+        font-size: 13px;
+        font-weight: bold;
+        margin-left: 10px;
+        margin-bottom: 5px;
+    }
+
+    .parameters-panel .parameter-add-container .parameter-add-input {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-column-gap: 20px;
+    }
+
+    .parameters-panel .parameter-add-container ::deep .text-box {
+        font-size: 13px;
+        padding: 0;
+        height: 26px;
+        line-height: 26px;
+    }
+
+        .parameters-panel .parameter-add-container ::deep .text-box input {
+            font-size: 13px;
+            padding: 2px 15px;
+            height: 26px !important;
+            line-height: 26px;
+        }
+
+
+.footer-panel .btn-cancel {
+    margin-right: 20px;
+    padding: 8px 10px;
+    font-size: 15px;
+}
+
+.footer-panel .btn-back {
+    margin-right: 20px;
+    padding: 8px 10px;
+    font-size: 15px;
+    min-width: 200px;
+}
+
+.footer-panel .btn-next,
+.footer-panel .btn-add {
+    padding: 8px 10px;
+    font-size: 15px;
+    min-width: 200px;
+}
+
+
+.loading-panel {
+    grid-row-start: 1;
+    grid-row-end: 5;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    display: grid;
+    grid-template-rows: 1fr max-content 1fr;
+    grid-template-columns: 1fr max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+    animation: fadeIn 1s normal;
+}
+
+    .loading-panel ::deep .loading-indicator {
+        grid-row: 2;
+        grid-column: 2;
+    }

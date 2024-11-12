@@ -1,0 +1,72 @@
+﻿@typeparam TItem
+@using Radzen.Blazor
+
+@{
+    var size = Size == Size.Small ? "small" : "";
+    var disabledClass = Enabled ? "" : "disabled";
+    var checkBoxDisabled = !Enabled;
+}
+
+<div id="@ElementId" class="check-box form-group @size @Class @disabledClass">
+
+    @if (!string.IsNullOrEmpty(Title))
+    {
+        <label class="check-box-title">
+            @Title
+            @if (!string.IsNullOrEmpty(SubTitle))
+            {
+                <span class="check-box-subtitle small">@SubTitle</span>
+            }
+        </label>  
+    }
+
+    <div class="check-box-input" style="@Style">
+        <RadzenCheckBox TValue="TItem" Value="@Value" ValueChanged="InputValueChanged" Disabled="@checkBoxDisabled" />
+    </div>
+
+</div>
+
+
+@code {
+
+    [Parameter]
+    public bool Enabled { get; set; } = true;
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string SubTitle { get; set; }
+
+    [Parameter]
+    public TItem Value { get; set; }
+
+    [Parameter]
+    public EventCallback<TItem> ValueChanged { get; set; }
+    
+    [Parameter]
+    public string ElementId { get; set; }
+
+    [Parameter]
+    public string InputElementId { get; set; }
+
+    [Parameter]
+    public string Class { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+
+    [Parameter]
+    public Size Size { get; set; }
+
+
+    private async void InputValueChanged(TItem value)
+    {
+        Value = value;
+
+        await ValueChanged.InvokeAsync(Value);
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

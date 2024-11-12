@@ -1,0 +1,243 @@
+﻿@implements IDisposable
+@inject ITrakHoundInstance instance
+@using Radzen
+@using Radzen.Blazor
+@using TrakHound.Api
+@using TrakHound.Apps
+@using TrakHound.Blazor.Components
+@using TrakHound.Instance.Configurations
+@using TrakHound.Instances
+@using TrakHound.Security
+
+<div class="assignments-panel">
+
+    <div class="add-toolbar-panel toolbar-panel">
+        <div class="add-toolbar-panel-buttons">
+
+            @if (!saving)
+            {
+                <button class="btn btn-primary btn-save" @onclick="AddClicked"><span class="icon fa-solid fa-sharp fa-plus"></span>Add Assignment</button>
+            }
+            else
+            {
+                <button class="btn btn-primary btn-save disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Saving..</button>
+            }
+
+        </div>
+        <div class="add-toolbar-panel-profile">
+            <RadzenDropDown @bind-Value=@addProfileId
+                            Data=@instance.SecurityManager.GetProfiles()
+                            TextProperty="Id" ValueProperty="Id"
+                            Placeholder="Select Profile.." Style="width: 100%;" />
+        </div>
+        <div class="add-toolbar-panel-type">
+            <RadzenDropDown @bind-Value=@addType Data=@types Placeholder="Select Type.." Style="width: 100%;" />
+        </div>
+        <div class="add-toolbar-panel-resource">
+
+            @switch (addType)
+            {
+                case "Api":
+                    <RadzenDropDown @bind-Value=@addApiResource Data=@apiInformations Placeholder="Select API.." TextProperty="PackageId" ValueProperty="Id" />
+                    break;
+
+                case "App":
+                    <RadzenDropDown @bind-Value=@addAppResource Data=@appInformations Placeholder="Select App.." TextProperty="PackageId" ValueProperty="Id" />
+                    break;
+
+                case "Custom":
+                    <TextBox @bind-Value="@addCustomResource" PlaceHolder="Resource Pattern.." />
+                    break;
+            }
+
+        </div>
+    </div>
+
+    <div class="filter-toolbar-panel toolbar-panel">
+        <div class="filter-toolbar-panel-buttons">
+
+            @if (!loading)
+            {
+                <button class="btn btn-light btn-refresh" @onclick="Load"><span class="icon fa-solid fa-sharp fa-rotate-right"></span></button>
+            }
+            else
+            {
+                <button class="btn btn-secondary btn-refresh"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
+            }
+
+        </div>
+        <div class="filter-toolbar-panel-search">
+            <TextBox Value="@selectedQuery" ValueChanged="QueryChanged" PlaceHolder="Search Assignments.." />
+        </div>
+    </div>
+
+    <div class="table-panel">
+
+        @if (!loading)
+        {
+            if (!tableItems.IsNullOrEmpty())
+            {
+                <RadzenDataGrid Data="@tableItems" TItem="TableItem" Density="Density.Compact" AllowSorting="true" AllowColumnResize="true">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="TableItem" Property="IsPublic" Title="Public" CssClass="public" Width="80px">
+                            <Template Context="context">
+                                <CheckBox TItem="bool" @bind-Value="@context.IsPublic" />
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="TableItem" Property="ProfileId" Title="Profile" CssClass="profiles" Width="400px" />
+                        <RadzenDataGridColumn TItem="TableItem" Property="Resource" Title="Resource" CssClass="resource" />
+                        <RadzenDataGridColumn TItem="TableItem" CssClass="buttons" Width="100px" Sortable="false">
+                            <Template Context="context">
+                                <button class="btn btn-sm btn-link btn-remove" @onclick="o => DeleteClicked(context)"><span class="icon fa-regular fa-sharp fa-xmark"></span>Delete</button>
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            }
+            else
+            {
+
+            }
+        }
+        else
+        {
+            <Loading Message="Loading Assignments.." />
+        }
+
+    </div>
+
+</div>
+
+@code {
+
+    private IEnumerable<string> types = new string[] { "Api", "App", "Custom" };
+    private string addProfileId;
+    private string addType;
+    private string addApiResource;
+    private string addAppResource;
+    private string addCustomResource;
+
+    private string selectedQuery;
+    private bool saving;
+    private bool loading = true;
+    private DelayEvent queryDelay = new DelayEvent(50);
+
+    private IEnumerable<TrakHoundApiInformation> apiInformations;
+    private IEnumerable<TrakHoundAppInformation> appInformations;
+    private IEnumerable<TableItem> tableItems;
+
+
+    class TableItem
+    {
+        public string Id { get; set; }
+
+        public bool IsPublic { get; set; }
+
+        public string ProfileId { get; set; }
+
+        public string Resource { get; set; }
+    }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        queryDelay.Elapsed += QueryDelayElapsed;
+        await Load();
+    }
+
+    void IDisposable.Dispose()
+    {
+        queryDelay.Dispose();
+    }
+
+    private async Task Load()
+    {
+        loading = true;
+        tableItems = null;
+        await InvokeAsync(StateHasChanged);
+
+        apiInformations = instance.ApiProvider.GetRouteInformation();
+        appInformations = instance.AppProvider.GetInformation();
+        Filter();
+
+        loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void Filter()
+    {
+        tableItems = null;
+
+        var profiles = instance.SecurityManager.GetProfiles();
+        if (!profiles.IsNullOrEmpty())
+        {
+            var items = new List<TableItem>();
+
+            foreach (var profile in profiles)
+            {
+                if (!profile.Assignments.IsNullOrEmpty())
+                {
+                    foreach (var assignment in profile.Assignments)
+                    {
+                        var item = new TableItem();
+                        item.Id = assignment.Id;
+                        item.ProfileId = profile.Id;
+                        item.Resource = assignment.ResourceId;
+                        items.Add(item);
+                    }
+                }
+            }
+
+            tableItems = items;
+        }
+    }
+
+    private async void AddClicked()
+    {
+        saving = true;
+        await InvokeAsync(StateHasChanged);
+
+        var assignment = new TrakHoundIdentityAssignment();
+        assignment.Id = Guid.NewGuid().ToString();
+
+        switch (addType)
+        {
+            case "Api": assignment.ResourceId = $"api:{addApiResource}:*"; break;
+            case "App": assignment.ResourceId = $"app:{addAppResource}:*"; break;
+            case "Custom": assignment.ResourceId = addCustomResource; break;
+        }
+
+        assignment.Roles = new string[] { "*" };
+        assignment.Permissions = new string[] { "*" };
+
+        instance.SecurityManager.AddAssignment(addProfileId, assignment);
+
+        saving = false;
+        Filter();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void RefreshClicked()
+    {
+        await Load();
+    }
+
+    private void DeleteClicked(TableItem item)
+    {
+        instance.SecurityManager.RemoveAssignment(item.Id);
+        Filter();
+    }
+
+    private void QueryChanged(string query)
+    {
+        selectedQuery = query;
+        queryDelay.Set();
+    }
+
+    private async void QueryDelayElapsed(object sender, EventArgs args)
+    {
+        Filter();
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

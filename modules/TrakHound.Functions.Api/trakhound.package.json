@@ -1,0 +1,12 @@
+﻿{
+  "id": "TrakHound.Functions.Api",
+  "category": "api",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Functions Api for viewing and managing Functions in the TrakHound Framework",
+    "repository": "https://github.com/TrakHound/TrakHound",
+    "repositoryDirectory": "modules/TrakHound.Functions.Api",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultRoute": "functions"
+  }
+}

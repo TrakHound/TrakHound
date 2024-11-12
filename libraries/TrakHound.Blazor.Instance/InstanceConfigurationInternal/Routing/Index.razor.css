@@ -1,0 +1,242 @@
+.routing-panel {
+    border: none;
+    height: 100%;
+    overflow: hidden;
+}
+
+.content-panel {
+    border: none;
+    height: 100%;
+    overflow: hidden;
+}
+
+.loading-cover {
+    display: block;
+    background: #eee;
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 999;
+}
+
+.loading-cover.hidden {
+    display: none;
+}
+
+.content-container {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    grid-template-columns: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+    border: none;
+}
+
+.diagram-sidebar {
+    grid-row-start: 1;
+    grid-row-end: 3;
+    grid-column: 1;
+    min-width: 250px;
+    height: 100%;
+    overflow: auto;
+    background: #fafafa;
+    border-right: 1px solid #ddd;
+}
+
+.diagram-toolbar {
+    grid-row: 1;
+    grid-column: 2;
+    border-bottom: 1px solid #ddd;
+}
+
+.diagram-container {
+    position: relative;
+    grid-row: 2;
+    grid-column: 2;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #eee;
+}
+
+.diagram-toolbar .btn:focus {
+    box-shadow: none;
+    outline: none;
+    transition: none;
+}
+
+.diagram-toolbar .btn-toolbar {
+    border: 1px solid transparent !important;
+    transition: none;
+}
+
+.diagram-toolbar .btn-toolbar:hover {
+    box-shadow: none;
+    outline: none;
+    transition: none;
+}
+
+.diagram-toolbar .btn-refresh {
+    min-width: 50px;
+    padding: 7px 0;
+}
+
+.diagram-toolbar .btn-refresh .icon {
+    margin: 0 !important;
+}
+
+    .diagram-toolbar .btn-refresh.disabled .icon {
+        color: var(--accent) !important;
+    }
+
+.diagram-toolbar .btn-create {
+    border-right: 1px solid #eee !important;
+}
+
+.diagram-toolbar .btn-save {
+    padding: 0px 20px;
+    height: 100%;
+    width: 120px;
+    font-size: 14px;
+    border-radius: 0 !important;
+}
+
+.btn-create {
+    font-size: 13px;
+}
+
+    .btn-create .icon {
+        color: var(--accent);
+        font-size: 16px;
+    }
+
+
+.router-target-item-list {
+    position: relative;
+    padding: 8px;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.router-target-item {
+    width: 100%;
+    padding: 8px 10px 5px;
+    background: var(--accentVeryLight);
+    background: #fff;
+    border: 1px solid var(--accent);
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    margin-bottom: 8px;
+}
+
+    .router-target-item:hover {
+        background: var(--accentVeryVeryLight);
+        border-color: var(--accent);
+        cursor: pointer;
+    }
+
+    .router-target-item .router-target-item-type {
+        display: block;
+        font-size: 9px;
+        color: rgba(0, 0, 0, 0.5);
+    }
+
+    .router-target-item:hover .router-target-item-type {
+        color: var(--accentLight);
+    }
+
+        .router-target-item .router-target-item-type .icon {
+            font-size: 9px;
+            margin-right: 6px;
+        }
+
+    .router-target-item .router-target-item-name {
+        display: block;
+        font-size: 14px;
+        line-height: 26px;
+        font-weight: bold;
+    }
+
+    .router-target-item .router-target-item-description {
+        display: block;
+        font-size: 10px;
+        display: none;
+    }
+
+    .router-target-item .router-target-item-id {
+        display: block;
+        font-size: 10px;
+        line-height: 14px;
+        color: rgba(0, 0, 0, 0.4);
+    }
+
+    .router-target-item:hover .router-target-item-id {
+        color: var(--accentLight);
+    }
+
+
+.driver-target-item-list {
+    position: relative;
+    padding: 8px;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.driver-target-item {
+    width: 100%;
+    padding: 8px 10px 5px;
+    background: var(--accentVeryLight);
+    border: 1px solid var(--accent);
+    background: var(--accentVeryLight);
+    background: #fff;
+    border: 1px solid var(--accent);
+    border: 1px solid #ddd;
+    margin-bottom: 8px;
+}
+
+    .driver-target-item:hover {
+        background: var(--accentVeryVeryLight);
+        border-color: var(--accent);
+        cursor: pointer;
+    }
+
+    .driver-target-item .driver-target-item-type {
+        display: block;
+        font-size: 9px;
+        color: rgba(0, 0, 0, 0.5);
+    }
+
+    .driver-target-item:hover .driver-target-item-type {
+        color: var(--accentLight);
+    }
+
+        .driver-target-item .driver-target-item-type .icon {
+            font-size: 9px;
+            margin-right: 6px;
+        }
+
+    .driver-target-item .driver-target-item-name {
+        display: block;
+        font-size: 12px;
+        line-height: 26px;
+        font-weight: bold;
+    }
+
+    .driver-target-item .driver-target-item-description {
+        display: block;
+        font-size: 10px;
+    }
+
+    .driver-target-item .driver-target-item-id {
+        display: block;
+        font-size: 9px;
+        line-height: 14px;
+        color: rgba(0, 0, 0, 0.25);
+    }
+
+    .driver-target-item:hover .driver-target-item-id {
+        color: var(--accentLight);
+    }

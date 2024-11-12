@@ -1,0 +1,120 @@
+﻿@page "/explorer/{instanceId}/entities/sources"
+@inject ExplorerService explorerService
+@using TrakHound.Requests
+
+@if (!loading)
+{
+    <div class="sources-page">
+        <div class="toolbar-panel">
+            <div class="toolbar-container">
+                <div class="toolbar-buttons">
+                    <button class="btn btn-primary btn-query" @onclick="QueryClicked"><span class="icon fa-solid fa-sharp fa-magnifying-glass"></span>Query</button>
+                </div>
+                <div class="toolbar-query">
+                    <TextBox PlaceHolder="Source UUID.." />
+                </div>
+            </div>
+        </div>
+        <div class="content-panel">
+
+            @if (source != null)
+            {
+                <div class="panel">
+                    <span class="panel-label">Information</span>
+                    <SourceInformation Source="@source" />
+                </div>
+            }
+
+        </div>
+    </div>
+}
+else
+{
+    <Loading Message="@loadingMessage" />
+}
+
+@code {
+
+    private TrakHoundSource source;
+    private string previousInstanceId;
+    private string previousUuid;
+
+    private bool loading;
+    private string loadingMessage;
+
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+    [Parameter]
+    public string InstanceId { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "uuid")]
+    public string Uuid { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async void LocationChanged(object sender, LocationChangedEventArgs args)
+    {
+        await Load();
+    }
+
+    private async void ExplorerLoaded(object sender, EventArgs args)
+    {
+        await Load();
+    }
+
+    private async void QueryClicked()
+    {
+        await Load(true);
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || explorerService.SelectedInstanceId != previousInstanceId || Uuid != previousUuid)
+        {
+            source = null;
+            previousInstanceId = explorerService.SelectedInstanceId;
+            previousUuid = Uuid;
+
+            // Set Explorer Breadcrumbs
+            var breadcrumbItems = new List<BreadcrumbItem>();
+            breadcrumbItems.Add(new BreadcrumbItem(explorerService.SelectedInstanceId, null));
+            breadcrumbItems.Add(new BreadcrumbItem("Entities", null));
+            breadcrumbItems.Add(new BreadcrumbItem("Sources", null));
+            explorerService.BreadcrumbItems = breadcrumbItems;
+
+            if (!string.IsNullOrEmpty(Uuid))
+            {
+                loading = true;
+                loadingMessage = "Loading Source..";
+                await InvokeAsync(StateHasChanged);
+
+                await explorerService.LoadInstance(Explorer.Instances, explorerService.SelectedInstanceId);
+
+                var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+                if (client != null)
+                {
+                    source = await client.Entities.GetSource(Uuid);
+                }
+
+                await Task.Delay(250); // Show Loading. Looks weird without it
+            }
+
+            loading = false;
+            loadingMessage = null;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

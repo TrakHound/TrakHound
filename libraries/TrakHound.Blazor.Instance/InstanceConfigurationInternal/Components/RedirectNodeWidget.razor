@@ -1,0 +1,38 @@
+﻿@using TrakHound.Blazor.Diagrams.Components.Renderers
+
+<div class="redirect-node">
+
+    <h5 class="node-type"><span class="icon fa-sharp fa-solid fa-diamond-turn-right"></span>Redirect</h5>
+
+    <div class="node-on-container">
+        <label class="node-on-label">On</label>
+        <ItemList @bind-Items="@Node.Conditions" />
+    </div>
+
+    <h5 class="node-id">@Node.ConfigurationId</h5>
+
+    <div class="node-options-container">
+        <div class="node-options-publish-container">
+            <label>Publish</label>
+            <RadzenCheckBox @bind-Value="Node.IsPublishOptionEnabled" />
+        </div>
+        <div class="node-options-empty-container">
+            <label>Empty</label>
+            <RadzenCheckBox @bind-Value="Node.IsEmptyOptionEnabled" />
+        </div>
+    </div>
+
+    @{
+        var routerInputPort = Node.Ports.FirstOrDefault(o => o.GetType() == typeof(RouterInputPort));
+        <PortRenderer @key="routerInputPort" Port="routerInputPort" Class="router-input-port" />
+
+        var driverOutputPort = Node.Ports.FirstOrDefault(o => o.GetType() == typeof(DriverOutputPort));
+        <PortRenderer @key="driverOutputPort" Port="driverOutputPort" Class="driver-output-port" />
+    }
+
+</div>
+
+@code {
+    // This gets filled by the library
+    [Parameter] public RedirectNode Node { get; set; } = null!;
+}

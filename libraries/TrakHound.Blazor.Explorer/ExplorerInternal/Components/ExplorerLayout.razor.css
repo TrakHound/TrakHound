@@ -1,0 +1,200 @@
+.explorer-page {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+.breadcrumb-panel {
+    grid-row: 1;
+    padding: 10px 20px 5px;
+    border-bottom: 1px solid #eee;
+}
+
+
+.content-panel {
+    grid-row: 2;
+    height: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+}
+
+.content-panel-sidebar {
+    border-right: 1px solid #eee;
+}
+
+    .content-panel-sidebar .btn {
+        border-radius: 0;
+        width: 40px;
+        height: 36px;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+
+        .content-panel-sidebar .btn .icon {
+            margin-right: 0;
+            font-size: 16px;
+        }
+
+.content-panel-container {
+    height: 100%;
+    overflow: hidden;
+}
+
+    .explorer-page ::deep .rz-splitter {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .explorer-page ::deep .rz-splitter-pane {
+        height: 100%;
+        overflow: hidden;
+    }
+
+.explorer-sidebar {
+    min-width: 175px;
+    border-right: 1px solid #f0f0f0;
+    height: 100%;
+    overflow: hidden;
+    padding-top: 8px;
+}
+
+.explorer-sidebar-content {
+    display: grid;
+    grid-template-rows: max-content max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.explorer-sidebar-header {
+    grid-row: 1;
+    border-bottom: 1px solid #eee;
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}
+
+.explorer-sidebar-toolbar {
+    grid-row: 2;
+    border-bottom: 1px solid #eee;
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}
+
+.explorer-sidebar-toolbar-content {
+    display: grid;
+    grid-template-columns: 1fr max-content;
+}
+
+.explorer-sidebar-toolbar-left {
+    grid-column: 1;
+    padding: 3px 20px;
+}
+
+.explorer-sidebar-toolbar-left-container {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+}
+
+.explorer-sidebar-toolbar-left-icon {
+    grid-column: 1;
+    width: 45px;
+}
+
+    .explorer-sidebar-toolbar-left-icon .icon {
+        font-size: 22px;
+        margin-right: 20px;
+        color: var(--accent);
+    }
+
+.explorer-sidebar-toolbar-left-text {
+    grid-column: 2;
+}
+
+    .explorer-sidebar-toolbar-left-text .title {
+        display: block;
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 18px;
+    }
+
+    .explorer-sidebar-toolbar-left-text .subtitle {
+        display: block;
+        font-size: 12px;
+        line-height: 18px;
+        color: #888;
+    }
+
+.explorer-sidebar-toolbar-right {
+    grid-column: 2;
+}
+
+.explorer-sidebar-toolbar-right .btn {
+    padding: 10px;
+}
+
+    .explorer-sidebar-toolbar-right .icon {
+        font-size: 16px;
+    }
+
+    .explorer-sidebar-toolbar-right .loading-icon {
+        padding: 8px 20px 10px 10px;
+    }
+
+        .explorer-sidebar-toolbar-right .loading-icon .icon {
+            color: var(--accent);
+            font-size: 18px;
+            animation: spin 1s linear infinite;
+        }
+
+
+.explorer-sidebar-tree {
+    grid-row: 2;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /*animation: fadein 0.25s;*/
+}
+
+
+.explorer-page ::deep .add-modal .modal-body {
+    padding: 20px 50px 0;
+}
+
+.explorer-page ::deep .add-modal .form-field {
+    display: block;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+    .explorer-page ::deep .add-modal .form-field label {
+        display: block;
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .explorer-page ::deep .add-modal .form-field .rz-textbox {
+        display: block;
+        width: 100%;
+    }
+
+
+.explorer-content {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
+.explorer-clipboard {
+    overflow: hidden;
+    overflow-y: auto;
+    height: 100%;
+    border-left: 1px solid #ddd;
+    padding-top: 10px;
+}

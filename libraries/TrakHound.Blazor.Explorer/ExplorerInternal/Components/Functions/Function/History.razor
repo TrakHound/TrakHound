@@ -1,0 +1,232 @@
+﻿@inject ExplorerService explorerService
+@using TrakHound.Functions
+@using System.Text.Json.Serialization
+
+<div class="information-panel">
+    <div class="header-panel">
+        <span class="icon fa-solid fa-sharp fa-timer"></span>
+		<span class="title">History</span>
+		<span class="subtitle">View metrics and previous function runs</span>
+	</div>
+	<div class="toolbar-panel">
+		<div class="toolbar-panel-container">
+			<div class="toolbar-panel-input">
+
+                @if (!loading)
+                {
+                    <button class="btn btn-primary" @onclick="Load"><span class="icon fa-solid fa-sharp fa-magnifying-glass"></span>Query</button>
+                }
+                else
+                {
+                    <button class="btn btn-primary disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
+                }
+
+			</div>
+            <div class="toolbar-panel-input">
+                <label>From</label>
+                <RadzenDatePicker @bind-Value="@from" ShowTime="true" HourFormat="12" DateFormat="MM/dd/yyyy h:mm tt" Disabled="@loading" />
+            </div>
+            <div class="toolbar-panel-input">
+                <label>To</label>
+                <RadzenDatePicker @bind-Value="@to" ShowTime="true" HourFormat="12" DateFormat="MM/dd/yyyy h:mm tt" Disabled="@loading" />
+            </div>
+		</div>
+	</div>
+	<div class="table-panel">
+
+        @if (!loading)
+        {
+            if (!runs.IsNullOrEmpty())
+            {
+                <RadzenDataGrid Data="@runs" TItem="FunctionRun" Density="Density.Compact" AllowSorting="true" AllowColumnResize="true">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="FunctionRun" CssClass="buttons view-cell" Width="70px" Sortable="false">
+                            <Template Context="context">
+                                <a href="@GetViewLink(context)" class="btn btn-sm btn-link">View</a>
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="FunctionRun" Property="Id" Title="Id" CssClass="id" Width="250px" />
+                        <RadzenDataGridColumn TItem="FunctionRun" Property="Ago" Title="Ago" CssClass="ago" Width="70px">
+                            <Template Context="context">
+                                <span>@context.Ago.ToSimpleFormattedString()</span>
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="FunctionRun" Property="Status" Title="Status" CssClass="status" Width="125px">
+                            <Template Context="context">
+                                <div class="@context.Status?.ToLower()">
+                                    <span class="icon @GetStatusIcon(context)"></span>
+                                    <span class="label">@context.Status</span>
+                                </div>
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="FunctionRun" Property="StatusCode" Title="StatusCode" CssClass="status-code" Width="100px" />
+                        <RadzenDataGridColumn TItem="FunctionRun" Property="Duration" Title="Duration" CssClass="duration" Width="100px">
+                            <Template Context="context">
+                                <span>@context.Duration.ToFormattedString(true)</span>
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="FunctionRun" Property="Start" Title="Start" CssClass="timestamp" Width="150px">
+                            <Template Context="context">
+                                <span>@context.Start.ToLocalTime()</span>
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="FunctionRun" Property="End" Title="End" CssClass="timestamp" Width="150px">
+                            <Template Context="context">
+                                <span>@context.End.ToLocalTime()</span>
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="FunctionRun" Property="Engine.PackageVersion" Title="Version" CssClass="version" Width="100px" />
+                        <RadzenDataGridColumn TItem="FunctionRun" Property="Engine.Sender" Title="Sender" CssClass="sender" Width="175px" />
+                        <RadzenDataGridColumn TItem="FunctionRun" />
+                    </Columns>
+                </RadzenDataGrid>
+            }
+            else
+            {
+                <div class="not-found-panel">
+                    <div class="not-found-container">
+                        <span class="icon fa-solid fa-sharp fa-ban"></span>
+                        <span class="title">No Function Runs Found</span>
+                        <span class="subtitle">(@from) - (@to)</span>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="loading-panel">
+                <div class="loading-container">
+                    <span class="icon fa-solid fa-sharp fa-loader spin"></span>
+                    <span class="message">Loading Function Runs..</span>
+                </div>
+            </div>
+        }
+
+	</div>
+</div>
+
+@code {
+
+    private IEnumerable<FunctionRun> runs;
+    private DateTime from;
+    private DateTime to;
+    private bool loading;
+
+
+    [Parameter]
+    public string ServerId { get; set; }
+
+    [Parameter]
+    public TrakHoundFunctionInformation FunctionInformation { get; set; }
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    public class FunctionRun
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
+
+        [JsonPropertyName("status")]
+        public string Status { get; set; }
+
+        [JsonPropertyName("statusCode")]
+        public int StatusCode { get; set; }
+
+        [JsonIgnore]
+        public TimeSpan Ago => DateTime.UtcNow - End;
+
+        [JsonPropertyName("start")]
+        public DateTime Start { get; set; }
+
+        [JsonPropertyName("end")]
+        public DateTime End { get; set; }
+
+        [JsonPropertyName("duration")]
+        public TimeSpan Duration { get; set; }
+
+        [JsonPropertyName("engine")]
+        public FunctionRunEngine Engine { get; set; }
+    }
+
+    public class FunctionRunEngine
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
+
+        [JsonPropertyName("packageId")]
+        public string PackageId { get; set; }
+
+        [JsonPropertyName("packageVersion")]
+        public string PackageVersion { get; set; }
+
+        [JsonPropertyName("sender")]
+        public string Sender { get; set; }
+    }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        var today = DateTime.Today;
+        from = today;
+        to = today.AddDays(1);
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    private async Task Load()
+    {
+        var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+        if (client != null)
+        {
+            runs = null;
+            loading = true;
+            await InvokeAsync(StateHasChanged);
+
+            var apiRoute = Url.Combine("functions", FunctionInformation.PackageId, "runs");
+
+            var parameters = new Dictionary<string, string>();
+            parameters.Add("start", from.ToUnixTime().ToString());
+            parameters.Add("stop", to.ToUnixTime().ToString());
+            parameters.Add("sortOrder", "-1");
+
+            runs = await client.Api.QueryJson<IEnumerable<FunctionRun>>(apiRoute, queryParameters: parameters);
+            runs = runs?.OrderByDescending(o => o.End);
+
+            loading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private string GetViewLink(FunctionRun run)
+    {
+        if (run != null)
+        {
+            return Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "functions", FunctionInformation.PackageId, "runs", run.Id);
+        }
+
+        return null;
+    }
+
+    private string GetStatusIcon(FunctionRun run)
+    {
+        if (run != null)
+        {
+            var status = run.Status.ConvertEnum<TrakHoundFunctionStatusType>();
+            switch (status)
+            {
+                case TrakHoundFunctionStatusType.Started: return "fa-solid fa-sharp fa-play";
+                case TrakHoundFunctionStatusType.Stopped: return "fa-solid fa-sharp fa-stop";
+                case TrakHoundFunctionStatusType.Running: return "fa-solid fa-sharp fa-play";
+                case TrakHoundFunctionStatusType.Wait: return "fa-solid fa-sharp fa-timer";
+                case TrakHoundFunctionStatusType.Completed: return "fa-solid fa-sharp fa-check";
+                case TrakHoundFunctionStatusType.Error: return "fa-solid fa-sharp fa-triangle-exclamation";
+            }
+        }
+
+        return null;
+    }
+
+}

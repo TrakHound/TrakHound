@@ -1,0 +1,59 @@
+﻿.endpoint-panel {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    padding: 10px 20px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: #fff;
+}
+
+.tab-panel {
+    grid-row: 2;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .tab-panel ::deep .rz-tabview-panels {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .tab-panel ::deep .rz-tabview-panel {
+        height: 100%;
+        overflow: hidden;
+        padding: 0;
+        padding-top: 15px;
+    }
+
+
+.parameters-panel {
+    margin-bottom: 30px;
+}
+
+    .parameters-panel label {
+        font-size: 14px;
+        font-weight: bold;
+        color: #555;
+        margin-bottom: 10px;
+    }
+
+
+.responses-panel {
+    margin-bottom: 30px;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .responses-panel label {
+        font-size: 14px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .responses-panel .response-content {
+        height: 100%;
+        overflow: hidden;
+        padding-bottom: 100px;
+    }

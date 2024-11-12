@@ -1,0 +1,197 @@
+﻿@page "/explorer/{instanceId}/api/{requestType}/{apiId}/{controllerId}/{endPointId}"
+@inject ExplorerService explorerService
+@using TrakHound.Api
+
+@if (!loading)
+{
+    if (apiInformation != null && controllerInformation != null && endPointInformation != null)
+    {
+        var route = Url.Combine(apiInformation.Route, controllerInformation.Route, endPointInformation.Route);
+        route = $"/{route}";
+
+        string headerIcon = null;
+        switch (endPointInformation.Type.ConvertEnum<TrakHoundApiRouteType>())
+        {
+            case TrakHoundApiRouteType.Query: headerIcon = apiQueryIcon; break;
+            case TrakHoundApiRouteType.Subscribe: headerIcon = apiSubscribeIcon; break;
+            case TrakHoundApiRouteType.Publish: headerIcon = apiPublishIcon; break;
+            case TrakHoundApiRouteType.Delete: headerIcon = apiDeleteIcon; break;
+        }
+
+        <div class="endpoint-panel">
+
+            <div class="header-panel">
+                <div class="header-content">
+                    <div class="header-icon-container">
+                        <span class="icon @headerIcon"></span>
+                        <span class="header-type">@endPointInformation.Type</span>
+                    </div>
+                    <div class="header-description-container">
+                        <span class="header-title">API Endpoint</span>
+                        <span class="header-id">@route</span>
+                        <span class="header-description">@endPointInformation.Id</span>
+                    </div>
+                    <div class="header-package-icon-container">
+                        <span class="header-package-icon fa-solid fa-sharp fa-box"></span>
+                    </div>
+                    <div class="header-package-container">
+                        <span class="header-title">Package</span>
+                        <span class="header-package">@apiInformation.PackageId</span>
+                        <span class="header-version">@apiInformation.PackageVersion</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-panel">
+
+                <RadzenTabs RenderMode="TabRenderMode.Client">
+                    <Tabs>
+
+                        <RadzenTabsItem Text="Run">
+                            <Run ServerId="@InstanceId" Api="@apiInformation" Controller="@controllerInformation" Endpoint="@endPointInformation" RequestType="@RequestType" />
+                        </RadzenTabsItem>
+
+                        <RadzenTabsItem Text="Information">
+
+                            <div class="information-panel">
+                                <InformationTable Api="@apiInformation" Endpoint="@endPointInformation" />
+                            </div>
+
+                            @if (!endPointInformation.Parameters.IsNullOrEmpty())
+                            {
+                                <div class="parameters-panel">
+                                    <label>Parameters</label>
+                                    <div class="parameters-content">
+                                        <ParameterTable Information="@endPointInformation" />
+                                    </div>
+                                </div>
+                            }
+
+                            @if (!endPointInformation.Responses.IsNullOrEmpty())
+                            {
+                                <div class="responses-panel">
+                                    <label>Responses</label>
+                                    <div class="responses-content">
+                                        <ResponseTable Information="@endPointInformation" />
+                                    </div>
+                                </div>
+                            }
+
+                        </RadzenTabsItem>
+
+                    </Tabs>
+                </RadzenTabs>
+
+            </div>
+
+        </div>
+    }
+}
+else
+{
+    <Loading Message="@loadingMessage" />
+}
+
+@code {
+
+    private const string apiQueryIcon = "fa-solid fa-sharp fa-magnifying-glass";
+    private const string apiSubscribeIcon = "fa-solid fa-sharp fa-signal-stream";
+    private const string apiPublishIcon = "fa-solid fa-sharp fa-plus";
+    private const string apiDeleteIcon = "fa-solid fa-sharp fa-delete-left";
+
+    private TrakHoundApiInformation apiInformation;
+    private TrakHoundApiControllerInformation controllerInformation;
+    private TrakHoundApiEndpointInformation endPointInformation;
+    private string previousRequestType;
+    private string previousApiId;
+    private string previousControllerId;
+    private string previousEndPointId;
+
+    private bool loading = true;
+    private string loadingMessage = "Loading Api Endpoint..";
+
+
+    [Parameter]
+    public string InstanceId { get; set; }
+
+    [Parameter]
+    public string RequestType { get; set; }
+
+    [Parameter]
+    public string ApiId { get; set; }
+
+    [Parameter]
+    public string ControllerId { get; set; }
+
+    [Parameter]
+    public string EndPointId { get; set; }
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        var route = "{instanceId}/api/{requestType}/{apiId}/{controllerId}/{endPointId}";
+
+        InstanceId = Url.GetRouteParameter(Explorer.Path, route, "instanceId");
+        RequestType = Url.GetRouteParameter(Explorer.Path, route, "requestType");
+        ApiId = Url.GetRouteParameter(Explorer.Path, route, "apiId");
+        ControllerId = Url.GetRouteParameter(Explorer.Path, route, "controllerId");
+        EndPointId = Url.GetRouteParameter(Explorer.Path, route, "endPointId");
+
+        await explorerService.LoadInstance(Explorer.Instances, InstanceId);
+
+        if (RequestType != null && (RequestType != previousRequestType || ApiId != previousApiId || ControllerId != previousControllerId || EndPointId != previousEndPointId))
+        {
+            previousRequestType = RequestType;
+            previousApiId = ApiId;
+            previousControllerId = ControllerId;
+            previousEndPointId = EndPointId;
+
+            await explorerService.LoadInstance(Explorer.Instances, explorerService.SelectedInstanceId);
+
+            IEnumerable<TrakHoundApiInformation> informations = null;
+            switch (RequestType.ToLower())
+            {
+                case ApiRequestTypes.Route: informations = explorerService.GetApiRoutes(InstanceId); break;
+                case ApiRequestTypes.Package: informations = explorerService.GetApiPackages(InstanceId); break;
+            }
+
+            if (!informations.IsNullOrEmpty())
+            {
+                var server = explorerService.GetServer(InstanceId);
+
+                apiInformation = informations.FirstOrDefault(o => o.Id == ApiId);
+                if (apiInformation != null)
+                {
+                    controllerInformation = apiInformation.Controllers?.FirstOrDefault(o => o.Id == ControllerId);
+                    if (controllerInformation != null)
+                    {
+                        endPointInformation = controllerInformation.EndPoints.FirstOrDefault(o => o.Id == EndPointId);
+                        if (endPointInformation != null)
+                        {
+                            var breadcrumbItems = new List<BreadcrumbItem>();
+                            breadcrumbItems.Add(new BreadcrumbItem(explorerService.SelectedInstanceId, null));
+                            breadcrumbItems.Add(new BreadcrumbItem("Api", Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "api")));
+                            breadcrumbItems.Add(new BreadcrumbItem(apiInformation.Route, Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "api", "route", apiInformation.Id)));
+                            breadcrumbItems.Add(new BreadcrumbItem(controllerInformation.Route, null));
+                            breadcrumbItems.Add(new BreadcrumbItem(endPointInformation.Route, null));
+                            explorerService.BreadcrumbItems = breadcrumbItems;
+                        }
+                    }
+                }
+            }
+
+            loading = false;
+            loadingMessage = null;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

@@ -1,0 +1,36 @@
+﻿@page "/_admin/deployments"
+@using Radzen
+@using Radzen.Blazor
+
+<TrakHoundPageTitle>Deployments - TrakHound Instance</TrakHoundPageTitle>
+
+<div class="deployments-page">
+
+    <div class="header-panel">
+        <div class="header-panel-content">
+            <div class="header-panel-icon">
+                <div class="header-icon-outline">
+                    <span class="icon fa-solid fa-sharp fa-rocket"></span>
+                </div>
+            </div>
+            <div class="header-panel-text">
+                <span class="header-panel-title">Deployments</span>
+                <span class="header-panel-subtitle">Manage Deployments</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabs-panel">
+        <RadzenTabs>
+            <Tabs>
+                <RadzenTabsItem Text="Create">
+                    <Create />
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Install">
+                    <Install />
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+    </div>
+
+</div>

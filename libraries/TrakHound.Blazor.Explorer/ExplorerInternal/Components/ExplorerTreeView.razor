@@ -1,0 +1,369 @@
+﻿@inject ExplorerService explorerService
+@inject ExplorerTreeViewService explorerTreeViewService
+@using System.Web
+@using TrakHound.Api
+@using TrakHound.Management
+
+<div class="explorer-tree-view">
+
+    @if (Explorer.Instances != null)
+    {
+        var instances = Explorer.Instances.GetInstances();
+        if (!instances.IsNullOrEmpty())
+        {
+            // Select first Instance by default
+            if (selectedItemId == null)
+            {
+                selectedItemId = explorerService.SelectedInstanceId;
+            }
+
+            <TreeView SelectedId="@selectedItemId">
+
+                @foreach (var instance in instances)
+                {
+                    var routers = explorerService.GetRouters(instance.Id);
+                    var apiRoutes = explorerService.GetApiRoutes(instance.Id);
+                    var apiPackages = explorerService.GetApiPackages(instance.Id);
+                    var apps = explorerService.GetApps(instance.Id);
+                    var functions = explorerService.GetFunctions(instance.Id);
+                    var services = explorerService.GetServices(instance.Id);
+
+                    var instanceInterface = instance.Interfaces?.FirstOrDefault(o => o.Type == "HTTP");
+                    if (instanceInterface != null)
+                    {
+                        var serverTitle = $"{instance.Name} ({instanceInterface.Address}:{instanceInterface.Port})";
+                        var instanceItemId = instance.Id;
+                        var appsItemId = $"{instance.Id}:apps";
+                        var apisItemId = $"{instance.Id}:api";
+                        var functionsItemId = $"{instance.Id}:function";
+                        var servicesItemId = $"{instance.Id}:services";
+                        var entitiesItemId = $"{instance.Id}:entities";
+                        var systemItemId = $"{instance.Id}:system";
+
+                        var instanceLoading = instancesLoading.Contains(instance.Id);
+
+                        <TreeItem Id="@instanceItemId" CssClass="instance-tree-item" Title="@serverTitle" Icon="@serverIcon" Link="@GetLink(instance.Id)" IsLoading="@instanceLoading" IsExpanded="@explorerTreeViewService.IsExpanded(instanceItemId)" Expanded="InstanceExpanded" Collapsed="ItemCollapsed" Selected="ItemSelected">
+
+                            @* Apps *@
+                            <TreeItem Id="@appsItemId" Title="Apps" Icon="@appsIcon" CssClass="folder" Link="@GetLink(instance.Id, "apps")" IsExpanded="@explorerTreeViewService.IsExpanded(appsItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
+
+                                @if (!apps.IsNullOrEmpty())
+                                {
+                                    foreach (var app in apps.OrderBy(o => o.Route))
+                                    {
+                                        var appItemId = $"{instance.Id}:{app.Id}";
+
+                                        <TreeItem Id="@appItemId" Title="@app.Route" Icon="@appIcon" Link="@GetLink(instance.Id, $"apps/{app.Id}")" IsExpanded="@explorerTreeViewService.IsExpanded(appItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed" Selected="ItemSelected">
+
+                                            @if (!app.Pages.IsNullOrEmpty())
+                                            {
+                                                foreach (var pageInfo in app.Pages.OrderBy(o => o.Route))
+                                                {
+                                                    <TreeItem Title="@pageInfo.Route" Icon="@pageIcon" Link="@GetLink(instance.Id, $"apps/{app.Id}/pages/{pageInfo.Id}")" Selected="ItemSelected" />
+                                                }
+                                            }
+
+                                        </TreeItem>
+                                    }
+                                }
+
+                            </TreeItem>
+
+                            @* API *@
+                            <TreeItem Id="@apisItemId" Title="Api" Icon="@apisIcon" CssClass="folder" Link="@GetLink(instance.Id, "api")" IsExpanded="@explorerTreeViewService.IsExpanded(apisItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
+                                @if (!apiRoutes.IsNullOrEmpty())
+                                {
+                                    foreach (var api in apiRoutes.Where(o => !string.IsNullOrEmpty(o.Route)).OrderBy(o => o.Route))
+                                    {
+                                        var apiRouteItemId = $"{apisItemId}:{api.Id}";
+                                        var apiRoute = $"/{api.Route}";
+
+                                        <TreeItem Id="@apiRouteItemId" Title="@apiRoute" Icon="@apiIcon" CssClass="api-tree-item" Link="@GetLink(instance.Id, $"api/route/{api.Id}")" IsExpanded="@explorerTreeViewService.IsExpanded(apiRouteItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed" Selected="ItemSelected">
+
+                                            @foreach (var controller in api.Controllers.OrderBy(o => o.Route))
+                                            {
+                                                if (!controller.EndPoints.IsNullOrEmpty())
+                                                {
+                                                    var controllerRouteEndPointItemId = $"{apisItemId}:{api.Id}:{controller.Id}";
+
+                                                    var endpointGroups = controller.EndPoints.Select(o => o.Group).Distinct();
+                                                    var noGroupEndpoints = controller.EndPoints.Where(o => string.IsNullOrEmpty(o.Group));
+
+                                                    if (controller.Route != Url.PathSeparator.ToString())
+                                                    {
+                                                        <TreeItem Id="@controllerRouteEndPointItemId" Title="@controller.Route" Icon="@apiControllerIcon" CssClass="api-controller-tree-item" IsExpanded="@explorerTreeViewService.IsExpanded(controllerRouteEndPointItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
+
+                                                            @foreach (var endpointGroup in endpointGroups.OrderBy(o => o))
+                                                            {
+                                                                var groupEndpoints = controller.EndPoints.Where(o => o.Group == endpointGroup);
+                                                                var apiRouteGroupItemId = $"{apisItemId}:{api.Id}:{endpointGroup}";
+
+                                                                <TreeItem Id="@apiRouteGroupItemId" Title="@endpointGroup" Icon="@folderIcon" CssClass="folder" IsExpanded="@explorerTreeViewService.IsExpanded(apiRouteGroupItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
+                                                                    @foreach (var endPoint in groupEndpoints.OrderBy(o => o.Route))
+                                                                    {
+                                                                        var endPointRoute = endPoint.Route;
+                                                                        var apiRouteEndPointItemId = $"{apisItemId}:{api.Id}:{controller.Id}:{endPoint.Id}";
+
+                                                                        var endPointIcon = "";
+                                                                        var endPointType = endPoint.Type.ConvertEnum<TrakHoundApiRouteType>();
+                                                                        switch (endPointType)
+                                                                        {
+                                                                            case TrakHoundApiRouteType.Query: endPointIcon = apiQueryIcon; break;
+                                                                            case TrakHoundApiRouteType.Subscribe: endPointIcon = apiSubscribeIcon; break;
+                                                                            case TrakHoundApiRouteType.Publish: endPointIcon = apiPublishIcon; break;
+                                                                            case TrakHoundApiRouteType.Delete: endPointIcon = apiDeleteIcon; break;
+                                                                        }
+
+                                                                        <TreeItem Id="@apiRouteEndPointItemId" Title="@endPointRoute" Icon="@endPointIcon" CssClass="api-endpoint-tree-item" Link="@GetLink(instance.Id, $"api/route/{api.Id}/{controller.Id}/{endPoint.Id}")" IsExpanded="@explorerTreeViewService.IsExpanded(apiRouteEndPointItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed" Selected="ItemSelected" />
+                                                                    }
+                                                                </TreeItem>
+                                                            }
+
+                                                            @if (!noGroupEndpoints.IsNullOrEmpty())
+                                                            {
+                                                                foreach (var endPoint in noGroupEndpoints.OrderBy(o => o.Route))
+                                                                {
+                                                                    var endPointRoute = endPoint.Route;
+                                                                    var apiRouteEndPointItemId = $"{apisItemId}:{api.Id}:{endPoint.Id}";
+
+                                                                    var endPointIcon = "";
+                                                                    var endPointType = endPoint.Type.ConvertEnum<TrakHoundApiRouteType>();
+                                                                    switch (endPointType)
+                                                                    {
+                                                                        case TrakHoundApiRouteType.Query: endPointIcon = apiQueryIcon; break;
+                                                                        case TrakHoundApiRouteType.Subscribe: endPointIcon = apiSubscribeIcon; break;
+                                                                        case TrakHoundApiRouteType.Publish: endPointIcon = apiPublishIcon; break;
+                                                                        case TrakHoundApiRouteType.Delete: endPointIcon = apiDeleteIcon; break;
+                                                                    }
+
+                                                                    <TreeItem Id="@apiRouteEndPointItemId" Title="@endPointRoute" Icon="@endPointIcon" CssClass="api-endpoint-tree-item" Link="@GetLink(instance.Id, $"api/route/{api.Id}/{controller.Id}/{endPoint.Id}")" IsExpanded="@explorerTreeViewService.IsExpanded(apiRouteEndPointItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed" Selected="ItemSelected" />
+                                                                }
+                                                            }
+
+                                                        </TreeItem>
+                                                    }
+                                                    else
+                                                    {
+                                                        foreach (var endpointGroup in endpointGroups.OrderBy(o => o))
+                                                        {
+                                                            var groupEndpoints = controller.EndPoints.Where(o => o.Group == endpointGroup);
+                                                            var apiRouteGroupItemId = $"{apisItemId}:{api.Id}:{endpointGroup}";
+
+                                                            <TreeItem Id="@apiRouteGroupItemId" Title="@endpointGroup" Icon="@folderIcon" CssClass="folder" IsExpanded="@explorerTreeViewService.IsExpanded(apiRouteGroupItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
+                                                                @foreach (var endPoint in groupEndpoints.OrderBy(o => o.Route))
+                                                                {
+                                                                    var endPointRoute = endPoint.Route;
+                                                                    var apiRouteEndPointItemId = $"{apisItemId}:{api.Id}:{controller.Id}:{endPoint.Id}";
+
+                                                                    var endPointIcon = "";
+                                                                    var endPointType = endPoint.Type.ConvertEnum<TrakHoundApiRouteType>();
+                                                                    switch (endPointType)
+                                                                    {
+                                                                        case TrakHoundApiRouteType.Query: endPointIcon = apiQueryIcon; break;
+                                                                        case TrakHoundApiRouteType.Subscribe: endPointIcon = apiSubscribeIcon; break;
+                                                                        case TrakHoundApiRouteType.Publish: endPointIcon = apiPublishIcon; break;
+                                                                        case TrakHoundApiRouteType.Delete: endPointIcon = apiDeleteIcon; break;
+                                                                    }
+
+                                                                    <TreeItem Id="@apiRouteEndPointItemId" Title="@endPointRoute" Icon="@endPointIcon" CssClass="api-endpoint-tree-item" Link="@GetLink(instance.Id, $"api/route/{api.Id}/{controller.Id}/{endPoint.Id}")" IsExpanded="@explorerTreeViewService.IsExpanded(apiRouteEndPointItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed" Selected="ItemSelected" />
+                                                                }
+                                                            </TreeItem>
+                                                        }
+
+                                                        if (!noGroupEndpoints.IsNullOrEmpty())
+                                                        {
+                                                            foreach (var endPoint in noGroupEndpoints.OrderBy(o => o.Route))
+                                                            {
+                                                                var endPointRoute = endPoint.Route;
+                                                                var apiRouteEndPointItemId = $"{apisItemId}:{api.Id}:{endPoint.Id}";
+
+                                                                var endPointIcon = "";
+                                                                var endPointType = endPoint.Type.ConvertEnum<TrakHoundApiRouteType>();
+                                                                switch (endPointType)
+                                                                {
+                                                                    case TrakHoundApiRouteType.Query: endPointIcon = apiQueryIcon; break;
+                                                                    case TrakHoundApiRouteType.Subscribe: endPointIcon = apiSubscribeIcon; break;
+                                                                    case TrakHoundApiRouteType.Publish: endPointIcon = apiPublishIcon; break;
+                                                                    case TrakHoundApiRouteType.Delete: endPointIcon = apiDeleteIcon; break;
+                                                                }
+
+                                                                <TreeItem Id="@apiRouteEndPointItemId" Title="@endPointRoute" Icon="@endPointIcon" CssClass="api-endpoint-tree-item" Link="@GetLink(instance.Id, $"api/route/{api.Id}/{controller.Id}/{endPoint.Id}")" IsExpanded="@explorerTreeViewService.IsExpanded(apiRouteEndPointItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed" Selected="ItemSelected" />
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                        </TreeItem>
+                                    }
+                                }
+                            </TreeItem>
+
+                            @* Functions *@
+                            <TreeItem Id="@functionsItemId" Title="Functions" Icon="@functionsIcon" CssClass="folder" Link="@GetLink(instance.Id, "functions")" IsExpanded="@explorerTreeViewService.IsExpanded(functionsItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
+                                @if (!functions.IsNullOrEmpty())
+                                {
+                                    foreach (var function in functions.Where(o => !string.IsNullOrEmpty(o.FunctionId)).OrderBy(o => o.FunctionId))
+                                    {
+                                        var functionItemId = $"{functionsItemId}:{function.FunctionId}";
+
+                                        <TreeItem Id="@functionItemId" Title="@function.FunctionId" Icon="@functionIcon" Link="@GetLink(instance.Id, $"functions/{function.FunctionId}")" IsExpanded="@explorerTreeViewService.IsExpanded(functionItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed" Selected="ItemSelected">
+                                            <TreeItem Title="Run" Icon="@functionRunIcon" Link="@GetLink(instance.Id, $"functions/{function.FunctionId}/run")" />
+                                            <TreeItem Title="History" Icon="@functionHistoryIcon" Link="@GetLink(instance.Id, $"functions/{function.FunctionId}/history")" />
+                                            <TreeItem Title="Scheduled Tasks" Icon="@functionScheduledTasksIcon" Link="@GetLink(instance.Id, $"functions/{function.FunctionId}/scheduled-tasks")" />
+                                        </TreeItem>
+                                    }
+                                }
+                            </TreeItem>
+
+                            @* Services *@
+                            <TreeItem Id="@servicesItemId" Title="Services" Icon="@folderIcon" CssClass="folder" Link="@GetLink(instance.Id, "services")" IsExpanded="@explorerTreeViewService.IsExpanded(servicesItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
+                                @if (!services.IsNullOrEmpty())
+                                {
+                                    foreach (var service in services.OrderBy(o => o.Name))
+                                    {
+                                        <TreeItem Title="@service.Name" Icon="@serviceIcon" Link="@GetLink(instance.Id, $"services/{service.Id}")" Selected="ItemSelected" />
+                                    }
+                                }
+                            </TreeItem>
+
+                            @* Entities *@
+                            <TreeItem Id="@entitiesItemId" Title="Entities" Icon="@folderIcon" CssClass="folder" Link="@GetLink(instance.Id, "entities")" IsExpanded="@explorerTreeViewService.IsExpanded(entitiesItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
+                                <TreeItem Title="Objects" Icon="@objectEntitiesIcon" Link="@GetLink(instance.Id, "entities/objects")" Selected="ItemSelected" />
+                                <TreeItem Title="Definitions" Icon="@definitionEntitiesIcon" Link="@GetLink(instance.Id, "entities/definitions")" Selected="ItemSelected" />
+                                <TreeItem Title="Sources" Icon="@sourceEntitiesIcon" Link="@GetLink(instance.Id, "entities/sources")" Selected="ItemSelected" />
+                            </TreeItem>
+
+
+ @*                            <TreeItem Id="@systemItemId" Title="System" Icon="@folderIcon" CssClass="folder" Link="@GetLink(instance.Id, "system")" IsExpanded="@explorerTreeViewService.IsExpanded(systemItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
+                                <TreeItem Title="Entities" Icon="@objectEntitiesIcon" Link="@GetLink(instance.Id, "entities/system/entities")" Selected="ItemSelected" />
+                                <TreeItem Title="Functions" Icon="@definitionEntitiesIcon" Link="@GetLink(instance.Id, "entities/system/functions")" Selected="ItemSelected" />
+                                <TreeItem Title="Services" Icon="@sourceEntitiesIcon" Link="@GetLink(instance.Id, "entities/system/services")" Selected="ItemSelected" />
+                                <TreeItem Title="Commands" Icon="@sourceEntitiesIcon" Link="@GetLink(instance.Id, "entities/system/commands")" Selected="ItemSelected" />
+                                <TreeItem Title="Blobs" Icon="@sourceEntitiesIcon" Link="@GetLink(instance.Id, "entities/system/blobs")" Selected="ItemSelected" />
+                                <TreeItem Title="Messages" Icon="@sourceEntitiesIcon" Link="@GetLink(instance.Id, "entities/system/messages")" Selected="ItemSelected" />
+                                <TreeItem Title="MessageQueues" Icon="@sourceEntitiesIcon" Link="@GetLink(instance.Id, "entities/system/message-queues")" Selected="ItemSelected" />
+                            </TreeItem> *@
+
+                        </TreeItem>
+                    }
+                }
+
+            </TreeView>
+        }
+    }
+
+</div>
+
+@code {
+
+    private const string folderIcon = "fa-solid fa-sharp fa-folder";
+    private const string serverIcon = "fa-solid fa-sharp fa-server";
+    private const string routersIcon = "fa-solid fa-sharp fa-folder";
+    private const string routerIcon = "fa-solid fa-chart-network";
+    private const string tempRouterIcon = "fa-regular fa-chart-network";
+    private const string apisIcon = "fa-solid fa-sharp fa-folder";
+    private const string entitiesIcon = "fa-solid fa-sharp fa-folder";
+    private const string apiIcon = "fa-solid fa-sharp fa-circle-location-arrow";
+    private const string apiControllerIcon = "fa-solid fa-sharp fa-rectangle-vertical-history";
+    private const string apiQueryIcon = "fa-solid fa-sharp fa-magnifying-glass";
+    private const string apiSubscribeIcon = "fa-solid fa-sharp fa-signal-stream";
+    private const string apiPublishIcon = "fa-solid fa-sharp fa-plus";
+    private const string apiDeleteIcon = "fa-solid fa-sharp fa-delete-left";
+    private const string appsIcon = "fa-solid fa-sharp fa-folder";
+    private const string appIcon = "fa-solid fa-sharp fa-browsers";
+    private const string functionsIcon = "fa-solid fa-sharp fa-folder";
+    private const string functionIcon = "fa-solid fa-sharp fa-code";
+    private const string functionRunIcon = "fa-regular fa-sharp fa-circle-play";
+    private const string functionHistoryIcon = "fa-solid fa-sharp fa-timer";
+    private const string functionScheduledTasksIcon = "fa-regular fa-sharp fa-calendar-clock";
+    private const string serviceIcon = "fa-solid fa-sharp fa-gear";
+    private const string logIcon = "fa-solid fa-sharp fa-square-terminal";
+    private const string pageIcon = "fa-regular fa-sharp fa-window";
+    private const string objectEntitiesIcon = "fa-sharp fa-solid fa-sitemap";
+    private const string definitionEntitiesIcon = "fa-sharp fa-solid fa-book";
+    // private const string definitionEntitiesIcon = "fa-solid fa-database";
+    private const string sourceEntitiesIcon = "fa-sharp fa-regular fa-file-certificate";
+    // private const string sourceEntitiesIcon = "fa-solid fa-database";
+
+    private readonly HashSet<string> instancesLoading = new HashSet<string>();
+    private string selectedItemId;
+
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        explorerService.ConfigurationUpdated += ConfigurationUpdated;
+    }
+
+
+    private async void ConfigurationUpdated(object sender, EventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private static string GetLink(string serverId)
+    {
+        return Url.Combine("_admin/explorer", serverId);
+    }
+
+    private static string GetLink(string serverId, string path)
+    {
+        var url = Url.Combine("_admin/explorer", serverId);
+        url = Url.Combine(url, path);
+        return url;
+    }
+
+    private static string GetLink(string serverId, string routerId, string path)
+    {
+        var url = Url.Combine("_admin/explorer", serverId);
+        url = Url.Combine(url, HttpUtility.UrlEncode(routerId));
+        url = Url.Combine(url, path);
+        return url;
+    }
+
+    private async void InstanceExpanded(string instanceId)
+    {
+        instancesLoading.Add(instanceId);
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(250);
+
+        // Load the Instance (Apis, Apps, etc.)
+        await explorerService.LoadInstance(Explorer.Instances, instanceId);
+
+        // Save the Expanded state of the TreeItem
+        explorerTreeViewService.SetExpanded(instanceId, true);
+
+        instancesLoading.Remove(instanceId);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ItemSelected(string id)
+    {
+        if (selectedItemId != id)
+        {
+            selectedItemId = id;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void ItemExpanded(string id)
+    {
+        explorerTreeViewService.SetExpanded(id, true);
+    }
+
+    private void ItemCollapsed(string id)
+    {
+        explorerTreeViewService.SetExpanded(id, false);
+    }
+
+
+    private async void ServiceLogsExpanded(string serverId, string serviceId)
+    {
+        await explorerTreeViewService.LoadServiceLogs(serverId, serviceId);
+        await InvokeAsync(StateHasChanged);
+    }
+}

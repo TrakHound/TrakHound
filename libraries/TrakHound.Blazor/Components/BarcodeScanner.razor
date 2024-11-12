@@ -1,0 +1,35 @@
+﻿@rendermode InteractiveServer
+@inject IJSRuntime JS
+@using TrakHound.Blazor.Services
+
+<QRCodeScanner />
+
+@code {
+
+    private QRCodeScannerJsInterop? _qrCodeScannerJsInterop;
+    private Action<string>? _onQrCodeScanAction;
+
+
+    [Parameter]
+    public EventCallback<string> CodeReceived { get; set; }
+
+    [Parameter]
+    public string Width { get; set; } = "100%";
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _onQrCodeScanAction = (code) => OnQrCodeScan(code);
+
+            _qrCodeScannerJsInterop = new QRCodeScannerJsInterop(JS);
+            await _qrCodeScannerJsInterop.Init(OnQrCodeScan);
+        }
+    }
+
+    private async void OnQrCodeScan(string code)
+    {
+        await CodeReceived.InvokeAsync(code);
+    }
+}

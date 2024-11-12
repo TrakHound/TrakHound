@@ -1,0 +1,15 @@
+﻿@using TrakHound.Blazor.Components
+@using TrakHound.Instances
+
+<div class="page">
+    <TextBox Title="Instance Name" @bind-Value="@Configuration.Name" />
+    <TextBox Title="Instance Description" @bind-Value="@Configuration.Description" />
+    <TextBox Title="Instance Base Path" @bind-Value="@Configuration.BasePath" />
+</div>
+
+@code {
+
+    [CascadingParameter]
+    public TrakHoundInstanceConfiguration Configuration { get; set; }
+
+}

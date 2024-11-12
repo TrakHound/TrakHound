@@ -1,0 +1,243 @@
+﻿@using TrakHound.Management;
+@using TrakHound.Packages;
+
+<div class="package-browser">
+    <div class="package-browser-content">
+        <div class="package-toolbar">
+            <div class="package-toolbar-content">
+                <div class="package-toolbar-buttons">
+
+                    @if (!loading)
+                    {
+                        <button class="btn-search btn-command btn" @onclick="SearchClicked"><span class="icon fas fa-magnifying-glass"></span>Search</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary btn-search btn-loading"><span class="icon loading-icon fa-regular fa-loader spin"></span>Searching..</button>
+                    }
+
+                </div>
+                <div class="package-toolbar-search">
+                    <TextBox @bind-Value="Query" InputChangeType="InputChangeType.OnValueChange" PlaceHolder="Search for a package by Package ID.." SpellCheck="false" />
+                </div>
+            </div>
+        </div>
+        <div class="package-list scroll-panel">
+
+            @if (!loading)
+            {
+                if (!packages.IsNullOrEmpty())
+                {
+                    foreach (var package in packages)
+                    {
+                        var isSelected = package.Id == selectedId;
+                        var installedPackage = PackageManager.GetLatest(package.Id);
+                        var installed = installedPackage != null;
+                        var updated = installedPackage != null && installedPackage.Version == package.Version && installedPackage.BuildDate == package.BuildDate.ToUniversalTime();
+                        var packateInstalling = IsPackageInstalling(package.Id);
+
+                        <PackageInstallItem Package="@package"
+                                            IsSelected="@isSelected"
+                                            Clicked="ClickPackage"
+                                            IsInstalled="@installed"
+                                            IsInstalling="@packateInstalling"
+                                            IsUpdated="@updated"
+                                            Selected="() => InstallPackage(package)" 
+                                            />
+                    }
+                }
+                else if (!queryChanged)
+                {
+                    <div class="not-found">
+                        <div class="not-found-container">
+                            <span class="icon fas fa-ban"></span>
+
+                            @if (!string.IsNullOrEmpty(query))
+                            {
+                                <span class="label">No Packages found that match "@query"</span>
+                            }
+                            else
+                            {
+                                <span class="label">No Packages found</span>
+                            }
+
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <Loading Message="Loading Packages.." />
+            }
+
+        </div>
+        <div class="package-information scroll-panel">
+            <PackageInformation Package="@selectedPackage" ManagementClient="@ManagementClient" />
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    private readonly HashSet<string> packagesInstalling = new HashSet<string>();
+
+    IEnumerable<TrakHoundPackage> packages;
+    TrakHoundPackage selectedPackage;
+    string selectedId;
+
+    string previousPackageManagerPath;
+    string previousManagementClientBaseUrl;
+    string previousManagementClientOrganization;
+    string previousCategory;
+
+    string query;
+    string previousQuery;
+    System.Timers.Timer queryTimer;
+    bool loading = false;
+    bool queryChanged = false;
+
+    public string Query 
+    {
+        get => query;
+        set 
+        {
+            query = value;
+            if (query != previousQuery)
+            {
+                UpdateTimer();
+                previousQuery = query;
+                queryChanged = true;
+            }
+        }
+    }
+
+    [Parameter]
+    public TrakHoundPackageManager PackageManager { get; set; }
+
+    [Parameter]
+    public TrakHoundManagementClient ManagementClient { get; set; }
+
+    [Parameter]
+    public string Category { get; set; }
+
+    [Parameter]
+    public EventCallback<TrakHoundPackage> PackageInstalled { get; set; }
+
+    [Parameter]
+    public EventCallback<TrakHoundPackage> PackageUninstalled { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        queryTimer = new System.Timers.Timer();
+        queryTimer.Interval = 1000;
+        queryTimer.Elapsed += async (s, e) => await Load(true);
+
+        await Load();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private void UpdateTimer()
+    {
+        queryTimer.Stop();
+        queryTimer.Start(); 
+    }
+
+    private async void SearchClicked()
+    {
+        await Load(true);
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload ||
+            (PackageManager != null && PackageManager.Path != previousPackageManagerPath) ||
+            (ManagementClient != null && (ManagementClient.BaseUrl != previousManagementClientBaseUrl || 
+            ManagementClient.Organization != previousManagementClientOrganization)) ||
+            Category != previousCategory)
+        {
+            previousPackageManagerPath = PackageManager.Path;
+            previousManagementClientBaseUrl = ManagementClient.BaseUrl;
+            previousManagementClientOrganization = ManagementClient.Organization;
+            previousCategory = Category;
+
+            selectedId = null;
+            selectedPackage = null;
+            queryChanged = false;
+
+            loading = true;
+            await InvokeAsync(StateHasChanged);
+
+            if (!string.IsNullOrEmpty(Category))
+            {
+                packages = await ManagementClient.Packages.Query(Category, query);
+                packages = packages?.OrderByDescending(o => o.BuildDate);
+            }
+            else
+            {
+                packages = await ManagementClient.Packages.QueryLatestByOrganization();
+                packages = packages?.OrderByDescending(o => o.BuildDate);
+            }
+
+            queryTimer.Stop();
+
+            loading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void ClickPackage(string packageId)
+    {
+        selectedId = packageId;
+        if (!packages.IsNullOrEmpty())
+        {
+            selectedPackage = packages.FirstOrDefault(o => o.Id == packageId);
+        }
+    }
+
+    private bool IsPackageInstalling(string packageId)
+    {
+        return packagesInstalling.Contains(packageId);
+    }
+
+
+    private async void InstallPackage(TrakHoundPackage package)
+    {
+        if (package != null)
+        {
+            packagesInstalling.Add(package.Id);
+            await InvokeAsync(StateHasChanged);
+
+            // Download Package
+            var packageBytes = await ManagementClient.Packages.Download(package.Id, package.Version);
+            if (packageBytes != null)
+            {
+                // Install using PackageManager
+                var results = await PackageManager.Install(packageBytes, managementClient: ManagementClient);
+                if (!results.IsNullOrEmpty())
+                {
+                    foreach (var result in results)
+                    {
+                        if (result.Success)
+                        {
+                            var installedPackage = PackageManager.Get(result.PackageId, result.PackageVersion);
+                            if (installedPackage != null)
+                            {
+                                await PackageInstalled.InvokeAsync(installedPackage);
+                            }
+                        }
+                    }
+                }
+            }
+
+            packagesInstalling.Remove(package.Id);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

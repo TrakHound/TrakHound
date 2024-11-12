@@ -1,0 +1,141 @@
+﻿@using TrakHound.Configurations
+@using TrakHound.Management
+@using TrakHound.Packages
+
+<div class="configuration-page">
+    <div class="sidebar-panel">
+        <PageMenu>
+            <PageMenuSection Label="Applications">
+                <PageMenuItem Text="Apps" Link="@GetLink("apps")" />
+                <PageMenuItem Text="Api" Link="@GetLink("api")" />
+                <PageMenuItem Text="Functions" Link="@GetLink("functions")" />
+                <PageMenuItem Text="Services" Link="@GetLink("services")" />
+            </PageMenuSection>
+            <PageMenuSection Label="Routing">
+                <PageMenuItem Text="Routers" Link="@GetLink("routing")" />
+                <PageMenuItem Text="Drivers" Link="@GetLink("drivers")" />
+            </PageMenuSection>
+            <PageMenuSection Label="Security">
+                <PageMenuItem Text="Identity" Link="@GetLink("identity")" />
+            </PageMenuSection>
+        </PageMenu>
+    </div>
+    <div class="content-panel">
+        <CascadingValue Name="InstanceConfiguration" Value="this">
+
+            @if (!string.IsNullOrEmpty(Path))
+            {
+                var path = Path;
+
+                var queryIndex = path.IndexOf('?');
+                if (queryIndex > 0) path = path.Substring(0, queryIndex);
+
+                var selectedPage = Url.GetFirstFragment(path).ConvertEnum<Page>();
+                switch (selectedPage)
+                {
+                    case Page.Apps:
+                        <TrakHound.Blazor.Instance.InstanceConfigurationInternal.Apps.Index />
+                        break;
+
+                    case Page.Api:
+                        <TrakHound.Blazor.Instance.InstanceConfigurationInternal.Api.Index />
+                        break;
+
+
+                    case Page.Functions:
+                        <TrakHound.Blazor.Instance.InstanceConfigurationInternal.Functions.Index />
+                        break;
+
+                    case Page.Services:
+                        <TrakHound.Blazor.Instance.InstanceConfigurationInternal.Services.Index />
+                        break;
+
+
+                    case Page.Routing:
+                        <TrakHound.Blazor.Instance.InstanceConfigurationInternal.Routing.Index />
+                        break;
+
+                    case Page.Drivers:
+                        <TrakHound.Blazor.Instance.InstanceConfigurationInternal.Drivers.Index />
+                        break;
+
+
+                    case Page.Identity:
+                        <TrakHound.Blazor.Instance.InstanceConfigurationInternal.Identity.Index />
+                        break;
+                }
+            }
+            else
+            {
+                <TrakHound.Blazor.Instance.InstanceConfigurationInternal.Home />
+            }
+
+        </CascadingValue>
+    </div>
+</div>
+
+@code {
+
+    private string previousManagementClientKey;
+
+
+    enum Page
+    {
+        Apps,
+        Api,
+        Functions,
+        Services,
+        Routing,
+        Drivers,
+        Identity
+    }
+
+
+    [Parameter]
+    public TrakHoundPackageManager PackageManager { get; set; }
+
+    [Parameter]
+    public TrakHoundManagementClient ManagementClient { get; set; }
+
+    [Parameter]
+    public InstanceConfigurationGroup ConfigurationGroup { get; set; }
+
+    [Parameter]
+    public string BasePath { get; set; }
+
+    [Parameter]
+    public string Path { get; set; }
+
+    public EventHandler ManagementClientChanged { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        string managementClientKey = null;
+        if (ManagementClient != null)
+        {
+            managementClientKey = GetManagementClientKey(ManagementClient.BaseUrl, ManagementClient.Organization);
+        }
+
+        if (managementClientKey != previousManagementClientKey)
+        {
+            previousManagementClientKey = managementClientKey;
+            if (ManagementClientChanged != null) ManagementClientChanged.Invoke(this, EventArgs.Empty);
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    string GetLink(string path)
+    {
+        var url = Url.Combine(BasePath, path);
+        url = Url.AddQueryParameter(url, "groupId", ConfigurationGroup.Id);
+        return url;
+    }
+
+    string GetManagementClientKey(string baseUrl, string organization)
+    {
+        return $"{baseUrl}:{organization}";
+    }
+
+}

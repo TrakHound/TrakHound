@@ -1,0 +1,10 @@
+﻿{
+  "id": "TrakHound.Json.Api",
+  "category": "api",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Api for converting TrakHound Query responses to simple JSON models",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultRoute": "json"
+  }
+}

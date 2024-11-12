@@ -1,0 +1,15 @@
+﻿<CascadingValue Value="this">
+    <div class="tree-view">
+        @ChildContent
+    </div>
+</CascadingValue>
+
+@code {
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string SelectedId { get; set; }
+
+}

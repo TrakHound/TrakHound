@@ -1,0 +1,58 @@
+﻿@inherits TrakHoundComponentBase
+
+<div class="releases-panel">
+
+    @if (!releases.IsNullOrEmpty())
+    {
+        foreach (var release in releases)
+        {
+            <a href="@release.HtmlUrl" target="_blank" class="release-panel">
+                <div class="release-container">
+                    <div class="release-icon">
+                        <span class="icon fa-regular fa-sharp fa-tag"></span>
+                    </div>
+                    <div class="release-header">
+                        <span class="release-name">@release.Name</span>
+                        <span class="release-tag">@release.TagName</span>
+                    </div>
+                    <div class="release-content">
+                        <span class="release-number"><span>#</span>@release.Number</span>
+                        <span class="release-updated">published at @release.PublishedAt</span>
+                    </div>
+                    <div class="release-icons">
+                        <span class="release-comments"><span class="icon fa-regular fa-sharp fa-message-lines"></span>@release.Comments</span>
+                    </div>
+                </div>
+            </a>
+        }
+    }
+
+</div>
+
+@code {
+
+    private IEnumerable<Release> releases;
+
+    class Release
+    {
+        public long Id { get; set; }
+        public string Url { get; set; }
+        public string HtmlUrl { get; set; }
+        public int Number { get; set; }
+        public string Name { get; set; }
+        public string TagName { get; set; }
+        public int Comments { get; set; }
+        public DateTime PublishedAt { get; set; }
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var url = "https://www.trakhound.com/management/github/api/releases/TrakHound/MTConnect.NET";
+        releases = await TrakHound.Http.RestRequest.Get<IEnumerable<Release>>(url);
+
+        // releases = await Client.Api.QueryJson<IEnumerable<Release>>("github/api/releases/TrakHound/MTConnect.NET");
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

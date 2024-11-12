@@ -1,0 +1,14 @@
+﻿.sidebar {
+    background: #fff;
+    border-right: 1px solid var(--borderLight);
+    overflow-y: auto;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar .list-group-separator {
+    height: 1px;
+    width: auto;
+    margin: 10px;
+    background: #555;
+}

@@ -1,0 +1,38 @@
+﻿@page "/_admin/packages"
+@inject RemotesConfiguration remotesConfiguration
+@using Radzen
+@using Radzen.Blazor
+@using TrakHound.Instance.Configurations
+
+<TrakHoundPageTitle>Packages - TrakHound Instance</TrakHoundPageTitle>
+
+<div class="packages-page">
+
+    <div class="header-panel">
+        <div class="header-panel-content">
+            <div class="header-panel-icon">
+                <div class="header-icon-outline">
+                    <span class="icon fa-solid fa-sharp fa-box"></span>
+                </div>
+            </div>
+            <div class="header-panel-text">
+                <span class="header-panel-title">Packages</span>
+                <span class="header-panel-subtitle">Manage Packages</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabs-panel">
+        <RadzenTabs>
+            <Tabs>
+                <RadzenTabsItem Text="Browse">
+                    <Browse />
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Manage">
+                    <Manage />
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+    </div>
+
+</div>

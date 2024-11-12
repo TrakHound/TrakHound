@@ -1,0 +1,176 @@
+﻿@if (PageCount > 0)
+{
+	var displayCount = 5;
+
+	<ul class="pagination pagination-sm">
+
+		@if (SelectedPage > 1)
+		{
+			<li class="page-item">
+				<button class="page-link" @onclick="() => PageSelected(SelectedPage - 1)">
+					<span class="fas fa-angle-left"></span>
+				</button>
+			</li>
+		}
+		else
+		{
+			<li class="page-item disabled">
+				<span class="page-link">
+					<span class="fas fa-angle-left"></span>
+				</span>
+			</li>
+		}
+
+		@if (PageCount > 10)
+		{
+			if (SelectedPage > displayCount && SelectedPage < (PageCount - displayCount + 1))
+			{
+				for (var i = 0; i < displayCount - 2; i++)
+				{
+					var pageNumber = i + 1;
+					if (pageNumber == SelectedPage)
+					{
+						<li class="page-item active">
+							<span class="page-link">@pageNumber</span>
+						</li>
+					}
+					else
+					{
+						<li class="page-item">
+							<button class="page-link" @onclick="() => PageSelected(pageNumber)">@pageNumber</button>
+						</li>
+					}
+				}
+
+				<li class="page-item"><a class="page-link" href="#">...</a></li>
+				<li class="page-item">
+					<button class="page-link" @onclick="() => PageSelected(SelectedPage - 2)">@(SelectedPage - 2)</button>
+				</li>
+				<li class="page-item">
+					<button class="page-link" @onclick="() => PageSelected(SelectedPage - 1)">@(SelectedPage - 1)</button>
+				</li>
+				<li class="page-item active">
+					<span class="page-link">@SelectedPage</span>
+				</li>
+				<li class="page-item">
+					<button class="page-link" @onclick="() => PageSelected(SelectedPage + 1)">@(SelectedPage + 1)</button>
+				</li>
+				<li class="page-item">
+					<button class="page-link" @onclick="() => PageSelected(SelectedPage + 2)">@(SelectedPage + 2)</button>
+				</li>
+				<li class="page-item"><a class="page-link" href="#">...</a></li>
+
+				for (var i = PageCount - displayCount + 2; i < PageCount; i++)
+				{
+					var pageNumber = i + 1;
+					if (pageNumber == SelectedPage)
+					{
+						<li class="page-item active">
+							<span class="page-link">@pageNumber</span>
+						</li>
+					}
+					else
+					{
+						<li class="page-item">
+							<button class="page-link" @onclick="() => PageSelected(pageNumber)">@pageNumber</button>
+						</li>
+					}
+				}
+			}
+			else
+			{
+				for (var i = 0; i < displayCount; i++)
+				{
+					var pageNumber = i + 1;
+					if (pageNumber == SelectedPage)
+					{
+						<li class="page-item active">
+							<span class="page-link">@pageNumber</span>
+						</li>
+					}
+					else
+					{
+						<li class="page-item">
+							<button class="page-link" @onclick="() => PageSelected(pageNumber)">@pageNumber</button>
+						</li>
+					}
+				}
+
+				<li class="page-item"><a class="page-link" href="#">...</a></li>
+
+				for (var i = PageCount - displayCount; i < PageCount; i++)
+				{
+					var pageNumber = i + 1;
+					if (pageNumber == SelectedPage)
+					{
+						<li class="page-item active">
+							<span class="page-link">@pageNumber</span>
+						</li>
+					}
+					else
+					{
+						<li class="page-item">
+							<button class="page-link" @onclick="() => PageSelected(pageNumber)">@pageNumber</button>
+						</li>
+					}
+				}
+			}
+		}
+		else
+		{
+			for (var i = 0; i < PageCount; i++)
+			{
+				var pageNumber = i + 1;
+				if (pageNumber == SelectedPage)
+				{
+					<li class="page-item active">
+						<span class="page-link">@pageNumber</span>
+					</li>
+				}
+				else
+				{
+					<li class="page-item">
+						<button class="page-link" @onclick="() => PageSelected(pageNumber)">@pageNumber</button>
+					</li>
+				}
+			}
+		}
+
+		@if (SelectedPage < PageCount)
+		{
+			<li class="page-item">
+				<button class="page-link" @onclick="() => PageSelected(SelectedPage + 1)">
+					<span class="fas fa-angle-right"></span>
+				</button>
+			</li>
+		}
+		else
+		{
+			<li class="page-item disabled">
+				<span class="page-link">
+					<span class="fas fa-angle-right"></span>
+				</span>
+			</li>
+		}
+
+	</ul>
+}
+
+@code {
+
+	[Parameter]
+	public int PageCount { get; set; }
+
+	[Parameter]
+	public int SelectedPage { get; set; }
+
+	[Parameter]
+	public EventCallback<int> SelectedPageChanged { get; set; }
+
+
+	private async void PageSelected(int pageNumber)
+	{
+		await SelectedPageChanged.InvokeAsync(pageNumber);
+	}
+
+}

@@ -1,0 +1,28 @@
+.empty-panel {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr max-content 1fr;
+    grid-template-columns: 1fr max-content 1fr;
+    border-top: 1px solid #ddd;
+}
+
+.empty-container {
+    grid-row: 2;
+    grid-column: 2;
+    padding: 40px 80px;
+    border-radius: 2px;
+    border: 1px solid #eee;
+    text-align: center;
+}
+
+.empty-message {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.empty-btn {
+    display: block;
+}

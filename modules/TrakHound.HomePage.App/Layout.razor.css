@@ -1,0 +1,68 @@
+﻿.app-page {
+    height: 100%;
+    overflow: hidden;
+}
+
+    .app-page ::deep .rz-tabview {
+        height: 100%;
+        overflow: hidden;
+        border: none !important;
+    }
+
+        .app-page ::deep .rz-tabview .rz-tabview-panels {
+            height: 100%;
+            overflow: hidden;
+            border-top: none !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+            .app-page ::deep .rz-tabview .rz-tabview-panels .rz-tabview-panel {
+                height: 100%;
+                overflow: hidden;
+                border: none !important;
+            }
+
+        .app-page ::deep .rz-tabview .rz-tabview-nav ul {
+            border: none !important;
+        }
+
+        .app-page ::deep .rz-tabview .rz-tabview-nav li {
+            border: none !important;
+            background: rgba(255, 255, 255, 0.025) !important;
+            border-right: 1px solid rgba(0, 0, 0, 0.5) !important;
+            padding: 0 !important;
+        }
+
+            .app-page ::deep .rz-tabview .rz-tabview-nav li.rz-tabview-selected {
+                border: none !important;
+                background: var(--accentBackground) !important;
+            }
+
+            .app-page ::deep .rz-tabview .rz-tabview-nav li a {
+                border: none !important;
+                padding: 4px 20px !important;
+                width: 100% !important;
+            }
+
+            .app-page ::deep .rz-tabview .rz-tabview-nav li a:hover {
+                background: none !important;
+            }
+
+            .app-page ::deep .rz-tabview .rz-tabview-nav li .rz-tabview-title {
+                color: var(--accentLight) !important;
+                font-size: 14px !important;
+                font-family: inherit !important;
+                text-transform: none !important;
+                letter-spacing: normal !important;
+                padding: 0 !important;
+            }
+
+            .app-page ::deep .rz-tabview .rz-tabview-nav li:hover .rz-tabview-title {
+                color: var(--accentVeryVeryLight) !important;
+                background: none !important;
+            }
+
+            .app-page ::deep .rz-tabview .rz-tabview-nav li.rz-tabview-selected .rz-tabview-title {
+                color: var(--accentVeryLight) !important;
+                background: none !important;
+            }

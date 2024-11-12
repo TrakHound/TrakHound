@@ -1,0 +1,23 @@
+﻿.breadcrumb-link {
+    color: var(--accent);
+    font-size: 13px;
+    display: inline-block;
+    margin-right: 5px;
+    text-decoration: none;
+}
+
+.breadcrumb-link:hover a {
+    text-decoration: underline;
+}
+
+.breadcrumb-organizer {
+    color: #555;
+    font-size: 13px;
+    display: inline-block;
+    margin-right: 5px;
+    text-decoration: none;
+}
+
+    .breadcrumb-organizer:hover {
+        /*text-decoration: underline;*/
+    }

@@ -1,0 +1,122 @@
+﻿.string-content {
+    display: grid;
+    grid-template-rows: max-content max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.toolbar-panel {
+    grid-row: 1;
+    padding: 9px 10px 11px;
+}
+
+    .toolbar-panel .btn-save {
+        height: 42px;
+        width: 130px;
+        font-size: 14px;
+        border-radius: 0;
+        padding: 0;
+        margin-right: 5px;
+    }
+
+    .toolbar-panel .btn-save .icon {
+        font-size: 16px;
+    }
+
+    .toolbar-panel .btn-refresh {
+        height: 42px;
+        width: 42px;
+        font-size: 14px;
+        border-radius: 0;
+        padding: 0;
+    }
+
+        .toolbar-panel .btn-refresh .icon {
+            font-size: 16px;
+            margin-right: 0;
+        }
+
+
+.query-panel {
+    grid-row: 2;
+    padding: 0 10px 8px;
+}
+
+.query-panel-container {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    border: 1px solid #ddd;
+}
+
+.query-panel .query-label {
+    grid-column: 1;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-right: 1px solid #ddd;
+    border-radius: 2px;
+    color: #777;
+}
+
+.query-panel .btn-query {
+    grid-column: 2;
+    font-size: 12px;
+    text-align: left;
+    padding-top: 8px;
+}
+
+
+.content-panel {
+    grid-row: 3;
+    height: 100%;
+    overflow: hidden;
+}
+
+.content-panel-container {
+    display: grid;
+    grid-template-rows: 1fr max-content;
+    height: 100%;
+    overflow: auto;
+}
+
+.value-panel {
+    grid-row: 1;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+    .value-panel ::deep .text-area {
+        height: 100%;
+    }
+
+    .value-panel ::deep .form-group {
+        height: 100%;
+    }
+
+    .value-panel ::deep textarea {
+        resize: none !important;
+        min-height: 100px;
+        height: 100%;
+        border-radius: 0;
+        background: #fafafa;
+        padding: 10px 20px;
+    }
+
+        .value-panel ::deep textarea:focus {
+            background: #fff;
+            box-shadow: none;
+        }
+
+.information-panel {
+    grid-row: 2;
+    padding: 5px 10px 0;
+}
+
+    .information-panel .table td {
+        font-size: 12px;
+        border-color: #eee;
+    }
+
+        .information-panel .table td.key {
+            font-weight: bold;
+        }

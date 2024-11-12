@@ -1,0 +1,39 @@
+.page-menu {
+}
+
+    .page-menu ::deep .page-menu-section {
+        margin-bottom: 20px !important;
+    }
+
+    .page-menu ::deep .page-menu-section-label {
+        font-size: 11px !important;
+        font-weight: bold;
+        color: #888;
+        margin-bottom: 7px !important;
+    }
+
+    .page-menu ::deep .page-menu-section-content {
+        margin: 0;
+    }
+
+    .page-menu ::deep a {
+        display: block;
+        color: #555;
+        border-left: 3px solid #eee;
+        margin: 0;
+        padding: 3px;
+        padding-left: 15px;
+        font-size: 12px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+        .page-menu ::deep a:hover {
+            color: var(--accentLight);
+            border-left: 3px solid var(--accentLight);
+        }
+
+        .page-menu ::deep a.active {
+            color: var(--accent);
+            border-left: 3px solid var(--accent);
+        }

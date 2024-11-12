@@ -1,0 +1,7 @@
+﻿.definition-selection {
+    width: 100%;
+}
+
+.definition-selection ::deep .rz-autocomplete {
+    width: 100%;
+}

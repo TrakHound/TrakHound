@@ -1,0 +1,104 @@
+﻿@using TrakHound.Packages
+
+@if (Package != null)
+{
+    var active = IsSelected ? "active" : "";
+    var publisher = Package.Metadata != null && Package.Metadata.ContainsKey("publisher") ? Package.Metadata["publisher"]?.ToString() : null;
+    var description = Package.Metadata != null && Package.Metadata.ContainsKey("description") ? Package.Metadata["description"]?.ToString() : null;
+    var image = Package.Metadata != null && Package.Metadata.ContainsKey(".image") ? Package.Metadata[".image"]?.ToString() : null;
+    var licenseRequired = Package.Metadata != null && Package.Metadata.ContainsKey(".licenseRequired") ? Package.Metadata[".licenseRequired"].ToBoolean() : false;
+
+    <div class="package-item @active" @onclick="Click">
+        <div class="package-item-content">
+            <div class="icon-container">
+
+                @if (!string.IsNullOrEmpty(image))
+                {
+                    <img src="@image" class="icon" />
+                }
+                else
+                {
+                    <span class="icon fa-solid fa-sharp fa-box"></span>
+                }
+
+            </div>
+            <div class="identity">
+                <span class="identifier">
+                    @Package.Id           
+                    @if (!string.IsNullOrEmpty(publisher))
+                    {
+                        <span class="publisher">by @publisher</span>
+                    }
+                </span>
+                <span class="description">@description</span>
+            </div>
+
+            @if (licenseRequired)
+            {
+                <div class="license">
+                    <span class="license-label"><span class="icon fa-solid fa-sharp fa-key"></span>License Required</span>
+                </div>
+            }
+
+            <div class="buttons">
+
+                <span class="version"><span class="symbol">v</span>@Package.Version</span>
+
+                @if (IsInstalling)
+                {
+                    <div class="installing"><span class="loader fa-solid fa-sharp fa-loader spin"></span></div>
+                }
+                else if (!IsInstalled)
+                {
+                    <button class="btn-install btn-command btn" @onclick="Select"><span class="icon fa-solid fa-sharp fa-down-to-bracket"></span>Install</button>
+                }
+                else if (!IsUpdated)
+                {
+                    <button class="btn-install btn-command btn" @onclick="Select"><span class="icon fa-solid fa-sharp fa-up-to-line"></span>Update</button>
+                }
+                else
+                {
+                    <span class="installed">Installed</span>
+                }
+
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+
+    [Parameter]
+    public TrakHoundPackage Package { get; set; }
+
+    [Parameter]
+    public bool IsInstalled { get; set; }
+
+    [Parameter]
+    public bool IsInstalling { get; set; }
+
+    [Parameter]
+    public bool IsUpdated { get; set; }
+
+    [Parameter]
+    public bool IsSelected { get; set; }
+
+    [Parameter]
+    public EventCallback Selected { get; set; }
+
+    [Parameter]
+    public EventCallback<string> Clicked { get; set; }
+
+
+    private async void Click()
+    {
+        await Clicked.InvokeAsync(Package.Id);
+    }
+
+    private async void Select()
+    {
+        await Selected.InvokeAsync();
+    }
+
+}

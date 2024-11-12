@@ -1,0 +1,387 @@
+﻿@inject ExplorerService explorerService
+@using TrakHound.Entities
+@using TrakHound.Entities.QueryEngines
+
+@if (tableData != null && !tableData.Columns.IsNullOrEmpty() && !tableData.Rows.IsNullOrEmpty())
+{
+    var sizeTypeNormalActive = sizeType == TableSizeType.Normal ? "active" : "";
+    var sizeTypeCompactActive = sizeType == TableSizeType.Compact ? "active" : "";
+
+    var formatTypePrettyActive = formatType == TableFormatType.Pretty ? "active" : "";
+    var formatTypeRawActive = formatType == TableFormatType.Raw ? "active" : "";
+
+    var columnTypeFillActive = columnType == TableColumnType.Fill ? "active" : "";
+    var columnTypeAutoActive = columnType == TableColumnType.Auto ? "active" : "";
+
+    var tableDensity = sizeType == TableSizeType.Normal ? Density.Default : Density.Compact;
+
+    <div class="results-panel">
+        <div class="results-toolbar-panel">
+            <div class="results-toolbar-container-left">
+            </div>
+            <div class="results-toolbar-container-right">
+                <div class="toolbar-buttons-container">
+                    <button class="btn btn-light @formatTypePrettyActive" @onclick="FormatTypePrettyClicked">Pretty</button>
+                    <button class="btn btn-light @formatTypeRawActive" @onclick="FormatTypeRawClicked">Raw</button>
+                </div>
+                <div class="toolbar-buttons-container">
+                    <button class="btn btn-light @sizeTypeNormalActive" @onclick="SizeTypeNormalClicked">Normal</button>
+                    <button class="btn btn-light @sizeTypeCompactActive" @onclick="SizeTypeCompactClicked">Compact</button>
+                </div>
+                <div class="toolbar-buttons-container">
+                    <button class="btn btn-light @columnTypeFillActive" @onclick="ColumnTypeFillClicked">Fill</button>
+                    <button class="btn btn-light @columnTypeAutoActive" @onclick="ColumnTypeAutoClicked">Auto</button>
+                </div>
+            </div>
+        </div>
+        <div class="results-table-panel">
+            <RadzenDataGrid TItem="TableRow"
+                            Data="@tableData.Rows"
+                            Density="@tableDensity"
+                            AllowSorting="true"
+                            AllowColumnResize="true"
+                            VirtualizationOverscanCount="50"
+                            AllowVirtualization="true">
+                <Columns>
+
+                    @if (!tableData.Columns.IsNullOrEmpty())
+                    {
+                        for (var i = 0; i < tableData.Columns.Length; i++)
+                        {
+                            var propertyName = tableData.Columns[i].Name;
+                            var propertyDataType = tableData.Columns[i].DataType;
+                            var propertyIndex = i;
+                            var property = $"Cells[{i}].Value";
+                            var columnMinWidth = Math.Max(100, propertyName.Length * 12);
+                            var columnMinWidthProperty = $"{columnMinWidth}px";
+
+                            <RadzenDataGridColumn TItem="TableRow" Property="@property" Title="@propertyName" CssClass="path" MinWidth="@columnMinWidthProperty" Width="auto">
+                                <Template Context="context">
+
+                                    @if (context.Cells[propertyIndex].Link != null)
+                                    {
+                                        <a href="@context.Cells[propertyIndex].Link">@context.Cells[propertyIndex].Value</a>
+                                    }
+                                    else
+                                    {
+                                        <span>@context.Cells[propertyIndex].Value</span>
+                                    }
+
+                                </Template>
+                            </RadzenDataGridColumn>
+                        }
+                    }
+
+                    @if (columnType == TableColumnType.Auto)
+                    {
+                        <RadzenDataGridColumn TItem="TableRow" />
+                    }
+
+                </Columns>
+            </RadzenDataGrid>
+        </div>
+    </div>
+}
+
+@code {
+
+    private TableData tableData;
+
+    private TableFormatType formatType = TableFormatType.Pretty;
+    private TableSizeType sizeType = TableSizeType.Normal;
+    private TableColumnType columnType = TableColumnType.Fill;
+
+    struct DisplayItem
+    {
+        public string Display { get; set; }
+
+        public string Value { get; set; }
+    }
+
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+    [CascadingParameter(Name = "InstancesService")]
+    public ExplorerObjectsService InstancesService { get; set; }
+
+    [Parameter]
+    public TrakHoundQueryResult Result { get; set; }
+
+
+    class TableData
+    {
+        public TableColumn[] Columns { get; set; }
+        public TableRow[] Rows { get; set; }
+    }
+
+    class TableColumn
+    {
+        public string Name { get; set; }
+
+        public TrakHoundQueryDataType DataType { get; set; }
+    }
+
+    class TableRow
+    {
+        public TableCell[] Cells { get; set; }
+    }
+
+    class TableCell
+    {
+        public object Value { get; set; }
+
+        public string Link { get; set; }
+
+
+        public TableCell(object value, string link = null)
+        {
+            Value = value;
+            Link = link;
+        }
+    }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        tableData = null;
+
+        if (!Result.Columns.IsNullOrEmpty())
+        {
+            var objectUuids = new HashSet<string>();
+            var definitionUuids = new HashSet<string>();
+            var sourceUuids = new HashSet<string>();
+
+            var objectItems = new Dictionary<string, DisplayItem>();
+            var definitionItems = new Dictionary<string, DisplayItem>();
+            var sourceItems = new Dictionary<string, DisplayItem>();
+
+            var data = new TableData();
+
+            var columns = new TableColumn[Result.Columns.Length];
+            for (var i = 0; i < Result.Columns.Length; i++)
+            {
+                var column = new TableColumn();
+                column.Name = Result.Columns[i].Name;
+                column.DataType = Result.Columns[i].DataType;
+                columns[i] = column;
+            }
+            data.Columns = columns;
+
+            if (Result.Rows != null && Result.Rows.Length > 0)
+            {
+                if (formatType == TableFormatType.Pretty)
+                {
+                    for (var i = 0; i < Result.RowCount; i++)
+                    {
+                        var cells = new TableCell[Result.ColumnCount];
+                        for (var j = 0; j < Result.ColumnCount; j++)
+                        {
+                            var column = Result.Columns[j];
+
+                            if (Result.Rows[i, j] != null)
+                            {
+                                switch (column.DataType)
+                                {
+                                    case TrakHoundQueryDataType.Object:
+                                        objectUuids.Add(Result.Rows[i, j].ToString());
+                                        break;
+
+                                    case TrakHoundQueryDataType.Definition:
+                                        definitionUuids.Add(Result.Rows[i, j].ToString());
+                                        break;
+
+                                    case TrakHoundQueryDataType.Source:
+                                        sourceUuids.Add(Result.Rows[i, j].ToString());
+                                        break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (InstancesService.Client != null)
+                    {
+                        if (!objectUuids.IsNullOrEmpty())
+                        {
+                            // Get Objects
+                            var objs = await InstancesService.Client.System.Entities.Objects.ReadByUuid(objectUuids);
+                            if (!objs.IsNullOrEmpty())
+                            {
+                                foreach (var obj in objs)
+                                {
+                                    var item = new DisplayItem();
+                                    item.Display = obj.GetAbsolutePath();
+                                    item.Value = obj.Uuid;
+                                    objectItems.Add(obj.Uuid, item);
+                                }
+                            }
+                        }
+
+                        if (!definitionUuids.IsNullOrEmpty())
+                        {
+                            // Get Definitions
+                            var definitions = await InstancesService.Client.System.Entities.Definitions.ReadByUuid(definitionUuids);
+                            if (!definitions.IsNullOrEmpty())
+                            {
+                                foreach (var definition in definitions)
+                                {
+                                    var item = new DisplayItem();
+                                    item.Display = definition.Id;
+                                    item.Value = definition.Uuid;
+                                    definitionItems.Add(definition.Uuid, item);
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                var rows = new TableRow[Result.RowCount];
+                for (var i = 0; i < Result.RowCount; i++)
+                {
+                    var cells = new TableCell[Result.ColumnCount];
+                    for (var j = 0; j < Result.ColumnCount; j++)
+                    {
+                        object cellValue = null;
+                        string cellLink = null;
+                        var column = Result.Columns[j];
+
+                        var cell = Result.Rows[i, j]?.ToString();
+                        if (cell != null)
+                        {
+                            switch (column.DataType)
+                            {
+                                case TrakHoundQueryDataType.Object:
+                                    switch (formatType)
+                                    {
+                                        case TableFormatType.Pretty:
+                                            var displayItem = objectItems.GetValueOrDefault(cell);
+                                            cellValue = displayItem.Display;
+                                            cellLink = GetObjectLink(displayItem.Display);
+                                            break;
+
+                                        case TableFormatType.Raw: cellValue = cell; break;
+                                    }
+                                    break;
+
+                                case TrakHoundQueryDataType.Definition:
+                                    switch (formatType)
+                                    {
+                                        case TableFormatType.Pretty:
+                                            var displayItem = definitionItems.GetValueOrDefault(cell);
+                                            cellValue = displayItem.Display;
+                                            cellLink = GetDefinitionLink(displayItem.Display);
+                                            break;
+
+                                        case TableFormatType.Raw: cellValue = cell; break;
+                                    }
+                                    break;
+
+                                // case TrakHoundQueryDataType.Source:
+
+                                //     break;
+
+                                case TrakHoundQueryDataType.Bytes:
+                                    switch (formatType)
+                                    {
+                                        case TableFormatType.Pretty: cellValue = cell != null ? StringFunctions.GetUtf8String(Convert.FromBase64String(cell)) : null; break;
+                                        case TableFormatType.Raw: cellValue = cell; break;
+                                    }
+                                    break;
+
+                                case TrakHoundQueryDataType.Duration:
+                                    switch (formatType)
+                                    {
+                                        case TableFormatType.Pretty: cellValue = cell.ToTimeSpan().ToDetailedFormattedString(); break;
+                                        case TableFormatType.Raw: cellValue = cell; break;
+                                    }
+                                    break;
+
+                                case TrakHoundQueryDataType.Timestamp:
+                                    switch (formatType)
+                                    {
+                                        case TableFormatType.Pretty: cellValue = cell.ToLong().ToLocalDateTime(); break;
+                                        case TableFormatType.Raw: cellValue = cell; break;
+                                    }
+                                    break;
+
+                                default:
+                                    cellValue = cell;
+                                    break;
+                            }
+                        }
+
+                        cells[j] = new TableCell(cellValue, cellLink);
+                    }
+
+                    var row = new TableRow();
+                    row.Cells = cells;
+                    rows[i] = row;
+                }
+                data.Rows = rows;
+            }
+
+            tableData = data;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string GetObjectLink(string path)
+    {
+        var url = Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "entities", "objects");
+        url = Url.AddQueryParameter(url, "query", $"select >> from [{path}]");
+        return url;
+    }
+
+    private string GetDefinitionLink(string definitionUuid)
+    {
+        var url = Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "entities", "definitions");
+        url = Url.AddQueryParameter(url, "uuid", definitionUuid);
+        return url;
+    }
+
+
+
+    private async void FormatTypePrettyClicked()
+    {
+        formatType = TableFormatType.Pretty;
+        await Load(true);
+    }
+
+    private async void FormatTypeRawClicked()
+    {
+        formatType = TableFormatType.Raw;
+        await Load(true);
+    }
+
+    private async void SizeTypeNormalClicked()
+    {
+        sizeType = TableSizeType.Normal;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void SizeTypeCompactClicked()
+    {
+        sizeType = TableSizeType.Compact;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ColumnTypeFillClicked()
+    {
+        columnType = TableColumnType.Fill;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ColumnTypeAutoClicked()
+    {
+        columnType = TableColumnType.Auto;
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

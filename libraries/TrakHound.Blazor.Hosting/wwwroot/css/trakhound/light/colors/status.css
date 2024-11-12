@@ -1,0 +1,34 @@
+:root {
+    /* Grey Colors */
+    --colorGrey: rgba(0, 0, 0, 0.1);
+    --colorDarkGrey: #555;
+    /* Green Colors */
+    --colorGreen: #19b419;
+    --colorGreenLight: #54c654;
+    --colorGreenVeryLight: #79d279;
+    --colorGreenDark: #2d862d;
+    --colorGreenHover: #8cd98c;
+    --colorGreenHover: #c6ecc6;
+    --colorGreenGradient: linear-gradient(0deg, var(--colorGreen) 0%, var(--colorGreen) 50%, var(--colorGreenLight) 51%, var(--colorGreenLight) 100%);
+    --colorGreenGradientLight: linear-gradient(0deg, var(--colorGreenLight) 0%, var(--colorGreenLight) 50%, var(--colorGreenHover) 51%, var(--colorGreenHover) 100%);
+    /* Orange Colors */
+    --colorOrange: #ff8b00;
+    --colorOrangeLight: #ffae4c;
+    --colorOrangeVeryLight: #ffe8cc;
+    --colorOrangeHover: #ffd199;
+    --colorOrangeDark: #e67e00;
+    /* Orange Colors */
+    --colorRed: #ff0000;
+    --colorRedLight: #ff4c4c;
+    --colorRedVeryLight: #ffb3b3;
+    --colorRedDark: #990000;
+    --colorRedHover: #ff8080;
+    --colorRedHover: #ffb3b3;
+    --colorRedGradient: linear-gradient(0deg, var(--colorRed) 0%, var(--colorRed) 50%, var(--colorRedLight) 51%, var(--colorRedLight) 100%);
+    --colorRedGradientLight: linear-gradient(0deg, var(--colorRedLight) 0%, var(--colorRedLight) 50%, var(--colorRedHover) 51%, var(--colorRedHover) 100%);
+    /* Orange Colors */
+    --colorPurple: #9966ff;
+    --colorPurpleLight: #ccb3ff;
+    --colorPurpleHover: #eee6ff;
+    --colorPurpleDark: #7733ff;
+}

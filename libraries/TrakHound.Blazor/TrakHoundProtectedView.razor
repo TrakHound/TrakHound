@@ -1,0 +1,88 @@
+@using TrakHound.Security
+
+@if (IsAuthorized())
+{
+    var authenticatedSession = GetAuthenticatedSession();
+    if (authenticatedSession != null)
+    {
+        if (Authenticated != null)
+        {
+            @Authenticated(authenticatedSession)
+        }
+    }
+    else
+    {
+        if (Annonymous != null)
+        {
+            @Annonymous(Session)
+        }
+    }
+}
+else
+{
+    if (NotAuthorized != null)
+    {
+        @NotAuthorized(Session)
+    }
+}
+
+@code {
+
+    [CascadingParameter(Name = "Session")]
+    public ITrakHoundSession Session { get; set; }
+
+    [Parameter]
+    public RenderFragment<ITrakHoundAuthenticatedSession> Authenticated { get; set; }
+
+    [Parameter]
+    public RenderFragment<ITrakHoundSession> Annonymous { get; set; }
+
+    [Parameter]
+    public RenderFragment<ITrakHoundSession> NotAuthorized { get; set; }
+
+    [Parameter]
+    public string Permissions { get; set; }
+
+
+    private bool IsAuthorized()
+    {
+        var permissions = GetPermissions();
+        if (Session != null)
+        {
+            if (permissions.IsNullOrEmpty()) return true;
+
+            if (!Session.Roles.IsNullOrEmpty() && Session.Roles.Contains("*")) return true;
+
+            if (!Session.Roles.IsNullOrEmpty() && !permissions.IsNullOrEmpty())
+            {
+                foreach (var sessionRole in Session.Roles)
+                {
+                    if (permissions.Contains(sessionRole)) return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private ITrakHoundAuthenticatedSession GetAuthenticatedSession()
+    {
+        if (Session != null && typeof(ITrakHoundAuthenticatedSession).IsAssignableFrom(Session.GetType()))
+        {
+            return (ITrakHoundAuthenticatedSession)Session;
+        }
+
+        return null;
+    }
+
+    private IEnumerable<string> GetPermissions()
+    {
+        if (!string.IsNullOrEmpty(Permissions))
+        {
+            return Permissions.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        return null;
+    }
+
+}

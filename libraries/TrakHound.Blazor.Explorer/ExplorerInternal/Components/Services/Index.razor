@@ -1,0 +1,273 @@
+﻿@implements IDisposable
+@inject ExplorerService explorerService
+@using TrakHound.Services
+
+<div class="services-page">
+
+    <div class="header-panel">
+        <div class="header-content">
+            <div class="header-icon">
+                <span class="icon fa-solid fa-sharp fa-gear"></span>
+            </div>
+            <div class="header-text">
+                <span class="header-name">Services</span>
+                <span class="header-description">Long lived processes</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbar-panel">
+
+        @if (!loading)
+        {
+            <button class="btn btn-light" @onclick="RefreshClicked"><span class="icon fa-solid fa-sharp fa-rotate"></span>Refresh</button>
+        }
+        else
+        {
+            <button class="btn btn-light btn-run btn-loading"><span class="icon loading-icon fa-regular fa-loader spin"></span>Loading..</button>
+        }
+
+    </div>
+
+    @if (!loading)
+    {
+        <div class="status-panel">
+
+            @{
+                var services = GetServices();
+                if (!services.IsNullOrEmpty())
+                {
+                    <RadzenDataGrid Data="@services" TItem="TrakHoundServiceInformation" Density="Density.Compact" AllowSorting="true" AllowColumnResize="true">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="TrakHoundServiceInformation" CssClass="buttons view-cell" Width="80px" Sortable="false">
+                                <Template Context="context">
+                                    <a href="@GetViewLink(context)" class="btn btn-sm btn-link"><span class="icon fa-regular fa-sharp fa-circle-info"></span>View</a>
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="TrakHoundServiceInformation" CssClass="buttons control-cell" Width="110px" Sortable="false">
+                                <Template Context="context">
+
+                                    @{
+                                        var startDisabled = context.Status != TrakHoundServiceStatusType.Stopped && context.Status != TrakHoundServiceStatusType.Stopping ? "disabled" : "";
+                                        var stopDisabled = context.Status != TrakHoundServiceStatusType.Started && context.Status != TrakHoundServiceStatusType.Starting ? "disabled" : "";
+                                    }
+
+                                    <button class="btn btn-sm btn-link btn-start @startDisabled" @onclick="() => StartClicked(context.Id)">Start</button>
+                                    <button class="btn btn-sm btn-link btn-stop @stopDisabled" @onclick="() => StopClicked(context.Id)">Stop</button>
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="TrakHoundServiceInformation" Property="Status" Title="Status" CssClass="status" Width="100px" />
+                            <RadzenDataGridColumn TItem="TrakHoundServiceInformation" Property="LastUpdated" CssClass="last-updated" Width="80px">
+                                <Template Context="context">
+                                    <span>@GetLastUpdatedAgo(context).ToFormattedString()</span>
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="TrakHoundServiceInformation" Property="Name" Title="Name" CssClass="name" />
+                            <RadzenDataGridColumn TItem="TrakHoundServiceInformation" Property="Description" Title="Description" CssClass="description" />
+                            <RadzenDataGridColumn TItem="TrakHoundServiceInformation" Property="PackageVersion" Title="Package Version" CssClass="package-version" Width="120px" />
+                            <RadzenDataGridColumn TItem="TrakHoundServiceInformation" Property="LastUpdated" Title="Last Updated" CssClass="last-updated" Width="175px">
+                                <Template Context="context">
+                                    <span>@context.LastUpdated.ToLocalTime()</span>
+                                </Template>
+                            </RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
+                }
+            }
+
+        </div>
+    }
+    else
+    {
+        <Loading Message="@loadingMessage" />
+    }
+
+</div>
+
+@code {
+
+    private readonly Dictionary<string, TrakHoundServiceInformation> _services = new Dictionary<string, TrakHoundServiceInformation>();
+    private readonly object _lock = new object();
+
+    private System.Timers.Timer updateTimer;
+    private ITrakHoundConsumer<TrakHoundServiceInformation> serviceConsumer;
+    private string previousInstanceId;
+
+    private bool loading;
+    private string loadingMessage;
+
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        updateTimer = new System.Timers.Timer();
+        updateTimer.Interval = 500;
+        updateTimer.Elapsed += UpdateTimerElapsed;
+        updateTimer.Start();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    void IDisposable.Dispose()
+    {
+        try
+        {
+            if (updateTimer != null)
+            {
+                updateTimer.Elapsed -= UpdateTimerElapsed;
+                updateTimer.Dispose();
+            }
+
+            if (serviceConsumer != null)
+            {
+                serviceConsumer.Received -= ServicesUpdated;
+                serviceConsumer.Dispose();
+            }
+        }
+        catch { }
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || explorerService.SelectedInstanceId != previousInstanceId)
+        {
+            _services.Clear();
+            if (serviceConsumer != null) 
+            {
+                serviceConsumer.Received -= ServicesUpdated;
+                serviceConsumer.Dispose();
+            }
+
+            loading = true;
+            loadingMessage = "Loading Services..";
+            await InvokeAsync(StateHasChanged);
+
+            previousInstanceId = explorerService.SelectedInstanceId;
+
+            await explorerService.LoadInstance(Explorer.Instances, explorerService.SelectedInstanceId, forceReload);
+
+            // Set Explorer Breadcrumbs
+            var breadcrumbItems = new List<BreadcrumbItem>();
+            breadcrumbItems.Add(new BreadcrumbItem(explorerService.SelectedInstanceId, null));
+            breadcrumbItems.Add(new BreadcrumbItem("Services", null));
+            explorerService.BreadcrumbItems = breadcrumbItems;
+
+            var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+            if (client != null)
+            {
+                // Get full list of Services
+                var services = await client.System.Services.GetInformation();
+                if (!services.IsNullOrEmpty())
+                {
+                    lock (_lock)
+                    {
+                        foreach (var service in services)
+                        {
+                            if (service.Id != null)
+                            {
+                                _services.Remove(service.Id);
+                                _services.Add(service.Id, service);
+                            }
+                        }
+                    }
+                }
+
+                // Subscribe to any new Updates
+                serviceConsumer = await client.System.Services.Subscribe();
+                if (serviceConsumer != null)
+                {
+                    serviceConsumer.Received += ServicesUpdated;
+                }
+            }
+
+            loading = false;
+            loadingMessage = null;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void ServicesUpdated(object sender, TrakHoundServiceInformation service)
+    {
+        if (service != null)
+        {
+            lock (_lock)
+            {
+                if (service.Id != null)
+                {
+                    _services.Remove(service.Id);
+                    _services.Add(service.Id, service);
+                }
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void UpdateTimerElapsed(object sender, System.Timers.ElapsedEventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private IEnumerable<TrakHoundServiceInformation> GetServices()
+    {
+        IEnumerable<TrakHoundServiceInformation> services;
+        lock (_lock) services = _services.Values.ToList();
+        return services.OrderBy(o => o.Name);
+    }
+
+    private async void RefreshClicked()
+    {
+        await Load(true);
+    }
+
+
+    private async void StartClicked(string serviceId)
+    {
+        var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+        if (client != null)
+        {
+            TrakHoundServiceInformation service;
+            lock (_lock) service = _services.GetValueOrDefault(serviceId);
+            if (service != null)
+            {
+                await client.System.Services.StartService(service.Id);
+            }
+        }
+    }
+
+    private async void StopClicked(string serviceId)
+    {
+        var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+        if (client != null)
+        {
+            TrakHoundServiceInformation service;
+            lock (_lock) service = _services.GetValueOrDefault(serviceId);
+            if (service != null)
+            {
+                await client.System.Services.StopService(service.Id);
+            }
+        }
+    }
+
+    private string GetViewLink(TrakHoundServiceInformation service)
+    {
+        if (service != null)
+        {
+            return Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "services", service.Id);
+        }
+
+        return null;
+    }
+
+    private TimeSpan GetLastUpdatedAgo(TrakHoundServiceInformation service)
+    {
+        return DateTime.UtcNow - service.LastUpdated;
+    }
+
+}

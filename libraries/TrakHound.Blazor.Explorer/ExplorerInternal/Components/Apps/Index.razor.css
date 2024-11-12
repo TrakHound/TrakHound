@@ -1,0 +1,113 @@
+﻿.apps-page {
+    display: grid;
+    grid-template-rows: max-content max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+    background: #fff;
+}
+
+.header-panel .header-content {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    padding-top: 15px;
+    padding-left: 25px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.header-panel .header-icon {
+    grid-column: 1;
+    padding-right: 20px;
+    width: 50px;
+}
+
+    .header-panel .header-icon .icon {
+        font-size: 24px;
+        color: var(--accent);
+        margin-top: 2px;
+    }
+
+    .header-panel .header-icon .header-type {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: bold;
+        color: var(--accent);
+        border: 1px solid var(--accent);
+        border-radius: 3px;
+        padding: 5px 8px;
+        vertical-align: top;
+    }
+
+.header-panel .header-text {
+    grid-column: 2;
+}
+
+    .header-panel .header-text .header-name {
+        display: block;
+        font-size: 18px;
+        font-weight: bold;
+        line-height: 20px;
+        color: #333;
+    }
+
+    .header-panel .header-text .header-description {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .header-panel .header-text .header-package {
+        display: inline-block;
+        font-size: 14px;
+        color: #555;
+    }
+
+        .header-panel .header-text .header-package .version {
+            margin-left: 10px;
+        }
+
+.toolbar-panel {
+    grid-row: 2;
+    padding: 10px;
+}
+
+    .toolbar-panel .btn {
+        font-size: 12px;
+        border-radius: 2px;
+        padding: 5px 15px;
+        min-width: 110px;
+    }
+
+.status-panel {
+    grid-row: 3;
+    padding: 0 10px 10px;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .status-panel ::deep .rz-data-grid {
+        height: 100%;
+        overflow: auto;
+    }
+
+        .status-panel ::deep .rz-data-grid td {
+            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            padding: 3px 10px;
+        }
+
+            .status-panel ::deep .rz-data-grid td:last-child {
+                border-right: none;
+            }
+
+    .status-panel ::deep .rz-data-grid .buttons {
+        padding: 3px 0;
+    }
+
+        .status-panel ::deep .rz-data-grid .buttons .btn-link {
+            width: 100%;
+            font-size: 12px;
+        }
+
+    .status-panel ::deep .rz-cell-data {
+        font-size: 12px;
+    }

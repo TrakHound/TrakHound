@@ -1,0 +1,60 @@
+﻿@if (ChildContent != null)
+{
+    var collapseClass = IsCollapsed ? "collapsed" : "expanded";
+
+    <div class="collapse-panel @collapseClass">
+        <div class="collapse-panel-toolbar">
+            <div class="collapse-panel-toolbar-button">
+                <button class="btn" @onclick="Toggle"><span class="icon @GetToggleIcon(IsCollapsed)"></span></button>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Title))
+            {
+                <div class="collapse-panel-toolbar-title">
+                    @Title
+                </div>
+            }
+
+        </div>
+
+        @if (!IsCollapsed)
+        {
+            <div class="collapse-panel-content">
+                @ChildContent
+            </div>
+        }
+
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public bool IsCollapsed { get; set; }
+
+    [Parameter]
+    public EventCallback Collapsed { get; set; }
+
+    [Parameter]
+    public EventCallback Expanded { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+
+    private async void Toggle()
+    {
+        if (IsCollapsed) await Expanded.InvokeAsync();
+        else await Collapsed.InvokeAsync();
+    }
+
+    private static string GetToggleIcon(bool isCollapsed)
+    {
+        if (isCollapsed) return "fa-regular fa-sharp fa-circle-chevron-down";
+        else return "fa-regular fa-sharp fa-circle-chevron-up";
+    }
+
+}

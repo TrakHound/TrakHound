@@ -1,0 +1,28 @@
+﻿.btn-control {
+    border-radius: 0;
+    outline: 0 !important;
+}
+
+    .btn-control .icon {
+        display: block;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        font-size: 26px;
+        color: var(--accent);
+    }
+
+    .btn-control:hover .icon {
+        color: var(--accentLight);
+    }
+
+    .btn-control .label {
+        font-size: 16px;
+    }
+
+    .btn-control:hover .label {
+        color: var(--accentLight);
+    }
+
+    .btn-control.btn-success .icon {
+        color: white;
+    }

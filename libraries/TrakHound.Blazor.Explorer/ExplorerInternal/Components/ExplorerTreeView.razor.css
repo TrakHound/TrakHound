@@ -1,0 +1,48 @@
+﻿.explorer-tree-view {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding-bottom: 200px;
+    padding-top: 15px;
+    background: #fcfcfe;
+}
+
+    .explorer-tree-view ::deep .instance-tree-item > .tree-item-content > .tree-item-header > .tree-item-header-content > .btn-selection > .btn-selection-container > .icon-container > .icon {
+    }
+
+    .explorer-tree-view ::deep .temp-router-folder > .tree-item-content > .tree-item-header > .tree-item-header-content > .btn-selection > .btn-selection-container > .icon-container > .icon {
+        color: #ffc111;
+        color: #75b0d7;
+        color: #88bacc;
+        color: #6699cc;
+        color: #9cb3c9;
+    }
+
+    .explorer-tree-view ::deep .router-folder > .tree-item-content > .tree-item-header > .tree-item-header-content > .btn-selection > .btn-selection-container > .icon-container > .icon {
+        color: #ffc111;
+        color: #75b0d7;
+        color: #88bacc;
+        color: #6699cc;
+        color: #9cb3c9;
+    }
+
+    .explorer-tree-view ::deep .router > .tree-item-content > .tree-item-header > .tree-item-header-content > .btn-selection > .btn-selection-container > .icon-container > .icon {
+        /*color: #004d99;*/
+    }
+
+    .explorer-tree-view ::deep .default-router > .tree-item-content > .tree-item-header > .tree-item-header-content > .btn-selection > .btn-selection-container > .icon-container > .description > .title {
+        font-weight: bold !important;
+    }
+
+    .explorer-tree-view ::deep .folder > .tree-item-content > .tree-item-header > .tree-item-header-content > .btn-selection > .btn-selection-container > .icon-container > .icon {
+        color: var(--accentLight);
+        color: #57a6db;
+        color: #88bacc;
+        color: #6699cc;
+        color: #9cb3c9;
+    }
+
+    .explorer-tree-view ::deep .api-controller-tree-item > .tree-item-content > .tree-item-header > .tree-item-header-content > .btn-selection > .btn-selection-container > .icon-container > .icon {
+        color: var(--accentLight);
+    }
+

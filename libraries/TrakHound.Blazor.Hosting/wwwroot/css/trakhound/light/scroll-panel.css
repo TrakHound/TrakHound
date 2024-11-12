@@ -1,0 +1,18 @@
+.scroll-panel {
+    overflow-y: auto;
+    height: 100%;
+}
+
+    .scroll-panel::-webkit-scrollbar {
+        width: var(--scrollWidth); /* width of the entire scrollbar */
+    }
+
+    .scroll-panel::-webkit-scrollbar-track {
+        background: var(--scrollBackground); /* color of the tracking area */
+    }
+
+    .scroll-panel::-webkit-scrollbar-thumb {
+        background-color: var(--scrollForeground) !important; /* color of the scroll thumb */
+        border-radius: 2px; /* roundness of the scroll thumb */
+        border: 3px solid var(--scrollBackground); /* creates padding around scroll thumb */
+    }

@@ -1,0 +1,18 @@
+﻿@if (!string.IsNullOrEmpty(Message))
+{
+    var alertClass = !string.IsNullOrEmpty(Type) ? $"alert-{Type.ToLower()}" : "alert-info";
+
+    <div class="message-bar alert @alertClass">
+        @Message
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public string Message { get; set; }
+
+    [Parameter]
+    public string Type { get; set; } = "info";
+
+}

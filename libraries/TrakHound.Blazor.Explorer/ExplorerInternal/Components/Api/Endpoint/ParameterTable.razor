@@ -1,0 +1,35 @@
+﻿@using TrakHound.Api
+
+@if (Information != null && !Information.Parameters.IsNullOrEmpty())
+{
+    <table class="table table-sm table-bordered">
+        <thead>
+            <tr>
+                <th>Source</th>
+                <th>Name</th>
+                <th>DataType</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var parameter in Information.Parameters)
+            {
+                <tr>
+                    <td class="type-cell">@parameter.Type</td>
+                    <td class="name-cell">@parameter.Name</td>
+                    <td class="data-type-cell">@parameter.DataType</td>
+                    <td class="description-cell">@parameter.Description</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+@code {
+
+    [Parameter]
+    public TrakHoundApiEndpointInformation Information { get; set; }
+
+}

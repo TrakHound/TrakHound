@@ -1,0 +1,52 @@
+﻿@if (DateTime.HasValue)
+{
+    var localTimestamp = DateTime.HasValue ? DateTime.Value.ToString("G") : null;
+    var utcTimestamp = DateTime.HasValue ? DateTime.Value.ToUniversalTime().ToString("G") : null;
+    var isoTimestamp = DateTime.HasValue ? DateTime.Value.ToString("o") : null;
+    var unixSeconds = DateTime.HasValue ? (DateTime.Value.ToUnixTime() / 1000000000).ToString() : null;
+    var unixMilliseconds = DateTime.HasValue ? (DateTime.Value.ToUnixTime() / 1000000).ToString() : null;
+    var unixMicroseconds = DateTime.HasValue ? (DateTime.Value.ToUnixTime() / 1000).ToString() : null;
+    var unixNanoseconds = DateTime.HasValue ? DateTime.Value.ToUnixTime().ToString() : null;
+
+    <div class="timestamp-information">
+        <table class="value-table table table-sm">
+            <tbody>
+                <tr>
+                    <td class="key">Local</td>
+                    <td class="value">@localTimestamp</td>
+                </tr>
+                <tr>
+                    <td class="key">UTC</td>
+                    <td class="value">@utcTimestamp</td>
+                </tr>
+                <tr>
+                    <td class="key">ISO 8601</td>
+                    <td class="value">@isoTimestamp</td>
+                </tr>
+                <tr>
+                    <td class="key">Unix Epoch (s)</td>
+                    <td class="value">@unixSeconds</td>
+                </tr>
+                <tr>
+                    <td class="key">Unix Epoch (ms)</td>
+                    <td class="value">@unixMilliseconds</td>
+                </tr>
+                <tr>
+                    <td class="key">Unix Epoch (&mu;s)</td>
+                    <td class="value">@unixMicroseconds</td>
+                </tr>
+                <tr>
+                    <td class="key">Unix Epoch (ns)</td>
+                    <td class="value">@unixNanoseconds</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public DateTime? DateTime { get; set; }
+
+}

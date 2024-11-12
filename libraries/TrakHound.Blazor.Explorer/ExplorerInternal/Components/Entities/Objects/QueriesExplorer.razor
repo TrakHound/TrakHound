@@ -1,0 +1,79 @@
+﻿@inject ExplorerService explorerService
+
+@if (InstancesService != null)
+{
+    <QueryExplorer Queries="@InstancesService.SavedQueries" SelectedQueryId="@InstancesService.QueryId" QuerySelected="OnQuerySelect" QueryDeleted="QueryDeleted" />
+}
+
+@code {
+
+    IEnumerable<TrakHound.Blazor.Components.QueryExplorer.QueryInformation> queries;
+    private bool isLoaded;
+
+
+    [CascadingParameter(Name = "InstancesService")]
+    public ExplorerObjectsService InstancesService { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        if (!isLoaded)
+        {
+            isLoaded = true;
+            InstancesService.QueryUpdated += async (s, args) => await InvokeAsync(StateHasChanged);
+            InstancesService.QueriesUpdated += async (s, args) => await InvokeAsync(StateHasChanged);
+        }
+    }
+
+
+    // [Parameter]
+    // public string ServerId { get; set; }
+
+    // [Parameter]
+    // public string RouterId { get; set; }
+
+    // [Parameter]
+    // public EventCallback<string> QuerySelected { get; set; }
+
+    // [Parameter]
+    // public EventCallback<string> QueryDeleted { get; set; }
+
+
+    // protected async override Task OnInitializedAsync()
+    // {
+    //     InstancesService.QueriesUpdated += async (s, args) => await Load(true);
+    //     await Load();
+    // }
+
+    // protected async override Task OnParametersSetAsync()
+    // {
+    //     await Load();
+    // }
+
+    // private async Task Load(bool forceLoad = false)
+    // {
+    //     if (!isLoaded || forceLoad)
+    //     {
+    //         isLoaded = true;  
+
+    //         var client = explorerService.GetClient(ServerId, RouterId);
+    //         if (client != null)
+    //         {
+    //             queries = await client.Api.QueryJson<IEnumerable<TrakHound.Blazor.Components.QueryExplorer.QueryInformation>>("queries");
+    //         }
+
+    //         await InvokeAsync(StateHasChanged);
+    //     }
+    // }
+
+    private async void OnQuerySelect(TrakHound.Blazor.Components.QueryExplorer.QueryInformation queryInformation)
+    {
+        await InstancesService.LoadByQuery(queryInformation, true);
+    }
+
+    private async void QueryDeleted(string queryId)
+    {
+        
+    }
+
+}

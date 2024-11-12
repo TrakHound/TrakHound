@@ -1,0 +1,33 @@
+﻿.tab-buttons {
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-flow: column;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.tab-button {
+    display: block;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 30px;
+    margin: 0;
+    text-transform: none;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    border-bottom: 3px solid transparent;
+    border-right: 1px solid #eee;
+}
+
+    .tab-button:hover {
+        background: rgba(0, 0, 0, 0.02);
+        color: var(--accent);
+    }
+
+    .tab-button.active {
+        background: rgba(0, 0, 0, 0.02);
+        color: var(--accent);
+        border-bottom: 3px solid var(--accent);
+    }

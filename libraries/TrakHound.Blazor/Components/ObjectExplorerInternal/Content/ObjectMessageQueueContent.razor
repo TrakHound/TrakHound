@@ -1,0 +1,356 @@
+﻿@using TrakHound.Entities
+@using TrakHound.MessageQueues
+
+@if (ObjectExplorerService != null && Object != null)
+{
+    var objectLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction($"select >> from [{Object.GetAbsolutePath()}]") : null;
+
+    var resultQuery = $"select > from [{Object.GetAbsolutePath()}]";
+    var queryLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(resultQuery) : null;
+
+    <div class="message-content">
+        <div class="input-panel">
+            <div class="input-panel-container">
+
+                <div class="input-panel-buttons mapping-buttons">
+
+                    @if (!publishMappingLoading)
+                    {
+                        <button class="btn btn-sm btn-light btn-save btn-map-save" @onclick="SaveMapping"><span class="icon fa-solid fa-sharp fa-link"></span>Map</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-light btn-save btn-map-save disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Mapping..</button>
+                    }
+
+                    @if (!loading)
+                    {
+                        <button class="btn btn-sm btn-light btn-refresh" @onclick="() => Load(true)"><span class="icon fa-solid fa-sharp fa-rotate"></span></button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-light btn-refresh disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span></button>
+                    }
+
+                </div>
+
+                <div class="input-panel-buttons subscribe-buttons">
+
+                    @if (!pullLoading)
+                    {
+                        <button class="btn btn-primary btn-pull" @onclick="Pull"><span class="icon fa-solid fa-arrow-down-to-bracket"></span>Pull</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-light btn-pull disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Pulling..</button>
+                    }
+
+                </div>
+
+                <div class="input-panel-top">
+                    <div class="input-panel-input content-topic-input">
+                        <TextBox @bind-Value="@queueId" PlaceHolder="Queue ID" Enabled="@(!publishMappingLoading)" />
+                    </div>
+                </div>
+
+                <div class="input-panel-bottom">
+                    <div class="input-panel-input content-type-input">
+                        <TextBox @bind-Value="@contentType" PlaceHolder="Content Type.." Enabled="@(!publishMappingLoading)" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="content-panel">
+            <div class="content-panel-container">
+
+                @if (!loading)
+                {
+                    var messageStatusClass = messageStatus.ToString().ToLower();
+
+                    @if (messageResponse.IsValid)
+                    {
+                        var messageAgo = TimeSpan.FromTicks((UnixDateTime.Now - messageResponse.Timestamp) / 100).ToDetailedFormattedString();
+
+                        <div class="message-response-panel">
+                            <div class="message-response-information @messageStatusClass">
+                                <div class="message-response-label">@messageStatus.ToString()</div>
+                                <div class="message-response-delivery-id">@messageResponse.DeliveryId</div>
+                                <div class="message-response-ago"><span class="ago-value">@messageAgo</span><span class="ago-label">ago</span></div>
+                                <div class="message-response-timestamp">@messageResponse.Timestamp.ToLocalDateTime().ToISO8601String()</div>
+                            </div>
+                            <div class="message-response-toolbar">
+
+                                @if (messageStatus == MessageStatus.Received)
+                                {
+                                    if (!acknowledgeLoading)
+                                    {
+                                        <button class="btn btn-primary btn-acknowledge" @onclick="Acknowledge"><span class="icon fa-solid fa-check"></span>Acknowledge</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-light btn-acknowledge disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
+                                    }
+                                }
+                                else
+                                {
+                                    <button class="btn btn-sm btn-light btn-acknowledge disabled"><span class="icon fa-solid fa-check"></span>Acknowledge</button>
+                                }
+
+                                @if (messageStatus == MessageStatus.Received)
+                                {
+                                    if (!rejectLoading)
+                                    {
+                                        <button class="btn btn-primary btn-reject" @onclick="Reject"><span class="icon fa-solid fa-xmark"></span>Reject</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-light btn-reject disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
+                                    }
+                                }
+                                else
+                                {
+                                    <button class="btn btn-sm btn-light btn-reject disabled"><span class="icon fa-solid fa-xmark"></span>Reject</button>
+                                }
+
+                            </div>
+                            <div class="message-response-content">
+                                <div class="payload-panel">
+                                    <ContentPreview ContentType="@entity.ContentType" Content="@messageContent" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    
+                    <div class="message-publish-panel">
+                        <div class="message-publish-content">
+                            <TextArea @bind-Value="@publishContent" />
+                        </div>
+                        <div class="message-publish-toolbar">
+
+                            @if (!publishMessageLoading)
+                            {
+                                <button class="btn btn-sm btn-primary btn-save btn-message-save" @onclick="SaveMessage"><span class="icon fa-solid fa-sharp fa-paper-plane"></span>Publish</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-sm btn-primary btn-save btn-message-save disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Publishing..</button>
+                            }
+
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <Loading Message="Loading.." />
+                }
+
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    private ITrakHoundObjectMessageQueueEntity entity;
+    private TrakHoundMessageQueueResponse messageResponse;
+    private MessageStatus messageStatus;
+    private byte[] messageContent;
+    private string publishContent;
+    private string queueId;
+    private string contentType = "text/plain";
+    private bool loading;
+    private bool publishMappingLoading;
+    private bool pullLoading;
+    private bool acknowledgeLoading;
+    private bool rejectLoading;
+    private bool publishMessageLoading;
+    private string previousObjectUuid;
+
+
+    enum MessageStatus
+    {
+        Rejected = -1,
+        Received = 0,
+        Acknowledged = 1
+    }
+
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public ITrakHoundObjectEntity Object { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || (ObjectExplorerService != null && Object != null && Object.Uuid != previousObjectUuid))
+        {
+            previousObjectUuid = Object.Uuid;
+            loading = true;
+            await InvokeAsync(StateHasChanged);
+
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                // Get Mapping Entity
+                entity = await client.System.Entities.Objects.MessageQueue.QueryByObjectUuid(Object.Uuid);
+                if (entity != null)
+                {
+                    queueId = entity.QueueId;
+                    contentType = entity.ContentType;
+                }
+            }
+
+            loading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void SaveMapping()
+    {
+        publishMappingLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(queueId))
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                if (await client.Entities.PublishMessageQueueMapping(Object.GetAbsolutePath(), queueId, contentType))
+                {
+                    ObjectExplorerService.LoadContent(Object);
+                    ObjectExplorerService.UpdateValue(Object.Uuid);
+
+                    await Load(true);
+
+                    ObjectExplorerService.AddNotification(NotificationType.Information, "MessageQueue Mapping Published Successfully", Object.GetAbsolutePath());
+                }
+                else
+                {
+                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing MessageQueue Mapping");
+                }
+            }
+        }
+
+        publishMappingLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Pull()
+    {
+        pullLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (ObjectExplorerService != null && Object != null && entity != null)
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                messageResponse = await client.System.MessageQueues.Pull(entity.QueueId, false);
+                messageContent = messageResponse.GetContentBytes();
+                messageStatus = MessageStatus.Received;
+            }
+        }
+
+        pullLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Acknowledge()
+    {
+        acknowledgeLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(messageResponse.DeliveryId))
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                if (await client.System.MessageQueues.Acknowledge(entity.QueueId, messageResponse.DeliveryId))
+                {
+                    messageStatus = MessageStatus.Acknowledged;
+                }
+                else
+                {
+                    
+                }
+            }
+        }
+
+        acknowledgeLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Reject()
+    {
+        rejectLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(messageResponse.DeliveryId))
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                if (await client.System.MessageQueues.Reject(entity.QueueId, messageResponse.DeliveryId))
+                {
+                    messageStatus = MessageStatus.Rejected;
+                }
+                else
+                {
+
+                }
+            }
+        }
+
+        rejectLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void SaveMessage()
+    {
+        publishMessageLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(publishContent))
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                if (await client.Entities.PublishMessageQueueContent(Object.GetAbsolutePath(), publishContent))
+                {
+                    ObjectExplorerService.LoadContent(Object);
+                    ObjectExplorerService.UpdateValue(Object.Uuid);
+
+                    ObjectExplorerService.AddNotification(NotificationType.Information, "MessageQueue Published Successfully", Object.GetAbsolutePath());
+                }
+                else
+                {
+                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Message");
+                }
+            }
+        }
+
+        publishMessageLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void CopyClicked(string value)
+    {
+        ObjectExplorerService.AddNotification(NotificationType.Information, "Copied to Clipboard", duration: 5000);
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

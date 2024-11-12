@@ -1,0 +1,130 @@
+﻿@inherits LayoutComponentBase
+@inject ExplorerService explorerService
+@using TrakHound.Management;
+
+<div class="explorer-page">
+
+    <div class="breadcrumb-panel">
+        <BreadcrumbLinks>
+            <BreadcrumbLink Display="Explorer" Link="explorer" />
+
+            @if (!explorerService.BreadcrumbItems.IsNullOrEmpty())
+            {
+                foreach (var breadcrumbItem in explorerService.BreadcrumbItems)
+                {
+                    <BreadcrumbLink Display="@breadcrumbItem.Display" Link="@breadcrumbItem.Link" />
+                }
+            }
+
+        </BreadcrumbLinks>
+    </div>
+
+    <div class="content-panel">
+        <div class="content-panel-sidebar">
+            <button class="btn btn-sm btn-command @GetTabActiveClass(SidebarTabs.Navigation)" @onclick="NavigationTabSelected"><span class="icon fa-regular fa-sharp fa-list-tree"></span></button>
+        </div>
+        <div class="content-panel-container">
+            <RadzenSplitter Resize="SplitterResized">
+                <RadzenSplitterPane @ref="sidebarSplitterPane" Size="@($"{sidebarTabSize}px")" Collapsed="@(sidebarTabSelected == SidebarTabs.None)" Collapsible="false" >
+
+                    <div class="explorer-sidebar @GetTabDisplayClass(SidebarTabs.Navigation)">
+                        <div class="explorer-sidebar-content">
+                            <div class="explorer-sidebar-header">
+                                <div class="explorer-sidebar-header-container">
+                                    <div class="explorer-sidebar-header-icon">
+                                        <span class="icon fa-regular fa-sharp fa-list-tree"></span>
+                                    </div>
+                                    <div class="explorer-sidebar-header-text">
+                                        <span class="title">Explorer</span>
+                                        <span class="subtitle">Explore Api, Views, and Entities</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="explorer-sidebar-toolbar">
+
+                                @if (!loading)
+                                {
+                                    <button class="btn btn-toolbar" @onclick="Refresh"><span class="icon fa-solid fa-sharp fa-rotate"></span></button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-toolbar"><span class="icon fa-solid fa-sharp fa-loader spin"></span></button>
+                                }
+
+                            </div>
+                            <div class="explorer-sidebar-tree">
+                                <ExplorerTreeView />
+                            </div>
+                        </div>
+                    </div>
+                    
+                </RadzenSplitterPane>
+                <RadzenSplitterPane Min="25%" Collapsible="false">
+                    <div class="explorer-content">
+                        @Body
+                    </div>
+                </RadzenSplitterPane>
+            </RadzenSplitter>
+        </div>
+    </div>
+
+</div>
+
+@code {
+
+    RadzenSplitterPane sidebarSplitterPane;
+    private bool loading;
+    private SidebarTabs sidebarTabSelected = SidebarTabs.Navigation;
+    private double sidebarTabSize = 350;
+
+    enum SidebarTabs
+    {
+        None = 0,
+        Navigation = 1
+    }
+
+
+    private async void PageUpdated(object sender, EventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Refresh()
+    {
+        loading = true;
+        await InvokeAsync(StateHasChanged);
+
+        // await explorerService.LoadInstance();
+
+        loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void NavigationTabSelected()
+    {
+        if (sidebarTabSelected != SidebarTabs.Navigation) sidebarTabSelected = SidebarTabs.Navigation;
+        else sidebarTabSelected = SidebarTabs.None;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string GetTabActiveClass(SidebarTabs sidebarTabs)
+    {
+        if (sidebarTabSelected == sidebarTabs) return "active";
+        return null;
+    }
+
+    private string GetTabDisplayClass(SidebarTabs sidebarTabs)
+    {
+        if (sidebarTabSelected != sidebarTabs) return "d-none";
+        return null;
+    }
+
+    private void SplitterResized(RadzenSplitterResizeEventArgs args)
+    {
+        if (args.PaneIndex == 0)
+        {
+            sidebarTabSize = args.NewSize;
+        }
+    }
+
+}

@@ -1,0 +1,150 @@
+﻿@inject ExplorerService explorerService
+@using TrakHound.Api
+
+<div class="api-page">
+
+    <div class="header-panel">
+        <div class="header-content">
+            <div class="header-icon">
+                <span class="icon fa-solid fa-sharp fa-circle-location-arrow"></span>
+            </div>
+            <div class="header-text">
+                <span class="header-name">Api</span>
+                <span class="header-description">View and Manage information through custom interfaces</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbar-panel">
+
+        @if (!loading)
+        {
+            <button class="btn btn-light" @onclick="RefreshClicked"><span class="icon fa-solid fa-sharp fa-rotate"></span>Refresh</button>
+        }
+        else
+        {
+            <button class="btn btn-light btn-run btn-loading"><span class="icon loading-icon fa-regular fa-loader spin"></span>Loading..</button>            
+        }
+
+    </div>
+
+    @if (!loading)
+    {
+        <div class="status-panel">
+
+            @{
+                var apiinformations = GetApis();
+                if (!apiinformations.IsNullOrEmpty())
+                {
+                    <RadzenDataGrid Data="@apiinformations" TItem="TrakHoundApiInformation" Density="Density.Compact" AllowSorting="true" AllowColumnResize="true">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="TrakHoundApiInformation" CssClass="buttons view-cell" Width="80px" Sortable="false">
+                                <Template Context="context">
+                                    <a href="@GetViewLink(context)" class="btn btn-sm btn-link"><span class="icon fa-regular fa-sharp fa-circle-info"></span>View</a>
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="TrakHoundApiInformation" Property="Route" Title="Route" CssClass="route" />
+                            <RadzenDataGridColumn TItem="TrakHoundApiInformation" Property="PackageId" Title="Package ID" CssClass="package-id" Width="300px" />
+                            <RadzenDataGridColumn TItem="TrakHoundApiInformation" Property="PackageVersion" Title="Package Version" CssClass="package-version" Width="150px" />
+                        </Columns>
+                    </RadzenDataGrid>
+                }
+            }
+
+        </div>
+    }
+    else
+    {
+        <Loading Message="@loadingMessage" />
+    }
+
+</div>
+
+@code {
+
+    private readonly Dictionary<string, TrakHoundApiInformation> _apis = new Dictionary<string, TrakHoundApiInformation>();
+    private readonly object _lock = new object();
+
+    private string previousInstanceId;
+
+    private bool loading;
+    private string loadingMessage;
+
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || explorerService.SelectedInstanceId != previousInstanceId)
+        {
+            loading = true;
+            loadingMessage = "Loading Apis..";
+            await InvokeAsync(StateHasChanged);
+
+            previousInstanceId = explorerService.SelectedInstanceId;
+
+            await explorerService.LoadInstance(Explorer.Instances, explorerService.SelectedInstanceId, forceReload);
+
+            // Set Explorer Breadcrumbs
+            var breadcrumbItems = new List<BreadcrumbItem>();
+            breadcrumbItems.Add(new BreadcrumbItem(explorerService.SelectedInstanceId, null));
+            breadcrumbItems.Add(new BreadcrumbItem("Api", null));
+            explorerService.BreadcrumbItems = breadcrumbItems;
+
+            var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+            if (client != null)
+            {
+                // Get full list of Apis
+                var apis = await client.System.Api.GetRouteInformation();
+                if (!apis.IsNullOrEmpty())
+                {
+                    lock (_lock)
+                    {
+                        foreach (var api in apis)
+                        {
+                            if (api.Id != null)
+                            {
+                                _apis.Remove(api.Id);
+                                _apis.Add(api.Id, api);
+                            }
+                        }
+                    }
+                }
+            }
+
+            loading = false;
+            loadingMessage = null;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private IEnumerable<TrakHoundApiInformation> GetApis()
+    {
+        IEnumerable<TrakHoundApiInformation> apis;
+        lock (_lock) apis = _apis.Values.ToList();
+        return apis.OrderBy(o => o.Route);
+    }
+
+    private async void RefreshClicked()
+    {
+        await Load(true);
+    }
+
+    private string GetViewLink(TrakHoundApiInformation api)
+    {
+        if (api != null)
+        {
+            return Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "api", "route", api.Id);
+        }
+
+        return null;
+    }
+
+}

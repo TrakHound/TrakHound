@@ -1,0 +1,44 @@
+﻿@inherits TrakHoundComponentBase
+
+<div class="apps-page">
+
+    @if (!apps.IsNullOrEmpty())
+    {
+        foreach (var app in apps)
+        {
+            var name = !string.IsNullOrEmpty(app.Name) ? app.Name : app.PackageId;
+            var link = GetPath(app.Route);
+
+            <a href="@link" target="_blank" class="app-panel">
+                <div class="app-container">
+                    <div class="app-icon">
+                        <img src="@app.PackageIcon" />
+                    </div>
+                    <div class="app-title">
+                        <span>@name</span>
+                    </div>
+                </div>
+            </a>
+        }
+    }
+
+</div>
+
+@code {
+
+    private IEnumerable<TrakHound.Apps.TrakHoundAppInformation> apps;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        apps = await Client.Apps.GetInformation();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

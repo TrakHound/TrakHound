@@ -1,0 +1,396 @@
+﻿.configuration-page {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+.breadcrumb-panel {
+    grid-row: 1;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    padding: 10px 20px 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #f8f8f8;
+}
+
+.sidebar-panel {
+    grid-column: 1;
+    height: 100%;
+    width: 150px;
+    overflow: auto;
+    padding: 10px 20px 40px 20px;
+    border-right: 1px solid #ddd;
+    background: #fafafa;
+}
+
+
+.content-panel {
+    grid-column: 2;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .content-panel ::deep .rz-data-grid {
+        height: 100%;
+        overflow: auto;
+    }
+
+        .content-panel ::deep .rz-data-grid td .rz-cell-data {
+            font-size: 13px;
+            padding: 5px 0;
+        }
+
+        .content-panel ::deep .rz-data-grid td.id .rz-cell-data {
+            font-size: 12px;
+            color: #888;
+        }
+
+
+
+.configuration-page ::deep .configuration-table-panel {
+    display: grid;
+    grid-template-rows: max-content max-content max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .configuration-page ::deep .configuration-table-panel .breadcrumb-panel {
+        grid-row: 1;
+        border-bottom: 1px solid #ddd;
+        padding: 5px 20px;
+    }
+
+    .configuration-page ::deep .configuration-table-panel .header-panel {
+        grid-row: 2;
+        border-bottom: 1px solid #ddd;
+        padding: 10px 20px;
+    }
+
+    .configuration-page ::deep .configuration-table-panel .header-panel-container {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        grid-column-gap: 25px;
+    }
+
+    .configuration-page ::deep .configuration-table-panel .header-panel-icon-container {
+        grid-column: 1;
+        padding: 3px 0;
+    }
+
+    .configuration-page ::deep .configuration-table-panel .header-panel-icon {
+        font-size: 24px;
+        color: var(--accent);
+    }
+
+    .configuration-page ::deep .configuration-table-panel .header-panel-information-container {
+        grid-column: 2;
+    }
+
+    .configuration-page ::deep .configuration-table-panel .header-panel-title {
+        display: block;
+        font-size: 14px;
+        line-height: 18px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .configuration-page ::deep .configuration-table-panel .header-panel-description {
+        display: block;
+        font-size: 12px;
+        line-height: 14px;
+        color: #888;
+    }
+
+    .configuration-page ::deep .configuration-table-panel .toolbar-panel {
+        grid-row: 3;
+        letter-spacing: 0;
+    }
+
+        .configuration-page ::deep .configuration-table-panel .toolbar-panel .btn {
+            display: inline-block;
+            font-size: 14px;
+            transition: none;
+            border: none;
+            border-radius: 0;
+            padding: 8px 20px;
+            margin: 0;
+            margin-left: -4px !important;
+        }
+
+            .configuration-page ::deep .configuration-table-panel .toolbar-panel .btn:focus {
+                box-shadow: none;
+            }
+
+            .configuration-page ::deep .configuration-table-panel .toolbar-panel .btn:first-child {
+                margin-left: 0px !important;
+            }
+
+        .configuration-page ::deep .configuration-table-panel .toolbar-panel .btn-refresh {
+        }
+
+            .configuration-page ::deep .configuration-table-panel .toolbar-panel .btn-refresh:hover {
+                background: var(--accentLight);
+            }
+
+            .configuration-page ::deep .configuration-table-panel .toolbar-panel .btn-refresh .icon {
+                margin: 0;
+                color: var(--accent);
+            }
+
+            .configuration-page ::deep .configuration-table-panel .toolbar-panel .btn-refresh:hover .icon {
+                color: #fff
+            }
+
+        .configuration-page ::deep .configuration-table-panel .toolbar-panel .btn-add {
+            background: var(--accent);
+            color: #fff;
+        }
+
+            .configuration-page ::deep .configuration-table-panel .toolbar-panel .btn-add:hover {
+                background: var(--accentLight);
+            }
+
+            .configuration-page ::deep .configuration-table-panel .toolbar-panel .btn-add .icon {
+                font-size: 16px;
+                color: #fff;
+            }
+
+    .configuration-page ::deep .configuration-table-panel .content-panel {
+        grid-row: 4;
+        height: 100%;
+        overflow: hidden;
+    }
+
+.configuration-page ::deep .table-panel {
+    height: 100%;
+    overflow: hidden;
+}
+
+.configuration-page ::deep .rz-data-grid {
+    border-left: none;
+}
+
+.configuration-page ::deep .rz-data-grid td {
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 2px 10px;
+}
+
+.configuration-page ::deep .rz-data-grid td:first-child {
+    border-left: none;
+}
+
+    .configuration-page ::deep .rz-data-grid td:last-child {
+        border-right: none;
+    }
+
+    .configuration-page ::deep .rz-data-grid td .rz-cell-data {
+        font-size: 12px;
+        padding: 0;
+    }
+
+    .configuration-page ::deep .rz-data-grid .buttons {
+        padding: 0;
+    }
+
+    .configuration-page ::deep .rz-data-grid .buttons .btn {
+        border: none;
+        border-radius: 0;
+        width: 100%;
+        height: 28px;
+    }
+
+
+.configuration-page ::deep .add-modal {
+    width: auto;
+}
+
+.configuration-page ::deep .add-modal-0 {
+    max-width: 1200px;
+}
+
+.configuration-page ::deep .add-modal-1 {
+    max-width: 850px;
+}
+
+.configuration-page ::deep .add-modal .modal-content {
+    height: auto;
+    overflow: hidden;
+}
+
+.configuration-page ::deep .add-modal-0 .modal-content {
+    max-height: 700px;
+    height: 100%;
+}
+
+.configuration-page ::deep .add-modal .modal-body {
+    padding: 10px 0 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.configuration-page ::deep .rz-steps {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .configuration-page ::deep .rz-steps ul {
+        padding: 0 20px 10px;
+        margin: 0;
+        grid-row: 1;
+        border-bottom: 1px solid #eee;
+    }
+
+    .configuration-page ::deep .rz-steps .rz-steps-number {
+        color: #555;
+        background-color: #f8f8f8;
+        border: 1px solid #ccc;
+        width: 30px;
+        height: 30px;
+        line-height: 22px;
+        font-size: 14px;
+        padding: 4px 0 0 1px;
+    }
+
+    .configuration-page ::deep .rz-steps .rz-steps-title {
+        color: #333;
+        font-size: 13px;
+        line-height: 40px;
+    }
+
+    .configuration-page ::deep .rz-steps .rz-state-highlight .rz-steps-number {
+        color: white;
+        background-color: var(--accent);
+    }
+
+    .configuration-page ::deep .rz-steps .rz-state-highlight .rz-steps-title {
+        font-weight: bold;
+    }
+
+    .configuration-page ::deep .rz-steps .rz-widget-content {
+        grid-row: 2;
+        padding: 0 20px;
+        height: 100%;
+        overflow: auto;
+    }
+
+.configuration-page ::deep .rz-steps-buttons a {
+    font-size: 14px;
+}
+
+    .configuration-page ::deep .rz-steps-buttons a i {
+        font-size: 22px;
+    }
+
+
+.configuration-page ::deep .form-field {
+    display: block;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+    .configuration-page ::deep .form-field:last-child {
+        margin-bottom: 0px;
+    }
+
+    .configuration-page ::deep .form-field > label {
+        display: block;
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+.configuration-page ::deep .spin-edit {
+    display: block;
+    width: 200px;
+}
+
+.configuration-page ::deep .form-field .rz-textbox {
+    display: block;
+    width: 100%;
+    font-size: 12px;
+    padding: 8px 15px;
+    height: auto;
+}
+
+.configuration-page ::deep .form-field .rz-textarea {
+    display: block;
+    width: 100%;
+    font-size: 14px;
+    height: 100px;
+    background: #fbfbfb !important;
+}
+
+.configuration-page ::deep .deploy-modal {
+    width: 650px;
+}
+
+    .configuration-page ::deep .deploy-modal .modal-footer .btn-loading .icon {
+        animation: spin 1s linear infinite;
+    }
+
+.configuration-page ::deep .deploy-confirm-panel {
+    padding: 20px 40px 0;
+    height: 350px;
+}
+
+    .configuration-page ::deep .deploy-confirm-panel .loading-panel {
+        display: grid;
+        grid-template-rows: 1fr max-content 1fr;
+        grid-template-columns: 1fr max-content 1fr;
+        height: 100%;
+        overflow: hidden;
+        animation: fadeIn 1s normal;
+    }
+
+.configuration-page ::deep .deploy-confirm-top-panel {
+    display: grid;
+    grid-template-columns: 1fr max-content max-content max-content;
+    grid-column-gap: 15px;
+}
+
+.configuration-page ::deep .deploy-confirm-panel label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.configuration-page ::deep .deploy-confirm-panel .btn .icon {
+    margin: 0;
+}
+
+.configuration-page ::deep .deploy-confirm-panel .deploy-confirm-panel-version {
+}
+
+.configuration-page ::deep .deploy-confirm-panel .deploy-confirm-panel-major {
+}
+
+.configuration-page ::deep .deploy-confirm-panel .deploy-confirm-panel-minor {
+}
+
+.configuration-page ::deep .deploy-confirm-panel .deploy-confirm-panel-build {
+}
+
+
+.loading-panel {
+    grid-row-start: 1;
+    grid-row-end: 5;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    display: grid;
+    grid-template-rows: 1fr max-content 1fr;
+    grid-template-columns: 1fr max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+    animation: fadeIn 1s normal;
+}
+
+    .loading-panel ::deep .loading-indicator {
+        grid-row: 2;
+        grid-column: 2;
+    }

@@ -1,0 +1,9 @@
+﻿{
+  "id": "TrakHound.Token.Identity",
+  "category": "identity",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Provide Authentication through a static Token",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png"
+  }
+}

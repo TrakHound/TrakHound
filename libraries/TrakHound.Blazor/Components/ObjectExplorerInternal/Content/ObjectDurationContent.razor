@@ -1,0 +1,405 @@
+﻿@using TrakHound.Entities;
+
+@if (ObjectExplorerService != null && Object != null)
+{
+    var objectLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction($"select >> from [{Object.GetAbsolutePath()}]") : null;
+
+    var resultQuery = $"select > from [{Object.GetAbsolutePath()}]";
+    var queryLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(resultQuery) : null;
+
+    var ts = savedValue.HasValue ? TimeSpan.FromTicks((long)savedValue.Value / 100) : TimeSpan.Zero;
+
+    var total = ts.ToFormattedString(true);
+    var years = (ts.TotalDays / 365).ToString("N3");
+    var months = (ts.TotalDays / 30).ToString("N3");
+    var weeks = (ts.TotalDays / 7).ToString("N3");
+    var days = (ts.TotalDays).ToString("N3");
+    var hours = (ts.TotalHours).ToString("N3");
+    var minutes = (ts.TotalMinutes).ToString("N3");
+    var seconds = (ts.TotalSeconds).ToString("N3");
+    var milliseconds = (ts.TotalMilliseconds).ToString("N3");
+    var microseconds = ((double)ts.Ticks / 10).ToString("N1");
+    var nanoseconds = (ts.Ticks * 100).ToString();
+
+
+    <div class="duration-content">
+        <div class="input-panel">
+            <div class="input-panel-container">
+                <div class="input-panel-buttons">
+
+                    @if (!publishLoading)
+                    {
+                        <button class="btn btn-sm btn-primary btn-save" @onclick="Save"><span class="icon fa-solid fa-sharp fa-paper-plane"></span>Publish</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-primary btn-save disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Publishing..</button>
+                    }
+
+                    @if (!loading)
+                    {
+                        <button class="btn btn-sm btn-light btn-refresh" @onclick="() => Load(true)"><span class="icon fa-solid fa-sharp fa-rotate"></span></button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-light btn-refresh disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span></button>
+                    }
+
+                </div>
+                <div class="input-panel-input">
+                    <RadzenNumeric @bind-Value="@value" Min="0" Disabled="@publishLoading" />
+                </div>
+                <div class="input-panel-type">
+                    <RadzenDropDown TValue="InputType" Data="Enum.GetValues<InputType>()" Value="@selectedInputType" ValueChanged="InputTypeChanged" Disabled="@publishLoading" />
+                </div>
+            </div>
+        </div>
+        <div class="query-panel">
+            <div class="query-panel-container">
+                <span class="query-label">Query</span>
+                <a href="@queryLink" class="btn btn-link btn-query">@resultQuery</a>
+            </div>
+        </div>
+        <div class="content-panel">
+            <div class="content-panel-container">
+
+                @if (!loading)
+                {
+                    <div class="value-panel">
+                        <table class="value-table table table-sm">
+                            <tbody>
+                                <tr>
+                                    <td class="key">Total</td>
+                                    <td class="value">@total</td>
+                                </tr>
+                                <tr>
+                                    <td class="key">Years<span class="sub-key">(365 days)</span></td>
+                                    <td class="value">@years</td>
+                                </tr>
+                                <tr>
+                                    <td class="key">Months<span class="sub-key">(30 days)</span></td>
+                                    <td class="value">@months</td>
+                                </tr>
+                                <tr>
+                                    <td class="key">Weeks</td>
+                                    <td class="value">@weeks</td>
+                                </tr>
+                                <tr>
+                                    <td class="key">Days</td>
+                                    <td class="value">@days</td>
+                                </tr>
+                                <tr>
+                                    <td class="key">Hours</td>
+                                    <td class="value">@hours</td>
+                                </tr>
+                                <tr>
+                                    <td class="key">Minutes</td>
+                                    <td class="value">@minutes</td>
+                                </tr>
+                                <tr>
+                                    <td class="key">Seconds</td>
+                                    <td class="value">@seconds</td>
+                                </tr>
+                                <tr>
+                                    <td class="key">Milliseconds</td>
+                                    <td class="value">@milliseconds</td>
+                                </tr>
+                                <tr>
+                                    <td class="key">Microseconds</td>
+                                    <td class="value">@microseconds</td>
+                                </tr>
+                                <tr>
+                                    <td class="key">Nanoseconds</td>
+                                    <td class="value">@nanoseconds</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @if (entity != null)
+                    {
+                        var sourceLink = $"explorer/{ObjectExplorerService.InstanceId}/{ObjectExplorerService.RouterId}/entities/sources?uuid={entity.SourceUuid}";
+
+                        <div class="information-panel">
+                            <table class="information-table table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <td class="key">Uuid</td>
+                                        <td class="value">@entity.Uuid</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="key">Object</td>
+                                        <td class="value"><CopyLabel Value="@Object.GetAbsolutePath()" Link="@objectLink" CopyClicked="CopyClicked" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="key">SourceUuid</td>
+                                        <td class="value"><CopyLabel Value="@entity.SourceUuid" Link="@sourceLink" CopyClicked="CopyClicked" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="key">Created (Local)</td>
+                                        <td class="value">@entity.Created.ToLocalDateTime()</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="key">Created (Unix ns)</td>
+                                        <td class="value">@entity.Created</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <Loading Message="Loading.." />
+                }
+
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    enum InputType
+    {
+        Seconds,
+        Minutes,
+        Hours,
+        Days,
+        Milliseconds,
+        Microseconds,
+        Nanoseconds
+    }
+
+    private ITrakHoundObjectDurationEntity entity;
+    private InputType selectedInputType = InputType.Seconds;
+    private double value;
+    private ulong? savedValue;
+    private bool loading;
+    private bool publishLoading;
+    private string previousObjectUuid;
+
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public ITrakHoundObjectEntity Object { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || (ObjectExplorerService != null && Object != null && Object.Uuid != previousObjectUuid))
+        {
+            value = 0;
+            savedValue = null;
+
+            previousObjectUuid = Object.Uuid;
+            loading = true;
+            await InvokeAsync(StateHasChanged);
+
+            entity = ObjectExplorerService.GetContent<ITrakHoundObjectDurationEntity>(Object.Uuid);
+            var nanoseconds = ObjectExplorerService.GetValue(Object.Uuid).ToULong();
+            value = ConvertValueFromNanoseconds((long)nanoseconds);
+            savedValue = nanoseconds;
+        }
+
+        loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Save()
+    {
+        publishLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (ObjectExplorerService != null && Object != null)
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                var nanoseconds = ConvertValueToNanoseconds(value);
+                var duration = TimeSpan.FromTicks((long)nanoseconds / 100);
+
+                if (await client.Entities.PublishDuration(Object.GetAbsolutePath(), duration, false))
+                {
+                    ObjectExplorerService.LoadContent(Object);
+                    ObjectExplorerService.UpdateValue(Object.Uuid);
+                    savedValue = nanoseconds;
+
+                    ObjectExplorerService.AddNotification(NotificationType.Information, "Duration Published Successfully", Object.GetAbsolutePath());
+                }
+                else
+                {
+                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Duration");
+                }
+            }
+        }
+
+        publishLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void CopyClicked(string value)
+    {
+        ObjectExplorerService.AddNotification(NotificationType.Information, "Copied to Clipboard", duration: 5000);
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void InputTypeChanged(InputType inputType)
+    {
+        var convertedValue = value;
+
+        switch (selectedInputType)
+        {
+            case InputType.Seconds:
+
+                switch (inputType)
+                {
+                    case InputType.Seconds: convertedValue = value; break;
+                    case InputType.Minutes: convertedValue = value / 60; break;
+                    case InputType.Hours: convertedValue = value / 3600; break;
+                    case InputType.Days: convertedValue = value / 86400; break;
+                    case InputType.Milliseconds: convertedValue = value * 1000; break;
+                    case InputType.Microseconds: convertedValue = value * 1000000; break;
+                    case InputType.Nanoseconds: convertedValue = value * 1000000000; break;
+                }
+                break;
+
+            case InputType.Minutes:
+
+                switch (inputType)
+                {
+                    case InputType.Seconds: convertedValue = value * 60; break;
+                    case InputType.Minutes: convertedValue = value; break;
+                    case InputType.Hours: convertedValue = value / 60; break;
+                    case InputType.Days: convertedValue = value / 60 / 24; break;
+                    case InputType.Milliseconds: convertedValue = value * 60 * 1000; break;
+                    case InputType.Microseconds: convertedValue = value * 60 * 1000000; break;
+                    case InputType.Nanoseconds: convertedValue = value * 60 * 1000000000; break;
+                }
+                break;
+
+            case InputType.Hours:
+
+                switch (inputType)
+                {
+                    case InputType.Seconds: convertedValue = value * 3600; break;
+                    case InputType.Minutes: convertedValue = value * 60; break;
+                    case InputType.Hours: convertedValue = value; break;
+                    case InputType.Days: convertedValue = value / 24; break;
+                    case InputType.Milliseconds: convertedValue = value * 3600 * 1000; break;
+                    case InputType.Microseconds: convertedValue = value * 3600 * 1000000; break;
+                    case InputType.Nanoseconds: convertedValue = value * 3600 * 1000000000; break;
+                }
+                break;
+
+            case InputType.Days:
+
+                switch (inputType)
+                {
+                    case InputType.Seconds: convertedValue = value * 86400; break;
+                    case InputType.Minutes: convertedValue = value * 1440; break;
+                    case InputType.Hours: convertedValue = value * 24; break;
+                    case InputType.Days: convertedValue = value; break;
+                    case InputType.Milliseconds: convertedValue = value * 86400 * 1000; break;
+                    case InputType.Microseconds: convertedValue = value * 86400 * 1000000; break;
+                    case InputType.Nanoseconds: convertedValue = value * 86400 * 1000000000; break;
+                }
+                break;
+
+            case InputType.Milliseconds:
+
+                switch (inputType)
+                {
+                    case InputType.Seconds: convertedValue = value / 1000; break;
+                    case InputType.Minutes: convertedValue = value / 60000; break;
+                    case InputType.Hours: convertedValue = value / 3600000; break;
+                    case InputType.Days: convertedValue = value / 86400000; break;
+                    case InputType.Milliseconds: convertedValue = value; break;
+                    case InputType.Microseconds: convertedValue = value * 1000; break;
+                    case InputType.Nanoseconds: convertedValue = value * 1000000; break;
+                }
+                break;
+
+            case InputType.Microseconds:
+
+                switch (inputType)
+                {
+                    case InputType.Seconds: convertedValue = value / 1000000; break;
+                    case InputType.Minutes: convertedValue = value / 60000000; break;
+                    case InputType.Hours: convertedValue = value / 3600000000; break;
+                    case InputType.Days: convertedValue = value / 86400000000; break;
+                    case InputType.Milliseconds: convertedValue = value / 1000; break;
+                    case InputType.Microseconds: convertedValue = value; break;
+                    case InputType.Nanoseconds: convertedValue = value * 1000; break;
+                }
+                break;
+
+            case InputType.Nanoseconds:
+
+                switch (inputType)
+                {
+                    case InputType.Seconds: convertedValue = value / 1000000000; break;
+                    case InputType.Minutes: convertedValue = value / 60000000000; break;
+                    case InputType.Hours: convertedValue = value / 3600000000000; break;
+                    case InputType.Days: convertedValue = value / 86400000000000; break;
+                    case InputType.Milliseconds: convertedValue = value / 1000000; break;
+                    case InputType.Microseconds: convertedValue = value / 1000; break;
+                    case InputType.Nanoseconds: convertedValue = value; break;
+                }
+                break;
+        }
+
+        selectedInputType = inputType;
+        value = convertedValue;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private ulong ConvertValueToNanoseconds(double val)
+    {
+        switch (selectedInputType)
+        {
+            case InputType.Seconds: return TimeSpan.FromSeconds(val).TotalNanoseconds.ToULong();
+            case InputType.Minutes: return TimeSpan.FromMinutes(val).TotalNanoseconds.ToULong();
+            case InputType.Hours: return TimeSpan.FromHours(val).TotalNanoseconds.ToULong();
+            case InputType.Days: return TimeSpan.FromDays(val).TotalNanoseconds.ToULong();
+            case InputType.Milliseconds: return TimeSpan.FromMilliseconds(val).TotalNanoseconds.ToULong();
+            case InputType.Microseconds: return TimeSpan.FromMilliseconds(val / 1000).TotalNanoseconds.ToULong();
+            case InputType.Nanoseconds: return val.ToULong();
+        }
+
+        return 0;
+    }
+
+    private double ConvertValueFromNanoseconds(long nanoseconds)
+    {
+        var ticks = nanoseconds / 100;
+
+        switch (selectedInputType)
+        {
+            case InputType.Seconds: return TimeSpan.FromTicks(ticks).TotalSeconds;
+            case InputType.Minutes: return TimeSpan.FromTicks(ticks).TotalMinutes;
+            case InputType.Hours: return TimeSpan.FromTicks(ticks).TotalHours;
+            case InputType.Days: return TimeSpan.FromTicks(ticks).TotalDays;
+            case InputType.Milliseconds: return TimeSpan.FromTicks(ticks).TotalMilliseconds;
+            case InputType.Microseconds: return TimeSpan.FromTicks(ticks).TotalMilliseconds * 1000;
+            case InputType.Nanoseconds: return nanoseconds;
+        }
+
+        return 0;
+    }
+
+}

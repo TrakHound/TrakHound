@@ -1,0 +1,400 @@
+﻿.run-panel {
+    display: block;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-rows: max-content max-content 1fr;
+    grid-template-columns: max-content 1fr;
+}
+
+    .run-panel .btn-run {
+        width: 125px;
+        font-size: 15px;
+        height: 42px;
+        border-radius: 0;
+    }
+
+        .run-panel .btn-run:focus {
+            box-shadow: none;
+        }
+
+        .run-panel .btn-run.btn-loading .icon {
+            animation: spin 0.65s linear infinite;
+        }
+
+    .run-panel .listening {
+        display: inline-block;
+        width: 80px;
+        vertical-align: middle;
+    }
+
+.header-panel {
+    grid-row: 1;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    padding: 0px 10px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+    .header-panel .icon {
+        font-size: 16px;
+        color: #aaa;
+        margin-right: 5px;
+    }
+
+    .header-panel .title {
+        font-size: 14px;
+        font-weight: bold;
+        color: #333;
+        margin-right: 10px;
+    }
+
+    .header-panel .subtitle {
+        font-size: 12px;
+        color: #888;
+    }
+
+.toolbar-panel {
+    grid-row: 2;
+    grid-column: 1;
+    padding: 10px 0;
+}
+
+.request-panel {
+    grid-row: 2;
+    grid-column: 2;
+}
+
+.content-panel {
+    grid-row: 3;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    width: 100%;
+    overflow-y: auto;
+}
+
+
+.table {
+    background: #fafafa;
+    border: 1px solid #eee;
+}
+
+th {
+    font-size: 13px;
+    font-weight: bold;
+    border: none !important;
+    border-right: 1px solid #eee !important;
+    padding: 5px 10px;
+}
+
+td {
+    font-size: 13px;
+    padding: 5px 15px;
+    background: #fff;
+    height: auto;
+}
+
+.type-cell {
+    width: 100px;
+}
+
+.name-cell {
+    width: 200px;
+}
+
+.data-type-cell {
+    width: 120px;
+}
+
+.divider-cell {
+    width: 1px;
+    padding: 0;
+}
+
+.buttons-cell {
+    width: 40px;
+    padding: 0;
+}
+
+    .buttons-cell .btn {
+        height: 42px;
+    }
+
+        .buttons-cell .btn .icon {
+            margin: 0;
+        }
+
+td {
+    padding: 0;
+}
+
+    td ::deep .text-box {
+        margin: 0;
+        border-radius: 0;
+    }
+
+        td ::deep .text-box input {
+            width: 100%;
+            font-size: 13px !important;
+            border-radius: 0;
+            border: 1px solid transparent;
+            border: 1px solid var(--accentKindaLight);
+            padding: 0px 15px !important;
+            line-height: 10px !important;
+            height: 24px;
+            background: #fafafa;
+            background: var(--accentVeryVeryLight) !important;
+        }
+
+            td ::deep .text-box input:focus {
+                outline: none;
+                box-shadow: none;
+                border: 1px solid var(--accentLight);
+            }
+
+    td ::deep .rz-textarea {
+        width: 100%;
+        font-size: 13px !important;
+        border-radius: 0;
+        border: 1px solid transparent;
+        border: 1px solid var(--accentKindaLight);
+        min-height: 100px;
+        background: #fafafa;
+        background: var(--accentVeryVeryLight) !important;
+        margin: 0;
+    }
+
+        td ::deep .rz-textarea:focus {
+            background: #fff;
+        }
+
+
+.response-message {
+    margin-left: 20px;
+    font-size: 13px;
+    line-height: 18px;
+    vertical-align: bottom;
+    color: var(--accent);
+}
+
+.response-information {
+    padding-top: 10px;
+}
+
+    .response-information .table {
+        background: #fafafa;
+        border: 1px solid #ddd;
+        width: 100%;
+    }
+
+        .response-information .table td {
+            font-size: 14px;
+            padding: 8px 20px;
+            background: #fafafa;
+        }
+
+            .response-information .table td.label {
+                width: 130px;
+                font-weight: bold;
+                border-right: 1px solid #ddd;
+            }
+
+
+.request-panel {
+    display: grid;
+    grid-template-columns: max-content max-content max-content max-content 1fr;
+    font-size: 13px;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.request-status-container {
+    padding: 10px;
+    width: 120px;
+    text-align: center;
+    border-right: 1px solid #ddd;
+}
+
+.request-status {
+    font-weight: bold;
+    color: #333;
+}
+
+.request-duration-container {
+    padding: 10px;
+    min-width: 100px;
+    text-align: center;
+    border-right: 1px solid #ddd;
+    background: #f8f8f8;
+}
+
+#request-duration {
+    font-weight: bold;
+    color: #333;
+}
+
+.request-started-container {
+    padding: 10px;
+    width: 250px;
+    text-align: center;
+    border-right: 1px solid #ddd;
+    background: #f8f8f8;
+}
+
+.request-started {
+    color: #333;
+}
+
+.request-completed-container {
+    padding: 10px;
+    width: 250px;
+    text-align: center;
+    border-right: 1px solid #ddd;
+    background: #f8f8f8;
+}
+
+.request-completed {
+    color: #333;
+}
+
+.request-id-container {
+    padding: 10px;
+    text-align: center;
+    background: #f8f8f8;
+}
+
+.request-id {
+    text-decoration: none;
+}
+
+
+
+.request-url-container {
+    padding: 10px 15px;
+}
+
+
+.response-panel {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    padding-top: 10px;
+}
+
+.response-log {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    background: #192b4d;
+    padding-bottom: 50px;
+}
+
+    .response-log .table {
+        padding: 0;
+        margin: 0;
+        border: none;
+    }
+
+        .response-log .table td {
+            font-size: 12px;
+            padding: 3px 20px;
+            background: #192b4d;
+            border-color: #002b80;
+            color: #e6eeff;
+        }
+
+        .response-log .table tr:hover td {
+            background: var(--accent);
+        }
+
+        .response-log .table td.level {
+            width: 120px;
+        }
+
+        .response-log .table td.timestamp {
+            width: 300px;
+        }
+
+        .response-log .table td.message p {
+            margin: 0;
+        }
+
+
+        .response-log .table tr.debug td {
+            background: #2d4c86;
+            color: #e6eeff;
+        }
+
+        .response-log .table tr.debug:hover td {
+            background: var(--accent);
+        }
+
+        .response-log .table tr.warning td {
+            background: #ff6600;
+            border-color: #cc5200;
+            color: #e6eeff;
+        }
+
+        .response-log .table tr.warning:hover td {
+            background: #ff8533;
+        }
+
+        .response-log .table tr.error td {
+            background: #ff0000;
+            border-color: #cc0000;
+            color: #e6eeff;
+        }
+
+        .response-log .table tr.error:hover td {
+            background: #ff3333;
+        }
+
+        .response-log .table tr.critical td {
+            background: #ff0000;
+            border-color: #cc0000;
+            color: #e6eeff;
+        }
+
+        .response-log .table tr.critical:hover td {
+            background: #ff3333;
+        }
+
+/*        .response-log .table tr:last-child td {
+            border-bottom: none !important;
+        }*/
+
+
+.input-parameters {
+    padding-top: 10px;
+}
+
+.output-parameters {
+    padding-top: 10px;
+}
+
+    .output-parameters .table {
+        background: #fafafa;
+        border: 1px solid #ddd;
+        width: 100%;
+    }
+
+        .output-parameters .table th {
+            font-size: 14px;
+            padding: 8px 20px;
+            background: #f4f4f4;
+            border-bottom: 1px solid #ddd !important;
+        }
+
+        .output-parameters .table td {
+            font-size: 13px;
+            padding: 8px 20px;
+            background: #fafafa;
+        }
+
+            .output-parameters .table td.key {
+                font-weight: bold;
+                border-right: 1px solid #ddd;
+            }

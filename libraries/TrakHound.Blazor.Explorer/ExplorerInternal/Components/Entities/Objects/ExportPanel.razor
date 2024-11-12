@@ -1,0 +1,72 @@
+﻿
+@if (InstancesService != null && InstancesService.Query != null)
+{
+    <div class="export-panel">
+
+@*         <div class="export-type-panel">
+            <div class="export-type-toolbar">
+                <a class="btn btn-sm btn-light" href="@GetExcelLink()" target="_blank"><span class="icon fa-regular fa-sharp fa-download"></span>Download</a>
+            </div>
+            <div class="export-type-logo">
+                <span class="icon fa-solid fa-sharp fa-file-excel"></span>
+            </div>
+            <div class="export-type-description">
+                Download results as an Excel (.xls) file
+            </div>
+        </div>
+
+        <div class="export-type-panel">
+            <div class="export-type-toolbar">
+                <a class="btn btn-sm btn-light" href="@GetCsvLink()" target="_blank"><span class="icon fa-regular fa-sharp fa-download"></span>Download</a>
+            </div>
+            <div class="export-type-logo">
+                <span class="icon fa-solid fa-sharp fa-file-csv"></span>
+            </div>
+            <div class="export-type-description">
+                Download results as a CSV file
+            </div>
+        </div>
+
+        <div class="export-type-panel">
+            <div class="export-type-toolbar">
+                <a class="btn btn-sm btn-light" href="@GetJsonLink()" target="_blank"><span class="icon fa-regular fa-sharp fa-download"></span>Download</a>
+            </div>
+            <div class="export-type-logo">
+                <span class="icon fa-solid fa-sharp fa-file-json"></span>
+            </div>
+            <div class="export-type-description">
+                Download results as a JSON file
+            </div>
+        </div> *@
+
+    </div>
+}
+
+@code {
+
+    [CascadingParameter(Name = "InstancesService")]
+    public ExplorerObjectsService InstancesService { get; set; }
+
+
+    private string GetExcelLink()
+    {
+        var serverUrl = InstancesService.ExplorerService.GetServerUrl(InstancesService.ServerId);
+        var url = Url.Combine(serverUrl, "api/export/excel");
+        return Url.AddQueryParameter(url, "query", InstancesService.Query);
+    }
+  
+    private string GetCsvLink()
+    {
+        var serverUrl = InstancesService.ExplorerService.GetServerUrl(InstancesService.ServerId);
+        var url = Url.Combine(serverUrl, "api/export/csv");
+        return Url.AddQueryParameter(url, "query", InstancesService.Query);
+    }
+
+    private string GetJsonLink()
+    {
+        var serverUrl = InstancesService.ExplorerService.GetServerUrl(InstancesService.ServerId);
+        var url = Url.Combine(serverUrl, "api/export/json");
+        return Url.AddQueryParameter(url, "query", InstancesService.Query);
+    }
+
+}

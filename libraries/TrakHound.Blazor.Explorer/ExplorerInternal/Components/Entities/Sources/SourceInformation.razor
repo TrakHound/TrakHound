@@ -1,0 +1,47 @@
+﻿@inject ExplorerService explorerService
+@using TrakHound.Requests
+
+@if (Source != null)
+{
+    var sourceLink = Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, $"entities/sources?uuid={Source.Uuid}");
+
+    <div class="source-information">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="label">UUID</td>
+                    <td class="value"><CopyLabel Value="@Source.Uuid" Link="@sourceLink" CopyClicked="CopyClicked" /></td>
+                </tr>
+                  <tr>
+                     <td class="label">Type</td>
+                     <td class="value">@Source.Type</td>
+                 </tr>
+                 <tr>
+                     <td class="label">Sender</td>
+                     <td class="value">@Source.Sender</td>
+                 </tr>
+                 <tr>
+                     <td class="label">Created</td>
+                     <td class="value">@Source.Created.ToLocalTime()</td>
+                 </tr>
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+    [Parameter]
+    public TrakHoundSource Source { get; set; }
+
+
+    private async void CopyClicked(string value)
+    {
+        // ObjectExplorerService.NotificationService.AddNotification(NotificationType.Information, "Copied to Clipboard", value, duration: 2500);
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

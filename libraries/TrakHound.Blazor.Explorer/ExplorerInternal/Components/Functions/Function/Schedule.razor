@@ -1,0 +1,356 @@
+﻿@inject ExplorerService explorerService
+@using System.Text.Json.Serialization
+@using TrakHound.Cron
+@using TrakHound.Functions
+@using TrakHound.Serialization
+
+<div class="information-panel">
+
+	<div class="header-panel">
+		<span class="icon fa-regular fa-sharp fa-calendar-clock"></span>
+		<span class="title">Scheduled Tasks</span>
+		<span class="subtitle">Designate Functions to run at a specified schedule</span>
+	</div>
+
+	<div class="toolbar-panel">
+		<button class="btn btn-primary" @onclick="AddClicked"><span class="icon fa-solid fa-sharp fa-plus"></span>Add Task</button>
+	</div>
+
+	<div class="table-panel">
+		<RadzenDataGrid Data="@tasks" TItem="ScheduledTask" Density="Density.Default" AllowSorting="true" AllowColumnResize="true">
+			<Columns>
+				<RadzenDataGridColumn TItem="ScheduledTask" CssClass="buttons" Width="100px" Sortable="false">
+					<Template Context="context">
+						<RadzenSwitch @bind-Value=@context.Enabled Change=@(args => ToggleEnabled(context, args)) />
+					</Template>
+				</RadzenDataGridColumn>
+				<RadzenDataGridColumn TItem="ScheduledTask" Property="Id" Title="Id" CssClass="id" Width="350px" />
+				<RadzenDataGridColumn TItem="ScheduledTask" Property="Schedule" Title="Schedule" CssClass="schedule" Width="300px" />
+				<RadzenDataGridColumn TItem="ScheduledTask" Property="TimeToNextRun" Title="Next Run" CssClass="next-run" Width="120px">
+					<Template Context="context">
+						<span>@context.TimeToNextRun?.ToSimpleFormattedString()</span>
+					</Template>
+				</RadzenDataGridColumn>
+				<RadzenDataGridColumn TItem="ScheduledTask" Property="Description" Title="Description" CssClass="description" />
+				<RadzenDataGridColumn TItem="ScheduledTask" CssClass="buttons" Width="90px" Sortable="false">
+					<Template Context="context">
+						<button class="btn btn-sm btn-link" @onclick="() => DeleteClicked(context)">Delete</button>
+					</Template>
+				</RadzenDataGridColumn>
+			</Columns>
+		</RadzenDataGrid>
+	</div>
+
+	<Modal Class="add-function-modal" Visible="@addModalVisible">
+		<HeaderContent>
+			<span class="modal-header-icon fa-solid fa-sharp fa-square-plus"></span>
+			<span class="modal-header-title">Create New Scheduled Task</span>
+		</HeaderContent>
+		<BodyContent>
+			<div class="configuration-panel">
+				<div class="form-field">
+					<label>Description</label>
+					<RadzenTextArea @bind-Value=@addDescription />
+				</div>
+				<div class="form-field">
+					<label>Schedule</label>
+					<RadzenTextBox @bind-Value=@addSchedule />
+					<div class="template-buttons">
+						<button class="btn btn-sm btn-secondary" @onclick="Every30SecondsClicked">Every 30s</button>
+						<button class="btn btn-sm btn-secondary" @onclick="Every5MinutesClicked">Every 5m</button>
+						<button class="btn btn-sm btn-secondary" @onclick="Every1HourClicked">Every 1hr</button>
+						<button class="btn btn-sm btn-secondary" @onclick="FirstOfMonthClicked">1st of Month</button>
+					</div>
+					<span class="instructions">Supports CRON expressions : See <a href="https://crontab.cronhub.io/" target="_blank">Here</a> for more examples</span>
+				</div>
+			</div>
+		</BodyContent>
+		<FooterContent>
+
+			@if (!addLoading)
+			{
+				<button class="btn btn-secondary" @onclick="ModalCancelClicked"><span class="icon fa-solid fa-sharp fa-xmark"></span>Cancel</button>
+				<button class="btn btn-primary" @onclick="ModalAddClicked"><span class="icon fa-solid fa-sharp fa-plus"></span>Add</button>
+			}
+			else
+			{
+				<button class="btn btn-primary disabled"><span class="icon fa-solid fa-sharp fa-loader"></span>Adding..</button>
+			}
+
+		</FooterContent>
+	</Modal>
+
+	<Modal Class="delete-function-modal" Visible="@deleteModalVisible">
+		<HeaderContent>
+			<span class="modal-header-icon fa-solid fa-sharp fa-memo"><span class="icon fa-solid fa-sharp fa-delete-right"></span></span>
+			<span class="modal-header-title">Confirm Delete</span>
+		</HeaderContent>
+		<BodyContent>
+
+			<span class="delete-modal-message">Confirm Deletion of Scheduled Task?</span>
+
+			<div class="delete-modal-items">
+				<p>@deleteName</p>
+				<p>@deleteId</p>
+			</div>
+
+		</BodyContent>
+		<FooterContent>
+
+			@if (!deleteLoading)
+			{
+				<button class="btn btn-secondary" @onclick="ModalCancelClicked"><span class="icon fa-solid fa-sharp fa-xmark"></span>Cancel</button>
+				<button class="btn btn-danger" @onclick="ModalDeleteClicked"><span class="icon fa-solid fa-sharp fa-trash"></span>Delete</button>
+			}
+			else
+			{
+				<button class="btn btn-danger disabled"><span class="icon fa-solid fa-sharp fa-loader"></span>Deleting..</button>
+			}
+
+		</FooterContent>
+	</Modal>
+
+</div>
+
+
+@code {
+
+	private IEnumerable<ScheduledTask> tasks;
+
+	private bool addModalVisible;
+	private string addDescription;
+	private string addSchedule;
+	private bool addLoading;
+
+	private bool deleteModalVisible;
+	private string deleteName;
+	private string deleteId;
+	private bool deleteLoading;
+
+
+	public class ScheduledTask
+	{
+		[JsonPropertyName("id")]
+		public string Id { get; set; }
+
+		[JsonPropertyName("enabled")]
+		public bool Enabled { get; set; }
+
+		[JsonPropertyName("description")]
+		public string Description { get; set; }
+
+		[JsonPropertyName("schedule")]
+		public string Schedule { get; set; }
+
+		[JsonIgnore]
+		public DateTime? NextRun
+		{
+			get
+			{
+				if (Enabled)
+				{
+					var format = CronFormat.Standard;
+					if (Schedule.Split(' ').Length > 5) format = CronFormat.IncludeSeconds;
+
+					var expression = CronExpression.Parse(Schedule, format);
+					return expression.GetNextOccurrence(DateTime.UtcNow, TimeZoneInfo.Local);
+				}
+				else
+				{
+					return null;
+				}
+			}
+		}
+
+		[JsonIgnore]
+		public TimeSpan? TimeToNextRun
+		{
+			get
+			{
+				if (Enabled && NextRun != null)
+				{
+					return NextRun - DateTime.UtcNow;
+				}
+				else
+				{
+					return null;
+				}
+			}
+		}
+
+		[JsonPropertyName("parameters")]
+		public Dictionary<string, string> Parameters { get; set; }
+	}
+
+
+	[Parameter]
+	public string ServerId { get; set; }
+
+	[Parameter]
+	public TrakHoundFunctionInformation FunctionInformation { get; set; }
+
+	[CascadingParameter(Name = "Explorer")]
+	public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+	protected async override Task OnInitializedAsync()
+	{
+		await Load();
+	}
+
+	private async Task Load()
+	{
+		if (FunctionInformation != null)
+		{
+			var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+			if (client != null)
+			{
+				var route = Url.Combine("functions", FunctionInformation.PackageId, "tasks");
+				tasks = await client.Api.QueryJson<IEnumerable<ScheduledTask>>(route);
+			}
+		}
+
+		await InvokeAsync(StateHasChanged);
+	}
+
+
+	private async void AddClicked()
+	{
+		var index = 1;
+		if (!tasks.IsNullOrEmpty()) index = tasks.Count() + 1;
+
+		addDescription = null;
+		addSchedule = "*/5 * * * *";
+
+		addModalVisible = true;
+		await InvokeAsync(StateHasChanged);
+	}
+
+	private async void ModalAddClicked()
+	{
+		addLoading = true;
+		await InvokeAsync(StateHasChanged);
+
+		if (FunctionInformation != null && !string.IsNullOrEmpty(addSchedule))
+		{
+			var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+			if (client != null)
+			{
+				var route = Url.Combine("functions", FunctionInformation.PackageId, "tasks");
+
+				var queryParameters = new Dictionary<string, string>();
+				queryParameters.Add("description", addDescription);
+				queryParameters.Add("schedule", addSchedule);
+				queryParameters.Add("enabled", "true");
+
+				var response = await client.Api.Publish(route, queryParameters);
+				if (response.Success)
+				{
+					await Load();
+				}
+				else
+				{
+
+				}
+			}
+		}
+
+		addLoading = false;
+		addModalVisible = false;
+		await InvokeAsync(StateHasChanged);
+	}
+
+	private async void DeleteClicked(ScheduledTask task)
+	{
+		deleteName = task.Id;
+		deleteId = task.Id;
+
+		deleteModalVisible = true;
+		await InvokeAsync(StateHasChanged);
+	}
+
+	private async void ModalDeleteClicked()
+	{
+		deleteLoading = true;
+		await InvokeAsync(StateHasChanged);
+
+		if (!string.IsNullOrEmpty(deleteId))
+		{
+			var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+			if (client != null)
+			{
+				var route = Url.Combine("functions", FunctionInformation.PackageId, "tasks", deleteId);
+
+				var response = await client.Api.Delete(route);
+				if (response.Success)
+				{
+					await Load();
+				}
+				else
+				{
+
+				}
+			}
+		}
+
+		deleteId = null;
+		deleteName = null;
+		deleteLoading = false;
+		deleteModalVisible = false;
+		await InvokeAsync(StateHasChanged);
+	}
+
+	private async void ModalCancelClicked()
+	{
+		addModalVisible = false;
+		deleteModalVisible = false;
+		await InvokeAsync(StateHasChanged);
+	}
+
+
+	private async void ToggleEnabled(ScheduledTask task, bool enabled)
+	{
+		task.Enabled = enabled;
+
+		var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+		if (client != null)
+		{
+			if (task.Enabled)
+			{
+				var route = Url.Combine("functions", FunctionInformation.PackageId, "tasks", task.Id, "Enable");
+				await client.Api.Publish(route);
+			}
+			else
+			{
+				var route = Url.Combine("functions", FunctionInformation.PackageId, "tasks", task.Id, "Disable");
+				await client.Api.Publish(route);
+			}
+		}
+	}
+
+
+	private async void Every30SecondsClicked()
+	{
+		addSchedule = "*/30 * * * * *";
+		await InvokeAsync(StateHasChanged);
+	}
+
+	private async void Every5MinutesClicked()
+	{
+		addSchedule = "*/5 * * * *";
+		await InvokeAsync(StateHasChanged);
+	}
+
+	private async void Every1HourClicked()
+	{
+		addSchedule = "0 */1 * * *";
+		await InvokeAsync(StateHasChanged);
+	}
+
+	private async void FirstOfMonthClicked()
+	{
+		addSchedule = "0 0 1 * *";
+		await InvokeAsync(StateHasChanged);
+	}
+
+}

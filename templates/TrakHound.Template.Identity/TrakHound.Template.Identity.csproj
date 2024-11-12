@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="TrakHound.Common" Version="*" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Remove="trakhound.package.json" />
+	  <None Include="trakhound.package.json" />
+	</ItemGroup>
+
+</Project>

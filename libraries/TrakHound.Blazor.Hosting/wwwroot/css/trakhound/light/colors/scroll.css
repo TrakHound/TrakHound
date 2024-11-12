@@ -1,0 +1,6 @@
+:root {
+    --scrollWidth: 15px;
+    --scrollBackground: #fff;
+    --scrollForeground: var(--borderMild);
+    /*--scrollForeground: var(--accent);*/
+}

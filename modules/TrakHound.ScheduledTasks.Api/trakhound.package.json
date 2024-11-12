@@ -1,0 +1,13 @@
+﻿{
+  "id": "TrakHound.ScheduledTasks.Api",
+  "category": "api",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Manage Scheduled Tasks that run Functions at a schedule using a CRON pattern",
+    "repository": "https://github.com/TrakHound/TrakHound",
+    "repositoryDirectory": "modules/TrakHound.ScheduledTasks.Api",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultRoute": "scheduled-tasks/api",
+    ".defaultVolumeId": "trakhound.scheduled-tasks"
+  }
+}

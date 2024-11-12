@@ -1,0 +1,207 @@
+﻿@using TrakHound.Entities;
+@using TrakHound.Requests;
+
+@if (ObjectExplorerService != null && Object != null)
+{
+    var objectLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction($"select >> from [{Object.GetAbsolutePath()}]") : null;
+    var resultQuery = $"select > from [{Object.GetAbsolutePath()}] take 100";
+    var queryLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(resultQuery) : null;
+
+    <div class="hash-content">
+        <div class="input-panel">
+            <div class="input-panel-container">
+                <div class="input-panel-buttons">
+
+                    @if (!publishLoading)
+                    {
+                        <button class="btn btn-sm btn-primary btn-save" @onclick="Save"><span class="icon fa-solid fa-sharp fa-paper-plane"></span>Publish</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-primary btn-save disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Publishing..</button>
+                    }
+
+                    @if (!loading)
+                    {
+                        <button class="btn btn-sm btn-light btn-refresh" @onclick="() => Load(true)"><span class="icon fa-solid fa-sharp fa-rotate"></span></button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-light btn-refresh disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span></button>
+                    }
+
+                </div>
+                <div class="input-panel-input">
+                    <TextBox @bind-Value="@key" PlaceHolder="Key.." Enabled="@(!publishLoading)" />
+                </div>
+                <div class="input-panel-input">
+                    <TextBox @bind-Value="@value" PlaceHolder="Value.." Enabled="@(!publishLoading)" />
+                </div>
+            </div>
+        </div>
+        <div class="query-panel">
+            <div class="query-panel-container">
+                <span class="query-label">Query</span>
+                <a href="@queryLink" class="btn btn-link btn-query">@resultQuery</a>
+            </div>
+        </div>
+        <div class="table-panel">
+
+            @if (!loading)
+            {
+                <RadzenDataGrid Data="@tableItems"
+                                TItem="TableItem"
+                                Density="Density.Compact"
+                                GridLines="DataGridGridLines.Vertical">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="TableItem" Property="Key" Title="Key" />
+                        <RadzenDataGridColumn TItem="TableItem" Property="Value" Title="Value" />
+                        <RadzenDataGridColumn TItem="TableItem" Property="Created" Title="Created" Width="150px" />
+                        <RadzenDataGridColumn TItem="TableItem" CssClass="delete" Width="70px" Sortable="false">
+                            <Template Context="context">
+                                <button class="btn-link btn btn-sm" @onclick="() => DeleteClicked(context.Uuid)">Delete</button>
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            }
+            else
+            {
+                <Loading Message="Loading.." />
+            }
+
+        </div>
+    </div>
+}
+
+@code {
+
+    private IEnumerable<TableItem> tableItems;
+    private IEnumerable<TrakHoundHash> entities;
+    private TrakHoundHash selectedEntity;
+    private string previousObjectUuid;
+
+    private string key;
+    private string value;
+    private bool loading;
+    private bool publishLoading;
+
+    struct TableItem
+    {
+        public string Uuid { get; set; }
+        public string Key { get; set; }
+        public string Value { get; set; }
+        public DateTime Created { get; set; }
+    }
+
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public ITrakHoundObjectEntity Object { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || (ObjectExplorerService != null && Object != null && Object.Uuid != previousObjectUuid))
+        {
+            tableItems = null;
+            loading = true;
+            await InvokeAsync(StateHasChanged);
+
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                previousObjectUuid = Object.Uuid;
+                entities = await client.Entities.GetHashes(Object.GetAbsolutePath());
+
+                if (!entities.IsNullOrEmpty())
+                {
+                    var items = new List<TableItem>();
+
+                    foreach (var entity in entities.OrderByDescending(o => o.Key))
+                    {
+                        var item = new TableItem();
+                        item.Uuid = entity.Uuid;
+                        item.Key = entity.Key;
+                        item.Value = entity.Value;
+                        item.Created = entity.Created.ToLocalTime();
+                        items.Add(item);
+                    }
+
+                    tableItems = items;
+                }
+            }
+        }
+
+        loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Save()
+    {
+        publishLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
+            {
+                previousObjectUuid = null;
+
+                if (await client.Entities.PublishHash(Object.GetAbsolutePath(), key, value, async: false))
+                {
+                    await Load();
+
+                    ObjectExplorerService.AddNotification(NotificationType.Information, "Hash Published Successfully", Object.GetAbsolutePath());
+                }
+                else
+                {
+                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Hash");
+                }
+            }
+        }
+
+        publishLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void CopyClicked(string value)
+    {
+        ObjectExplorerService.AddNotification(NotificationType.Information, "Copied to Clipboard", duration: 5000);
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void DeleteClicked(string uuid)
+    {
+        var client = ObjectExplorerService.GetClient();
+        if (client != null)
+        {
+            if (await client.System.Entities.Objects.Hash.Delete(uuid, TrakHoundOperationMode.Sync))
+            {
+                previousObjectUuid = null;
+                await Load();
+
+                ObjectExplorerService.AddNotification(NotificationType.Information, "Hash Deleted Successfully", uuid);
+            }
+            else
+            {
+                ObjectExplorerService.AddNotification(NotificationType.Error, "Error Deleting Hash");
+            }
+        }
+    }
+
+}

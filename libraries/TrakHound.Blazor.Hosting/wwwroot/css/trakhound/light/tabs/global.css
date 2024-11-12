@@ -1,0 +1,29 @@
+.rz-tabview {
+    height: 100%;
+    overflow: hidden;
+}
+
+    .rz-tabview .rz-tabview-nav li {
+    }
+
+        .rz-tabview .rz-tabview-nav li a {
+            padding: 5px 10px !important;
+            min-width: 100px;
+            text-align: center;
+        }
+
+    .rz-tabview .rz-tabview-nav .rz-tabview-title {
+        font-size: 13px !important;
+        width: 100%;
+    }
+
+    .rz-tabview .rz-tabview-panels {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .rz-tabview .rz-tabview-panel {
+        height: 100%;
+        overflow: hidden;
+        padding: 0;
+    }

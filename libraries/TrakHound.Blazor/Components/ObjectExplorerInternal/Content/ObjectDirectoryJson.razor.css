@@ -1,0 +1,114 @@
+.string-content {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    grid-template-columns: max-content 1fr;
+    grid-row-gap: 5px;
+    grid-column-gap: 10px;
+    height: 100%;
+    overflow: hidden;
+    padding: 10px 15px;
+}
+
+.toolbar-panel {
+    grid-row: 1;
+    grid-column: 1;
+}
+
+    .toolbar-panel .btn-refresh {
+        height: 30px;
+        width: 30px;
+        border-radius: 0;
+        padding: 0;
+        margin-right: 5px;
+    }
+
+        .toolbar-panel .btn-refresh .icon {
+            font-size: 14px;
+            margin-right: 0;
+        }
+
+    .toolbar-panel .btn-copy {
+        height: 30px;
+        width: 30px;
+        border-radius: 0;
+        padding: 0;
+    }
+
+        .toolbar-panel .btn-copy .icon {
+            font-size: 14px;
+            margin-right: 0;
+        }
+
+
+.query-panel {
+    grid-row: 1;
+    grid-column: 2;
+}
+
+.query-panel-container {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+}
+
+.query-panel .query-label {
+    grid-column: 1;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-right: 1px solid #ddd;
+    border-radius: 2px;
+    color: #777;
+}
+
+.query-panel .btn-query {
+    grid-column: 2;
+    text-align: left;
+    font-size: 12px;
+    padding-top: 8px;
+}
+
+
+.content-panel {
+    grid-row: 2;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    height: 100%;
+    overflow: hidden;
+}
+
+.content-panel-container {
+    display: grid;
+    grid-template-rows: 1fr max-content;
+    height: 100%;
+    overflow: auto;
+}
+
+.value-panel {
+    grid-row: 1;
+}
+
+    .value-panel ::deep .text-area {
+        height: 100%;
+    }
+
+    .value-panel ::deep .form-group {
+        height: 100%;
+    }
+
+    .value-panel ::deep textarea {
+        resize: none !important;
+        min-height: 100px;
+        height: 100%;
+        border-radius: 0;
+        background: #fafafa;
+        padding: 10px 20px;
+        font-size: 13px;
+        font-family: Consolas;
+    }
+
+        .value-panel ::deep textarea:focus {
+            background: #fff;
+            box-shadow: none;
+        }

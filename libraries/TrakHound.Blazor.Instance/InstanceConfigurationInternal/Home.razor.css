@@ -1,0 +1,123 @@
+.profile-page {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-flow: row;
+    grid-row-gap: 20px;
+    grid-column-gap: 20px;
+    padding: 20px;
+}
+
+@media (min-width: 800px) {
+    .profile-page {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (min-width: 1100px) {
+    .profile-page {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+@media (min-width: 1440px) {
+    .profile-page {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+}
+
+
+.category-panel {
+    position: relative;
+    background: #fafafa;
+    border-radius: 2px;
+    width: auto;
+    min-width: 275px;
+    max-width: 600px;
+    padding: 25px 25px;
+}
+
+    .category-panel .category-click-panel {
+        background: transparent;
+        border: 2px solid #e8e8e8;
+        border-radius: 2px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+    }
+
+        .category-panel .category-click-panel:hover {
+            /*background: var(--accentVeryVeryLight);*/
+            border: 2px solid var(--accent);
+            cursor: pointer;
+        }
+
+.category-container {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    grid-template-columns: max-content 1fr;
+}
+
+.category-icon {
+    grid-column: 1;
+    grid-row-start: 1;
+    grid-row-end: 3;
+    padding-right: 20px;
+}
+
+.category-label {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.category-content {
+    grid-column: 2;
+    grid-row: 2;
+    margin-top: 5px;
+    padding-top: 5px;
+}
+
+.category-icon .icon {
+    font-size: 28px;
+    color: #aaa;
+    color: var(--accent);
+}
+
+.category-label label {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.category-label .description {
+    display: block;
+    font-size: 12px;
+    color: #555;
+    max-width: 300px;
+}
+
+.category-content {
+    border-top: 1px solid #eee;
+}
+
+    .category-content .count-table {
+        display: block;
+        width: auto;
+        float: right;
+    }
+
+        .category-content .count-table .label {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .category-content .count-table .value {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--accent);
+            text-align: right;
+            width: 100%;
+            padding-left: 30px;
+        }

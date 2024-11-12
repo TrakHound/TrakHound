@@ -1,0 +1,71 @@
+﻿@implements IDisposable
+
+@{
+    var active = Parent.ActivePage == this ? "active" : "";
+}
+
+<div class="tab-page @active">
+    @if (ChildContent != null)
+    {
+        @ChildContent
+    }
+</div>
+
+@code {
+
+    private string changeId;
+    private string previousChangeId;
+
+
+    [CascadingParameter]
+    private Tabs Parent { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string Icon { get; set; }
+
+    [Parameter]
+    public string Badge { get; set; }
+
+    [Parameter]
+    public int Index { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        if (Parent == null) throw new ArgumentNullException(nameof(Parent), "TabPage must exist within a TabControl");
+
+        base.OnInitialized();
+        Parent.AddPage(this);
+
+        changeId = $"{Id}|{Title}|{Icon}|{Badge}|{Index}";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        changeId = $"{Id}|{Title}|{Icon}|{Badge}|{Index}";
+
+        if (changeId != previousChangeId)
+        {
+            Parent.UpdatePage(this);
+
+            previousChangeId = changeId;
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    void IDisposable.Dispose()
+    {
+        Parent.RemovePage(this);
+    }
+
+}

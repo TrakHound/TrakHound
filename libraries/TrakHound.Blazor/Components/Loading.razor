@@ -1,0 +1,20 @@
+﻿@{
+    var delay = Delay ? "delay" : "";
+}
+
+<div class="loading-panel @delay">
+    <div class="loading-panel-container">
+        <span class="loading-icon fa-solid fa-sharp fa-loader spin"></span>
+        <span class="loading-message">@Message</span>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Message { get; set; }
+
+    [Parameter]
+    public bool Delay { get; set; } = true;
+
+}

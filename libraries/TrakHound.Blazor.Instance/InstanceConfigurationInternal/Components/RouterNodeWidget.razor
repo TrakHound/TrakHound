@@ -1,0 +1,21 @@
+﻿@using TrakHound.Blazor.Diagrams.Components.Renderers;
+
+<div class="router-node">
+    <h5 class="node-type"><span class="icon fa-regular fa-chart-network"></span>Router</h5>
+    <div class="node-name-container">
+        <label class="node-name-label">Name</label>
+        <TextBox Class="node-name" @bind-Value="Node.Name" />
+    </div>
+    <h5 class="node-id">@Node.Id</h5>
+
+    @{
+        var routerOutputPort = Node.Ports.FirstOrDefault(o => o.GetType() == typeof(RouterOutputPort));
+        <PortRenderer @key="routerOutputPort" Port="routerOutputPort" Class="router-output-port" />
+    }
+
+</div>
+
+@code {
+    // This gets filled by the library
+    [Parameter] public RouterNode Node { get; set; } = null!;
+}

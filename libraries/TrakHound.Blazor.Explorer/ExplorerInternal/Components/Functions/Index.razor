@@ -1,0 +1,178 @@
+﻿@inject ExplorerService explorerService
+@using TrakHound.Functions
+
+<div class="functions-page">
+
+    <div class="header-panel">
+        <div class="header-content">
+            <div class="header-icon">
+                <span class="icon fa-solid fa-sharp fa-code"></span>
+            </div>
+            <div class="header-text">
+                <span class="header-name">Functions</span>
+                <span class="header-description">Short lived processes</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbar-panel">
+
+        @if (!loading)
+        {
+            <button class="btn btn-light" @onclick="RefreshClicked"><span class="icon fa-solid fa-sharp fa-rotate"></span>Refresh</button>
+        }
+        else
+        {
+            <button class="btn btn-light btn-run btn-loading"><span class="icon loading-icon fa-regular fa-loader spin"></span>Loading..</button>
+        }
+
+    </div>
+
+    @if (!loading)
+    {
+        <div class="status-panel">
+
+            @{
+                var functioninformations = GetFunctions();
+                if (!functioninformations.IsNullOrEmpty())
+                {
+                    <RadzenDataGrid Data="@functioninformations" TItem="TrakHoundFunctionInformation" Density="Density.Compact" AllowSorting="true" AllowColumnResize="true">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="TrakHoundFunctionInformation" CssClass="buttons view-cell" Width="80px" Sortable="false">
+                                <Template Context="context">
+                                    <a href="@GetViewLink(context)" class="btn btn-sm btn-link"><span class="icon fa-regular fa-sharp fa-circle-info"></span>View</a>
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="TrakHoundFunctionInformation" Property="FunctionId" Title="FunctionId" CssClass="name" />
+                            <RadzenDataGridColumn TItem="TrakHoundFunctionInformation" Property="Description" Title="Description" CssClass="description" />
+                            <RadzenDataGridColumn TItem="TrakHoundFunctionInformation" Property="PackageVersion" Title="Package Version" CssClass="package-version" Width="120px" />
+                            <RadzenDataGridColumn TItem="TrakHoundFunctionInformation" Property="LastUpdated" Title="LastUpdated" CssClass="last-updated" Width="175px" />
+                        </Columns>
+                    </RadzenDataGrid>
+                }
+            }
+
+        </div>
+    }
+    else
+    {
+        <div class="loading-panel">
+            <Loading Message="@loadingMessage" />
+        </div>
+    }
+
+</div>
+
+@code {
+
+    private readonly Dictionary<string, TrakHoundFunctionInformation> _functions = new Dictionary<string, TrakHoundFunctionInformation>();
+    private readonly object _lock = new object();
+
+    private ITrakHoundConsumer<IEnumerable<TrakHoundFunctionInformation>> functionConsumer;
+    private string previousInstanceId;
+
+    private bool loading;
+    private string loadingMessage;
+
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || explorerService.SelectedInstanceId != previousInstanceId)
+        {
+            lock (_lock) _functions.Clear();
+
+            loading = true;
+            loadingMessage = "Loading Functions..";
+            await InvokeAsync(StateHasChanged);
+
+            previousInstanceId = explorerService.SelectedInstanceId;
+
+            await explorerService.LoadInstance(Explorer.Instances, explorerService.SelectedInstanceId, forceReload);
+
+            // Set Explorer Breadcrumbs
+            var breadcrumbItems = new List<BreadcrumbItem>();
+            breadcrumbItems.Add(new BreadcrumbItem(explorerService.SelectedInstanceId, null));
+            breadcrumbItems.Add(new BreadcrumbItem("Functions", null));
+            explorerService.BreadcrumbItems = breadcrumbItems;
+
+            if (functionConsumer != null) functionConsumer.Dispose();
+
+            var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+            if (client != null)
+            {
+                // Get full list of Functions
+                var functions = await client.System.Functions.GetInformation();
+                if (!functions.IsNullOrEmpty())
+                {
+                    lock (_lock)
+                    {
+                        foreach (var function in functions)
+                        {
+                            if (function.FunctionId != null)
+                            {
+                                _functions.Remove(function.FunctionId);
+                                _functions.Add(function.FunctionId, function);
+                            }
+                        }
+                    }
+                }
+            }
+
+            loading = false;
+            loadingMessage = null;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void FunctionsUpdated(object sender, IEnumerable<TrakHoundFunctionInformation> functions)
+    {
+        if (!functions.IsNullOrEmpty())
+        {
+            lock (_lock)
+            {
+                foreach (var function in functions)
+                {
+                    if (function.FunctionId != null)
+                    {
+                        _functions.Remove(function.FunctionId);
+                        _functions.Add(function.FunctionId, function);
+                    }
+                }
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private IEnumerable<TrakHoundFunctionInformation> GetFunctions()
+    {
+        IEnumerable<TrakHoundFunctionInformation> functions;
+        lock (_lock) functions = _functions.Values.ToList();
+        return functions.OrderBy(o => o.FunctionId);
+    }
+
+    private async void RefreshClicked()
+    {
+        await Load(true);
+    }
+
+    private string GetViewLink(TrakHoundFunctionInformation function)
+    {
+        if (function != null)
+        {
+            return Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "functions", function.PackageId);
+        }
+
+        return null;
+    }
+
+}

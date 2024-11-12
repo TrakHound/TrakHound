@@ -1,0 +1,15 @@
+.definition-breadcrumbs ::deep .breadcrumb-links .divider {
+    margin: 0;
+    color: var(--accent);
+    font-size: 12px;
+    line-height: 28px;
+    padding: 0 1px;
+    vertical-align: top;
+}
+
+.definition-breadcrumbs ::deep .breadcrumb-link {
+    margin: 0;
+    font-size: 12px;
+    padding-left: 3px;
+    padding-right: 3px;
+}

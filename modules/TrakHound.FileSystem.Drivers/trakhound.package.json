@@ -1,0 +1,14 @@
+﻿{
+  "id": "TrakHound.FileSystem.Drivers",
+  "category": "driver",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "FileSystem Drivers for Blobs and Repositories in the TrakHound Framework",
+    "repository": "https://github.com/TrakHound/TrakHound",
+    "repositoryDirectory": "modules/TrakHound.FileSystem.Drivers",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-v5-02-background-100px.png",
+    ".name": "filesystem-local",
+    ".configurationParameters": "directory",
+    ".bufferEnabled": false
+  }
+}

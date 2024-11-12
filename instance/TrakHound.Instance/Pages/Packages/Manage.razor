@@ -1,0 +1,222 @@
+﻿@implements IDisposable
+@inject ITrakHoundInstance instance
+@inject RemotesConfiguration remotesConfiguration
+@using Radzen
+@using Radzen.Blazor
+@using TrakHound.Blazor.Components
+@using TrakHound.Instance.Configurations
+@using TrakHound.Instances
+
+<div class="installed-panel">
+
+    <div class="toolbar-panel">
+        <div class="toolbar-panel-container">
+            <div class="toolbar-panel-refresh">
+
+                @if (!loading)
+                {
+                    <button class="btn btn-light" @onclick="Load"><span class="icon fa-solid fa-sharp fa-rotate-right"></span>Refresh</button>
+                }
+                else
+                {
+                    <button class="btn btn-secondary"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
+                }
+
+                @if (!cleaning)
+                {
+                    <button class="btn btn-light" @onclick="Clean"><span class="icon fa-solid fa-sharp fa-broom-wide"></span>Clean</button>
+                }
+                else
+                {
+                    <button class="btn btn-secondary"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Cleaning..</button>
+                }
+
+            </div>
+            <div class="toolbar-panel-category">
+                <RadzenDropDown Data="@categories" Placeholder="Select Category.." Value="@selectedCategory" ValueChanged="(string x) => CategorySelected(x)" />
+            </div>
+            <div class="toolbar-panel-query">
+                <TextBox Value="@selectedQuery" ValueChanged="QueryChanged" PlaceHolder="Search Packages.." SpellCheck="false" />
+            </div>
+        </div>
+    </div>
+
+    <div class="table-panel">
+
+        @if (!loading)
+        {
+            if (!tableItems.IsNullOrEmpty())
+            {
+                <RadzenDataGrid Data="@tableItems" TItem="TableItem" Density="Density.Compact" AllowSorting="true" AllowColumnResize="true">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="TableItem" Property="Category" Title="Category" CssClass="category" Width="120px" />
+                        <RadzenDataGridColumn TItem="TableItem" Property="Id" Title="ID" CssClass="id" />
+                        <RadzenDataGridColumn TItem="TableItem" Property="Version" Title="Version" CssClass="version" Width="100px" />
+                        <RadzenDataGridColumn TItem="TableItem" Property="Description" Title="Description" CssClass="description" />
+                        <RadzenDataGridColumn TItem="TableItem" Property="BuildDate" Title="Build Date" CssClass="build-date" Width="200px" />
+                        <RadzenDataGridColumn TItem="TableItem" CssClass="buttons" Width="100px" Sortable="false">
+                            <Template Context="context">
+                                <button class="btn btn-sm btn-command btn-remove" @onclick="o => DeleteClicked(context)"><span class="icon fa-regular fa-sharp fa-delete-right"></span>Delete</button>
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            }
+            else
+            {
+
+            }
+        }
+        else
+        {
+            <div class="loading-panel">
+                <Loading Message="Loading Installed Packages.." />
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@code {
+
+    private IEnumerable<string> categories = new string[] { "Bundle", "App", "Api", "Function", "Service", "Driver", "Identity", "Configuration" };
+    private string selectedCategory;
+    private string selectedQuery;
+    private bool loading = true;
+    private bool cleaning;
+    private DelayEvent queryDelay = new DelayEvent(50);
+
+    private RemoteConfiguration selectedRemoteConfiguration;
+    private IEnumerable<TableItem> tableItems;
+
+
+    struct TableItem
+    {
+        public string Uuid { get; set; }
+
+        public string Category { get; set; }
+
+        public string Id { get; set; }
+
+        public string Version { get; set; }
+
+        public DateTime BuildDate { get; set; }
+
+        public string Description { get; set; }
+    }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        queryDelay.Elapsed += QueryDelayElapsed;
+
+        selectedRemoteConfiguration = remotesConfiguration?.Remotes?.FirstOrDefault();
+
+        await Load();
+    }
+
+    void IDisposable.Dispose()
+    {
+        queryDelay.Dispose();
+    }
+
+
+    private async Task Load()
+    {
+        loading = true;
+        tableItems = null;
+        await InvokeAsync(StateHasChanged);
+
+        LoadPackages();
+
+        loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void LoadPackages()
+    {
+        if (selectedRemoteConfiguration != null && !string.IsNullOrEmpty(selectedCategory))
+        {
+            var query = selectedQuery?.ToLower();
+            var category = selectedCategory.ToLower();
+
+            var packages = instance.PackageManager.Packages?.Where(o => o.Category == category && (string.IsNullOrEmpty(query) || o.Id.ToLower().Contains(query)));
+            if (!packages.IsNullOrEmpty())
+            {
+                var oPackages = packages.OrderBy(o => o.Id).ThenBy(o => o.Version.ToVersion());
+
+                var items = new List<TableItem>();
+                foreach (var package in oPackages)
+                {
+                    var item = new TableItem();
+                    item.Uuid = package.Uuid;
+                    item.Category = package.Category.ToTitleCase();
+                    item.Id = package.Id;
+                    item.Version = package.Version;
+                    item.BuildDate = package.BuildDate;
+                    item.Description = package.Metadata != null && package.Metadata.ContainsKey("Description") ? package.Metadata["Description"]?.ToString() : null;
+                    items.Add(item);
+                }
+
+                tableItems = items;
+            }
+            else
+            {
+                tableItems = null;
+            }
+        }
+    }
+
+    private async void RefreshClicked()
+    {
+        await Load();
+    }
+
+
+    private async Task Clean()
+    {
+        cleaning = true;
+        await InvokeAsync(StateHasChanged);
+
+        instance.CleanPackages();
+
+        cleaning = false;
+        await InvokeAsync(StateHasChanged);
+
+        await Load();
+    }
+
+
+    private async void DeleteClicked(TableItem item)
+    {
+        if (instance.PackageManager.Uninstall(item.Id, item.Version))
+        {
+            await Load();
+        }
+        else
+        {
+            
+        }
+    }
+
+    private async void CategorySelected(string category)
+    {
+        selectedCategory = category;
+
+        await Load();
+    }
+
+    private void QueryChanged(string query)
+    {
+        selectedQuery = query;
+        queryDelay.Set();
+    }
+
+    private async void QueryDelayElapsed(object sender, EventArgs args)
+    {
+        LoadPackages();
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

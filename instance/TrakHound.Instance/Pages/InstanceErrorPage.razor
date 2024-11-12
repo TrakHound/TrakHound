@@ -1,0 +1,53 @@
+﻿@page "/_error"
+@inject IHttpContextAccessor httpContextAccessor;
+
+<div class="error-page">
+    <div class="error-panel">
+        <div class="error-container">
+            <div class="error-header-container">
+                <div class="error-header-logo-container">
+                    <img src="img/trakhound-logo-v5-01-footer.svg" class="error-header-logo" />
+                </div>
+                <div class="error-header-title-container">
+                    <span class="error-header-title">TrakHound</span>
+                </div>
+                <div class="error-header-instance-container">
+                    <span class="error-header-intance-id"></span>
+                    <span class="error-header-intance-url"></span>
+                </div>
+            </div>
+            <div class="error-icon-container">
+                <span class="error-icon @GetIcon()"></span>
+            </div>
+            <div class="error-information-container">
+                <h1 class="error-panel-title">@GetStatusCode()</h1>
+                <p class="error-panel-description">@GetStatusDescription()</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private int GetStatusCode()
+    {
+        return httpContextAccessor.HttpContext.Response.StatusCode;
+    }
+
+    private string GetIcon()
+    {
+        return "fa-regular fa-sharp fa-triangle-exclamation";
+    }
+
+    private string GetStatusDescription()
+    {
+        var context = httpContextAccessor.HttpContext;
+        switch (context.Response.StatusCode)
+        {
+            case 404: return $"Could not find the requested resource : {context.Request.Path}";
+        }
+
+        return null;
+    }
+
+}

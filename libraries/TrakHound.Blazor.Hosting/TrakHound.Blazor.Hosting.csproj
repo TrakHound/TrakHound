@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<TargetFrameworks>net8.0</TargetFrameworks>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<TargetFrameworks>net8.0</TargetFrameworks>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AssemblyName>TrakHound.Blazor.Hosting</AssemblyName>
+		<RootNamespace>TrakHound.Blazor</RootNamespace>
+		<Configurations>Debug;Release;Package</Configurations>
+		<Description>Contains classes for implementing .NET Blazor Hosting in the TrakHound Framework</Description>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="wwwroot\js\qrCodeScannerJsInterop.js" />
+	  <_ContentIncludedByDefault Remove="wwwroot\js\trakhound-blazor.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.10" />
+		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+		<PackageReference Include="Radzen.Blazor" Version="5.5.5" />
+		<PackageReference Include="Markdig" Version="0.38.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\instance\TrakHound.Instances\TrakHound.Instances.csproj" />
+	  <ProjectReference Include="..\TrakHound.Blazor\TrakHound.Blazor.csproj" />
+	</ItemGroup>
+
+</Project>

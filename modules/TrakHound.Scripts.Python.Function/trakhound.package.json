@@ -1,0 +1,12 @@
+﻿{
+  "id": "TrakHound.Scripts.Python.Function",
+  "category": "function",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Run Python Scripts as TrakHound Functions for use in the TrakHound Framework",
+    "repository": "https://github.com/TrakHound/TrakHound",
+    "repositoryDirectory": "modules/TrakHound.Scripts.Python.Function",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultVolumeId": "trakhound.scripts.python"
+  }
+}

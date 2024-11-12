@@ -1,0 +1,14 @@
+﻿<div class="default-node @(Node.Group != null ? "grouped" : "") @(Node.Selected ? "selected" : "")">
+    @(Node.Title ?? "Title")
+    @foreach (var port in Node.Ports)
+    {
+        <PortRenderer @key="port" Port="port" Class="default"></PortRenderer>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public NodeModel Node { get; set; } = null!;
+
+}

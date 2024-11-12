@@ -1,0 +1,139 @@
+﻿@using TrakHound.Entities
+@using TrakHound.Requests
+
+@if (!definitionModalVisible)
+{
+    <div class="add-modal-panel">
+
+        <Modal Class="add-modal" Visible="@Visible">
+            <HeaderContent>
+                <span class="modal-header-icon fa-solid fa-sharp fa-square-plus"></span>
+                <span class="modal-header-title">Add Object Metadata</span>
+            </HeaderContent>
+            <BodyContent>
+                <div class="form-field">
+                    <label>Name</label>
+                    <RadzenTextBox @bind-Value=@Name />
+                </div>
+                <div class="form-field">
+                    <label>Definition</label>
+                    <DefinitionSelection Client="@ObjectExplorerService.GetClient()" @bind-Pattern=@DefinitionId />
+                    <button class="btn btn-sm btn-light" @onclick="() => NewDefinitionClicked(AddDefinitionType.Definition)"><span class="icon fa-solid fa-sharp fa-plus"></span>New Definition</button>
+                </div>
+                <div class="form-field">
+                    <label>Value</label>
+                    <RadzenTextArea @bind-Value=@Value />
+                </div>
+                <div class="form-field">
+                    <label>Value Definition</label>
+                    <DefinitionSelection Client="@ObjectExplorerService.GetClient()" @bind-Pattern=@ValueDefinitionId />
+                    <button class="btn btn-sm btn-light" @onclick="() => NewDefinitionClicked(AddDefinitionType.ValueDefinition)"><span class="icon fa-solid fa-sharp fa-plus"></span>New Definition</button>
+                </div>
+            </BodyContent>
+            <FooterContent>
+
+                @if (!loading)
+                {
+                    <button class="btn btn-secondary" @onclick="ModalCancelClicked"><span class="icon fa-solid fa-sharp fa-xmark"></span>Cancel</button>
+                    <button class="btn btn-primary" @onclick="ModalAddClicked"><span class="icon fa-solid fa-sharp fa-plus"></span>Add</button>
+                }
+                else
+                {
+                    <button class="btn btn-primary disabled"><span class="icon fa-solid fa-sharp fa-loader"></span>Adding..</button>
+                }
+
+            </FooterContent>
+        </Modal>
+
+    </div>
+}
+else
+{
+    <ObjectExplorerAddDefinitionModal @bind-Visible="@definitionModalVisible" Created="NewDefinitionCreated" />
+}
+
+@code {
+
+    private bool loading;
+    private bool definitionModalVisible;
+    private AddDefinitionType addDefinitionType;
+
+    enum AddDefinitionType
+    {
+        Definition,
+        ValueDefinition
+    }
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> VisibleChanged { get; set; }
+
+    [Parameter]
+    public ITrakHoundObjectEntity Object { get; set; }
+
+    [Parameter]
+    public string Name { get; set; }
+
+    [Parameter]
+    public string DefinitionId { get; set; }
+
+    [Parameter]
+    public string Value { get; set; }
+
+    [Parameter]
+    public string ValueDefinitionId { get; set; }
+
+
+    private async void ModalAddClicked()
+    {
+        loading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (await ObjectExplorerService.AddMetadata(Object, Name, Value))
+        {
+            await ObjectExplorerService.LoadAdditional(Object);
+
+            ObjectExplorerService.AddNotification(NotificationType.Information, "Object Metadata Added Successfully", $"{Name} = {Value}");
+        }
+        else
+        {
+            ObjectExplorerService.AddNotification(NotificationType.Error, "Error Adding Object Metadata");
+        }
+
+        loading = false;
+        Visible = false;
+        await VisibleChanged.InvokeAsync(Visible);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ModalCancelClicked()
+    {
+        Visible = false;
+        await VisibleChanged.InvokeAsync(Visible);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void NewDefinitionClicked(AddDefinitionType type)
+    {
+        addDefinitionType = type;
+        definitionModalVisible = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void NewDefinitionCreated(TrakHoundDefinition definition)
+    {
+        switch (addDefinitionType)
+        {
+            case AddDefinitionType.Definition: DefinitionId = definition.Id; break;
+            case AddDefinitionType.ValueDefinition: ValueDefinitionId = definition.Id; break;
+        }
+        
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

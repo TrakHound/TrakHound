@@ -1,0 +1,42 @@
+﻿@using TrakHound.Services
+
+@if (ServiceInformation != null)
+{
+    <div class="header-panel">
+        <div class="header-content">
+            <div class="header-icon-container">
+                <span class="header-icon fa-solid fa-sharp fa-gear"></span>
+            </div>
+            <div class="header-description-container">
+                <span class="header-title">Service</span>
+                <span class="header-id">@ServiceInformation.Name</span>
+                <span class="header-description">@ServiceInformation.Description</span>
+            </div>
+            <div class="header-package-icon-container">
+
+                @if (!string.IsNullOrEmpty(ServiceInformation.PackageIcon))
+                {
+                    <img class="header-package-icon" src="@ServiceInformation.PackageIcon" />
+                }
+                else
+                {
+                    <span class="header-package-icon fa-solid fa-sharp fa-box"></span>
+                }
+
+            </div>
+            <div class="header-package-container">
+                <span class="header-title">Package</span>
+                <span class="header-package">@ServiceInformation.PackageId</span>
+                <span class="header-version">@ServiceInformation.PackageVersion</span>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+
+    [Parameter]
+    public TrakHoundServiceInformation ServiceInformation { get; set; }
+
+}

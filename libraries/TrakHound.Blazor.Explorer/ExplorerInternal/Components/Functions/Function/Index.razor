@@ -1,0 +1,149 @@
+﻿@inject ExplorerService explorerService
+@inject NavigationManager navigationManager
+@using TrakHound.Functions
+
+@if (!loading)
+{
+    if (functionInformation != null)
+    {
+        <div class="endpoint-panel">
+
+            <div class="header-panel">
+                <Header FunctionInformation="@functionInformation" />
+            </div>
+
+            <div class="tab-panel">
+
+                <RadzenTabs RenderMode="TabRenderMode.Client" SelectedIndex="@selectedTabIndex" SelectedIndexChanged="SelectedTabChanged">
+                    <Tabs>
+
+                        <RadzenTabsItem Text="Information">
+                            <Information ServerId="@InstanceId" FunctionInformation="@functionInformation" />
+                        </RadzenTabsItem>
+
+                        <RadzenTabsItem Text="Run">
+                            <Run ServerId="@InstanceId" FunctionInformation="@functionInformation" />
+                        </RadzenTabsItem>
+
+                        <RadzenTabsItem Text="History">
+                            <History ServerId="@InstanceId" FunctionInformation="@functionInformation" />
+                        </RadzenTabsItem>
+
+                        <RadzenTabsItem Text="Schedule">
+                            <Schedule ServerId="@InstanceId" FunctionInformation="@functionInformation" />
+                        </RadzenTabsItem>
+
+                    </Tabs>
+                </RadzenTabs>
+
+            </div>
+
+        </div>
+    }
+}
+else
+{
+    <Loading Message="@loadingMessage" />
+}
+
+@code {
+
+    private string previousInstanceId;
+    private string previousFunctionId;
+    private string previousPage;
+    private int selectedTabIndex;
+    private TrakHoundFunctionInformation functionInformation;
+
+    private bool loading = true;
+    private string loadingMessage = "Loading Function..";
+
+
+    [Parameter]
+    public string InstanceId { get; set; }
+
+    [Parameter]
+    public string FunctionId { get; set; }
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        var route = "{instanceId}/functions/{functionId}";
+        var pageRoute = "{instanceId}/functions/{functionId}/{page}";
+
+        InstanceId = Url.GetRouteParameter(Explorer.Path, route, "instanceId");
+        var functionId = Url.GetRouteParameter(Explorer.Path, route, "functionId");
+        var page = Url.GetRouteParameter(Explorer.Path, pageRoute, "page");
+
+        await explorerService.LoadInstance(Explorer.Instances, InstanceId);
+
+        if (forceReload || explorerService.SelectedInstanceId != previousInstanceId || functionId != previousFunctionId)
+        {
+            previousInstanceId = explorerService.SelectedInstanceId;
+            previousFunctionId = functionId;
+
+            var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+            if (client != null)
+            {
+                // Get Function
+                functionInformation = await client.System.Functions.GetInformation(functionId);
+
+                if (functionInformation != null)
+                {
+                    // Set Explorer Breadcrumbs
+                    var breadcrumbItems = new List<BreadcrumbItem>();
+                    breadcrumbItems.Add(new BreadcrumbItem(explorerService.SelectedInstanceId, null));
+                    breadcrumbItems.Add(new BreadcrumbItem("Functions", Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "functions")));
+                    breadcrumbItems.Add(new BreadcrumbItem(functionInformation.PackageId, null));
+                    explorerService.BreadcrumbItems = breadcrumbItems;
+
+                    loading = false;
+                    loadingMessage = null;
+                    await InvokeAsync(StateHasChanged);
+                }
+            }
+        }
+
+        if (page != previousPage)
+        {
+            previousPage = page;
+
+            if (page != null)
+            {
+                switch (page.ToLower())
+                {
+                    case "information": selectedTabIndex = 0; break;
+                    case "run": selectedTabIndex = 1; break;
+                    case "history": selectedTabIndex = 2; break;
+                    case "scheduled-tasks": selectedTabIndex = 3; break;
+                }
+            }
+            else
+            {
+                selectedTabIndex = 0;
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void SelectedTabChanged(int index)
+    {
+        switch (index)
+        {
+            case 0: navigationManager.NavigateTo(Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "functions", previousFunctionId, "information")); break;
+            case 1: navigationManager.NavigateTo(Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "functions", previousFunctionId, "run")); break;
+            case 2: navigationManager.NavigateTo(Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "functions", previousFunctionId, "history")); break;
+            case 3: navigationManager.NavigateTo(Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "functions", previousFunctionId, "scheduled-tasks")); break;
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

@@ -1,0 +1,28 @@
+﻿@if (!string.IsNullOrEmpty(markup))
+{
+    <div class="markdown-content">
+        @((MarkupString)markup)
+    </div>
+}
+
+@code {
+
+    private string markdown;
+    private string markup;
+
+    [Parameter]
+    public string Markdown { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (Markdown != markdown)
+        {
+            markdown = Markdown;
+            markup = Markdig.Markdown.ToHtml(markdown);
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BarcodeLib" Version="3.1.4" />
+		<PackageReference Include="SkiaSharp.QrCode" Version="0.7.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\libraries\TrakHound.Debug.AspNetCore\TrakHound.Debug.AspNetCore.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="D:\TrakHound\Source-Code\TrakHound.Admin\env\trakhound-environment.config.yaml" Link="trakhound-environment.config.yaml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="trakhound.package.publish.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	</ItemGroup>
+
+</Project>

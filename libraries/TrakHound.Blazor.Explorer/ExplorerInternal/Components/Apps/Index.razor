@@ -1,0 +1,165 @@
+﻿@inject ExplorerService explorerService
+@using TrakHound.Apps
+
+<div class="apps-page">
+
+    <div class="header-panel">
+        <div class="header-content">
+            <div class="header-icon">
+                <span class="icon fa-solid fa-sharp fa-browsers"></span>
+            </div>
+            <div class="header-text">
+                <span class="header-name">Apps</span>
+                <span class="header-description">User Interfaces</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbar-panel">
+
+        @if (!loading)
+        {
+            <button class="btn btn-light" @onclick="RefreshClicked"><span class="icon fa-solid fa-sharp fa-rotate"></span>Refresh</button>
+        }
+        else
+        {
+            <button class="btn btn-light btn-run btn-loading"><span class="icon loading-icon fa-regular fa-loader spin"></span>Loading..</button>
+        }
+
+    </div>
+
+    @if (!loading)
+    {
+        <div class="status-panel">
+
+            @{
+                var appInformations = GetApps();
+                if (!appInformations.IsNullOrEmpty())
+                {
+                    <RadzenDataGrid Data="@appInformations" TItem="TrakHoundAppInformation" Density="Density.Compact" AllowSorting="true" AllowColumnResize="true">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="TrakHoundAppInformation" CssClass="buttons view-cell" Width="80px" Sortable="false">
+                                <Template Context="context">
+                                    <a href="@GetViewLink(context)" class="btn btn-sm btn-link btn-view"><span class="icon fa-regular fa-sharp fa-circle-info"></span>View</a>
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="TrakHoundAppInformation" CssClass="buttons navigate-cell" Width="100px" Sortable="false">
+                                <Template Context="context">
+                                    <a href="@GetNavigateLink(context)" target="_blank" class="btn btn-sm btn-link btn-navigate"><span class="icon fa-regular fa-sharp fa-link"></span>Navigate</a>
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="TrakHoundAppInformation" Property="Route" Title="Route" CssClass="route" />
+                            <RadzenDataGridColumn TItem="TrakHoundAppInformation" Property="PackageId" Title="Package ID" CssClass="package-id" Width="300px" />
+                            <RadzenDataGridColumn TItem="TrakHoundAppInformation" Property="PackageVersion" Title="Package Version" CssClass="package-version" Width="150px" />
+                        </Columns>
+                    </RadzenDataGrid>
+                }
+            }
+
+        </div>
+    }
+    else
+    {
+        <Loading Message="@loadingMessage" />
+    }
+
+</div>
+
+@code {
+
+    private readonly Dictionary<string, TrakHoundAppInformation> _apps = new Dictionary<string, TrakHoundAppInformation>();
+    private readonly object _lock = new object();
+
+    private string previousInstanceId;
+
+    private bool loading;
+    private string loadingMessage;
+
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || explorerService.SelectedInstanceId != previousInstanceId)
+        {
+            loading = true;
+            loadingMessage = "Loading Apps..";
+            await InvokeAsync(StateHasChanged);
+
+            previousInstanceId = explorerService.SelectedInstanceId;
+
+            await explorerService.LoadInstance(Explorer.Instances, explorerService.SelectedInstanceId, forceReload);
+
+            // Set Explorer Breadcrumbs
+            var breadcrumbItems = new List<BreadcrumbItem>();
+            breadcrumbItems.Add(new BreadcrumbItem(explorerService.SelectedInstanceId, null));
+            breadcrumbItems.Add(new BreadcrumbItem("Apps", null));
+            explorerService.BreadcrumbItems = breadcrumbItems;
+
+            var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+            if (client != null)
+            {
+                // Get full list of Apps
+                var apps = await client.Apps.GetInformation();
+                if (!apps.IsNullOrEmpty())
+                {
+                    lock (_lock)
+                    {
+                        foreach (var app in apps)
+                        {
+                            if (app.Id != null)
+                            {
+                                _apps.Remove(app.Id);
+                                _apps.Add(app.Id, app);
+                            }
+                        }
+                    }
+                }
+            }
+
+            loading = false;
+            loadingMessage = null;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private IEnumerable<TrakHoundAppInformation> GetApps()
+    {
+        IEnumerable<TrakHoundAppInformation> apps;
+        lock (_lock) apps = _apps.Values.ToList();
+        return apps.OrderBy(o => o.Route);
+    }
+
+    private async void RefreshClicked()
+    {
+        await Load(true);
+    }
+
+    private string GetViewLink(TrakHoundAppInformation app)
+    {
+        if (app != null)
+        {
+            return Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "apps", app.Id);
+        }
+
+        return null;
+    }
+
+    private string GetNavigateLink(TrakHoundAppInformation app)
+    {
+        if (app != null)
+        {
+            return Url.Combine(app.Route);
+        }
+
+        return null;
+    }
+
+}

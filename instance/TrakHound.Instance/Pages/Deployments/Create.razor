@@ -1,0 +1,154 @@
+﻿@inject IJSRuntime javascript
+@inject TrakHoundDownloadService downloadService
+@using Radzen
+@using Radzen.Blazor
+@using TrakHound.Blazor.Components
+@using TrakHound.Blazor.Services
+@using TrakHound.Deployments
+@using TrakHound.Instance.Configurations
+
+<div class="create-panel">
+
+    <div class="toolbar-panel">
+        <div class="toolbar-panel-container">
+            <div class="toolbar-panel-create">
+
+                @if (!loading)
+                {
+                    <button class="btn btn-primary btn-create" @onclick="CreateClicked"><span class="icon fa-solid fa-sharp fa-play"></span>Create</button>
+                }
+                else
+                {
+                    <button class="btn btn-primary btn-create"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Creating..</button>
+                }
+
+            </div>
+            <div class="toolbar-panel-profile">
+                <TextBox @bind-Value="@profileId" Title="Deployment Profile ID" PlaceHolder="Profile ID.." />
+            </div>
+            <div class="toolbar-panel-version">
+                <SpinEdit @bind-Value="@version" Title="Deployment Version" />
+            </div>
+            <div class="toolbar-panel-description">
+                <TextArea @bind-Value="@description" PlaceHolder="Deployment Description.." Rows="5" />
+            </div>
+        </div>
+    </div>
+
+    @if (!resultMessages.IsNullOrEmpty() || !resultErrors.IsNullOrEmpty())
+    {
+        <div class="results-panel">
+            <table class="table table-sm">
+                <tbody>
+
+                    @if (!resultMessages.IsNullOrEmpty())
+                    {
+                        foreach (var result in resultMessages)
+                        {
+                            <tr>
+                                <td class="result-message">@result</td>
+                            </tr>
+                        }
+                    }
+
+                    @if (!resultErrors.IsNullOrEmpty())
+                    {
+                        foreach (var result in resultErrors)
+                        {
+                            <tr>
+                                <td class="result-error">@result</td>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    }
+
+</div>
+
+@code {
+
+    private string profileId;
+    private int version;
+    private long lastUpdated;
+    private string description;
+    private bool loading;
+    private IEnumerable<string> resultMessages;
+    private IEnumerable<string> resultErrors;
+
+
+    protected override void OnInitialized()
+    {
+        profileId = StringFunctions.RandomString(8);
+
+        // Read Deployment Configuration File
+        var deploymentConfigurationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config", DeploymentConfiguration.Filename);
+        var deploymentConfiguration = DeploymentConfiguration.Read(deploymentConfigurationPath);
+        if (deploymentConfiguration != null)
+        {
+            profileId = deploymentConfiguration.ProfileId;
+            version = deploymentConfiguration.Version;
+            lastUpdated = deploymentConfiguration.LastUpdated;
+        }
+    }
+
+
+    private async void CreateClicked()
+    {
+        resultMessages = null;
+        resultErrors = null;
+        loading = true;
+        await InvokeAsync(StateHasChanged);
+
+        await Task.Delay(250); // Show Loading?
+
+        await Task.WhenAll(new Task[] { CreateDeployment() });
+
+        loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task CreateDeployment()
+    {
+        var deployment = new TrakHoundDeployment();
+        deployment.ProfileId = profileId;
+        deployment.Version = version.ToString();
+        deployment.Description = description;
+        deployment.BuildDate = DateTime.UtcNow;
+
+        var sourcePath = AppDomain.CurrentDomain.BaseDirectory;
+        var result = await deployment.CreateAsync(sourcePath, lastUpdated.ToDateTime());
+        if (result.Success)
+        {
+            version++;
+            lastUpdated = UnixDateTime.Now;
+
+            // Save Deployment Configuration
+            var deploymentConfiguration = new DeploymentConfiguration();
+            deploymentConfiguration.ProfileId = profileId;
+            deploymentConfiguration.Version = version;
+            deploymentConfiguration.LastUpdated = lastUpdated;
+            deploymentConfiguration.Save();
+
+            var item = new TrakHoundDownloadItem();
+            item.Content = result.Content;
+            item.ContentType = "application/zip";
+            item.Filename = $"{profileId}.thd";
+
+            var downloadKey = downloadService.AddItem(item);
+
+            await OpenDownloadLink($"_download/{downloadKey}");
+        }
+
+        resultMessages = result.Messages;
+        resultErrors = result.Errors;
+    }
+
+    private async Task OpenDownloadLink(string url)
+    {
+        await javascript.InvokeVoidAsync("open", new object[] { url });
+    }
+
+}

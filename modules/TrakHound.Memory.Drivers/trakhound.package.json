@@ -1,0 +1,19 @@
+﻿{
+  "id": "TrakHound.Memory.Drivers",
+  "category": "driver",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "In Memory cache for use in the TrakHound Framework",
+    "repository": "https://github.com/TrakHound/TrakHound",
+    "repositoryDirectory": "modules/TrakHound.Memory.Drivers",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".name": "memory-local",
+    ".bufferInterval": 10,
+    ".bufferRetryInterval": 1000,
+    ".bufferMaxItemsPerInterval": 1000,
+    ".bufferQueuedItemLimit": 100000,
+    ".fileBufferEnabled": false,
+    ".fileBufferReadInterval": 0,
+    ".bufferAcknowledgeSent": false
+  }
+}

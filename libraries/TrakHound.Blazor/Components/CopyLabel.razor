@@ -1,0 +1,36 @@
+﻿@inject JavascriptService javascriptService
+@using TrakHound.Blazor.Services
+
+<div class="copy-label">
+
+    @if (!string.IsNullOrEmpty(Link))
+    {
+        <a href="@Link"><label>@Value</label></a>
+    }
+    else
+    {
+        <label>@Value</label>
+    }
+
+    <button class="btn btn-link" @onclick="Copy"><span class="icon fa-solid fa-sharp fa-copy"></span></button>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Value { get; set; }
+
+    [Parameter]
+    public string Link { get; set; }
+
+    [Parameter]
+    public EventCallback<string> CopyClicked { get; set; }
+
+
+    private async void Copy()
+    {
+        await javascriptService.CopyClipboard(Value);
+        await CopyClicked.InvokeAsync(Value);
+    }
+
+}

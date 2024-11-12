@@ -1,0 +1,125 @@
+﻿@inject JavascriptService javascriptService
+@using TrakHound.Blazor.Services
+@using TrakHound.Entities;
+
+@if (ObjectExplorerService != null && Object != null)
+{
+    var objectLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction($"select >> from [{Object.GetAbsolutePath()}]") : null;
+
+    var resultQuery = $"select > from [{Object.GetAbsolutePath()}]";
+    var queryLink = ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(resultQuery) : null;
+
+    var jsonRoute = Url.AddQueryParameter("json", "path", Object.GetAbsolutePath());
+    var jsonLink = '/' + jsonRoute;
+
+    <div class="string-content">
+        <div class="toolbar-panel">
+
+            @if (!loading)
+            {
+                <button class="btn btn-sm btn-light btn-refresh" @onclick="() => Load(true)"><span class="icon fa-solid fa-sharp fa-rotate"></span></button>
+            }
+            else
+            {
+                <button class="btn btn-sm btn-light btn-refresh disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span></button>
+            }
+
+            @if (!copyClipboard)
+            {
+                <button class="btn btn-light btn-copy" @onclick="() => CopyContent(json)"><span class="icon fa-regular fa-sharp fa-copy"></span></button>
+            }
+            else
+            {
+                <button class="btn btn-light btn-copy clipboard" @onclick="() => CopyContent(json)"><span class="icon fa-solid fa-sharp fa-check"></span></button>
+            }
+
+        </div>
+        <div class="query-panel">
+            <div class="query-panel-container">
+                <span class="query-label">Json</span>
+                <a href="@jsonLink" target="_blank" class="btn btn-link btn-query">@jsonRoute</a>
+            </div>
+        </div>
+        <div class="content-panel">
+            <div class="content-panel-container">
+
+                @if (!loading)
+                {
+                    <div class="value-panel">
+                        <TextArea @bind-Value="@json" Enabled="@(!publishLoading)" SpellCheck="false" />
+                    </div>
+                }
+                else
+                {
+                    <Loading Message="Loading.." />
+                }
+
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    private ITrakHoundObjectStringEntity entity;
+    private string json;
+    private bool copyClipboard;
+    private bool loading;
+    private bool publishLoading;
+    private string previousObjectUuid;
+
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public ITrakHoundObjectEntity Object { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        if (forceReload || (ObjectExplorerService != null && Object != null && Object.Uuid != previousObjectUuid))
+        {
+            json = null;
+            copyClipboard = false;
+
+            if (forceReload)
+            {
+                previousObjectUuid = Object.Uuid;
+                loading = true;
+                await InvokeAsync(StateHasChanged);
+
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
+                {
+                    json = await client.Entities.GetJson(Object.GetAbsolutePath());
+                }
+
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+    }
+
+
+    private async void CopyContent(string content)
+    {
+        ObjectExplorerService.AddNotification(NotificationType.Information, "JSON Copied to Clipboard", duration: 5000);
+
+        await javascriptService.CopyClipboard(content);
+        copyClipboard = true;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

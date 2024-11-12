@@ -1,0 +1,135 @@
+﻿@using TrakHound.Services
+
+@if (ServiceInformation != null)
+{
+    <div class="information-panel">
+
+        <div class="properties-panel">
+            <table class="table table-sm">
+                <tbody>
+                    <tr>
+                        <td class="label">Service ID</td>
+                        <td class="value">@ServiceInformation.Id</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Service Name</td>
+                        <td class="value">@ServiceInformation.Name</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Service Description</td>
+                        <td class="value">@ServiceInformation.Description</td>
+                    </tr>
+                    <tr>
+                        <td class="label">TrakHound Version</td>
+                        <td class="value">@ServiceInformation.TrakHoundVersion</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="configuration-panel">
+            <table class="table table-sm">
+                <tbody>
+                    <tr>
+                        <td class="label">Configuration ID</td>
+                        <td class="value">@ServiceInformation.ConfigurationId</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="package-panel">
+            <table class="table table-sm">
+                <tbody>
+                    <tr>
+                        <td class="label">Package ID</td>
+                        <td class="value">@ServiceInformation.PackageId</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Package Version</td>
+                        <td class="value">@ServiceInformation.PackageVersion</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Package UUID</td>
+                        <td class="value">@ServiceInformation.PackageUuid</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Package Hash</td>
+                        <td class="value">@ServiceInformation.PackageHash</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Package Build Date</td>
+                        <td class="value">@ServiceInformation.PackageBuildDate.ToLocalTime()</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @if (ServiceInformation.Repository != null)
+        {
+            <div class="repository-panel">
+                <table class="table table-sm">
+                    <tbody>
+                        <tr>
+                            <td class="label">Repository</td>
+                            <td class="value"><a href="@ServiceInformation.Repository" target="_blank">@ServiceInformation.Repository</a></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Repository Branch</td>
+                            <td class="value"><a href="@GetRepositoryBranchLink(ServiceInformation)" target="_blank">@ServiceInformation.RepositoryBranch</a></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Repository Directory</td>
+                            <td class="value"><a href="@GetRepositoryDirectoryLink(ServiceInformation)" target="_blank">@ServiceInformation.RepositoryDirectory</a></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Repository Commit</td>
+                            <td class="value"><a href="@GetRepositoryCommitLink(ServiceInformation)" target="_blank">@ServiceInformation.RepositoryCommit</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        @if (ServiceInformation.PackageReadMe != null)
+        {
+            <div class="readme-panel">
+                <MarkdownContent Markdown="@ServiceInformation.PackageReadMe" />
+            </div>
+        }
+
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public TrakHoundServiceInformation ServiceInformation { get; set; }
+
+
+    private static string GetRepositoryBranchLink(TrakHoundServiceInformation information)
+    {
+        var baseUrl = information.Repository;
+        var branch = information.RepositoryBranch;
+
+        return Url.Combine(baseUrl, "tree", branch); // May need to revise this as this might only be valid for GitHub
+    }
+
+    private static string GetRepositoryDirectoryLink(TrakHoundServiceInformation information)
+    {
+        var baseUrl = information.Repository;
+        var branch = information.RepositoryBranch;
+        var directory = information.RepositoryDirectory;
+
+        return Url.Combine(baseUrl, "tree", branch, directory); // May need to revise this as this might only be valid for GitHub
+    }
+
+    private static string GetRepositoryCommitLink(TrakHoundServiceInformation information)
+    {
+        var baseUrl = information.Repository;
+        var commit = information.RepositoryCommit;
+
+        return Url.Combine(baseUrl, "commit", commit); // May need to revise this as this might only be valid for GitHub
+    }
+
+}

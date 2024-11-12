@@ -1,0 +1,16 @@
+﻿<div class="page-menu-item @CssClass">
+    <TrakHoundNavLink href="@Link">@Text</TrakHoundNavLink>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public string Link { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+}

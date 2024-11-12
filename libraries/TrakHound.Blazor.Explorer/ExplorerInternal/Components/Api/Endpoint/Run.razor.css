@@ -1,0 +1,453 @@
+﻿.run-panel {
+    display: block;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    padding-top: 5px;
+    display: grid;
+    grid-template-rows: max-content max-content max-content max-content 1fr;
+    grid-row-gap: 5px;
+}
+
+.hidden-input {
+    display: none;
+}
+
+.run-panel .btn-run {
+    width: 135px;
+    font-size: 15px;
+    height: 42px;
+    border-radius: 0;
+}
+
+    .run-panel .btn-run:focus {
+        box-shadow: none;
+    }
+
+    .run-panel .btn-run.btn-loading .icon {
+        animation: spin 1s linear infinite;
+    }
+
+.run-panel .listening {
+    display: inline-block;
+    width: 80px;
+    vertical-align: middle;
+}
+
+.table {
+    background: #fafafa;
+    border: 1px solid #eee;
+    margin: 0;
+}
+
+th {
+    font-size: 13px;
+    font-weight: bold;
+    border: none !important;
+    border-right: 1px solid #eee !important;
+    padding: 2px 10px;
+}
+
+td {
+    font-size: 13px;
+    line-height: 26px;
+    padding: 2px 15px;
+    background: #fff;
+    height: auto;
+}
+
+.type-cell {
+    width: 100px;
+}
+
+.name-cell {
+    width: 200px;
+}
+
+.data-type-cell {
+    width: 120px;
+    font-family: Consolas;
+}
+
+.value-cell {
+    padding: 0;
+}
+
+    .value-cell ::deep .text-box {
+        padding: 0;
+        margin: 0;
+        margin-top: 2px;
+        margin-bottom: 2px;
+        border-radius: 0;
+    }
+
+        .value-cell ::deep .text-box .form-group {
+            padding: 0;
+            margin: 0;
+            border-radius: 0;
+        }
+
+        .value-cell ::deep .text-box.small input {
+            width: 100%;
+            font-size: 13px !important;
+            border-radius: 0;
+            border: 1px solid var(--accentKindaLight);
+            padding: 0px 10px !important;
+            line-height: 10px !important;
+            height: 24px !important;
+            background: #fafafa;
+            background: var(--accentVeryVeryLight) !important;
+        }
+
+            .value-cell ::deep .text-box.small input::placeholder {
+                color: var(--accentLight);
+                font-size: 13px !important;
+                font-style: normal;
+            }
+
+        .value-cell ::deep .text-box input:focus {
+            outline: none;
+            box-shadow: inset 0px 0px 1px 1px var(--accent);
+        }
+
+    .value-cell ::deep .rz-textarea {
+        width: 100%;
+        font-size: 13px !important;
+        border-radius: 0;
+        border: 1px solid transparent;
+        border: 1px solid var(--accentKindaLight);
+        min-height: 100px;
+        background: #fafafa;
+        background: var(--accentVeryVeryLight) !important;
+        margin-top: 2px;
+        margin-bottom: 0;
+    }
+
+        .value-cell ::deep .rz-textarea:focus {
+            background: #fff;
+        }
+
+    .value-cell .body-upload {
+        display: grid;
+        border: 1px solid var(--accentKindaLight);
+    }
+
+        .value-cell .body-upload.file {
+            grid-template-columns: max-content 1fr;
+        }
+
+        .value-cell .body-upload.text {
+            grid-template-rows: max-content 1fr;
+        }
+
+    .value-cell .body-upload-toolbar {
+        background: var(--accentVeryVeryLight);
+        padding: 0;
+    }
+
+        .value-cell .body-upload-toolbar ::deep .rz-dropdown {
+            width: 100px;
+            border: none;
+            background: var(--accentVeryVeryLight);
+            color: var(--accent);
+            border-right: 1px solid var(--accentVeryLight);
+            border-radius: 0 !important;
+            margin: 0;
+            top: 0px;
+            height: 30px !important;
+            font-size: 12px;
+        }
+
+            .value-cell .body-upload-toolbar ::deep .rz-dropdown:focus {
+                border: none !important;
+                border-right: 1px solid var(--accentVeryLight) !important;
+                outline: none !important;
+                box-shadow: none !important;
+            }
+
+        .value-cell .body-upload-toolbar ::deep .rz-dropdown-trigger {
+            height: 30px !important;
+        }
+
+    .value-cell .body-upload-content {
+        border-top: 1px solid var(--accentVeryLight);
+    }
+
+        .value-cell .body-upload-content ::deep textarea {
+            height: 100%;
+            margin: 0 !important;
+            border: none;
+        }
+
+            .value-cell .body-upload-content ::deep textarea:hover {
+                border: none !important;
+            }
+
+            .value-cell .body-upload-content ::deep textarea:focus {
+                border: none !important;
+                outline: none !important;
+                box-shadow: none !important;
+            }
+
+        .value-cell .body-upload-content .body-upload-file {
+            display: grid;
+            grid-template-columns: max-content max-content 1fr;
+        }
+
+            .value-cell .body-upload-content .body-upload-file .body-upload-file-button {
+                border-left: 1px solid var(--accentLight);
+                border-right: 1px solid var(--accentLight);
+            }
+
+                .value-cell .body-upload-content .body-upload-file .body-upload-file-button .btn {
+                    height: 31px;
+                    font-size: 12px !important;
+                    background: var(--accentVeryLight);
+                    color: var(--accentDark);
+                    border: none !important;
+                    border-radius: 0 !important;
+                    margin: 0 !important;
+                    margin-top: -1px !important;
+                }
+
+                    .value-cell .body-upload-content .body-upload-file .body-upload-file-button .btn:hover {
+                        background: var(--accentLight);
+                        border-radius: 0 !important;
+                        color: #fff;
+                    }
+
+                    .value-cell .body-upload-content .body-upload-file .body-upload-file-button .btn:focus {
+                        border: none !important;
+                        outline: none !important;
+                        box-shadow: none !important;
+                    }
+
+            .value-cell .body-upload-content .body-upload-file .body-upload-file-path ::deep .text-box {
+                border: none !important;
+                border-radius: 0 !important;
+                margin: 0;
+            }
+
+                .value-cell .body-upload-content .body-upload-file .body-upload-file-path ::deep .text-box input {
+                    border: none !important;
+                    border-radius: 0 !important;
+                }
+
+                    .value-cell .body-upload-content .body-upload-file .body-upload-file-path ::deep .text-box input:focus {
+                        border: none !important;
+                        outline: none !important;
+                        box-shadow: none !important;
+                    }
+
+            .value-cell .body-upload-content .body-upload-file .body-upload-file-size {
+                background: var(--accentVeryVeryLight);
+                border-right: 1px solid var(--accentVeryLight);
+                padding: 0 15px;
+                line-height: 30px;
+                color: var(--accent);
+                font-size: 12px;
+                font-weight: bold;
+            }
+
+
+.response-message {
+    margin-left: 20px;
+    font-size: 13px;
+    line-height: 18px;
+    vertical-align: bottom;
+    color: var(--accent);
+}
+
+
+.request-panel {
+    grid-row: 1;
+    display: grid;
+    grid-template-columns: max-content max-content max-content 1fr;
+    font-size: 13px;
+    border: 1px solid #eee;
+    width: 100%;
+}
+
+.request-method-container {
+    padding: 10px;
+    width: 70px;
+    text-align: center;
+    border-right: 1px solid #eee;
+    background: #f8f8f8;
+}
+
+.request-method {
+    font-weight: bold;
+    color: #777;
+}
+
+.request-toolbar-container {
+    border-right: 1px solid #ddd;
+}
+
+    .request-toolbar-container .btn {
+        height: 100%;
+        width: 50px;
+        border-radius: 0;
+    }
+
+        .request-toolbar-container .btn:hover {
+            border: none;
+            background: var(--accentVeryVeryLight);
+        }
+
+        .request-toolbar-container .btn .icon {
+            margin-right: 0;
+        }
+
+        .request-toolbar-container .btn:hover .icon {
+            color: var(--accentLight);
+        }
+
+.request-url-container {
+    padding: 10px 15px;
+}
+
+
+.request-parameters-panel {
+    grid-row: 2;
+}
+
+.request-parameters {
+    overflow: auto;
+}
+
+    .request-parameters table {
+        border-top: none;
+    }
+
+.request-parameters table th {
+    position: sticky;
+    top: 0;
+    background: #fafafa;
+    border-bottom: 1px solid #eee !important;
+}
+
+.response-information {
+    grid-row: 3;
+}
+
+    .response-information.success {
+        background: var(--colorGreenHover);
+    }
+
+        .response-information.success td {
+            color: var(--colorGreenDark);
+        }
+
+            .response-information.success td.label-cell {
+                border-right: 1px solid rgba(0, 0, 0, 0.05);
+                font-size: 12px;
+            }
+
+            .response-information.success td.value-cell {
+                border-right: 1px solid rgba(0, 0, 0, 0.05);
+                font-weight: bold;
+                font-size: 12px;
+            }
+
+    .response-information.error {
+        background: var(--colorRedHover);
+    }
+
+        .response-information.error td {
+            color: var(--colorRedDark);
+        }
+
+            .response-information.error td.label-cell {
+                border-right: 1px solid rgba(0, 0, 0, 0.05);
+                font-size: 12px;
+            }
+
+            .response-information.error td.value-cell {
+                border-right: 1px solid rgba(0, 0, 0, 0.05);
+                font-weight: bold;
+                font-size: 12px;
+            }
+
+    .response-information table {
+        width: auto;
+        background: none;
+    }
+
+        .response-information table td {
+            background: none;
+        }
+
+            .response-information table td.label-cell {
+                padding: 3px 20px 3px 10px;
+            }
+
+            .response-information table td.value-cell {
+                padding: 3px 10px;
+            }
+
+    .response-information .response-icon {
+        font-size: 14px;
+    }
+
+        .response-information .response-icon.response-success {
+            color: var(--colorGreenDark);
+        }
+
+        .response-information .response-icon.response-error {
+            color: var(--colorRedDark);
+        }
+
+
+.response-parameters-panel {
+    grid-row: 4;
+}
+
+.response-parameters {
+    width: 100%;
+    overflow: hidden;
+}
+
+    .response-parameters .table {
+        width: auto;
+        min-width: 400px;
+        max-width: 1000px;
+        border-top: none;
+    }
+
+        .response-parameters .table td {
+            font-size: 12px;
+        }
+
+            .response-parameters .table td.value-cell {
+                line-height: 30px;
+                padding: 0 10px;
+            }
+
+        .response-parameters .table th {
+            font-size: 12px !important;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .response-parameters .table td {
+            font-size: 12px !important;
+            line-height: 16px;
+            padding: 2px 10px !important;
+        }
+
+            .response-parameters .table td.parameter-key {
+                min-width: 150px;
+                border-right: 1px solid #eee;
+            }
+
+            .response-parameters .table td.parameter-value {
+                width: 100%;
+            }
+
+.response-content {
+    grid-row: 5;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid #eee;
+}

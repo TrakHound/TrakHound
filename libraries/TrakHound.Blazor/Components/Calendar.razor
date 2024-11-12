@@ -1,0 +1,142 @@
+﻿@using System.Globalization
+
+<table class="calendar">
+    <thead>
+        <tr>
+            @foreach (var day in ShiftedAbbreviatedDayNames)
+            {
+                <th scope="col">
+                    <span>@day</span>
+                </th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @if (DateTime.HasValue)
+        {
+            var dateTime = DateTime.Value;
+            var targetDay = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day);
+
+            var weeks = GetWeeks();
+            for (var i = 0; i < weeks.Length; i++)
+            {
+                <tr>
+                    @for (int j = 0; j < 7; j++)
+                    {
+                        var cellClasses = new List<string>();
+                        var day = weeks[i][j];
+                        if (day.Type == DayType.PreviousMonth) cellClasses.Add("previous-month");
+                        if (day.Type == DayType.NextMonth) cellClasses.Add("next-month");
+                        if (targetDay == day.DateTime) cellClasses.Add("selected-day");
+
+                        var cellClass = string.Join(' ', cellClasses);                     
+
+                        <td class="@cellClass">
+                            <span class="cell-content">@day.DateTime.Day</span>
+                        </td>
+                    }
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+@code {
+
+    enum DayType
+    {
+        PreviousMonth,
+        CurrentMonth,
+        NextMonth
+    }
+
+    struct Day
+    {
+        public DayType Type { get; set; }
+
+        public DateTime DateTime { get; set; }
+
+        public Day(DayType type, DateTime dateTime)
+        {
+            Type = type;
+            DateTime = dateTime;
+        }
+    }
+
+
+    [Parameter]
+    public DateTime? DateTime { get; set; }
+
+
+    IEnumerable<string> ShiftedAbbreviatedDayNames
+    {
+        get
+        {
+            for (int current = (int)CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek, to = current + 7; current < to; current++)
+            {
+                yield return CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedDayNames[current % 7];
+            }
+        }
+    }
+
+    Day[][] GetWeeks()
+    {
+        var weeks = new List<Day[]>();
+
+        if (DateTime != null)
+        {
+            var dateTime = DateTime.Value;
+            if (dateTime > System.DateTime.MinValue)
+            {
+                var firstDay = new DateTime(dateTime.Year, dateTime.Month, 1);
+                var lastDay = new DateTime(dateTime.Year, dateTime.Month, System.DateTime.DaysInMonth(dateTime.Year, dateTime.Month));
+
+                var nextDay = 0;
+                var nextDayIndex = 0;
+                var week = new Day[7];
+
+                // Add Previous Month Days
+                for (var i = (int)firstDay.DayOfWeek; i > 0; i--)
+                {
+                    week[nextDayIndex] = new Day(DayType.PreviousMonth, firstDay.AddDays(-1 * i));
+                    nextDayIndex++;
+                }
+
+                while (nextDay < lastDay.Day)
+                {
+                    week[nextDayIndex] = new Day(DayType.CurrentMonth, firstDay.AddDays(nextDay));
+                    nextDay++;
+
+                    if (nextDayIndex > 5)
+                    {
+                        // Create deep copy of week
+                        var addWeek = new Day[7];
+                        for (var i = 0; i < 7; i++) addWeek[i] = week[i];
+
+                        weeks.Add(addWeek);
+                        nextDayIndex = 0;
+                    }
+                    else
+                    {
+                        nextDayIndex++;
+                    }
+                }
+
+                var nextMonthDay = 1;
+                // Add Next Month Days
+                for (var i = (int)lastDay.DayOfWeek; i < 6; i++)
+                {
+                    week[nextDayIndex] = new Day(DayType.NextMonth, lastDay.AddDays(nextMonthDay));
+                    nextDayIndex++;
+                    nextMonthDay++;
+                }
+
+                weeks.Add(week);
+            }
+        }
+
+        return weeks.ToArray();
+    }
+
+}

@@ -1,0 +1,279 @@
+﻿@inject ExplorerService explorerService
+@using System.Text.Json.Serialization
+@using TrakHound.Functions
+
+
+@if (functionInformation != null && runInformation != null)
+{
+    var statusIcon = "";
+    var statusDescription = "";
+    var statusAgo = $"{runInformation.Ago.ToSimpleFormattedString()} ago";
+    var statusDuration = runInformation.Duration.ToFormattedString(true);
+
+    var statusType = runInformation.Status.ConvertEnum<TrakHoundFunctionStatusType>();
+    var statusClass = statusType.ToString().ToLower();
+
+    switch (statusType)
+    {
+        case TrakHoundFunctionStatusType.Completed:
+            statusIcon = "fa-sharp fa-solid fa-circle-check";
+            statusDescription = "Function Completed Successfully";
+            break;
+
+        case TrakHoundFunctionStatusType.Running:
+            statusIcon = "fa-sharp fa-solid fa-play";
+            statusDescription = "Function is Currently Running";
+            break;
+
+        case TrakHoundFunctionStatusType.Started:
+            statusIcon = "fa-sharp fa-solid fa-play";
+            statusDescription = "Function has been Started";
+            break;
+
+        case TrakHoundFunctionStatusType.Wait:
+            statusIcon = "fa-sharp fa-solid fa-timer";
+            statusDescription = "Function is Waiting for a signal";
+            break;
+
+        case TrakHoundFunctionStatusType.Stopped:
+            statusIcon = "fa-sharp fa-solid fa-stop";
+            statusDescription = "Function has Stopped";
+            break;
+
+        case TrakHoundFunctionStatusType.Error:
+            statusIcon = "fa-sharp fa-solid fa-triangle-exclamation";
+            statusDescription = "Function Returned an Error";
+            break;
+    }
+
+
+    <div class="run-panel">
+
+        <div class="header-panel">
+            <Header FunctionInformation="@functionInformation" />
+        </div>
+
+        <div class="status-panel @statusClass">
+            <div class="status-panel-container">
+                <div class="status-icon-container">
+                    <span class="status-icon @statusIcon"></span>
+                </div>
+                <div class="status-description-container">
+                    <span class="status-type">@statusType</span>
+                    <span class="status-description">@statusDescription</span>
+                </div>
+                <div class="status-metrics-container">
+                    <span class="status-ago"><span class="icon fa-sharp fa-solid fa-calendar"></span>@statusAgo</span>
+                    <span class="status-duration"><span class="icon fa-sharp fa-solid fa-timer"></span>@statusDuration</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-panel">
+            <RadzenTabs RenderMode="TabRenderMode.Client">
+                <Tabs>
+                    <RadzenTabsItem Text="Information">
+                        <div class="information-panel">
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <td class="label">Function ID</td>
+                                        <td class="value">@functionInformation.FunctionId</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Function Package ID</td>
+                                        <td class="value">@functionInformation.PackageId</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Function Package Version</td>
+                                        <td class="value">@functionInformation.PackageVersion</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Run ID</td>
+                                        <td class="value">@runInformation.Id</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Status</td>
+                                        <td class="value">@runInformation.Status</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Status Code</td>
+                                        <td class="value">@runInformation.StatusCode</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Started</td>
+                                        <td class="value">@runInformation.Start.ToISO8601String()</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Completed</td>
+                                        <td class="value">@runInformation.End.ToISO8601String()</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Duration</td>
+                                        <td class="value">@runInformation.Duration.ToDetailedFormattedString()</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Logs">
+                        <div class="log-panel">
+
+                            @if (!logs.IsNullOrEmpty())
+                            {
+                                <RadzenDataGrid Data="logs">
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="FunctionLog" Property="Level" Title="Log Level" TextAlign="TextAlign.Left" Width="110px" />
+                                        <RadzenDataGridColumn TItem="FunctionLog" Property="Timestamp" Title="Timestamp" TextAlign="TextAlign.Left" Width="175px" />
+                                        <RadzenDataGridColumn TItem="FunctionLog" Property="Message" Title="Message" TextAlign="TextAlign.Left" />
+                                    </Columns>
+                                </RadzenDataGrid>
+                            }
+
+                        </div>
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Output">
+
+                        @if (!outputParameters.IsNullOrEmpty())
+                        {
+                            <div class="output-parameters">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Key</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var parameter in outputParameters)
+                                        {
+                                            <tr>
+                                                <td class="key">@parameter.Key</td>
+                                                <td class="value">@parameter.Value</td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+
+                    </RadzenTabsItem>
+                </Tabs>
+            </RadzenTabs>
+        </div>
+
+    </div>
+}
+
+
+@code {
+
+    private string previousInstanceId;
+    private string previousFunctionId;
+    private string previousRunId;
+    private TrakHoundFunctionInformation functionInformation;
+    private FunctionRun runInformation;
+    private IEnumerable<FunctionLog> logs;
+    private Dictionary<string, string> outputParameters;
+
+
+    class FunctionRun
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
+
+        [JsonPropertyName("status")]
+        public string Status { get; set; }
+
+        [JsonPropertyName("statusCode")]
+        public int StatusCode { get; set; }
+
+        [JsonIgnore]
+        public TimeSpan Ago => DateTime.UtcNow - End;
+
+        [JsonPropertyName("start")]
+        public DateTime Start { get; set; }
+
+        [JsonPropertyName("end")]
+        public DateTime End { get; set; }
+
+        [JsonPropertyName("duration")]
+        public TimeSpan Duration { get; set; }
+    }
+
+    class FunctionLog
+    {
+        [JsonPropertyName("level")]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+        public TrakHoundLogLevel Level { get; set; }
+
+        [JsonPropertyName("message")]
+        public string Message { get; set; }
+
+        [JsonPropertyName("timestamp")]
+        public DateTime Timestamp { get; set; }
+    }
+
+
+    [Parameter]
+    public string FunctionId { get; set; }
+
+    [Parameter]
+    public string RunId { get; set; }
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load(bool forceReload = false)
+    {
+        var functionId = Url.GetRouteParameter(Explorer.Path, Url.Combine(explorerService.SelectedInstanceId, "functions", "{functionId}"), "functionId");
+        var runId = Url.GetRouteParameter(Explorer.Path, Url.Combine(explorerService.SelectedInstanceId, "functions", "{functionId}", "runs", "{runId}"), "runId");
+
+        if (forceReload || explorerService.SelectedInstanceId != previousInstanceId || functionId != previousFunctionId  || runId != previousRunId)
+        {
+            previousInstanceId = explorerService.SelectedInstanceId;
+            previousFunctionId = functionId;
+            previousRunId = runId;
+
+            var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+            if (client != null)
+            {
+                // Get Function
+                functionInformation = await client.Functions.GetByFunctionId(functionId);
+
+                //Get Run
+                runInformation = await client.Api.QueryJson<FunctionRun>(Url.Combine("functions", functionId, "runs", runId));
+
+                if (functionInformation != null)
+                {
+                    // Set Explorer Breadcrumbs
+                    var breadcrumbItems = new List<BreadcrumbItem>();
+                    breadcrumbItems.Add(new BreadcrumbItem(explorerService.SelectedInstanceId, null));
+                    breadcrumbItems.Add(new BreadcrumbItem("Functions", Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "functions")));
+                    breadcrumbItems.Add(new BreadcrumbItem(functionInformation.PackageId, Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "functions", functionInformation.PackageId)));
+                    breadcrumbItems.Add(new BreadcrumbItem("Runs", null));
+                    breadcrumbItems.Add(new BreadcrumbItem(runId, null));
+                    explorerService.BreadcrumbItems = breadcrumbItems;
+                }
+
+                // Get Logs
+                logs = await client.Api.QueryJson<IEnumerable<FunctionLog>>(Url.Combine("functions", functionId, "runs", runId, "log"));
+
+                // Get Output
+                outputParameters = await client.Api.QueryJson<Dictionary<string, string>>(Url.Combine("functions", functionId, "runs", runId, "output"));
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

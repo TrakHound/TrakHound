@@ -1,0 +1,98 @@
+﻿@using TrakHound.Entities
+@using TrakHound.Requests
+
+<div class="add-modal-panel">
+
+    <Modal Class="add-modal" Visible="@Visible">
+        <HeaderContent>
+            <span class="modal-header-icon fa-solid fa-sharp fa-square-plus"></span>
+            <span class="modal-header-title">Create New Definition</span>
+        </HeaderContent>
+        <BodyContent>
+            <div class="form-field">
+                <label>ID</label>
+                <RadzenTextBox @bind-Value=@Id />
+            </div>
+            <div class="form-field">
+                <label>Description</label>
+                <RadzenTextArea @bind-Value=@Description />
+            </div>
+            <div class="form-field">
+                <label>Parent ID</label>
+                <DefinitionSelection Client="@ObjectExplorerService.GetClient()" @bind-Pattern=@ParentId />
+            </div>
+        </BodyContent>
+        <FooterContent>
+
+            @if (!loading)
+            {
+                <button class="btn btn-secondary" @onclick="ModalCancelClicked"><span class="icon fa-solid fa-sharp fa-xmark"></span>Cancel</button>
+                <button class="btn btn-primary" @onclick="ModalAddClicked"><span class="icon fa-solid fa-sharp fa-plus"></span>Add</button>
+            }
+            else
+            {
+                <button class="btn btn-primary disabled"><span class="icon fa-solid fa-sharp fa-loader"></span>Adding..</button>
+            }
+
+        </FooterContent>
+    </Modal>
+
+</div>
+
+@code {
+
+    private bool loading;
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> VisibleChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<TrakHoundDefinition> Created { get; set; }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public string Description { get; set; }
+
+    [Parameter]
+    public string ParentId { get; set; }
+
+
+    private async void ModalAddClicked()
+    {
+        loading = true;
+        await InvokeAsync(StateHasChanged);
+
+        var entity = await ObjectExplorerService.AddDefinition(Id, Description, ParentId);
+        if (entity != null)
+        {
+            await Created.InvokeAsync(entity);
+
+            ObjectExplorerService.AddNotification(NotificationType.Information, "Definition Created Successfully", Id);
+        }
+        else
+        {
+            ObjectExplorerService.AddNotification(NotificationType.Error, "Error Creating Definition", Id);
+        }
+
+        loading = false;
+        Visible = false;
+        await VisibleChanged.InvokeAsync(Visible);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ModalCancelClicked()
+    {
+        Visible = false;
+        await VisibleChanged.InvokeAsync(Visible);
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

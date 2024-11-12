@@ -1,0 +1,34 @@
+﻿.check-box {
+    display: block;
+    margin: 5px 0px 10px;
+}
+
+    .check-box .check-box-title {
+        font-size: 12px;
+        color: var(--textSecondary);
+        margin-bottom: 2px;
+    }
+
+    .check-box .check-box-subtitle {
+        color: var(--textSecondary);
+        margin-left: 5px;
+    }
+
+    .check-box .check-box-input {
+
+    }
+
+    .check-box .check-box-input ::deep .rz-chkbox {
+        height: 20px;
+        width: 20px;
+    }
+
+        .check-box .check-box-input ::deep .rz-chkbox::after {
+            height: 20px;
+            width: 20px;
+        }
+
+        .check-box .check-box-input input:disabled {
+            background: #e4e4e4;
+            color: #888;
+        }

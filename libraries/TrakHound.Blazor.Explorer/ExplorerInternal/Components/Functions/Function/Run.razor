@@ -1,0 +1,583 @@
+﻿@implements IDisposable
+@inject ExplorerService explorerService
+@inject JavascriptService javascriptService
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using TrakHound.Blazor.Services
+@using TrakHound.Functions
+
+<div class="run-panel">
+
+    <div class="header-panel">
+        <span class="icon fa-regular fa-sharp fa-circle-play"></span>
+        <span class="title">Run</span>
+        <span class="subtitle">Manually run the function</span>
+    </div>
+
+    <div class="toolbar-panel">
+
+        @if (!loading)
+        {
+            <button class="btn btn-primary btn-run" @onclick="RunRequest"><span class="icon fa-solid fa-play"></span>Run</button>
+        }
+        else
+        {
+            <button class="btn btn-primary btn-run btn-loading"><span class="icon loading-icon fa-regular fa-loader"></span>Running..</button>
+        }
+
+    </div>
+
+    <div class="request-panel">
+        <div class="request-status-container">
+            <span class="request-status">@requestStatus</span>
+        </div>
+        <div class="request-duration-container">
+            <span id="request-duration">@requestDuration?.ToDetailedFormattedString()</span>
+        </div>
+        <div class="request-started-container">
+            <span class="request-started">@requestStarted?.ToISO8601String()</span>
+        </div>
+        <div class="request-completed-container">
+            <span class="request-completed">@requestCompleted?.ToISO8601String()</span>
+        </div>
+
+        @if (response.Id != null)
+        {
+            <div class="request-id-container">
+                <a href="@GetRunLink()" target="_blank" class="request-id">@requestRunId</a>
+            </div>
+        }
+
+    </div>
+
+    <div class="content-panel">
+
+        <RadzenTabs RenderMode="TabRenderMode.Client">
+            <Tabs>
+                <RadzenTabsItem Text="Logs">
+                    <div class="response-log">
+                        @{
+                            var logs = GetLogLines();
+                            if (!logs.IsNullOrEmpty())
+                            {
+                                <table class="table table-sm">
+                                    <tbody>
+
+                                        @for (var i = 0; i < logs.Count; i++)
+                                        {
+                                            var log = logs[i];
+                                            var level = log.Level.ToString();
+                                            var levelClass = level.ToLower();
+                                            var levelId = i == logs.Count - 1 ? lastLogElementId : "";
+
+                                            <tr id="@levelId" class="@levelClass">
+                                                <td class="level">@level</td>
+                                                <td class="timestamp">@log.Timestamp.ToISO8601String()</td>
+                                                <td class="message"><p>@log.Message</p></td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            }
+                        }
+                    </div>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Response">
+
+                    @if (response.Id != null)
+                    {
+                        <div class="response-information">
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <td class="label">Run ID</td>
+                                        <td class="value">@response.Id</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Status Code</td>
+                                        <td class="value">@response.StatusCode</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Started</td>
+                                        <td class="value">@response.Started.ToLocalDateTime()</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Completed</td>
+                                        <td class="value">@response.Completed.ToLocalDateTime()</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Input">
+                    <div class="input-parameters">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th></th>
+                                    <th>Value</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @if (!requestParameters.IsNullOrEmpty())
+                                {
+                                    foreach (var parameter in requestParameters)
+                                    {
+                                        <tr>
+                                            <td class="name-cell">
+                                                <TextBox Value="@parameter.Key" ValueChanged="(o) => ParameterNameChanged(parameter.Key, o)" SpellCheck="false" />
+                                            </td>
+                                            <td class="divider-cell"></td>
+                                            <td class="value-cell">
+                                                <TextBox Value="@parameter.Value" ValueChanged="(o) => ParameterValueChanged(parameter.Key, o)" SpellCheck="false" />
+                                            </td>
+                                            <td class="divider-cell"></td>
+                                            <td class="buttons-cell">
+                                                <button class="btn btn-command btn-remove" @onclick="(o) => DeleteParameter(parameter.Key)"><span class="icon fa-solid fa-sharp fa-trash"></span></button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+
+                                <tr>
+                                    <td class="name-cell">
+                                        <TextBox Value="@addParameterName" ValueChanged="(o) => AddParameterKeyChanged(o)" SpellCheck="false" />
+                                    </td>
+                                    <td class="divider-cell"></td>
+                                    <td class="value-cell">
+                                        <TextBox Value="@addParameterValue" ValueChanged="(o) => AddParameterValueChanged(o)" InputChangeType="InputChangeType.OnLostFocus" SpellCheck="false" />
+                                    </td>
+                                    <td class="divider-cell"></td>
+                                    <td class="buttons-cell">
+                                        <button class="btn btn-command btn-remove" @onclick="ClearAddParameter"><span class="icon fa-solid fa-sharp fa-trash"></span></button>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Output">
+
+                    @if (!response.Parameters.IsNullOrEmpty())
+                    {
+                        <div class="output-parameters">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Key</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var parameter in response.Parameters)
+                                    {
+                                        <tr>
+                                            <td class="key">@parameter.Key</td>
+                                            <td class="value">@parameter.Value</td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+
+    </div>
+
+</div>
+
+@code {
+
+    private const string lastLogElementId = "last-log-entry";
+
+    private readonly Dictionary<string, string> requestParameters = new Dictionary<string, string>();
+    private string addParameterName;
+    private string addParameterValue;
+    private string bodyParameterValue;
+    private string bodyParameterType;
+    private byte[] requestBody;
+    private IBrowserFile requestFile;
+
+    private string requestRunId;
+    private string requestUrl;
+    private string requestMethod;
+    private string requestStatus;
+    private TimeSpan? requestDuration;
+    private DateTime? requestStarted;
+    private DateTime? requestCompleted;
+    private string imageKey;
+
+
+    private TrakHoundFunctionResponse response;
+    private string responseText;
+    private string responseMessage;
+    private TimeSpan responseDuration;
+    private ITrakHoundConsumer<IEnumerable<FunctionStatus>> responseStatusConsumer;
+    private ITrakHoundConsumer<IEnumerable<FunctionLog>> responseLogConsumer;
+    private DelayEvent responseLogDisposeDelay;
+    private readonly List<FunctionLog> responseLogs = new List<FunctionLog>();
+    private readonly object _lock = new object();
+
+    private bool loading;
+
+
+    class FunctionStatus
+    {
+        [JsonPropertyName("eventId")]
+        public string EventId { get; set; }
+
+        [JsonPropertyName("status")]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+        public TrakHoundFunctionStatusType Status { get; set; }
+
+        [JsonPropertyName("timestamp")]
+        public DateTime Timestamp { get; set; }
+    }
+
+    class FunctionLog
+    {
+        [JsonPropertyName("level")]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+        public TrakHoundLogLevel Level { get; set; }
+
+        [JsonPropertyName("message")]
+        public string Message { get; set; }
+
+        [JsonPropertyName("timestamp")]
+        public DateTime Timestamp { get; set; }
+    }
+
+
+    [Parameter]
+    public string ServerId { get; set; }
+
+    [Parameter]
+    public string RequestType { get; set; }
+
+    [Parameter]
+    public TrakHoundFunctionInformation FunctionInformation { get; set; }
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        responseLogDisposeDelay = new DelayEvent(5000);
+        responseLogDisposeDelay.Elapsed += LogDisposeDelayElapsed;
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        loading = false;
+        responseText = null;
+        responseMessage = null;
+        responseDuration = TimeSpan.Zero;
+
+        requestBody = null;
+        requestFile = null;
+        bodyParameterValue = null;
+        requestParameters.Clear();
+
+        await UpdateRequestUrl();
+    }
+
+    void IDisposable.Dispose()
+    {
+        try
+        {
+            if (responseLogDisposeDelay != null) responseLogDisposeDelay.Dispose();
+        }
+        catch { }
+    }
+
+
+    private async void ParameterNameChanged(string originalParameterName, string newParameterName)
+    {
+        if (!string.IsNullOrEmpty(originalParameterName) && !string.IsNullOrEmpty(newParameterName))
+        {
+            var value = requestParameters.GetValueOrDefault(originalParameterName);
+            requestParameters.Remove(originalParameterName);
+            requestParameters.Add(newParameterName, value);
+            await UpdateRequestUrl();
+        }
+    }
+
+    private async void ParameterValueChanged(string parameterName, string parameterValue)
+    {
+        if (!string.IsNullOrEmpty(parameterName))
+        {
+            requestParameters.Remove(parameterName);
+            requestParameters.Add(parameterName, parameterValue);
+            await UpdateRequestUrl();
+        }
+    }
+
+    private async void DeleteParameter(string parameterName)
+    {
+        if (!string.IsNullOrEmpty(parameterName))
+        {
+            requestParameters.Remove(parameterName);
+            await UpdateRequestUrl();
+        }
+    }
+
+    private async void AddParameterKeyChanged(string parameterName)
+    {
+        addParameterName = parameterName;
+
+        if (!string.IsNullOrEmpty(parameterName) && !string.IsNullOrEmpty(addParameterValue))
+        {
+            requestParameters.Remove(parameterName);
+            requestParameters.Add(parameterName, addParameterValue);
+
+            addParameterName = null;
+            addParameterValue = null;
+
+            await UpdateRequestUrl();
+        }
+    }
+
+    private async void AddParameterValueChanged(string parameterValue)
+    {
+        addParameterValue = parameterValue;
+
+        if (!string.IsNullOrEmpty(addParameterName))
+        {
+            requestParameters.Remove(addParameterName);
+            requestParameters.Add(addParameterName, parameterValue);
+
+            addParameterName = null;
+            addParameterValue = null;
+
+            await UpdateRequestUrl();
+        }
+    }
+
+    private async void ClearAddParameter()
+    {
+        addParameterName = null;
+        addParameterValue = null;
+
+        await UpdateRequestUrl();
+    }
+
+
+    private async void BodyParameterValueChanged(string parameterName, string parameterValue, string parameterDataType)
+    {
+        bodyParameterValue = parameterValue;
+
+        switch (parameterDataType)
+        {
+            case "Byte[]": bodyParameterType = "application/octet-stream"; break;
+            case "String": bodyParameterType = "text/plain"; break;
+            default: bodyParameterType = "application/json"; break;
+        }
+
+        await UpdateRequestUrl();
+    }
+
+    private async void BodyFileChanged(InputFileChangeEventArgs e)
+    {
+        requestFile = e.File;
+        bodyParameterType = "application/octet-stream";
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task UpdateRequestUrl()
+    {
+        var instance = Explorer.Instances.GetInstance(ServerId);
+        if (instance != null)
+        {
+            var baseUrl = instance.GetInterface("HTTP").GetBaseUrl();
+            baseUrl = Url.Combine(baseUrl, "_functions");
+
+            if (!requestParameters.IsNullOrEmpty())
+            {
+                requestMethod = "POST";
+            }
+            else
+            {
+                requestMethod = "GET";
+            }
+
+            requestUrl = Url.Combine(baseUrl, "run", FunctionInformation.FunctionId);
+
+            // if (!requestParameters.IsNullOrEmpty())
+            // {
+            //     foreach (var parameter in requestParameters)
+            //     {
+            //         requestUrl = Url.AddQueryParameter(requestUrl, parameter.Key, parameter.Value);
+            //     }
+            // }
+
+            // if (RequestType.ToLower() == FunctionRequestTypes.Package) requestUrl = Url.AddQueryParameter(requestUrl, "packageVersion", Function.PackageVersion);
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+
+    private async void RunRequest()
+    {
+        if (!loading && FunctionInformation != null)
+        {
+            if (responseStatusConsumer != null) responseStatusConsumer.Dispose();
+            if (responseLogConsumer != null) responseLogConsumer.Dispose();
+
+            loading = true;
+            requestRunId = Guid.NewGuid().ToString();
+            responseText = null;
+            responseMessage = null;
+            requestStatus = "Started";
+            requestStarted = DateTime.Now;
+            requestCompleted = null;
+            responseDuration = TimeSpan.Zero;
+            responseLogs.Clear();
+            await InvokeAsync(StateHasChanged);
+
+            var stpw = System.Diagnostics.Stopwatch.StartNew();
+
+
+            // Start JS Timer
+            var timerId = Guid.NewGuid().ToString();
+            await javascriptService.StartTimer(timerId, "request-duration");
+
+            var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+            if (client != null)
+            {
+                var route = FunctionInformation.FunctionId;
+                var parameters = requestParameters;
+                Stream stream = null;
+                byte[] requestBodyBytes = null;
+                string contentType = bodyParameterType;
+
+                // Add Body (InputFile)
+                if (requestFile != null)
+                {
+                    stream = requestFile.OpenReadStream(requestFile.Size);
+                }
+                else if (!string.IsNullOrEmpty(bodyParameterValue))
+                {
+                    requestBodyBytes = System.Text.Encoding.UTF8.GetBytes(bodyParameterValue);
+                    stream = new MemoryStream(requestBodyBytes);
+                }
+
+                // Subscribe to Status
+                var statusSubscribeRoute = Url.Combine("functions", FunctionInformation.FunctionId, "runs", requestRunId, "status");
+                responseStatusConsumer = await client.Api.SubscribeJson<IEnumerable<FunctionStatus>>(statusSubscribeRoute);
+                if (responseStatusConsumer != null) responseStatusConsumer.Received += StatusReceived;
+
+                // Subscribe to Logs
+                var logSubscribeRoute = Url.Combine("functions", FunctionInformation.FunctionId, "runs", requestRunId, "log");
+                responseLogConsumer = await client.Api.SubscribeJson<IEnumerable<FunctionLog>>(logSubscribeRoute);
+                if (responseLogConsumer != null) responseLogConsumer.Received += LogReceived;
+
+                // Run Function
+                response = await client.Functions.Run(FunctionInformation.FunctionId, parameters, requestRunId, requestStarted);
+
+                responseLogDisposeDelay.Set();
+
+                requestStatus = "Completed";
+                requestCompleted = response.Completed.ToLocalDateTime();
+                requestDuration = TimeSpan.FromTicks(response.Completed - response.Started);
+            }
+
+            await javascriptService.StopTimer(timerId);
+
+            stpw.Stop();
+
+            loading = false;
+            responseMessage = $"Response in {stpw.Elapsed.ToDetailedFormattedString()}";
+            responseDuration = stpw.Elapsed;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void StatusReceived(object sender, IEnumerable<FunctionStatus> statuses)
+    {
+        if (!statuses.IsNullOrEmpty())
+        {
+            foreach (var status in statuses)
+            {
+                // Console.WriteLine($"Function Status Received : {status.Status} @ {status.Timestamp.ToString("o")}");
+            }
+
+
+            // lock (_lock)
+            // {
+            //     foreach (var log in logs)
+            //     {
+            //         responseLogs.Add(log);
+            //     }
+            // }
+
+            // await InvokeAsync(StateHasChanged);
+        }
+
+        // await javascriptService.ScrollIntoView(lastLogElementId);
+    }
+
+    private async void LogReceived(object sender, IEnumerable<FunctionLog> logs)
+    {
+        if (!logs.IsNullOrEmpty())
+        {
+            lock (_lock)
+            {
+                foreach (var log in logs)
+                {
+                    responseLogs.Add(log);
+                }
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+
+        await javascriptService.ScrollIntoView(lastLogElementId);
+    }
+
+    private void StatusDisposeDelayElapsed(object sender, EventArgs args)
+    {
+        if (responseStatusConsumer != null) responseStatusConsumer.Dispose();
+    }
+
+    private void LogDisposeDelayElapsed(object sender, EventArgs args)
+    {
+        if (responseLogConsumer != null) responseLogConsumer.Dispose();
+    }
+
+    private List<FunctionLog> GetLogLines()
+    {
+        lock (_lock)
+        {
+            return responseLogs.OrderBy(o => o.Timestamp).ToList();
+        }
+    }
+
+    private string GetRunLink()
+    {
+        if (FunctionInformation != null && requestRunId != null)
+        {
+            return Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "functions", FunctionInformation.PackageId, "runs", requestRunId);
+        }
+
+        return null;
+    }
+
+}

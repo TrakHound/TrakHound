@@ -1,0 +1,162 @@
+﻿<CascadingValue Name="ConfigurationService" Value="@configurationService">
+    <div class="driver-panel configuration-table-panel">
+
+        @switch (selectedPage)
+        {
+            case PageIndex.Table:
+
+                <div class="breadcrumb-panel">
+                    <BreadcrumbLinks>
+                        <BreadcrumbLink Display="Home" Link="@InstanceConfiguration.BasePath" />
+                        <BreadcrumbLink Display="Apps" />
+                    </BreadcrumbLinks>
+                </div>
+
+                <div class="header-panel">
+                    <div class="header-panel-container">
+                        <div class="header-panel-icon-container">
+                            <span class="header-panel-icon fa-solid fa-sharp fa-browsers"></span>
+                        </div>
+                        <div class="header-panel-information-container">
+                            <span class="header-panel-title">Apps</span>
+                            <span class="header-panel-description">User Interfaces to view and interact with information</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="toolbar-panel">
+                    <button class="btn btn-refresh" @onclick="RefreshClicked"><span class="icon fa-solid fa-sharp fa-rotate"></span></button>
+                    <button class="btn btn-add" @onclick="AddClicked"><span class="icon fa-solid fa-sharp fa-plus"></span>Add</button>
+                </div>
+
+                <div class="content-panel">
+
+                    @if (!configurationService.TableItems.IsNullOrEmpty())
+                    {
+                        <Table EditClicked="EditClicked" RemoveClicked="RemoveClicked" />
+                    }
+                    else
+                    {
+                        <div class="empty-panel">
+                            <div class="empty-container">
+                                <span class="empty-message">No Configurations Found</span>
+                                <button class="empty-btn btn btn-light" @onclick="AddClicked"><span class="icon fa-solid fa-sharp fa-plus"></span>Add Configuration</button>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+
+                break;
+
+            case PageIndex.Add:
+
+                <div class="breadcrumb-panel">
+                    <BreadcrumbLinks>
+                        <BreadcrumbLink Display="Home" Link="@InstanceConfiguration.BasePath" />
+                        <BreadcrumbLink Display="Apps" />
+                        <BreadcrumbLink Display="Add" />
+                    </BreadcrumbLinks>
+                </div>
+
+                <div class="content-panel">
+                    <Add ConfigurationAdded="ConfigurationAdded" Canceled="AddConfigurationCanceled" />
+                </div>
+
+                break;
+        }
+
+    </div>
+</CascadingValue>
+
+<TrakHound.Blazor.Components.Notifications Items="@notificationService.Notifications" />
+
+@code {
+
+    private ConfigurationService configurationService;
+    private TrakHound.Blazor.Services.NotificationService notificationService;
+
+    private enum PageIndex
+    {
+        Table,
+        Add
+    }
+    private PageIndex selectedPage;
+
+
+    [CascadingParameter(Name = "InstanceConfiguration")]
+    public InstanceConfiguration InstanceConfiguration { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        configurationService = new ConfigurationService(InstanceConfiguration);
+        notificationService = new Blazor.Services.NotificationService();
+
+        configurationService.Load();
+    }
+
+    private async void AddClicked()
+    {
+        selectedPage = PageIndex.Add;
+        configurationService.AddConfiguration = new ConfigurationService.Configuration();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void EditClicked(string configurationId)
+    {
+        selectedPage = PageIndex.Add;
+        configurationService.EditConfiguration(configurationId);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void RemoveClicked(string configurationId)
+    {
+        configurationService.RemoveConfiguration(configurationId);
+
+        notificationService.AddNotification(NotificationType.Information, "App Configuration Removed", configurationId);
+
+        configurationService.Load();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void RefreshClicked()
+    {
+        configurationService.Load();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void ConfigurationAdded(ConfigurationService.ConfigurationAddResult configurationResult)
+    {
+        // Add Notification
+        if (configurationResult.IsNew)
+        {
+            notificationService.AddNotification(NotificationType.Information, "App Configuration Added", configurationResult.ConfigurationId);
+        }
+        else
+        {
+            notificationService.AddNotification(NotificationType.Information, "App Configuration Saved", configurationResult.ConfigurationId);
+        }
+
+        selectedPage = PageIndex.Table;
+        configurationService.Load();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void AddConfigurationCanceled()
+    {
+        configurationService.AddConfiguration.Id = null;
+        configurationService.AddConfiguration.Name = null;
+        configurationService.AddConfiguration.PackageId = null;
+        configurationService.AddConfiguration.PackageVersion = null;
+        configurationService.AddConfiguration.Route = null;
+        configurationService.AddConfiguration.RouterId = null;
+        configurationService.AddConfiguration.AutoUpdate = false;
+        configurationService.AddConfiguration.Parameters = null;
+        configurationService.AddPackageQuery = null;
+
+        selectedPage = PageIndex.Table;
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

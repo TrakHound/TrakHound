@@ -1,0 +1,470 @@
+﻿@page "/_admin/licenses"
+@inject JavascriptService javascript
+@using Radzen
+@using Radzen.Blazor
+@using TrakHound.Blazor.Components
+@using TrakHound.Blazor.Services
+@using TrakHound.Licenses
+
+<TrakHoundPageTitle>Licenses - TrakHound Instance</TrakHoundPageTitle>
+
+<div class="licenses-page">
+
+    <div class="header-panel">
+        <div class="header-panel-content">
+            <div class="header-panel-icon">
+                <div class="header-icon-outline">
+                    <span class="icon fa-solid fa-sharp fa-key"></span>
+                </div>
+            </div>
+            <div class="header-panel-text">
+                <span class="header-panel-title">Licenses</span>
+                <span class="header-panel-subtitle">Manage Licenses</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbar-panel">
+        <div class="toolbar-panel-container">
+            <div class="toolbar-panel-refresh">
+
+                @if (!loading)
+                {
+                    <button class="btn btn-light" @onclick="Load"><span class="icon fa-solid fa-sharp fa-rotate-right"></span>Refresh</button>
+                }
+                else
+                {
+                    <button class="btn btn-secondary"><span class="icon fa-solid fa-sharp fa-loader"></span>Loading..</button>
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <div class="device-panel">
+        <div class="device-panel-container">
+            <label>Device ID:</label>
+            <RadzenDropDown TValue="string" Data="@publisherIds" Value="@selectedPublisherId" ValueChanged="SelectedPublisherIdChanged" />
+            <button class="btn btn-light" @onclick="CopyDeviceId"><span class="icon fa-solid fa-sharp fa-copy"></span></button>
+            <div class="device-id-output">@deviceId</div>
+        </div>
+    </div>
+
+    <div class="content-panel">
+
+        <RadzenTabs>
+            <Tabs>
+                <RadzenTabsItem Text="Licenses">
+                    <div class="license-toolbar-panel">
+                        <div class="license-toolbar-container">
+                            <div class="license-toolbar-buttons">
+                                <button class="btn btn-light" @onclick="AddLicenseClicked"><span class="icon fa-solid fa-sharp fa-plus"></span>Add License</button>
+                            </div>
+                            <div class="license-toolbar-input">
+                                <TextBox @bind-Value="addProductId" PlaceHolder="Product ID" />
+                            </div>
+                            <div class="license-toolbar-input">
+                                <TextBox @bind-Value="addLicenseCode" PlaceHolder="License Code" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-panel">
+
+                        @if (!loading)
+                        {
+                            if (!licenseTableItems.IsNullOrEmpty())
+                            {
+                                <RadzenDataGrid Data="@licenseTableItems" TItem="LicenseTableItem" Density="Density.Compact" AllowSorting="true" AllowColumnResize="true">
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="LicenseTableItem" Property="Status" Title="Status" Width="100px">
+                                            <Template Context="context">
+                                                <div class="status-container @context.Status?.ToLower()">
+                                                    <span class="icon @context.StatusIcon"></span>
+                                                    <span class="label">@context.Status</span>
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                        <RadzenDataGridColumn TItem="LicenseTableItem" Property="PublisherId" Title="Publisher ID" Width="110px" />
+                                        <RadzenDataGridColumn TItem="LicenseTableItem" Property="LicenseCode" Title="License Code" Width="275px" />
+                                        <RadzenDataGridColumn TItem="LicenseTableItem" Property="Assignments" Title="Assignments" Width="120px" />
+                                        <RadzenDataGridColumn TItem="LicenseTableItem" Property="ProductId" Title="Product ID" Width="300px" />
+                                        <RadzenDataGridColumn TItem="LicenseTableItem" Property="ExpiresIn" Title="Expires In" Width="100px">
+                                            <Template Context="context">
+
+                                                @if (context.IsValid)
+                                                {
+                                                    <span>@GetExpiration(context.ExpiresIn)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>-</span>
+                                                }
+
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                        <RadzenDataGridColumn TItem="LicenseTableItem" Property="ExpirationDate" Title="Expiration Date" Width="175px">
+                                            <Template Context="context">
+                                                <span>@context.ExpirationDate.ToLongDateString()</span>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                        <RadzenDataGridColumn TItem="LicenseTableItem" Property="Message" Title="Message" />
+                                        <RadzenDataGridColumn TItem="LicenseTableItem" Width="120px">
+                                            <Template Context="context">
+                                                <div class="table-buttons-container">
+                                                    <button class="btn btn-sm btn-light btn-remove" @onclick="() => LicenseUnassignAllClicked(context.LicenseCode)">Unassign All</button>
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                        <RadzenDataGridColumn TItem="LicenseTableItem" Width="90px">
+                                            <Template Context="context">
+                                                <div class="table-buttons-container">
+                                                    <button class="btn btn-sm btn-light btn-remove" @onclick="() => RemoveLicenseClicked(context.LicenseCode)">Remove</button>
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                    </Columns>
+                                </RadzenDataGrid>
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        else
+                        {
+                            <div class="loading-panel">
+                                <div class="loading-panel-container">
+                                    <LoadingIndicator />
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Assignments">
+                    <div class="table-panel">
+
+                        @if (!loading)
+                        {
+                            if (!assignmentTableItems.IsNullOrEmpty())
+                            {
+                                <RadzenDataGrid Data="@assignmentTableItems" TItem="AssignmentTableItem" Density="Density.Compact" AllowSorting="true" AllowColumnResize="true">
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="AssignmentTableItem" Property="Status" Title="Status" Width="100px">
+                                            <Template Context="context">
+                                                <div class="status-container @context.Status?.ToLower()">
+                                                    <span class="icon @context.StatusIcon"></span>
+                                                    <span class="label">@context.Status</span>
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                        <RadzenDataGridColumn TItem="AssignmentTableItem" Property="AssignmentId" Title="Assignment ID" Width="225px" CssClass="assignment-id" />
+                                        <RadzenDataGridColumn TItem="AssignmentTableItem" Property="PublisherId" Title="Publisher ID" Width="110px" />
+                                        <RadzenDataGridColumn TItem="AssignmentTableItem" Property="ProductId" Title="Product ID" Width="275px" />
+                                        <RadzenDataGridColumn TItem="AssignmentTableItem" Property="LicenseCode" Title="License Code" Width="350px" CssClass="license-code">
+                                            <Template Context="context">
+                                                <RadzenDropDown TValue="string" Data="@licenseTableItems" TextProperty="LicenseCode" ValueProperty="LicenseCode" Value="@context.LicenseCode" ValueChanged="(licenseCode) => AssignmentLicenseChanged(context.PublisherId, licenseCode, context.AssignmentId)" />
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                        <RadzenDataGridColumn TItem="AssignmentTableItem" Property="Description" Title="Description" />
+                                        <RadzenDataGridColumn TItem="AssignmentTableItem" Property="Message" Title="Message" />
+                                        <RadzenDataGridColumn TItem="AssignmentTableItem" Width="100px">
+                                            <Template Context="context">
+                                                <div class="table-buttons-container">
+                                                    <button class="btn btn-sm btn-light btn-remove" @onclick="() => UnassignLicense(context.PublisherId, context.AssignmentId)">Unassign</button>
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                    </Columns>
+                                </RadzenDataGrid>
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        else
+                        {
+                            <div class="loading-panel">
+                                <div class="loading-panel-container">
+                                    <LoadingIndicator />
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+
+    </div>
+
+</div>
+
+<Notifications Items="@notificationService.Notifications" />
+
+@code {
+
+    private TrakHound.Blazor.Services.NotificationService notificationService;
+
+    private IEnumerable<string> publisherIds;
+    private string selectedPublisherId;
+    private string deviceId;
+
+    private IEnumerable<LicenseTableItem> licenseTableItems;
+    private IEnumerable<AssignmentTableItem> assignmentTableItems;
+    private string addProductId;
+    private string addLicenseCode;
+    private bool loading = true;
+
+
+    class LicenseTableItem
+    {
+        public bool IsValid { get; set; }
+
+        public string Status { get; set; }
+
+        public string StatusIcon { get; set; }
+
+        public string PublisherId { get; set; }
+
+        public string ProductId { get; set; }
+
+        public string DeviceId { get; set; }
+
+        public string LicenseCode { get; set; }
+
+        public string Assignments { get; set; }
+
+        public TimeSpan ExpiresIn { get; set; }
+
+        public DateTime ExpirationDate { get; set; }
+
+        public string Message { get; set; }
+    }
+
+    class AssignmentTableItem
+    {
+        public bool IsValid { get; set; }
+
+        public string Status { get; set; }
+
+        public string StatusIcon { get; set; }
+
+        public string AssignmentId { get; set; }
+
+        public string PublisherId { get; set; }
+
+        public string ProductId { get; set; }
+
+        public string DeviceId { get; set; }
+
+        public string LicenseCode { get; set; }
+
+        public TimeSpan ExpiresIn { get; set; }
+
+        public DateTime ExpirationDate { get; set; }
+
+        public string Description { get; set; }
+
+        public string Message { get; set; }
+    }
+
+
+    protected override void OnInitialized()
+    {
+        notificationService = new Blazor.Services.NotificationService();
+        notificationService.Updated += (s, o) => InvokeAsync(StateHasChanged);
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+
+    private async Task Load()
+    {
+        publisherIds = null;
+        licenseTableItems = null;
+        assignmentTableItems = null;
+        loading = true;
+        await InvokeAsync(StateHasChanged);
+
+        var timestamp = DateTime.UtcNow;
+
+        var licenseManagers = TrakHoundLicenseManagers.Get();
+        if (!licenseManagers.IsNullOrEmpty())
+        {
+            var licenseItems = new List<LicenseTableItem>();
+            var assignmentItems = new List<AssignmentTableItem>();
+            var publishers = new List<string>();
+
+            foreach (var licenseManager in licenseManagers)
+            {
+                licenseManager.Refresh();
+
+                publishers.Add(licenseManager.PublisherId);
+
+                if (selectedPublisherId == null) selectedPublisherId = licenseManager.PublisherId;
+                if (selectedPublisherId != null) deviceId = licenseManager.GetDeviceId();
+
+                var licenseInformations = licenseManager.GetLicenses();
+                if (!licenseInformations.IsNullOrEmpty())
+                {
+                    foreach (var licenseInformation in licenseInformations)
+                    {
+                        var validationResult = licenseManager.ValidateLicenseCode(licenseInformation.LicenseCode);
+
+                        var item = new LicenseTableItem();
+                        item.IsValid = validationResult.IsValid;
+                        item.Status = validationResult.IsValid ? "Active" : "Inactive";
+                        item.StatusIcon = validationResult.IsValid ? "fa-sharp fa-solid fa-circle-check" : "fa-sharp fa-solid fa-circle-xmark";
+                        item.PublisherId = licenseManager.PublisherId;
+                        item.ProductId = licenseInformation.ProductId;
+                        item.DeviceId = licenseInformation.DeviceId;
+                        item.LicenseCode = licenseInformation.LicenseCode;
+                        item.Assignments = $"{licenseInformation.AssignmentCount} / {licenseInformation.AssignmentLimit}";
+                        item.ExpiresIn = licenseInformation.ExpirationDate - timestamp;
+                        item.ExpirationDate = licenseInformation.ExpirationDate;
+                        item.Message = validationResult.Message;
+                        licenseItems.Add(item);
+                    }
+                }
+
+                var assignmentInformations = licenseManager.GetAssignments();
+                if (!assignmentInformations.IsNullOrEmpty())
+                {
+                    foreach (var assignmentInformation in assignmentInformations)
+                    {
+                        var validationResult = licenseManager.ValidateAssignment(assignmentInformation.AssignmentId);
+
+                        var item = new AssignmentTableItem();
+                        item.IsValid = validationResult.IsValid;
+                        item.Status = validationResult.IsValid ? "Active" : "Inactive";
+                        item.StatusIcon = validationResult.IsValid ? "fa-sharp fa-solid fa-circle-check" : "fa-sharp fa-solid fa-circle-xmark";
+                        item.AssignmentId = assignmentInformation.AssignmentId;
+                        item.PublisherId = licenseManager.PublisherId;
+                        item.ProductId = assignmentInformation.ProductId;
+                        item.DeviceId = assignmentInformation.DeviceId;
+                        item.LicenseCode = assignmentInformation.LicenseCode;
+                        item.Message = validationResult.Message;
+                        item.Description = assignmentInformation.Description;
+                        assignmentItems.Add(item);
+                    }
+                }
+            }
+
+            publisherIds = publishers;
+            licenseTableItems = licenseItems;
+            assignmentTableItems = assignmentItems;
+        }
+
+        loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void AddLicenseClicked()
+    {
+        var licenseManager = TrakHoundLicenseManagers.Get(selectedPublisherId);
+        if (licenseManager != null)
+        {
+            var deviceId = licenseManager.GetDeviceId();
+            var information = licenseManager.AddLicense(addProductId, deviceId, addLicenseCode);
+            if (information != null)
+            {
+                notificationService.AddNotification(NotificationType.Information, "License Added", information.LicenseCode);
+            }
+            else
+            {
+                notificationService.AddNotification(NotificationType.Error, "Error Adding License");
+            }
+
+            await Load();
+        }
+    }
+
+    private async void RemoveLicenseClicked(string licenseCode)
+    {
+        var licenseManager = TrakHoundLicenseManagers.Get(selectedPublisherId);
+        if (licenseManager != null)
+        {
+            licenseManager.RemoveLicense(licenseCode);
+
+            await Load();
+        }
+    }
+
+    private async void LicenseUnassignAllClicked(string licenseCode)
+    {
+        var licenseManager = TrakHoundLicenseManagers.Get(selectedPublisherId);
+        if (licenseManager != null)
+        {
+            licenseManager.UnassignAll(licenseCode);
+
+            await Load();
+        }
+    }
+
+
+    private async void AssignmentLicenseChanged(string publisherId, string licenseCode, string assignmentId)
+    {
+        if (licenseCode != null)
+        {
+            var licenseManager = TrakHoundLicenseManagers.Get(publisherId);
+            if (licenseManager != null)
+            {
+                var result = licenseManager.AssignLicense(licenseCode, assignmentId);
+                if (result.Success)
+                {
+                    notificationService.AddNotification(NotificationType.Information, "License Assigned", assignmentId);
+                }
+                else
+                {
+                    notificationService.AddNotification(NotificationType.Error, "Assign License Failed", result.Message);
+                }
+
+                await Load();
+            }
+        }
+    }
+
+    private async void UnassignLicense(string publisherId, string assignmentId)
+    {
+        var licenseManager = TrakHoundLicenseManagers.Get(publisherId);
+        if (licenseManager != null)
+        {
+            licenseManager.UnassignLicense(assignmentId);
+
+            await Load();
+        }
+    }
+
+    private async void SelectedPublisherIdChanged(string publisherId)
+    {
+        selectedPublisherId = publisherId;
+
+        var licenseManager = TrakHoundLicenseManagers.Get(publisherId);
+        if (licenseManager != null)
+        {
+            deviceId = licenseManager.GetDeviceId();
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void CopyDeviceId()
+    {
+        await javascript.CopyClipboard(deviceId);
+    }
+
+    private string GetExpiration(TimeSpan timeSpan)
+    {
+        if (timeSpan.TotalDays > 3) return $"{Math.Round(timeSpan.TotalDays, 0)} Days";
+        if (timeSpan.TotalHours > 1) return $"{Math.Round(timeSpan.TotalHours, 0)} Hours";
+        if (timeSpan.TotalMinutes > 1) return $"{Math.Round(timeSpan.TotalMinutes, 0)} Minutes";
+        if (timeSpan.TotalSeconds > 1) return $"{Math.Round(timeSpan.TotalSeconds, 0)} Seconds";
+        return "Expired";
+    }
+
+}

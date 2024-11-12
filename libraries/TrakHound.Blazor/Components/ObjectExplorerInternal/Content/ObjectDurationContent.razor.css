@@ -1,0 +1,150 @@
+﻿.duration-content {
+    display: grid;
+    grid-template-rows: max-content max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.input-panel {
+    grid-row: 1;
+    padding: 7px 10px 11px;
+}
+
+.input-panel-container {
+    display: grid;
+    grid-template-columns: max-content max-content 1fr;
+    grid-column-gap: 10px;
+}
+
+.input-panel-buttons {
+    grid-column: 1;
+    padding-top: 2px;
+}
+
+.input-panel-type {
+    grid-column: 3;
+}
+
+.input-panel-input {
+    grid-column: 2;
+}
+
+.input-panel .btn-save {
+    height: 42px;
+    width: 130px;
+    font-size: 14px;
+    border-radius: 0;
+    padding: 0;
+    margin-right: 5px;
+}
+
+    .input-panel .btn-save .icon {
+        font-size: 16px;
+    }
+
+.input-panel .btn-refresh {
+    height: 42px;
+    width: 42px;
+    font-size: 14px;
+    border-radius: 0;
+    padding: 0;
+}
+
+    .input-panel .btn-refresh .icon {
+        font-size: 16px;
+        margin-right: 0;
+    }
+
+.input-panel ::deep .rz-spinner {
+    height: 44px !important;
+}
+
+.input-panel ::deep .rz-spinner input {
+    font-size: 14px;
+}
+
+.input-panel-type ::deep .rz-dropdown {
+    width: 200px;
+    height: 44px !important;
+    font-size: 14px;
+    line-height: 30px;
+    margin: 0;
+}
+
+.input-panel-type ::deep .rz-dropdown-trigger {
+    height: 44px !important;
+}
+
+
+.query-panel {
+    grid-row: 2;
+    padding: 0 10px 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.query-panel-container {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    border: 1px solid #ddd;
+}
+
+.query-panel .query-label {
+    grid-column: 1;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-right: 1px solid #ddd;
+    border-radius: 2px;
+    color: #777;
+}
+
+.query-panel .btn-query {
+    grid-column: 2;
+    font-size: 12px;
+    text-align: left;
+    padding-top: 8px;
+}
+
+
+.content-panel {
+    grid-row: 3;
+    height: 100%;
+    overflow: hidden;
+}
+
+.content-panel-container {
+    display: grid;
+    grid-template-rows: 1fr max-content;
+    height: 100%;
+    overflow: auto;
+}
+
+.value-panel {
+    grid-row: 1;
+    padding: 20px 30px;
+}
+
+    .value-panel .table td {
+        font-size: 12px;
+        border-color: #f8f8f8;
+    }
+
+        .value-panel .table td.key {
+            font-weight: bold;
+            width: 150px;
+        }
+
+.information-panel {
+    grid-row: 2;
+    padding: 5px 10px 0;
+    border-top: 1px solid #eee;
+}
+
+    .information-panel .table td {
+        font-size: 12px;
+        border-color: #eee;
+    }
+
+        .information-panel .table td.key {
+            font-weight: bold;
+        }

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TrakHound.Blazor.Diagrams\TrakHound.Blazor.Diagrams.csproj" />
+    <ProjectReference Include="..\TrakHound.Blazor\TrakHound.Blazor.csproj" />
+    <ProjectReference Include="..\TrakHound.Routing\TrakHound.Routing.csproj" />
+  </ItemGroup>
+
+</Project>

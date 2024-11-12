@@ -1,0 +1,282 @@
+﻿@page "/explorer/{instanceId}/api/{requestType}/{apiId}"
+@inject ExplorerService explorerService
+@using TrakHound.Api
+
+@if (apiInformation != null)
+{
+    var apiRoute = $"/{apiInformation.Route}";
+
+    <div class="api-page">
+
+        <div class="header-panel">
+            <div class="header-content">
+                <div class="header-icon-container">
+                    <span class="header-icon fa-solid fa-sharp fa-circle-location-arrow"></span>
+                </div>
+                <div class="header-description-container">
+                    <span class="header-title">API</span>
+                    <span class="header-id">@apiRoute</span>
+                    <span class="header-description">@apiInformation.Id</span>
+                </div>
+                <div class="header-package-icon-container">
+
+                    @if (!string.IsNullOrEmpty(apiInformation.PackageIcon))
+                    {
+                        <img class="header-package-icon" src="@apiInformation.PackageIcon" /> 
+                    }
+                    else
+                    {
+                        <span class="header-package-icon fa-solid fa-sharp fa-box"></span>  
+                    }
+
+                </div>
+                <div class="header-package-container">
+                    <span class="header-title">Package</span>
+                    <span class="header-package">@apiInformation.PackageId</span>
+                    <span class="header-version">@apiInformation.PackageVersion</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="information-panel">
+            <div>
+                <table class="table table-sm">
+                    <tbody>
+                        <tr>
+                            <td class="label">ID</td>
+                            <td class="value">@apiInformation.Id</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Package ID</td>
+                            <td class="value">@apiInformation.PackageId</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Package Version</td>
+                            <td class="value">@apiInformation.PackageVersion</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Package Build Date</td>
+                            <td class="value">@apiInformation.PackageBuildDate.ToLocalTime()</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Package Hash</td>
+                            <td class="value">@apiInformation.PackageHash</td>
+                        </tr>
+                        <tr>
+                            <td class="label">TrakHound Version</td>
+                            <td class="value">@apiInformation.TrakHoundVersion</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            @if (apiInformation.Repository != null)
+            {
+                <div>
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <td class="label">Repository</td>
+                                <td class="value"><a href="@apiInformation.Repository" target="_blank">@apiInformation.Repository</a></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Repository Branch</td>
+                                <td class="value"><a href="@GetRepositoryBranchLink(apiInformation)" target="_blank">@apiInformation.RepositoryBranch</a></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Repository Directory</td>
+                                <td class="value"><a href="@GetRepositoryDirectoryLink(apiInformation)" target="_blank">@apiInformation.RepositoryDirectory</a></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Repository Commit</td>
+                                <td class="value"><a href="@GetRepositoryCommitLink(apiInformation)" target="_blank">@apiInformation.RepositoryCommit</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+        </div>
+
+        <div class="tabs-panel">
+            <RadzenTabs>
+                <Tabs>
+                    <RadzenTabsItem Text="Endpoints">
+
+                        @if (!apiInformation.Controllers.IsNullOrEmpty())
+                        {
+                            <div class="endpoints-panel">
+                                <RadzenDataGrid Data="@GetEndpoints(apiInformation)" TItem="TrakHoundApiEndpointInformation" Density="Density.Compact" AllowSorting="true" AllowColumnResize="true">
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="TrakHoundApiEndpointInformation" CssClass="buttons view-cell" Width="80px" Sortable="false">
+                                            <Template Context="context">
+                                                <a href="@GetViewLink(context.Controller, context)" class="btn btn-sm btn-link"><span class="icon fa-regular fa-sharp fa-circle-info"></span>View</a>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                        <RadzenDataGridColumn TItem="TrakHoundApiEndpointInformation" Property="Type" Title="Type" CssClass="type" Width="100px" />
+                                        <RadzenDataGridColumn TItem="TrakHoundApiEndpointInformation" Property="Controller.Name" Title="Controller" CssClass="controller" />
+                                        <RadzenDataGridColumn TItem="TrakHoundApiEndpointInformation" Property="Route" Title="Route" CssClass="route">
+                                            <Template Context="context">
+                                                <span>@GetEndpointRoute(context)</span>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                        <RadzenDataGridColumn TItem="TrakHoundApiEndpointInformation" Property="Description" Title="Description" CssClass="description" />
+                                        <RadzenDataGridColumn TItem="TrakHoundApiEndpointInformation" Property="Id" Title="Id" CssClass="id" Width="250px" />
+                                    </Columns>
+                                </RadzenDataGrid>
+                            </div>
+                        }
+
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Logs">
+                        <Log ApiInformation="@apiInformation" />
+                    </RadzenTabsItem>
+
+                    @if (!string.IsNullOrEmpty(apiInformation.PackageReadMe))
+                    {
+                        <RadzenTabsItem Text="ReadMe">
+                            <div class="readme-panel">
+                                <MarkdownContent Markdown="@apiInformation.PackageReadMe" />
+                            </div>
+                        </RadzenTabsItem>
+                    }
+
+                </Tabs>
+            </RadzenTabs>
+        </div>
+
+    </div>
+}
+
+@code {
+
+    private TrakHoundApiInformation apiInformation;
+    private string previousRequestType;
+    private string previousApiId;
+
+
+    [Parameter]
+    public string InstanceId { get; set; }
+
+    [Parameter]
+    public string RequestType { get; set; }
+
+    [Parameter]
+    public string ApiId { get; set; }
+
+
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        var route = "{instanceId}/api/{requestType}/{apiId}";
+
+        InstanceId = explorerService.SelectedInstanceId;
+        RequestType = Url.GetRouteParameter(Explorer.Path, route, "requestType");
+        ApiId = Url.GetRouteParameter(Explorer.Path, route, "apiId");
+
+        if (RequestType != null && (RequestType != previousRequestType || ApiId != previousApiId))
+        {
+            previousRequestType = RequestType;
+            previousApiId = ApiId;
+
+            await explorerService.LoadInstance(Explorer.Instances, explorerService.SelectedInstanceId);
+
+            IEnumerable<TrakHoundApiInformation> informations = null;
+            switch (RequestType.ToLower())
+            {
+                case ApiRequestTypes.Route: informations = explorerService.GetApiRoutes(InstanceId); break;
+                case ApiRequestTypes.Package: informations = explorerService.GetApiPackages(InstanceId); break;
+            }
+
+            if (!informations.IsNullOrEmpty())
+            {
+                var server = explorerService.GetServer(InstanceId);
+                apiInformation = informations.FirstOrDefault(o => o.Id == ApiId);
+                if (apiInformation != null)
+                {
+                    var breadcrumbItems = new List<BreadcrumbItem>();
+                    breadcrumbItems.Add(new BreadcrumbItem(explorerService.SelectedInstanceId, null));
+                    breadcrumbItems.Add(new BreadcrumbItem("Api", Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "api")));
+                    breadcrumbItems.Add(new BreadcrumbItem(apiInformation.Route, null));
+                    explorerService.BreadcrumbItems = breadcrumbItems;
+                }
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private static IEnumerable<TrakHoundApiEndpointInformation> GetEndpoints(TrakHoundApiInformation apiInformation)
+    {
+        var endpointInformations = new List<TrakHoundApiEndpointInformation>();
+
+        foreach (var controllerInformation in apiInformation.Controllers.OrderBy(o => o.Route))
+        {
+            if (!controllerInformation.EndPoints.IsNullOrEmpty())
+            {
+                foreach (var endpointInformation in controllerInformation.EndPoints.OrderBy(o => o.Route))
+                {
+                    endpointInformation.Api = apiInformation;
+                    endpointInformation.Controller = controllerInformation;
+                    endpointInformations.Add(endpointInformation);
+                }
+            }
+        }
+
+        return endpointInformations;
+    }
+
+    private string GetEndpointRoute(TrakHoundApiEndpointInformation endpoint)
+    {
+        if (endpoint != null)
+        {
+            return Url.Combine(endpoint.Controller.Route, endpoint.Route);
+        }
+
+        return null;
+    }
+
+    private string GetViewLink(TrakHoundApiControllerInformation controller, TrakHoundApiEndpointInformation endpoint)
+    {
+        if (controller != null && endpoint != null)
+        {
+            return Url.Combine(Explorer.BasePath, explorerService.SelectedInstanceId, "api", "route", ApiId, controller.Id, endpoint.Id);
+        }
+
+        return null;
+    }
+
+    private static string GetRepositoryBranchLink(TrakHoundApiInformation information)
+    {
+        var baseUrl = information.Repository;
+        var branch = information.RepositoryBranch;
+
+        return Url.Combine(baseUrl, "tree", branch); // May need to revise this as this might only be valid for GitHub
+    }
+
+    private static string GetRepositoryDirectoryLink(TrakHoundApiInformation information)
+    {
+        var baseUrl = information.Repository;
+        var branch = information.RepositoryBranch;
+        var directory = information.RepositoryDirectory;
+
+        return Url.Combine(baseUrl, "tree", branch, directory); // May need to revise this as this might only be valid for GitHub
+    }
+
+    private static string GetRepositoryCommitLink(TrakHoundApiInformation information)
+    {
+        var baseUrl = information.Repository;
+        var commit = information.RepositoryCommit;
+
+        return Url.Combine(baseUrl, "commit", commit); // May need to revise this as this might only be valid for GitHub
+    }
+
+}

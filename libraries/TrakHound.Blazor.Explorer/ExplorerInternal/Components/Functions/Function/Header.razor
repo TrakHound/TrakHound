@@ -1,0 +1,41 @@
+﻿@using TrakHound.Functions
+
+@if (FunctionInformation != null)
+{
+    <div class="header-panel">
+        <div class="header-content">
+            <div class="header-icon-container">
+                <span class="header-icon fa-solid fa-sharp fa-code"></span>
+            </div>
+            <div class="header-description-container">
+                <span class="header-title">Function</span>
+                <span class="header-id">@FunctionInformation.FunctionId</span>
+                <span class="header-description">@FunctionInformation.Description</span>
+            </div>
+            <div class="header-package-icon-container">
+
+                @if (!string.IsNullOrEmpty(FunctionInformation.PackageIcon))
+                {
+                    <img class="header-package-icon" src="@FunctionInformation.PackageIcon" />
+                }
+                else
+                {
+                    <span class="header-package-icon fa-solid fa-sharp fa-box"></span>
+                }
+
+            </div>
+            <div class="header-package-container">
+                <span class="header-title">Package</span>
+                <span class="header-package">@FunctionInformation.PackageId</span>
+                <span class="header-version">@FunctionInformation.PackageVersion</span>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public TrakHoundFunctionInformation FunctionInformation { get; set; }
+
+}

@@ -1,0 +1,100 @@
+﻿.queue-content {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.input-panel {
+    grid-row: 1;
+    padding: 8px 10px 0;
+}
+
+.input-panel-container {
+    display: grid;
+    grid-template-columns: max-content 1fr max-content;
+    grid-column-gap: 10px;
+}
+
+.input-panel-buttons {
+    padding-top: 1px;
+}
+
+.input-panel .btn-save {
+    height: 42px;
+    width: 130px;
+    font-size: 14px;
+    border-radius: 0;
+    padding: 0;
+    margin-right: 5px;
+}
+
+    .input-panel .btn-save .icon {
+        font-size: 16px;
+    }
+
+.input-panel .btn-refresh {
+    height: 42px;
+    width: 42px;
+    font-size: 14px;
+    border-radius: 0;
+    padding: 0;
+}
+
+    .input-panel .btn-refresh .icon {
+        font-size: 16px;
+        margin-right: 0;
+    }
+
+.input-panel-input ::deep .text-box.small input {
+    height: 44px !important;
+}
+
+.input-panel-input ::deep .rz-spinner {
+    width: 100px;
+    height: 44px;
+    padding: 0;
+}
+
+    .input-panel-input ::deep .rz-spinner input {
+        font-size: 14px;
+        background: #fafafa;
+    }
+
+.information-panel {
+    grid-row: 2;
+    padding: 0 10px 8px;
+    text-align: right;
+}
+
+    .information-panel .btn-link {
+        font-size: 13px;
+    }
+
+        .information-panel .btn-link .icon {
+            margin-left: 8px;
+        }
+
+.table-panel {
+    grid-row: 2;
+    height: 100%;
+    overflow: hidden;
+    padding: 0 10px 10px;
+}
+
+    .table-panel ::deep .rz-data-grid {
+        height: 100%;
+        width: auto;
+    }
+
+    .table-panel ::deep th {
+        border-bottom: 1px solid #ddd !important;
+    }
+
+    .table-panel ::deep td {
+        border-bottom: 1px solid #ddd !important;
+    }
+
+        .table-panel ::deep td .rz-cell-data {
+            font-size: 12px;
+        }

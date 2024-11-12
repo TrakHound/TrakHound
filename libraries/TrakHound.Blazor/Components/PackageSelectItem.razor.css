@@ -1,0 +1,189 @@
+﻿.package-item {
+    padding: 10px 10px 10px 25px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    margin-top: 5px;
+    min-height: 55px;
+    background: #fdfdfd;
+}
+
+    .package-item.active {
+        background: var(--accentVeryVeryLight);
+        border: 1px solid var(--accentLight);
+    }
+
+    .package-item:hover {
+        border: 1px solid var(--accent);
+        cursor: default;
+    }
+
+    .package-item .package-item-content {
+        display: grid;
+        grid-template-columns: max-content 1fr max-content;
+    }
+
+    .package-item .icon-container {
+        grid-column: 1;
+        margin-right: 30px;
+        text-align: center;
+        width: 36px;
+    }
+
+        .package-item .icon-container img.icon {
+            max-width: 36px;
+            max-height: 36px;
+        }
+
+        .package-item .icon-container span.icon {
+            font-size: 30px;
+            line-height: 40px;
+            color: #ccc;
+        }
+
+    .package-item:hover .icon-container > .icon,
+    .package-item.active .icon-container > .icon {
+        color: var(--accent);
+    }
+
+    /*.package-item .package-item-content > .icon {
+            grid-column: 1;
+            font-size: 20px;
+            line-height: 24px;
+            margin-right: 30px;
+            color: #ccc;
+        }
+
+    .package-item:hover .package-item-content > .icon,
+    .package-item.active .package-item-content > .icon {
+        color: var(--accent);
+    }*/
+
+    .package-item .package-item-content > .identity {
+        grid-column: 2;
+        padding-right: 50px;
+    }
+
+        .package-item .package-item-content > .identity > .identifier {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 40px;
+            color: #555;
+            min-width: 150px;
+        }
+
+        .package-item .package-item-content > .identity .publisher {
+            color: #888;
+            font-size: 11px;
+            font-weight: normal;
+            margin-left: 8px;
+        }
+
+        .package-item .package-item-content > .identity .description {
+            display: block;
+            font-size: 11px;
+            color: #888;
+        }
+
+    .package-item.active .package-item-content > .identity .publisher,
+    .package-item.active .package-item-content > .identity .description {
+        color: #555;
+    }
+
+
+    .package-item .package-item-content > .license {
+        grid-column: 3;
+        padding: 5px 30px 5px 10px;
+    }
+
+        .package-item .package-item-content > .license .license-label {
+            color: var(--accent);
+            font-size: 12px;
+            padding: 10px 10px;
+            border: 1px solid var(--accent);
+            border: 1px solid #ddd;
+            border-radius: 2px;
+        }
+
+            .package-item .package-item-content > .license .license-label .icon {
+                color: var(--accent);
+                margin-right: 10px;
+                font-size: 12px;
+            }
+
+
+    .package-item .package-item-content > .buttons {
+        grid-column: 3;
+        width: auto;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+        .package-item .package-item-content > .buttons .btn {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+            .package-item .package-item-content > .buttons .btn:last-child {
+                margin-right: 0;
+            }
+
+    .package-item:hover .package-item-content > .buttons .btn-install {
+        background: var(--accent);
+        color: #fff;
+    }
+
+        .package-item:hover .package-item-content > .buttons .btn-install:hover {
+            background: var(--accentLight);
+        }
+
+        .package-item:hover .package-item-content > .buttons .btn-install .icon {
+            color: #fff;
+        }
+
+
+    .package-item .installed {
+        display: inline-block;
+        text-align: center;
+        margin-left: 10px;
+        margin-right: 0px;
+        font-size: 14px;
+        color: #aaa;
+        width: 70px;
+        height: 30px;
+    }
+
+    .package-item.active .installed {
+        color: #555;
+    }
+
+    .package-item .installing {
+        display: inline-block;
+        text-align: center;
+        margin-left: 10px;
+        margin-right: 0px;
+        font-size: 12px;
+        color: var(--accent);
+        width: 70px;
+        height: 30px;
+    }
+
+        .package-item .installing ::deep .lds-spinner {
+            padding-top: 5px;
+        }
+
+            .package-item .installing ::deep .lds-spinner div:after {
+                background: var(--accent);
+            }
+
+
+    .package-item .version {
+        display: inline-block;
+        margin-right: 20px;
+        font-size: 12px;
+        color: #333;
+    }
+
+        .package-item .version .symbol {
+            font-size: 12px;
+        }

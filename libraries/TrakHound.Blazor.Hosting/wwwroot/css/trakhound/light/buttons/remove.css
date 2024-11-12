@@ -1,0 +1,28 @@
+﻿.btn-remove {
+/*    width: 100%;
+    height: 100%;
+    font-size: 14px;*/
+    color: red;
+    border-radius: 0;
+    transition: 0s;
+}
+
+    .btn-remove .icon {
+        color: red;
+    }
+
+    .btn-remove:hover {
+        color: white;
+        background: red;
+        border-color: #b30000;
+        cursor: pointer;
+    }
+
+        .btn-remove:hover .icon {
+            color: white;
+        }
+
+
+    .btn-remove.btn-sm {
+        /*font-size: 12px;*/
+    }

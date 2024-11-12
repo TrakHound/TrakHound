@@ -1,0 +1,16 @@
+﻿@using TrakHound.Blazor.Components
+@using TrakHound.Instances
+
+<div class="page">
+    <TextBox Title="HTTP Address" @bind-Value="@Configuration.HttpAddress" />
+    <SpinEdit Title="HTTP Port" @bind-Value="@Configuration.HttpPort" />
+    <CheckBox Title="Enable Public System API" @bind-Value="@Configuration.SystemApiEnabled" />
+</div>
+
+@code {
+
+    [CascadingParameter]
+    public TrakHoundInstanceConfiguration Configuration { get; set; }
+
+}
+

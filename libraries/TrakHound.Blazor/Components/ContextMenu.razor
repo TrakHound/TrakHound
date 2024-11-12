@@ -1,0 +1,60 @@
+﻿@implements Services.IContextMenu
+@implements IDisposable
+@inject Services.ContextMenuService contextMenuService
+
+@{
+    var hidden = isShown ? "show" : "hide";
+    var containerStyle = $"top:{yPosition}px;left:{xPosition}px;";
+}
+
+<div class="context-menu @hidden" @onclick="Hide" @oncontextmenu="Hide">
+    <div class="context-menu-container" style="@containerStyle">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+
+    private bool isShown = false;
+    private double xPosition;
+    private double yPosition;
+
+    [Parameter]
+    public string Id { get; set; } = Guid.NewGuid().ToString();
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            contextMenuService.Add(this);
+        }
+    }
+
+    void IDisposable.Dispose()
+    {
+        contextMenuService.Remove(Id);
+    }
+
+
+    public void Show(double x, double y)
+    {
+        if (ChildContent != null)
+        {
+            isShown = true;
+            xPosition = x;
+            yPosition = y;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public void Hide()
+    {
+        isShown = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+}
