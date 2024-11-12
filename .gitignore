@@ -1,0 +1,30 @@
+# Ignore Visual Studio files
+.vs/
+.config/
+
+# Ignore .NET Build files
+[Bb]in/
+[Oo]bj/
+
+# Ignore Nuget Build files
+build/
+
+# Ignore Properties files
+[Pp]roperties/
+
+# Ignore Package Publish files
+*.package.publish.json
+
+# Ignore Environment files
+trakhound-environment.config.yaml
+
+# Ignore Template build .exe and .zip
+[Tt]emplates/**/*.exe
+[Tt]emplates/**/*.zip
+
+# Ignore Configuration files
+instance.config.yaml
+remotes.config.yaml
+
+# Ignore FontAwesome (licensed version)
+libraries/TrakHound.Blazor.Hosting/wwwroot/css/font-awesome/
