@@ -34,7 +34,7 @@ https://www.trakhound.com/demo/_admin
             <td>SDK</td>
             <td><img src="static/nuget-logo.svg" style="height:20px;width:20px;vertical-align: middle;" /></td>
             <td>Nuget</td>
-            <td><a href="https://www.nuget.org/packages/TrakHound">https://www.nuget.org/packages/TrakHound</a></td>
+            <td><a href="https://www.nuget.org/profiles/TrakHound">https://www.nuget.org/profiles/TrakHound</a></td>
         </tr>
         <tr>
             <td>CLI</td>
