@@ -61,6 +61,10 @@ https://github.com/TrakHound/TrakHound/tree/dev/docs
 
 > Note that Documentation is still a work in progress. This will be a focus during the initial beta.
 
+## Getting Started
+- Download and Install TrakHound Instance
+- Install the TrakHound.Core.Bundle package using the Admin UI
+
 ## Overview
 Simplify application development and utilize modern software tools and concepts to develop industrial resource tracking systems such as MES, ERP, etc. Although TrakHound is designed with industrial applications in mind, as they require many very small custom applications, any application can be developed with the framework.
 

@@ -1,14 +1,13 @@
 using Radzen;
 using TrakHound.Apps;
 using TrakHound.Clients;
-using TrakHound.Configurations;
 using TrakHound.Volumes;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRadzenComponents();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
-var clientConfiguration = new TrakHoundHttpClientConfiguration("localhost", 8475);
+var clientConfiguration = new TrakHoundHttpClientConfiguration("localhost", 8472);
 
 var clientProvider = new TrakHoundHttpClientProvider(clientConfiguration);
 builder.Services.AddSingleton<ITrakHoundClientProvider>(clientProvider);

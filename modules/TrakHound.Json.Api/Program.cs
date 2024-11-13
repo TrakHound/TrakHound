@@ -13,8 +13,8 @@ namespace TrakHound.Debug.Api
         public static void Main(string[] args)
         {
             // Create new TrakHoundClient based on the Instance BaseUrl and Router
-            var clientConfiguration = new TrakHoundClientConfiguration("localhost", 8472);
-            var client = new TrakHoundClient(clientConfiguration, null);
+            var clientConfiguration = new TrakHoundHttpClientConfiguration("localhost", 8472);
+            var client = new TrakHoundHttpClient(clientConfiguration, null);
 
             var volumePath = Path.Combine(AppContext.BaseDirectory, "volume");
             var volume = new TrakHoundVolume("volume", volumePath);

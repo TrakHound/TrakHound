@@ -7,7 +7,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="IronPython" Version="3.4.1" />
-		<PackageReference Include="TrakHound.Clients" Version="*" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -17,6 +16,10 @@
 
 	<ItemGroup>
 	  <Folder Include="Scripts\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\libraries\TrakHound.Common\TrakHound.Common.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

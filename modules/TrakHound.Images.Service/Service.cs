@@ -85,8 +85,8 @@ namespace TrakHound.Images.Service
            string imageId,
            string tag,
            Stream stream,
-           int size = 0,
-           int quality = 0,
+           uint size = 0,
+           uint quality = 0,
            bool crop = false
            )
         {

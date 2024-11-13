@@ -148,27 +148,12 @@ namespace TrakHound.Sqlite.Drivers
             {
                 if (!parentUuids.IsNullOrEmpty())
                 {
-                    var sql = "";
-                    sql += "drop table if exists _uuids;";
-                    sql += "create temp table _uuids(id text);";
-
-                    foreach (var parentUuid in parentUuids)
-                    {
-                        if (!string.IsNullOrEmpty(parentUuid)) sql += $"insert into _uuids (id) values ('{parentUuid}');";
-                        else sql += $"insert into _uuids (id) values (null);";
-                    }
-
-                    sql += "select [b].[id] as [query], [a].[uuid] from [trakhound_definitions] as [a]";
-                    sql += " inner join _uuids as [b] on [a].[parent_uuid] = [b].[id] or ([b].[id] is null and [a].[parent_uuid] is null);";
-
-                    var responses = _client.ReadList<DatabaseIdQuery>(sql);
-
-                    // Set Results
+                    var responses = GetDefinitionChildIds(parentUuids);
                     if (!responses.IsNullOrEmpty())
                     {
                         foreach (var parentUuid in parentUuids)
                         {
-                            var parentResponses = responses.Where(o => o.Query == parentUuid);
+                            var parentResponses = responses.Where(o => o.RequestedId == parentUuid);
                             if (!parentResponses.IsNullOrEmpty())
                             {
                                 foreach (var response in parentResponses)
@@ -215,27 +200,22 @@ namespace TrakHound.Sqlite.Drivers
             {
                 if (!childUuids.IsNullOrEmpty())
                 {
-                    var sql = "";
-                    sql += "drop table if exists _uuids;";
-                    sql += "create temp table _uuids(id text);";
+                    //var sql = "";
+                    //sql += "drop table if exists _uuids;";
+                    //sql += "create temp table _uuids(id text);";
 
-                    foreach (var childUuid in childUuids)
-                    {
-                        if (!string.IsNullOrEmpty(childUuid)) sql += $"insert into _uuids (id) values ('{childUuid}');";
-                        else sql += $"insert into _uuids (id) values (null);";
-                    }
+                    //foreach (var childUuid in childUuids)
+                    //{
+                    //    if (!string.IsNullOrEmpty(childUuid)) sql += $"insert into _uuids (id) values ('{childUuid}');";
+                    //    else sql += $"insert into _uuids (id) values (null);";
+                    //}
 
-                    sql += "select [b].[id] as [query], [a].[parent_uuid] from [trakhound_definitions] as [a]";
-                    sql += " inner join _uuids as [b] on [a].[uuid] = [b].[id];";
-
-                    var responses = _client.ReadList<DatabaseIdQuery>(sql);
-
-                    // Set Results
+                    var responses = GetDefinitionRootIds(childUuids);
                     if (!responses.IsNullOrEmpty())
                     {
                         foreach (var childUuid in childUuids)
                         {
-                            var parentResponses = responses.Where(o => o.Query == childUuid);
+                            var parentResponses = responses.Where(o => o.RequestedId == childUuid);
                             if (!parentResponses.IsNullOrEmpty())
                             {
                                 foreach (var response in parentResponses)
@@ -272,6 +252,140 @@ namespace TrakHound.Sqlite.Drivers
             stpw.Stop();
             return new TrakHoundResponse<ITrakHoundDefinitionQueryResult>(results, stpw.ElapsedTicks);
         }
+
+        //public async Task<TrakHoundResponse<ITrakHoundDefinitionQueryResult>> QueryByParentUuid(IEnumerable<string> parentUuids, long skip = 0, long take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        //{
+        //    var stpw = System.Diagnostics.Stopwatch.StartNew();
+        //    var results = new List<TrakHoundResult<ITrakHoundDefinitionQueryResult>>();
+
+        //    if (_client != null)
+        //    {
+        //        if (!parentUuids.IsNullOrEmpty())
+        //        {
+        //            var sql = "";
+        //            sql += "drop table if exists _uuids;";
+        //            sql += "create temp table _uuids(id text);";
+
+        //            foreach (var parentUuid in parentUuids)
+        //            {
+        //                if (!string.IsNullOrEmpty(parentUuid)) sql += $"insert into _uuids (id) values ('{parentUuid}');";
+        //                else sql += $"insert into _uuids (id) values (null);";
+        //            }
+
+        //            sql += "select [b].[id] as [query], [a].[uuid] from [trakhound_definitions] as [a]";
+        //            sql += " inner join _uuids as [b] on [a].[parent_uuid] = [b].[id] or ([b].[id] is null and [a].[parent_uuid] is null);";
+
+        //            var responses = _client.ReadList<DatabaseIdQuery>(sql);
+
+        //            // Set Results
+        //            if (!responses.IsNullOrEmpty())
+        //            {
+        //                foreach (var parentUuid in parentUuids)
+        //                {
+        //                    var parentResponses = responses.Where(o => o.Query == parentUuid);
+        //                    if (!parentResponses.IsNullOrEmpty())
+        //                    {
+        //                        foreach (var response in parentResponses)
+        //                        {
+        //                            var queryResult = new TrakHoundDefinitionQueryResult(parentUuid, response.Uuid);
+
+        //                            results.Add(new TrakHoundResult<ITrakHoundDefinitionQueryResult>(Id, parentUuid, TrakHoundResultType.Ok, queryResult, response.Uuid));
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        results.Add(new TrakHoundResult<ITrakHoundDefinitionQueryResult>(Id, parentUuid, TrakHoundResultType.Empty));
+        //                    }
+        //                }
+        //            }
+        //            else
+        //            {
+        //                foreach (var parentUuid in parentUuids)
+        //                {
+        //                    results.Add(new TrakHoundResult<ITrakHoundDefinitionQueryResult>(Id, parentUuid, TrakHoundResultType.Empty));
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            results.Add(TrakHoundResult<ITrakHoundDefinitionQueryResult>.BadRequest(Id));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        results.Add(TrakHoundResult<ITrakHoundDefinitionQueryResult>.InternalError(Id));
+        //    }
+
+        //    stpw.Stop();
+        //    return new TrakHoundResponse<ITrakHoundDefinitionQueryResult>(results, stpw.ElapsedTicks);
+        //}
+
+        //public async Task<TrakHoundResponse<ITrakHoundDefinitionQueryResult>> QueryByChildUuid(IEnumerable<string> childUuids, long skip = 0, long take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        //{
+        //    var stpw = System.Diagnostics.Stopwatch.StartNew();
+        //    var results = new List<TrakHoundResult<ITrakHoundDefinitionQueryResult>>();
+
+        //    if (_client != null)
+        //    {
+        //        if (!childUuids.IsNullOrEmpty())
+        //        {
+        //            var sql = "";
+        //            sql += "drop table if exists _uuids;";
+        //            sql += "create temp table _uuids(id text);";
+
+        //            foreach (var childUuid in childUuids)
+        //            {
+        //                if (!string.IsNullOrEmpty(childUuid)) sql += $"insert into _uuids (id) values ('{childUuid}');";
+        //                else sql += $"insert into _uuids (id) values (null);";
+        //            }
+
+        //            sql += "select [b].[id] as [query], [a].[parent_uuid] from [trakhound_definitions] as [a]";
+        //            sql += " inner join _uuids as [b] on [a].[uuid] = [b].[id];";
+
+        //            var responses = _client.ReadList<DatabaseIdQuery>(sql);
+
+        //            // Set Results
+        //            if (!responses.IsNullOrEmpty())
+        //            {
+        //                foreach (var childUuid in childUuids)
+        //                {
+        //                    var parentResponses = responses.Where(o => o.Query == childUuid);
+        //                    if (!parentResponses.IsNullOrEmpty())
+        //                    {
+        //                        foreach (var response in parentResponses)
+        //                        {
+        //                            var queryResult = new TrakHoundDefinitionQueryResult(childUuid, response.Uuid);
+
+        //                            results.Add(new TrakHoundResult<ITrakHoundDefinitionQueryResult>(Id, childUuid, TrakHoundResultType.Ok, queryResult, response.Uuid));
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        results.Add(new TrakHoundResult<ITrakHoundDefinitionQueryResult>(Id, childUuid, TrakHoundResultType.Empty));
+        //                    }
+        //                }
+        //            }
+        //            else
+        //            {
+        //                foreach (var parentUuid in childUuids)
+        //                {
+        //                    results.Add(new TrakHoundResult<ITrakHoundDefinitionQueryResult>(Id, parentUuid, TrakHoundResultType.Empty));
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            results.Add(TrakHoundResult<ITrakHoundDefinitionQueryResult>.BadRequest(Id));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        results.Add(TrakHoundResult<ITrakHoundDefinitionQueryResult>.InternalError(Id));
+        //    }
+
+        //    stpw.Stop();
+        //    return new TrakHoundResponse<ITrakHoundDefinitionQueryResult>(results, stpw.ElapsedTicks);
+        //}
 
 
 

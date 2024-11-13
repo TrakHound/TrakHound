@@ -18,6 +18,4 @@ with recursive trakhound_definition_parent_tree(requested_id, uuid, parent_uuid,
 	from [trakhound_definitions] as [b]
 	join trakhound_definition_parent_tree as [c] on [b].[uuid] = [c].[parent_uuid]  
 )
-select [requested_id], [uuid], -1 as [type_id] from trakhound_definition_parent_tree where [level] < 0
-union
-select [id] as [requested_id], [id] as [uuid], 0 as [type_id] from _uuids;
+select [requested_id], [uuid], -1 as [type_id] from trakhound_definition_parent_tree where [level] < 0;
