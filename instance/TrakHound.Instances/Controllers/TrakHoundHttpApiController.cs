@@ -82,14 +82,14 @@ namespace TrakHound.Http
 
                 if (response.IsValid())
                 {
-                    // Set Parameters as Headers
-                    if (!response.Parameters.IsNullOrEmpty())
-                    {
-                        foreach (var parameter in response.Parameters)
-                        {
-                            Response.Headers.Add(parameter.Key, parameter.Value);
-                        }
-                    }
+                    //// Set Parameters as Headers
+                    //if (!response.Parameters.IsNullOrEmpty())
+                    //{
+                    //    foreach (var parameter in response.Parameters)
+                    //    {
+                    //        Response.Headers.Add(parameter.Key, parameter.Value);
+                    //    }
+                    //}
 
                     if (response.ContentType == null || MimeTypes.IsText(response.ContentType))
                     {
@@ -118,116 +118,123 @@ namespace TrakHound.Http
             }
         }
 
-        public async Task<IActionResult> GetByPackage(string packageId)
-        {
-            var client = _server.ClientProvider.GetClient();
-            if (client != null && !string.IsNullOrEmpty(packageId))
-            {
-                string packageVersion = null;
+        //public async Task<IActionResult> GetByPackage(string packageId)
+        //{
+        //    var client = _server.ClientProvider.GetClient();
+        //    if (client != null && !string.IsNullOrEmpty(packageId))
+        //    {
+        //        string packageVersion = null;
 
-                var queryParameters = new Dictionary<string, string>();
-                if (!Request.Query.IsNullOrEmpty())
-                {
-                    foreach (var queryParameter in Request.Query)
-                    {
-                        if (queryParameter.Key == "packageVersion") packageVersion = queryParameter.Value;
-                        else queryParameters.Add(queryParameter.Key, queryParameter.Value);
-                    }
-                }
+        //        var queryParameters = new Dictionary<string, string>();
+        //        if (!Request.Query.IsNullOrEmpty())
+        //        {
+        //            foreach (var queryParameter in Request.Query)
+        //            {
+        //                if (queryParameter.Key == "packageVersion") packageVersion = queryParameter.Value;
+        //                else queryParameters.Add(queryParameter.Key, queryParameter.Value);
+        //            }
+        //        }
 
-                var requestContentType = Request.Headers.ContentType;
+        //        var requestContentType = Request.Headers.ContentType;
 
-                byte[] body = null;
-                if (Request.Body != null)
-                {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await Request.Body.CopyToAsync(memoryStream);
-                        body = memoryStream.ToArray();
-                    }
-                }
-
-
-                var httpMethod = Request.Method;
-                var requestPath = TrakHound.Url.RemoveFirstFragment(Request.Path); // Remove "/api" prefix
-                requestPath = TrakHound.Url.RemoveFirstFragment(requestPath); // Remove "/{packageId}" prefix
-
-                var response = new TrakHoundApiResponse();
-                if (IsQueryRequest(httpMethod, requestPath))
-                {
-                    response = await client.System.Api.Query(packageId, packageVersion, requestPath, body, requestContentType, queryParameters);
-                }
-                else if (IsSubscribeRequest(httpMethod, requestPath))
-                {
-                    var subsribeRequest = TrakHound.Url.RemoveLastFragment(requestPath); // remove 'subscribe' suffix
+        //        byte[] body = null;
+        //        if (Request.Body != null)
+        //        {
+        //            using (var memoryStream = new MemoryStream())
+        //            {
+        //                await Request.Body.CopyToAsync(memoryStream);
+        //                body = memoryStream.ToArray();
+        //            }
+        //        }
 
 
+        //        var httpMethod = Request.Method;
+        //        var requestPath = TrakHound.Url.RemoveFirstFragment(Request.Path); // Remove "/api" prefix
+        //        requestPath = TrakHound.Url.RemoveFirstFragment(requestPath); // Remove "/{packageId}" prefix
 
-                    //return await Subscribe(subsribeRequest, body, requestContentType, queryParameters); // NEED TO UPDATE FOR PACKAGE ID
+        //        var response = new TrakHoundApiResponse();
+        //        if (IsQueryRequest(httpMethod, requestPath))
+        //        {
+        //            response = await client.System.Api.Query(packageId, packageVersion, requestPath, body, requestContentType, queryParameters);
+        //        }
+        //        else if (IsSubscribeRequest(httpMethod, requestPath))
+        //        {
+        //            var subsribeRequest = TrakHound.Url.RemoveLastFragment(requestPath); // remove 'subscribe' suffix
 
 
 
-                }
-                else if (IsPublishRequest(httpMethod, requestPath))
-                {
-                    var publishRequest = TrakHound.Url.RemoveLastFragment(requestPath); // remove 'publish' suffix
-                    response = await client.System.Api.Publish(packageId, packageVersion, publishRequest, body, requestContentType, queryParameters);
-                }
-                //else if (IsDeleteRequest(httpMethod, requestPath))
-                //{
-                //    var deleteRequest = TrakHound.Url.RemoveLastFragment(requestPath); // remove 'delete' suffix
-                //    response = await client.Api.Delete(packageId, packageVersion, deleteRequest, body, requestContentType, queryParameters);
-                //}
+        //            //return await Subscribe(subsribeRequest, body, requestContentType, queryParameters); // NEED TO UPDATE FOR PACKAGE ID
 
-                if (response.IsValid())
-                {
-                    if (response.ContentType == null || MimeTypes.IsText(response.ContentType))
-                    {
-                        if (response.Content != null)
-                        {
-                            if (!string.IsNullOrEmpty(response.Path))
-                            {
-                                Response.Headers.Add("Path", response.Path);
-                            }
 
-                            byte[] requestBody = null;
-                            if (response.Content != null)
-                            {
-                                using (var readStream = new MemoryStream())
-                                {
-                                    await response.Content.CopyToAsync(readStream);
-                                    requestBody = readStream.ToArray();
-                                }
-                            }
-                            var contentBytes = System.Text.Encoding.ASCII.GetString(requestBody);
-                            var content = Content(contentBytes, response.ContentType);
-                            content.StatusCode = response.StatusCode;
-                            return content;
-                        }
-                        else if (response.Success)
-                        {
-                            return Ok();
-                        }
-                        else
-                        {
-                            return StatusCode(response.StatusCode);
-                        }
-                    }
-                    else
-                    {
-                        return File(response.Content, response.ContentType, response.GetParameter("filename"));
-                    }
-                }
-                else
-                {
-                    return StatusCode(500, "No Response Returned from API");
-                }
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
+
+        //        }
+        //        else if (IsPublishRequest(httpMethod, requestPath))
+        //        {
+        //            var publishRequest = TrakHound.Url.RemoveLastFragment(requestPath); // remove 'publish' suffix
+        //            response = await client.System.Api.Publish(packageId, packageVersion, publishRequest, body, requestContentType, queryParameters);
+        //        }
+        //        //else if (IsDeleteRequest(httpMethod, requestPath))
+        //        //{
+        //        //    var deleteRequest = TrakHound.Url.RemoveLastFragment(requestPath); // remove 'delete' suffix
+        //        //    response = await client.Api.Delete(packageId, packageVersion, deleteRequest, body, requestContentType, queryParameters);
+        //        //}
+
+        //        if (response.IsValid())
+        //        {
+        //            if (response.ContentType == null || MimeTypes.IsText(response.ContentType))
+        //            {
+        //                if (response.Content != null)
+        //                {
+        //                    // Add Response Parameters as Headers
+        //                    if (!response.Parameters.IsNullOrEmpty())
+        //                    {
+        //                        foreach (var parameter in response.Parameters)
+        //                        {
+        //                            if (!string.IsNullOrEmpty(parameter.Key) && !string.IsNullOrEmpty(parameter.Value))
+        //                            {
+        //                                Response.Headers.Add($"{HttpConstants.ApiParameterHeaderPrefix}-{parameter.Key}", parameter.Value);
+        //                            }
+        //                        }
+        //                    }
+
+        //                    byte[] requestBody = null;
+        //                    if (response.Content != null)
+        //                    {
+        //                        using (var readStream = new MemoryStream())
+        //                        {
+        //                            await response.Content.CopyToAsync(readStream);
+        //                            requestBody = readStream.ToArray();
+        //                        }
+        //                    }
+        //                    var contentBytes = System.Text.Encoding.ASCII.GetString(requestBody);
+        //                    var content = Content(contentBytes, response.ContentType);
+        //                    content.StatusCode = response.StatusCode;
+        //                    return content;
+        //                }
+        //                else if (response.Success)
+        //                {
+        //                    return Ok();
+        //                }
+        //                else
+        //                {
+        //                    return StatusCode(response.StatusCode);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                return File(response.Content, response.ContentType, response.GetParameter("filename"));
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return StatusCode(500, "No Response Returned from API");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
 
         private async Task Subscribe(string route, Stream requestBody, string contentType, Dictionary<string, string> queryParameters)
         {

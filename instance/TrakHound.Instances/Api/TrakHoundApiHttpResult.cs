@@ -2,6 +2,7 @@
 // TrakHound Inc. licenses this file to you under the MIT license.
 
 using Microsoft.AspNetCore.Mvc;
+using TrakHound.Http;
 
 namespace TrakHound.Api
 {
@@ -22,10 +23,17 @@ namespace TrakHound.Api
             {
                 try
                 {
-                    // Set Path Header (used in TrakHound API)
-                    if (!string.IsNullOrEmpty(_response.Path))
+                    // Set Parameter Headers
+                    if (!_response.Parameters.IsNullOrEmpty())
                     {
-                        context.HttpContext.Response.Headers.Add("Path", _response.Path);
+                        foreach (var parameter in _response.Parameters)
+                        {
+                            if (!string.IsNullOrEmpty(parameter.Key) && !string.IsNullOrEmpty(parameter.Value))
+                            {
+                                var headerName = $"{HttpConstants.ApiParameterHeaderPrefix}-{parameter.Key.ToKebabCase()}";
+                                context.HttpContext.Response.Headers.Add(headerName, parameter.Value);
+                            }
+                        }
                     }
 
                     // Set Status Code

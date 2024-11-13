@@ -12,6 +12,8 @@ namespace TrakHound.Messages
 
         public string BrokerId { get; set; }
 
+        public string SenderId { get; set; }
+
         public string Topic { get; set; }
 
         public Stream Content { get; set; }

@@ -10,12 +10,11 @@ namespace TrakHound.Api
 {
     public struct TrakHoundApiResponse
     {
-
         public bool Success { get; set; }
 
         public int StatusCode { get; set; }
 
-        public string Path { get; set; }
+        //public string Path { get; set; }
 
         public string ContentType { get; set; }
 
@@ -24,19 +23,17 @@ namespace TrakHound.Api
         public Dictionary<string, string> Parameters { get; set; }
 
 
-        public TrakHoundApiResponse(int statusCode, string path = null, Dictionary<string, string> parameters = null)
+        public TrakHoundApiResponse(int statusCode, Dictionary<string, string> parameters = null)
         {
             StatusCode = statusCode;
-            Path = path;
             Parameters = parameters;
             Success = statusCode >= 200 && statusCode < 400;
         }
 
-        public TrakHoundApiResponse(int statusCode, byte[] content, string contentType = null, string path = null, Dictionary<string, string> parameters = null)
+        public TrakHoundApiResponse(int statusCode, byte[] content, string contentType = null, Dictionary<string, string> parameters = null)
         {
             StatusCode = statusCode;
             ContentType = contentType;
-            Path = path;
             Parameters = parameters;
             Success = statusCode >= 200 && statusCode < 400;
 
@@ -50,15 +47,50 @@ namespace TrakHound.Api
             }
         }
 
-        public TrakHoundApiResponse(int statusCode, Stream content, string contentType = null, string path = null, Dictionary<string, string> parameters = null)
+        public TrakHoundApiResponse(int statusCode, Stream content, string contentType = null, Dictionary<string, string> parameters = null)
         {
             StatusCode = statusCode;
             Content = content;
             ContentType = contentType;
-            Path = path;
             Parameters = parameters;
             Success = statusCode >= 200 && statusCode < 400;
         }
+
+        //public TrakHoundApiResponse(int statusCode, string path = null, Dictionary<string, string> parameters = null)
+        //{
+        //    StatusCode = statusCode;
+        //    //Path = path;
+        //    Parameters = parameters;
+        //    Success = statusCode >= 200 && statusCode < 400;
+        //}
+
+        //public TrakHoundApiResponse(int statusCode, byte[] content, string contentType = null, string path = null, Dictionary<string, string> parameters = null)
+        //{
+        //    StatusCode = statusCode;
+        //    ContentType = contentType;
+        //    //Path = path;
+        //    Parameters = parameters;
+        //    Success = statusCode >= 200 && statusCode < 400;
+
+        //    if (content != null)
+        //    {
+        //        try
+        //        {
+        //            Content = new MemoryStream(content);
+        //        }
+        //        catch { }
+        //    }
+        //}
+
+        //public TrakHoundApiResponse(int statusCode, Stream content, string contentType = null, string path = null, Dictionary<string, string> parameters = null)
+        //{
+        //    StatusCode = statusCode;
+        //    Content = content;
+        //    ContentType = contentType;
+        //    //Path = path;
+        //    Parameters = parameters;
+        //    Success = statusCode >= 200 && statusCode < 400;
+        //}
 
 
         public bool IsValid() => StatusCode != 0;

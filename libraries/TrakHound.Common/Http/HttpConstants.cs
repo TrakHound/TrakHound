@@ -5,6 +5,9 @@ namespace TrakHound.Http
 {
     public static class HttpConstants
     {
+        public const string HeaderPrefix = "trakhound";
+        public const string ApiParameterHeaderPrefix = "trakhound-parameter";
+
         public const string AppsPrefix = "_apps";
         public const string ApiPrefix = "_api";
         public const string FunctionsPrefix = "_functions";

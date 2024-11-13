@@ -2,7 +2,6 @@
 // TrakHound Inc. licenses this file to you under the MIT license.
 
 using System;
-using System.IO;
 using System.Threading;
 using TrakHound.Clients;
 using TrakHound.Messages;
@@ -107,47 +106,11 @@ namespace TrakHound.Http
         {
             if (response.Content != null)
             {
-                try
+                var messageResponse = TrakHoundHttpMessageResponse.Parse(response.Content);
+                if (messageResponse.IsValid)
                 {
-                    var topicIndex = 0;
-
-                    var i = 0;
-                    while (i < response.Content.Length)
-                    {
-                        if (response.Content[i] == 10 && response.Content[i + 1] == 13)
-                        {
-                            topicIndex = i;
-                            break;
-                        }
-
-                        i++;
-                    }
-
-                    if (topicIndex > 0)
-                    {
-                        var topicBytes = new byte[topicIndex];
-                        Array.Copy(response.Content, 0, topicBytes, 0, topicIndex);
-                        var topic = StringFunctions.GetUtf8String(topicBytes);
-                        //Console.WriteLine(topic);
-
-                        var contentLength = response.Content.Length - topicIndex - 2; // 2 = 10 & 13 bytes for CR+LF
-                        var contentBytes = new byte[contentLength];
-                        Array.Copy(response.Content, topicIndex + 2, contentBytes, 0, contentLength);
-                        var content = StringFunctions.GetUtf8String(contentBytes);
-                        //Console.WriteLine(content);
-
-                        var messageResponse = new TrakHoundMessageResponse();
-
-                        messageResponse.BrokerId = "DEBUG"; // DEBUG ONLY
-
-                        messageResponse.Topic = topic;
-                        messageResponse.Content = new MemoryStream(contentBytes);
-                        messageResponse.Timestamp = UnixDateTime.Now;
-
-                        Push(messageResponse);
-                    }
+                    Push(messageResponse);
                 }
-                catch { }
             }
         }
 

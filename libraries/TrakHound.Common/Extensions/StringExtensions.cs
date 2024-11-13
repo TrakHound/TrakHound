@@ -634,6 +634,11 @@ namespace TrakHound
                     // Split string by underscore
                     parts = s.Split('_');
                 }
+                else if (s.Contains('-'))
+                {
+                    // Split string by dash
+                    parts = s.Split('-');
+                }
                 else
                 {
                     // Split string by Uppercase characters

@@ -143,20 +143,7 @@ namespace TrakHound.Http
 
                 var formatResponse = (TrakHoundMessageResponse messageResponse) =>
                 {
-                    if (!string.IsNullOrEmpty(messageResponse.Topic) && messageResponse.Content != null)
-                    {
-                        var headerBytes = messageResponse.Topic.ToUtf8Bytes();
-                        var dividerBytes = new byte[] { 10, 13 };
-                        var contentBytes = messageResponse.GetContentBytes();
-
-                        var responseBytes = new byte[headerBytes.Length + dividerBytes.Length + contentBytes.Length];
-                        Array.Copy(headerBytes, 0, responseBytes, 0, headerBytes.Length);
-                        Array.Copy(dividerBytes, 0, responseBytes, headerBytes.Length, dividerBytes.Length);
-                        Array.Copy(contentBytes, 0, responseBytes, headerBytes.Length + dividerBytes.Length, contentBytes.Length);
-                        return responseBytes;
-                    }
-
-                    return null;
+                    return TrakHoundHttpMessageResponse.Create(messageResponse);
                 };
 
                 await _webSocketManager.Create<TrakHoundMessageResponse>(HttpContext, getConsumer, formatResponse);

@@ -176,7 +176,7 @@
 .message-response-information {
     grid-row: 1;
     display: grid;
-    grid-template-columns: 100px 1fr max-content 220px;
+    grid-template-columns: 100px 1fr max-content 230px;
     background: var(--accentVeryVeryLight);
     color: var(--accentDark);
     border: var(--accentVeryLight);

@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using TrakHound.Api;
 using TrakHound.Http;
@@ -61,15 +60,9 @@ namespace TrakHound.Clients
             url = Url.AddQueryParameter(url, "packageVersion", packageVersion);
 
             var httpResponse = await RestRequest.GetResponse(url);
+            var parameters = TrakHoundHttp.GetApiParameters(httpResponse);
 
-            // Set the Path for the TrakHoundApiResponse
-            string responsePath = null;
-            if (httpResponse.Headers != null && httpResponse.Headers.Contains("Path"))
-            {
-                responsePath = httpResponse.Headers.GetValues("Path")?.FirstOrDefault();
-            }
-
-            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, responsePath);
+            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, parameters);
         }
 
         public async Task<TrakHoundApiResponse> Query(string packageId, string packageVersion, string path, Dictionary<string, string> queryParameters, string routerId = null)
@@ -89,15 +82,9 @@ namespace TrakHound.Clients
             }
 
             var httpResponse = await RestRequest.GetResponse(url);
+            var parameters = TrakHoundHttp.GetApiParameters(httpResponse);
 
-            // Set the Path for the TrakHoundApiResponse
-            string responsePath = null;
-            if (httpResponse.Headers != null && httpResponse.Headers.Contains("Path"))
-            {
-                responsePath = httpResponse.Headers.GetValues("Path")?.FirstOrDefault();
-            }
-
-            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, responsePath);
+            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, parameters);
         }
 
         public async Task<TrakHoundApiResponse> Query(string packageId, string packageVersion, string path, object requestBody, string contentType = "application/json", Dictionary<string, string> queryParameters = null, string routerId = null)
@@ -120,14 +107,9 @@ namespace TrakHound.Clients
             if (requestBody != null) httpResponse = await RestRequest.PostResponse(url, requestBody, contentType);
             else httpResponse = await RestRequest.GetResponse(url);
 
-            // Set the Path for the TrakHoundApiResponse
-            string responsePath = null;
-            if (httpResponse.Headers != null && httpResponse.Headers.Contains("Path"))
-            {
-                responsePath = httpResponse.Headers.GetValues("Path")?.FirstOrDefault();
-            }
+            var parameters = TrakHoundHttp.GetApiParameters(httpResponse);
 
-            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, responsePath);
+            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, parameters);
         }
 
         public async Task<TrakHoundApiResponse> Query(string packageId, string packageVersion, string path, byte[] requestBody, string contentType = "application/octet-stream", Dictionary<string, string> queryParameters = null, string routerId = null)
@@ -150,14 +132,9 @@ namespace TrakHound.Clients
             if (requestBody != null) httpResponse = await RestRequest.PostResponse(url, requestBody, contentType);
             else httpResponse = await RestRequest.GetResponse(url);
 
-            // Set the Path for the TrakHoundApiResponse
-            string responsePath = null;
-            if (httpResponse.Headers != null && httpResponse.Headers.Contains("Path"))
-            {
-                responsePath = httpResponse.Headers.GetValues("Path")?.FirstOrDefault();
-            }
+            var parameters = TrakHoundHttp.GetApiParameters(httpResponse);
 
-            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, responsePath);
+            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, parameters);
         }
 
         #endregion
@@ -256,15 +233,9 @@ namespace TrakHound.Clients
             url = Url.AddQueryParameter(url, "packageVersion", packageVersion);
 
             var httpResponse = await RestRequest.PutResponse(url);
+            var parameters = TrakHoundHttp.GetApiParameters(httpResponse);
 
-            // Set the Path for the TrakHoundApiResponse
-            string responsePath = null;
-            if (httpResponse.Headers != null && httpResponse.Headers.Contains("Path"))
-            {
-                responsePath = httpResponse.Headers.GetValues("Path")?.FirstOrDefault();
-            }
-
-            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, responsePath);
+            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, parameters);
         }
 
         public async Task<TrakHoundApiResponse> Publish(string packageId, string packageVersion, string path, Dictionary<string, string> queryParameters, string routerId = null)
@@ -285,15 +256,9 @@ namespace TrakHound.Clients
             }
 
             var httpResponse = await RestRequest.PutResponse(url);
+            var parameters = TrakHoundHttp.GetApiParameters(httpResponse);
 
-            // Set the Path for the TrakHoundApiResponse
-            string responsePath = null;
-            if (httpResponse.Headers != null && httpResponse.Headers.Contains("Path"))
-            {
-                responsePath = httpResponse.Headers.GetValues("Path")?.FirstOrDefault();
-            }
-
-            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, responsePath);
+            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, parameters);
         }
 
         public async Task<TrakHoundApiResponse> Publish(string packageId, string packageVersion, string path, object requestBody, string requestContentType = "application/json", Dictionary<string, string> queryParameters = null, string routerId = null)
@@ -314,15 +279,9 @@ namespace TrakHound.Clients
             }
 
             var httpResponse = await RestRequest.PostResponse(url, requestBody, requestContentType);
+            var parameters = TrakHoundHttp.GetApiParameters(httpResponse);
 
-            // Set the Path for the TrakHoundApiResponse
-            string responsePath = null;
-            if (httpResponse.Headers != null && httpResponse.Headers.Contains("Path"))
-            {
-                responsePath = httpResponse.Headers.GetValues("Path")?.FirstOrDefault();
-            }
-
-            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, responsePath);
+            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, parameters);
         }
 
         public async Task<TrakHoundApiResponse> Publish(string packageId, string packageVersion, string path, byte[] requestBody, string requestContentType = "application/octet-stream", Dictionary<string, string> queryParameters = null, string routerId = null)
@@ -343,15 +302,9 @@ namespace TrakHound.Clients
             }
 
             var httpResponse = await RestRequest.PostResponse(url, requestBody, requestContentType);
+            var parameters = TrakHoundHttp.GetApiParameters(httpResponse);
 
-            // Set the Path for the TrakHoundApiResponse
-            string responsePath = null;
-            if (httpResponse.Headers != null && httpResponse.Headers.Contains("Path"))
-            {
-                responsePath = httpResponse.Headers.GetValues("Path")?.FirstOrDefault();
-            }
-
-            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, responsePath);
+            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, parameters);
         }
 
         public async Task<TrakHoundApiResponse> Publish(string packageId, string packageVersion, string path, Stream stream, string requestContentType = "application/octet-stream", Dictionary<string, string> queryParameters = null, string routerId = null)
@@ -372,15 +325,9 @@ namespace TrakHound.Clients
             }
 
             var httpResponse = await RestRequest.PostResponse(url, stream, requestContentType);
+            var parameters = TrakHoundHttp.GetApiParameters(httpResponse);       
 
-            // Set the Path for the TrakHoundApiResponse
-            string responsePath = null;
-            if (httpResponse.Headers != null && httpResponse.Headers.Contains("Path"))
-            {
-                responsePath = httpResponse.Headers.GetValues("Path")?.FirstOrDefault();
-            }
-
-            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, responsePath);
+            return new TrakHoundApiResponse(httpResponse.StatusCode, httpResponse.Content, httpResponse.ContentType, parameters);
         }
 
         #endregion

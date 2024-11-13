@@ -124,10 +124,11 @@ namespace TrakHound.Entities.Api
                                             var parameters = new Dictionary<string, string>();
                                             parameters.Add("Object", obj.GetAbsolutePath());
                                             parameters.Add("BrokerId", messageResponse.BrokerId);
+                                            parameters.Add("SenderId", messageResponse.SenderId);
                                             parameters.Add("Topic", messageResponse.Topic);
                                             parameters.Add("Retain", messageResponse.Retain.ToString());
                                             parameters.Add("Qos", messageResponse.Qos.ToString());
-                                            parameters.Add("Timestamp", messageResponse.Timestamp.ToDateTime().ToISO8601String());
+                                            parameters.Add("Timestamp", messageResponse.Timestamp.ToString());
 
                                             var contentType = !string.IsNullOrEmpty(entity.ContentType) ? entity.ContentType : "text/plain";
 

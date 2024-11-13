@@ -106,37 +106,11 @@ namespace TrakHound.Http
         {
             if (response.Content != null)
             {
-                try
+                var messageQueueResponse = TrakHoundHttpMessageQueueResponse.Parse(response.Content);
+                if (messageQueueResponse.IsValid)
                 {
-                    var deliveryIdIndex = 0;
-
-                    var i = 0;
-                    while (i < response.Content.Length)
-                    {
-                        if (response.Content[i] == 10 && response.Content[i + 1] == 13)
-                        {
-                            deliveryIdIndex = i;
-                            break;
-                        }
-
-                        i++;
-                    }
-
-                    if (deliveryIdIndex > 0)
-                    {
-                        var deliveryIdBytes = new byte[deliveryIdIndex];
-                        Array.Copy(response.Content, 0, deliveryIdBytes, 0, deliveryIdIndex);
-                        var deliveryId = StringFunctions.GetUtf8String(deliveryIdBytes);
-                        //Console.WriteLine(deliveryId);
-
-                        var contentLength = response.Content.Length - deliveryIdIndex - 2; // 2 = 10 & 13 bytes for CR+LF
-                        var contentBytes = new byte[contentLength];
-                        Array.Copy(response.Content, deliveryIdIndex + 2, contentBytes, 0, contentLength);
-                        var content = StringFunctions.GetUtf8String(contentBytes);
-                        //Console.WriteLine(content);
-                    }
+                    Push(messageQueueResponse);
                 }
-                catch { }
             }
         }
 

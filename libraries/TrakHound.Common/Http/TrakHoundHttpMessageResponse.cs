@@ -4,22 +4,28 @@
 using System;
 using System.IO;
 using System.Text;
-using TrakHound.MessageQueues;
+using TrakHound.Messages;
 
 namespace TrakHound.Http
 {
-    public static class TrakHoundHttpMessageQueueResponse
+    public static class TrakHoundHttpMessageResponse
     {
-        public static byte[] Create(TrakHoundMessageQueueResponse response)
+        public static byte[] Create(TrakHoundMessageResponse response)
         {
-            if (!string.IsNullOrEmpty(response.DeliveryId) && response.Content != null)
+            if (!string.IsNullOrEmpty(response.Topic) && response.Content != null)
             {
-                // DELIVERY_ID
+                // TOPIC
+                // SENDER_ID
+                // RETAIN (0 or 1)
+                // QOS (0, 1, or 2)
                 // TIMESTAMP (UNIX ns)
 
-                var headers = new string[2];
-                headers[0] = response.DeliveryId;
-                headers[1] = response.Timestamp.ToString();
+                var headers = new string[5];
+                headers[0] = response.Topic;
+                headers[1] = response.SenderId;
+                headers[2] = response.Retain ? "1" : "0";
+                headers[3] = response.Qos.ToString();
+                headers[4] = response.Timestamp.ToString();
 
                 return CreateResponseBytes(headers, response.GetContentBytes());
             }
@@ -46,9 +52,9 @@ namespace TrakHound.Http
             return responseBytes;
         }
 
-        public static TrakHoundMessageQueueResponse Parse(byte[] responseBytes)
+        public static TrakHoundMessageResponse Parse(byte[] responseBytes)
         {
-            var response = new TrakHoundMessageQueueResponse();
+            var response = new TrakHoundMessageResponse();
 
             if (responseBytes != null)
             {
@@ -73,10 +79,13 @@ namespace TrakHound.Http
                     var header = StringFunctions.GetUtf8String(headerBytes);
 
                     var headers = header.Split("\r");
-                    if (headers.Length > 1)
+                    if (headers.Length > 4)
                     {
-                        response.DeliveryId = headers[0];
-                        response.Timestamp = headers[1].ToLong();
+                        response.Topic = headers[0];
+                        response.SenderId = headers[1];
+                        response.Retain = headers[2] == "1";
+                        response.Qos = headers[3].ToByte();
+                        response.Timestamp = headers[4].ToLong();
                     }
 
                     var contentLength = responseBytes.Length - headerIndex - 2; // 2 = 10 & 13 bytes for CR+LF
