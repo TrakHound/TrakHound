@@ -139,3 +139,171 @@ Test/Messages
 
 My Name is John Doe
 ```
+
+## Publish
+Messages are written to a Broker using an HTTP POST Request using the format below.
+
+### Request
+```
+POST : http://localhost:8472/_messages/publish?brokerId=b-1234&topic=Test/Messages
+```
+
+<table style="width: 100%;">
+    <thead>
+        <tr>
+            <th style="text-align: left;width: 120px;">Parameter</th>
+            <th style="text-align: left;width: 170px;">DataType</th>
+            <th style="text-align: left;width: 120px;">Required</th>
+            <th style="text-align: left;">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>brokerId</td>
+            <td>String</td>
+            <td>YES</td>
+            <td>The ID of the Broker to publish the message to</td>
+        </tr>  
+        <tr>
+            <td>topic</td>
+            <td>String</td>
+            <td>YES</td>
+            <td>The Topic to publish the message to</td>
+        </tr>
+        <tr>
+            <td>retain</td>
+            <td>Boolean</td>
+            <td>NO</td>
+            <td>A flag to determine whether the Broker should retain the message (true) or not (false). Default = false</td>
+        </tr>   
+        <tr>
+            <td>qos</td>
+            <td>Integer (8)</td>
+            <td>NO</td>
+            <td>The Quality of Service to use when publishing the message to the broker. 0, 1, or 2</td>
+        </tr>   
+        <tr>
+            <td>routerId</td>
+            <td>String</td>
+            <td>NO</td>
+            <td>The Name or ID of the TrakHound Router to use to process the request</td>
+        </tr>   
+    </tbody>
+</table>
+
+#### Request Body
+The Request Body contains the raw bytes to store as the Message Content.
+
+## List Brokers
+A list of Brokers can be returned using an HTTP GET Request using the format below.
+
+### Request
+```
+GET : http://localhost:8472/_messages/brokers
+```
+
+<table style="width: 100%;">
+    <thead>
+        <tr>
+            <th style="text-align: left;width: 120px;">Parameter</th>
+            <th style="text-align: left;width: 170px;">DataType</th>
+            <th style="text-align: left;width: 120px;">Required</th>
+            <th style="text-align: left;">Description</th>
+        </tr>
+    </thead>
+    <tbody>   
+        <tr>
+            <td>routerId</td>
+            <td>String</td>
+            <td>NO</td>
+            <td>The Name or ID of the TrakHound Router to use to process the request</td>
+        </tr>   
+    </tbody>
+</table>
+
+## Query Brokers
+A list of Brokers can be returned using an HTTP POST Request using the format below.
+
+### Request
+```
+POST : http://localhost:8472/_messages/brokers
+```
+
+<table style="width: 100%;">
+    <thead>
+        <tr>
+            <th style="text-align: left;width: 120px;">Parameter</th>
+            <th style="text-align: left;width: 170px;">DataType</th>
+            <th style="text-align: left;width: 120px;">Required</th>
+            <th style="text-align: left;">Description</th>
+        </tr>
+    </thead>
+    <tbody>   
+        <tr>
+            <td>routerId</td>
+            <td>String</td>
+            <td>NO</td>
+            <td>The Name or ID of the TrakHound Router to use to process the request</td>
+        </tr>   
+    </tbody>
+</table>
+
+#### Request Body
+The Request Body contains a JSON array of the Broker IDs to return
+
+## List Senders
+A list of Senders can be returned using an HTTP GET Request using the format below.
+
+### Request
+```
+GET : http://localhost:8472/_messages/senders
+```
+
+<table style="width: 100%;">
+    <thead>
+        <tr>
+            <th style="text-align: left;width: 120px;">Parameter</th>
+            <th style="text-align: left;width: 170px;">DataType</th>
+            <th style="text-align: left;width: 120px;">Required</th>
+            <th style="text-align: left;">Description</th>
+        </tr>
+    </thead>
+    <tbody>   
+        <tr>
+            <td>routerId</td>
+            <td>String</td>
+            <td>NO</td>
+            <td>The Name or ID of the TrakHound Router to use to process the request</td>
+        </tr>   
+    </tbody>
+</table>
+
+## Query Senders
+A list of Senders can be returned using an HTTP POST Request using the format below.
+
+### Request
+```
+POST : http://localhost:8472/_messages/senders
+```
+
+<table style="width: 100%;">
+    <thead>
+        <tr>
+            <th style="text-align: left;width: 120px;">Parameter</th>
+            <th style="text-align: left;width: 170px;">DataType</th>
+            <th style="text-align: left;width: 120px;">Required</th>
+            <th style="text-align: left;">Description</th>
+        </tr>
+    </thead>
+    <tbody>   
+        <tr>
+            <td>routerId</td>
+            <td>String</td>
+            <td>NO</td>
+            <td>The Name or ID of the TrakHound Router to use to process the request</td>
+        </tr>   
+    </tbody>
+</table>
+
+#### Request Body
+The Request Body contains a JSON array of the Sender IDs to return
