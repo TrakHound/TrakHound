@@ -13,7 +13,7 @@
             var comparer = new TrakHoundObjectComparer();
             var namespaces = objects.Select(o => o.Namespace).Distinct();
 
-            <TrakHound.Blazor.Components.TreeView SelectedId="@ObjectExplorerService.SelectedObjectUuid">
+            <TrakHound.Blazor.Components.TreeView>
                 <CascadingValue Value="this">
 
                     @foreach (var ns in namespaces)
@@ -86,7 +86,7 @@
     public ObjectExplorerService ObjectExplorerService { get; set; }
 
     [Parameter]
-    public int OverscanCount { get; set; } = 100;
+    public int OverscanCount { get; set; } = 200;
 
 
     protected override void OnInitialized()

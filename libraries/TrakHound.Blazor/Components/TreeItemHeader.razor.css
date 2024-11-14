@@ -1,0 +1,108 @@
+.tree-item-header ::deep .default-header-content-container {
+    display: grid;
+    grid-template-columns: max-content 1fr 200px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    line-height: 14px;
+    user-select: none;
+    text-decoration: none;
+    height: 18px;
+}
+
+.default-header-content-container .icon-container {
+    grid-column: 1;
+}
+
+.default-header-content-container .icon {
+    font-size: 12px;
+    line-height: 12px;
+    padding-left: 5px;
+    padding-right: 7px;
+    width: 20px;
+    color: var(--accent);
+}
+
+.default-header-content-container .description-container {
+    grid-column: 2;
+    display: inline-block;
+    text-align: left;
+    user-select: none;
+    padding-top: 1px;
+    padding-left: 5px;
+    white-space: nowrap;
+}
+
+    .default-header-content-container .description-container .title {
+        display: block;
+        font-size: 12px;
+        line-height: 14px;
+        color: #333;
+        user-select: none !important;
+    }
+
+.default-header-content-containern .description-container .subtitle {
+    font-size: 10px;
+    line-height: 10px;
+    margin-left: 5px;
+    color: #888;
+    text-decoration: none;
+    user-select: none;
+}
+
+/* Hover */
+
+.default-header-content-container:hover .icon {
+    color: var(--accentLight) !important;
+}
+
+.default-header-content-container:hover .description-container .title,
+.default-header-content-container:hover .description-container .subtitle {
+    color: var(--accentLight) !important;
+}
+
+.default-header-content-container:hover .loading-icon {
+    color: var(--accentLight) !important;
+}
+
+.default-header-content-container:hover .grid-container {
+    border-color: var(--accentLight) !important;
+}
+
+.default-header-content-container:hover .value-container {
+    background: var(--accentVeryVeryLight);
+}
+
+.default-header-content-container:hover .value {
+    color: var(--accentLight) !important;
+}
+
+/* Active */
+
+.tree-item-header ::deep .default-header-content-container.active {
+    background: var(--accent);
+}
+
+.default-header-content-container.active .icon {
+    color: #fff !important;
+}
+
+.default-header-content-container.active .description-container .title,
+.default-header-content-container.active .description-container .subtitle {
+    color: #fff !important;
+}
+
+.default-header-content-container.active .loading-icon {
+    color: #fff !important;
+}
+
+.default-header-content-container.active .grid-container {
+    border-color: #fff !important;
+}
+
+.default-header-content-container.active .value-container {
+    background: none !important;
+}
+
+.default-header-content-container.active .value {
+    color: #fff !important;
+}

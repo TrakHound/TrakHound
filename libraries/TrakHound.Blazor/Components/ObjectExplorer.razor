@@ -19,80 +19,14 @@
                     </div>
                 </RadzenSplitterPane>
                 <RadzenSplitterPane Min="25%" Collapsible="false">
-
                     <div class="objects-content">
-
-                        @if (objectExplorerService.SelectedObject != null)
-                        {
-                            if (objectExplorerService.SelectedObject.ContentType != TrakHoundObjectContentTypes.Directory)
-                            {
-                                <RadzenTabs RenderMode="TabRenderMode.Client">
-                                    <Tabs>
-                                        <RadzenTabsItem Text="Content">
-                                            <Template>
-                                                <div class="tab-header">
-                                                    <span class="tab-header-icon fa-solid fa-sharp fa-file-code"></span>
-                                                    <span class="tab-header-title">Content</span>
-                                                </div>
-                                            </Template>
-                                            <ChildContent>
-                                                <ObjectExplorerContentView Object="@objectExplorerService.SelectedObject" />
-                                            </ChildContent>
-                                        </RadzenTabsItem>
-                                        <RadzenTabsItem Text="Object">
-                                            <Template>
-                                                <div class="tab-header">
-                                                    <span class="tab-header-icon fa-solid fa-sharp fa-circle-info"></span>
-                                                    <span class="tab-header-title">Object</span>
-                                                </div>
-                                            </Template>
-                                            <ChildContent>
-                                                <ObjectExplorerInformation Object="@objectExplorerService.SelectedObject" />
-                                            </ChildContent>
-                                        </RadzenTabsItem>
-                                    </Tabs>
-                                </RadzenTabs>
-                            }
-                            else
-                            {
-                                <RadzenTabs RenderMode="TabRenderMode.Client">
-                                    <Tabs>
-                                        <RadzenTabsItem Text="Object">
-                                            <Template>
-                                                <div class="tab-header">
-                                                    <span class="tab-header-icon fa-solid fa-sharp fa-circle-info"></span>
-                                                    <span class="tab-header-title">Object</span>
-                                                </div>
-                                            </Template>
-                                            <ChildContent>
-                                                <ObjectExplorerInformation Object="@objectExplorerService.SelectedObject" />
-                                            </ChildContent>
-                                        </RadzenTabsItem>
-                                        <RadzenTabsItem Text="Json">
-                                            <Template>
-                                                <div class="tab-header">
-                                                    <span class="tab-header-icon fa-solid fa-sharp fa-code"></span>
-                                                    <span class="tab-header-title">Json</span>
-                                                </div>
-                                            </Template>
-                                            <ChildContent>
-                                                <TrakHound.Blazor.Components.ObjectExplorerInternal.Content.ObjectDirectoryJson Object="@objectExplorerService.SelectedObject" />
-                                            </ChildContent>
-                                        </RadzenTabsItem>
-                                    </Tabs>
-                                </RadzenTabs>
-                            }                           
-                        }
-
+                        <ObjectExplorerSelection />
                     </div>
-
                 </RadzenSplitterPane>
             </RadzenSplitter>
             <ObjectExplorerAddModal />
             <ObjectExplorerDeleteModal />
-
         </CascadingValue>
-
     </div>
 
     <TrakHound.Blazor.Components.Notifications Items="@objectExplorerService.NotificationService.Notifications" />
@@ -175,8 +109,8 @@
                 objectExplorerService = new ObjectExplorerService(BaseUrl, Client);
                 objectExplorerService.Updated += async (s, a) => { await InvokeAsync(StateHasChanged); };
                 objectExplorerService.TargetObjectsUpdated += async (s, a) => { await InvokeAsync(StateHasChanged); };
-                objectExplorerService.SelectedObjectChanged += async (s, a) => { await InvokeAsync(StateHasChanged); };
-                objectExplorerService.ValueUpdated += async (s, a) => { await InvokeAsync(StateHasChanged); };
+                // objectExplorerService.SelectedObjectChanged += async (s, a) => { await InvokeAsync(StateHasChanged); };
+                // objectExplorerService.ValueUpdated += async (s, a) => { await InvokeAsync(StateHasChanged); };
                 objectExplorerService.QueryChanged += (s, q) => QueryChanged.InvokeAsync(q);
 
                 objectExplorerService.ObjectsQueryLinkFunction = ObjectsQueryLinkFunction;
@@ -198,6 +132,7 @@
                 var newHash = GetObjectsHash(Objects);
                 if (newHash != objectsHash)
                 {
+                    objectExplorerService.ClearTree();
                     await objectExplorerService.LoadObjects(Objects);
                     objectsHash = newHash;
                 }

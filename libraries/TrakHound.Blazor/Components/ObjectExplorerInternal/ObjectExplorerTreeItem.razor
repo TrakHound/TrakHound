@@ -13,32 +13,15 @@
 
     var isExpanded = ObjectExplorerService.GetObjectExpanded(Object.Uuid);
 
-    var title = Object.Name;
-    var subtitle = IsRoot ? Object.Path : null;
-
-    if (contentType == TrakHoundObjectContentType.Directory) treeItemClasses.Add("folder");
-    var icon = GetObjectIcon(isExpanded);
-
     var isExpandable = contentType == TrakHoundObjectContentType.Directory;
     var isHidden = Object.Name.StartsWith('.');
     if (isHidden) treeItemClasses.Add("hidden");
 
-    // Get Value
-    var value = contentType == TrakHoundObjectContentType.Directory ? null : ObjectExplorerService.GetValue(Object.Uuid);
-    value = FormatValue(value);
-
-    // Check if Recent Value
-    var isRecent = false;
-    if (contentType != TrakHoundObjectContentType.Directory) isRecent = ObjectExplorerService.IsRecentValue(Object.Uuid);
-    if (isRecent) treeItemClasses.Add("recent");
-
     var treeItemClass = string.Join(' ', treeItemClasses);
 
     var childObjects = ObjectExplorerService.GetChildObjects(Object.Uuid);
-    var childCount = ObjectExplorerService.GetObjectChildCount(Object.Uuid);
-    if (childCount > 0) title = $"{title} ({childCount})";
 
-    <TrakHound.Blazor.Components.TreeItem Id="@Object.Uuid" CssClass="@treeItemClass" Title="@title" Subtitle="@subtitle" Icon="@icon" TitleLabel="@Object.Path" IconLabel="@contentType.ToString()" Value="@value" IsLoading="@isLoading" IsExpanded="@isExpanded" Selected="ItemSelected" Expanded="ExpandAndLoad" Collapsed="Collapse" IsExpandable="@isExpandable" KeyPressed="KeyPress">
+    <TrakHound.Blazor.Components.TreeItem Id="@Object.Uuid" CssClass="@treeItemClass" IsLoading="@isLoading" IsExpanded="@isExpanded" Expanded="ExpandAndLoad" Collapsed="Collapse" IsExpandable="@isExpandable">
         <ChildContent>
 
             @if (!childObjects.IsNullOrEmpty())
@@ -84,8 +67,11 @@
             }
 
         </ChildContent>
+        <HeaderTemplate>
+            <ObjectExplorerTreeItemHeader Object="@Object" IsRoot="@IsRoot" />
+        </HeaderTemplate>
         <ValueTemplate>
-            <span class="value" title="@value">@value</span>
+            <ObjectExplorerTreeItemValue Object="@Object" />
         </ValueTemplate>
         <ContextMenu>
             <ContextMenuItem Text="Refresh" Clicked="Refresh" />
@@ -121,7 +107,6 @@
     }
 
     private bool isLoading;
-    private ThrottleEvent updateDelay;
     private object _lock = new object();
 
 
@@ -152,18 +137,10 @@
 
     protected override void OnInitialized()
     {
-        lock (_lock)
-        {
-            updateDelay = new ThrottleEvent(250);
-            updateDelay.Elapsed += UpdateDelayElapsed;
-        }
-
         if (ObjectExplorerService != null)
         {
             ObjectExplorerService.ObjectExpanded += Expand;
             ObjectExplorerService.ObjectCollapsed += Collapse;
-            ObjectExplorerService.SelectedObjectChanged += SelectedObjectChanged;
-            ObjectExplorerService.ValueUpdated += ValueUpdated;
         }
     }
 
@@ -171,18 +148,10 @@
     {
         try
         {
-            if (updateDelay != null)
-            {
-                updateDelay.Elapsed -= UpdateDelayElapsed; 
-                updateDelay.Dispose();
-            }
-
             if (ObjectExplorerService != null)
             {
                 ObjectExplorerService.ObjectExpanded -= Expand;
                 ObjectExplorerService.ObjectCollapsed -= Collapse;
-                ObjectExplorerService.SelectedObjectChanged -= SelectedObjectChanged;
-                ObjectExplorerService.ValueUpdated -= ValueUpdated;
             }
         }
         catch { }
@@ -204,47 +173,6 @@
         await ExpandAndLoad();
     }
 
-    private async void SelectedObjectChanged(object sender, ITrakHoundObjectEntity obj)
-    {
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private void ValueUpdated(object sender, string objectUuid)
-    {
-        if (Object != null && Object.Uuid == objectUuid)
-        {
-            lock (_lock)
-            {
-                if (updateDelay != null) updateDelay.Set();
-            }
-        }
-    }
-
-    private async void UpdateDelayElapsed(object sender, EventArgs args)
-    {
-        // await InvokeAsync(StateHasChanged);
-    }
-
-
-    private string GetObjectIcon(bool isExpanded)
-    {
-        if (Object != null)
-        {
-            var contentType = Object.ContentType.ConvertEnum<TrakHoundObjectContentType>();
-
-            switch (contentType)
-            {
-                case TrakHoundObjectContentType.Directory:
-                    if (isExpanded) return "fa-duotone fa-folder-open";
-                    else return "fa-sharp fa-solid fa-folder";
-
-                default:
-                    return TrakHoundObjectIcon.Get(contentType);
-            }
-        }
-
-        return "fa-regular fa-sharp fa-file";
-    }
 
     private async void Refresh()
     {
@@ -481,14 +409,6 @@
                 ObjectExplorerService.AddNotification(NotificationType.Information, "Objects Pasted Successfuly", path);
                 await InvokeAsync(StateHasChanged);
             }
-        }
-    }
-
-    private async void KeyPress(KeyboardEventArgs args)
-    {
-        if (args.Code != null)
-        {
-
         }
     }
 

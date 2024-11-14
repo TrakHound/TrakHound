@@ -5,8 +5,9 @@
     width: 100%;
     padding-top: 5px;
     display: grid;
-    grid-template-rows: max-content max-content max-content max-content 1fr;
+    grid-template-rows: max-content max-content max-content max-content minmax(300px, 1fr);
     grid-row-gap: 5px;
+    overflow-y: auto;
 }
 
 .hidden-input {

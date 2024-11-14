@@ -1,0 +1,130 @@
+﻿@inject TrakHound.Blazor.Services.ContextMenuService contextMenuService
+
+<div class="tree-item-header">
+
+    @if (!string.IsNullOrEmpty(Link))
+    {
+        if (HeaderTemplate != null)
+        {
+            <TrakHoundNavLink Match="NavLinkMatch.All" href="@Link" class="header-content-container" @ondblclick="Expand">
+                @HeaderTemplate
+            </TrakHoundNavLink>
+        }
+        else
+        {
+            <TrakHoundNavLink Match="NavLinkMatch.All" href="@Link" class="header-content-container default-header-content-container" @ondblclick="Expand">
+
+                @if (Icon != null)
+                {
+                    <div class="icon-container">
+                        <span class="icon @Icon" title="@IconLabel"></span>
+                    </div>
+                }
+
+                <div class="description-container">
+                    <span class="title" title="@TitleLabel">@Title <span class="subtitle">@Subtitle</span></span>
+                </div>
+
+            </TrakHoundNavLink>
+        }
+    }
+    else
+    {
+        var active = IsActive ? "active" : "";
+
+        if (HeaderTemplate != null)
+        {
+            <div class="header-content-container @active" @ondblclick="Expand" @oncontextmenu="ToggleContextMenu" @oncontextmenu:preventDefault="true">
+                @HeaderTemplate
+            </div>
+        }
+        else
+        {
+            <div class="header-content-container default-header-content-container @active" @ondblclick="Expand" @oncontextmenu="ToggleContextMenu" @oncontextmenu:preventDefault="true">
+
+                @if (Icon != null)
+                {
+                    <div class="icon-container">
+                        <span class="icon @Icon" title="@IconLabel"></span>
+                    </div>
+                }
+
+                <div class="description-container">
+                    <span class="title" title="@TitleLabel">@Title <span class="subtitle">@Subtitle</span></span>
+                </div>
+
+            </div>
+        }
+    }
+
+    @if (ContextMenu != null)
+    {
+        <ContextMenu Id="@contextMenuId">
+            @ContextMenu
+        </ContextMenu>
+    }
+
+</div>
+
+@code {
+
+    private readonly string contextMenuId = Guid.NewGuid().ToString();
+
+
+    [Parameter]
+    public RenderFragment HeaderTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment ValueTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment ContextMenu { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string TitleLabel { get; set; }
+
+    [Parameter]
+    public string Subtitle { get; set; }
+
+    [Parameter]
+    public string Value { get; set; }
+
+    [Parameter]
+    public string Link { get; set; }
+
+    [Parameter]
+    public string Icon { get; set; }
+
+    [Parameter]
+    public string IconLabel { get; set; }
+
+    [Parameter]
+    public bool IsActive { get; set; }
+
+    [Parameter]
+    public EventCallback Selected { get; set; }
+
+    [Parameter]
+    public EventCallback Collapsed { get; set; }
+
+    [Parameter]
+    public EventCallback Expanded { get; set; }
+
+
+    private void ToggleContextMenu(MouseEventArgs args)
+    {
+        if (args != null)
+        {
+            contextMenuService.Show(contextMenuId, args.PageX, args.PageY);
+        }
+    }
+
+    private async void Expand()
+    {
+        await Expanded.InvokeAsync();
+    }
+
+}

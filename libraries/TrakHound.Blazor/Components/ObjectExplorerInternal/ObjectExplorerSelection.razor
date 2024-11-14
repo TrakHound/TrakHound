@@ -1,0 +1,98 @@
+﻿@implements IDisposable
+@rendermode InteractiveServer
+@using TrakHound.Entities
+
+@if (ObjectExplorerService != null && ObjectExplorerService.SelectedObject != null)
+{
+    if (ObjectExplorerService.SelectedObject.ContentType != TrakHoundObjectContentTypes.Directory)
+    {
+        <RadzenTabs RenderMode="TabRenderMode.Client">
+            <Tabs>
+                <RadzenTabsItem Text="Content">
+                    <Template>
+                        <div class="tab-header">
+                            <span class="tab-header-icon fa-solid fa-sharp fa-file-code"></span>
+                            <span class="tab-header-title">Content</span>
+                        </div>
+                    </Template>
+                    <ChildContent>
+                        <ObjectExplorerContentView Object="@ObjectExplorerService.SelectedObject" />
+                    </ChildContent>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Object">
+                    <Template>
+                        <div class="tab-header">
+                            <span class="tab-header-icon fa-solid fa-sharp fa-circle-info"></span>
+                            <span class="tab-header-title">Object</span>
+                        </div>
+                    </Template>
+                    <ChildContent>
+                        <ObjectExplorerInformation Object="@ObjectExplorerService.SelectedObject" />
+                    </ChildContent>
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+    }
+    else
+    {
+        <RadzenTabs RenderMode="TabRenderMode.Client">
+            <Tabs>
+                <RadzenTabsItem Text="Object">
+                    <Template>
+                        <div class="tab-header">
+                            <span class="tab-header-icon fa-solid fa-sharp fa-circle-info"></span>
+                            <span class="tab-header-title">Object</span>
+                        </div>
+                    </Template>
+                    <ChildContent>
+                        <ObjectExplorerInformation Object="@ObjectExplorerService.SelectedObject" />
+                    </ChildContent>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Json">
+                    <Template>
+                        <div class="tab-header">
+                            <span class="tab-header-icon fa-solid fa-sharp fa-code"></span>
+                            <span class="tab-header-title">Json</span>
+                        </div>
+                    </Template>
+                    <ChildContent>
+                        <TrakHound.Blazor.Components.ObjectExplorerInternal.Content.ObjectDirectoryJson Object="@ObjectExplorerService.SelectedObject" />
+                    </ChildContent>
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+    }
+}
+
+@code {
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        if (ObjectExplorerService != null)
+        {
+            ObjectExplorerService.SelectedObjectChanged += SelectionChanged;
+        }
+    }
+
+    void IDisposable.Dispose()
+    {
+        try
+        {
+            if (ObjectExplorerService != null)
+            {
+                ObjectExplorerService.SelectedObjectChanged -= SelectionChanged;
+            }
+        }
+        catch { }
+    }
+
+    private async void SelectionChanged(object sender, ITrakHoundObjectEntity entity)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+}
