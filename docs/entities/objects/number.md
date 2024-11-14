@@ -1,6 +1,6 @@
-# Statistic Entity
+# Number Entity
 
-Statistic Entities are used to store a value for a specific Time Range. This can be used to record aggregate data such as Min, Max, Average, etc.
+Number Entities are used to store a single numeric value. This can be used in conjunction with other entities to create complex models.
 
 
 ## Properties
@@ -27,18 +27,6 @@ Statistic Entities are used to store a value for a specific Time Range. This can
             <td>Required</td>
         </tr>
         <tr>
-            <td><b>TimeRangeStart</b></td>
-            <td>Integer (64)</td>
-            <td>The timestamp in UNIX Nanoseconds of the Start of the TimeRange.</td>
-            <td>Required</td>
-        </tr>
-        <tr>
-            <td><b>TimeRangeEnd</b></td>
-            <td>Integer (64)</td>
-            <td>The timestamp in UNIX Nanoseconds of the End of the TimeRange.</td>
-            <td>Required</td>
-        </tr>
-        <tr>
             <td><b>DataType</b></td>
             <td>Integer (8)</td>
             <td>The identifier to determine what type of data the Value contains</td>
@@ -47,13 +35,7 @@ Statistic Entities are used to store a value for a specific Time Range. This can
         <tr>
             <td><b>Value</b></td>
             <td>String</td>
-            <td>The value that was recorded.</td>
-            <td>Required</td>
-        </tr>
-        <tr>
-            <td><b>Timestamp</b></td>
-            <td>Integer (64)</td>
-            <td>The timestamp in UNIX Nanoseconds of when the value was recorded.</td>
+            <td>A string representation that represents the stored value.</td>
             <td>Required</td>
         </tr>
         <tr>
@@ -74,18 +56,15 @@ Statistic Entities are used to store a value for a specific Time Range. This can
 ## UUID
 A UUID property follows the below format:
 ```
-SHA256({ObjectUuid}:{TimeRangeStart}:{TimesRangeEnd})
+SHA256({ObjectUuid}:number)
 ```
 
 ## JSON Format
 ```json
 [
   {ObjectUuid},
-  {TimeRangeStart},
-  {TimesRangeEnd},
   {DataType},
   {Value},
-  {Timestamp},
   {SourceUuid},
   {Created}
 ]
@@ -135,11 +114,6 @@ SHA256({ObjectUuid}:{TimeRangeStart}:{TimesRangeEnd})
             <td>6</td>
             <td><b>Decimal</b></td>
             <td>128 bit numeric type for financial and monetary calculations</td>
-        </tr>
-        <tr>
-            <td>7</td>
-            <td><b>Duration</b></td>
-            <td>64 bit Signed Integer representing the Nanoseconds that have elapsed</td>
         </tr>
     </tbody>
 </table>

@@ -10,6 +10,7 @@ namespace TrakHound.Entities
         Int32,
         Int64,
         Float,
+        Double,
         Decimal,
         Duration
     }

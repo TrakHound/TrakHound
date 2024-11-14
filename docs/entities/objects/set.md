@@ -1,16 +1,4 @@
 # Set Entity
-<table>
-    <tbody>
-        <tr>
-            <td class="row-header"><b>Category</b></td>
-            <td>Objects</td>
-        </tr>
-        <tr>
-            <td class="row-header"><b>Class</b></td>
-            <td>Set</td>
-        </tr>
-    </tbody>
-</table>
 
 Set Entities are used to store a group of String values.
 

@@ -1,16 +1,4 @@
 # Event Entity
-<table>
-    <tbody>
-        <tr>
-            <td class="row-header"><b>Category</b></td>
-            <td>Objects</td>
-        </tr>
-        <tr>
-            <td class="row-header"><b>Class</b></td>
-            <td>Event</td>
-        </tr>
-    </tbody>
-</table>
 
 Event Entities are used to store a reference to an Object Entity at a specified Timestamp.
 

@@ -220,8 +220,8 @@ namespace TrakHound.Entities
             entity.TimeRangeEnd,
             entity.DataType,
             entity.Value,
-            entity.SourceUuid,
             entity.Timestamp,
+            entity.SourceUuid,
             entity.Created
         };
 
@@ -239,8 +239,8 @@ namespace TrakHound.Entities
                     TimeRangeEnd = obj[2].ToLong(),
                     DataType = obj[3].ToInt(),
                     Value = obj[4]?.ToString(),
-                    SourceUuid = obj[5]?.ToString(),
-                    Timestamp = obj[6].ToLong(),
+                    Timestamp = obj[5].ToLong(),
+                    SourceUuid = obj[6]?.ToString(),
                     Created = obj[7].ToLong()
                 };
             }
@@ -284,7 +284,7 @@ namespace TrakHound.Entities
                 if (type == typeof(uint)) return TrakHoundStatisticDataType.Int32;
                 if (type == typeof(long)) return TrakHoundStatisticDataType.Int64;
                 if (type == typeof(ulong)) return TrakHoundStatisticDataType.Int64;
-                if (type == typeof(double)) return TrakHoundStatisticDataType.Float;
+                if (type == typeof(double)) return TrakHoundStatisticDataType.Double;
                 if (type == typeof(float)) return TrakHoundStatisticDataType.Float;
                 if (type == typeof(decimal)) return TrakHoundStatisticDataType.Decimal;
                 if (type == typeof(TimeSpan)) return TrakHoundStatisticDataType.Duration;

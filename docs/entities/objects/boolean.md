@@ -1,16 +1,4 @@
 # Boolean Entity
-<table>
-    <tbody>
-        <tr>
-            <td class="row-header"><b>Category</b></td>
-            <td>Objects</td>
-        </tr>
-        <tr>
-            <td class="row-header"><b>Class</b></td>
-            <td>Boolean</td>
-        </tr>
-    </tbody>
-</table>
 
 Boolean Entities are used to store a single true/false value. This can be used in conjunction with other entities to create complex models.
 

@@ -1,16 +1,4 @@
 # Duration Entity
-<table>
-    <tbody>
-        <tr>
-            <td class="row-header"><b>Category</b></td>
-            <td>Objects</td>
-        </tr>
-        <tr>
-            <td class="row-header"><b>Class</b></td>
-            <td>Duration</td>
-        </tr>
-    </tbody>
-</table>
 
 Duration Entities are used to store a single timespan value represented in Nanoseconds. This can be used in conjunction with other entities to create complex models.
 

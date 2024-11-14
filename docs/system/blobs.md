@@ -1,10 +1,10 @@
-# Blobs HTTP API
+# Blobs API
 Blobs is a System Level API in TrakHound used to store raw bytes.
 
 ## Read
 Blobs are read using an HTTP GET Request using the format below with a response that is always a File stream.
 
-### Request
+### HTTP Request
 ```
 GET : http://localhost:8472/_blobs?blobId=0123456
 ```
@@ -37,7 +37,7 @@ GET : http://localhost:8472/_blobs?blobId=0123456
 ## Publish
 Blobs are written using an HTTP POST Request using the format below.
 
-### Request
+### HTTP Request
 ```
 POST : http://localhost:8472/_blobs/publish?blobId=0123456
 ```
@@ -73,7 +73,7 @@ The Request Body contains the raw bytes to store as the Blob Content.
 ## Delete
 Blobs are deleted using an HTTP DELETE Request using the format below.
 
-### Request
+### HTTP Request
 ```
 DELETE : http://localhost:8472/_blobs?blobId=0123456
 ```

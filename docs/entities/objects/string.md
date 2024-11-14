@@ -1,16 +1,4 @@
 # String Entity
-<table>
-    <tbody>
-        <tr>
-            <td class="row-header"><b>Category</b></td>
-            <td>Objects</td>
-        </tr>
-        <tr>
-            <td class="row-header"><b>Class</b></td>
-            <td>String</td>
-        </tr>
-    </tbody>
-</table>
 
 String Entities are used to store a single string value. This can be used in conjunction with other entities to create complex models.
 

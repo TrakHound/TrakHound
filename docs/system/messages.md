@@ -1,10 +1,10 @@
-# Messages System HTTP API
+# Messages System API
 Messages is a System Level API in TrakHound used to send/receive messages in a way that mimics the MQTT protocol.
 
 ## Subscribe
 The Subscribe endpoint is served using a WebSockets connection. The list of Topics to subscribe are passed in the initial Request Body message. Messages are received in the format below:
 
-### Request
+### HTTP Request
 ```
 ws://localhost:8472/_messages/subscribe?brokerId=b-1234&requestBody=true
 ```
@@ -143,7 +143,7 @@ My Name is John Doe
 ## Publish
 Messages are written to a Broker using an HTTP POST Request using the format below.
 
-### Request
+### HTTP Request
 ```
 POST : http://localhost:8472/_messages/publish?brokerId=b-1234&topic=Test/Messages
 ```
@@ -197,7 +197,7 @@ The Request Body contains the raw bytes to store as the Message Content.
 ## List Brokers
 A list of Brokers can be returned using an HTTP GET Request using the format below.
 
-### Request
+### HTTP Request
 ```
 GET : http://localhost:8472/_messages/brokers
 ```
@@ -224,7 +224,7 @@ GET : http://localhost:8472/_messages/brokers
 ## Query Brokers
 A list of Brokers can be returned using an HTTP POST Request using the format below.
 
-### Request
+### HTTP Request
 ```
 POST : http://localhost:8472/_messages/brokers
 ```
@@ -254,7 +254,7 @@ The Request Body contains a JSON array of the Broker IDs to return
 ## List Senders
 A list of Senders can be returned using an HTTP GET Request using the format below.
 
-### Request
+### HTTP Request
 ```
 GET : http://localhost:8472/_messages/senders
 ```
@@ -281,7 +281,7 @@ GET : http://localhost:8472/_messages/senders
 ## Query Senders
 A list of Senders can be returned using an HTTP POST Request using the format below.
 
-### Request
+### HTTP Request
 ```
 POST : http://localhost:8472/_messages/senders
 ```

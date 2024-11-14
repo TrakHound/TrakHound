@@ -1,18 +1,6 @@
 # TimeRange Entity
-<table>
-    <tbody>
-        <tr>
-            <td class="row-header"><b>Category</b></td>
-            <td>Objects</td>
-        </tr>
-        <tr>
-            <td class="row-header"><b>Class</b></td>
-            <td>TimeRange</td>
-        </tr>
-    </tbody>
-</table>
 
-Boolean Entities are used to store a single true/false value. This can be used in conjunction with other entities to create complex models.
+TimeRange Entities are used to store a single range of time defined by Start and End timestamps. This can be used in conjunction with other entities to create complex models.
 
 
 ## Properties
@@ -39,9 +27,15 @@ Boolean Entities are used to store a single true/false value. This can be used i
             <td>Required</td>
         </tr>
         <tr>
-            <td><b>Value</b></td>
-            <td>Boolean</td>
-            <td>The boolean that represents the stored value.</td>
+            <td><b>Start</b></td>
+            <td>Integer (64)</td>
+            <td>The timestamp in UNIX Nanoseconds that represents the beginning of the TimeRange</td>
+            <td>Required</td>
+        </tr>
+        <tr>
+            <td><b>End</b></td>
+            <td>Integer (64)</td>
+            <td>The timestamp in UNIX Nanoseconds that represents the end of the TimeRange</td>
             <td>Required</td>
         </tr>
         <tr>

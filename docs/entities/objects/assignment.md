@@ -1,16 +1,4 @@
 # Assignment Entity
-<table>
-    <tbody>
-        <tr>
-            <td class="row-header"><b>Category</b></td>
-            <td>Objects</td>
-        </tr>
-        <tr>
-            <td class="row-header"><b>Class</b></td>
-            <td>Assignment</td>
-        </tr>
-    </tbody>
-</table>
 
 Assignment Entities are used to store temporary relationships between objects. Time is tracked from when the assignment was added to when it was removed.
 

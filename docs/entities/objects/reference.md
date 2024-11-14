@@ -1,16 +1,4 @@
 # Reference Entity
-<table>
-    <tbody>
-        <tr>
-            <td class="row-header"><b>Category</b></td>
-            <td>Objects</td>
-        </tr>
-        <tr>
-            <td class="row-header"><b>Class</b></td>
-            <td>Reference</td>
-        </tr>
-    </tbody>
-</table>
 
 Reference Entities are used to store a single reference to another Object.
 

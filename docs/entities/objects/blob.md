@@ -1,16 +1,4 @@
 # Blob Entity
-<table>
-    <tbody>
-        <tr>
-            <td class="row-header"><b>Category</b></td>
-            <td>Objects</td>
-        </tr>
-        <tr>
-            <td class="row-header"><b>Class</b></td>
-            <td>Blob</td>
-        </tr>
-    </tbody>
-</table>
 
 Blob Entities are used to store a reference to a Blob. Blobs are typically used to store a file.
 

@@ -1,16 +1,4 @@
 # Timestamp Entity
-<table>
-    <tbody>
-        <tr>
-            <td class="row-header"><b>Category</b></td>
-            <td>Objects</td>
-        </tr>
-        <tr>
-            <td class="row-header"><b>Class</b></td>
-            <td>Timestamp</td>
-        </tr>
-    </tbody>
-</table>
 
 Timestamp Entities are used to store a single Timestamp.
 

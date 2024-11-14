@@ -1,16 +1,4 @@
 # Log Entity
-<table>
-    <tbody>
-        <tr>
-            <td class="row-header"><b>Category</b></td>
-            <td>Objects</td>
-        </tr>
-        <tr>
-            <td class="row-header"><b>Class</b></td>
-            <td>Log</td>
-        </tr>
-    </tbody>
-</table>
 
 Log Entities are used to store log entries with a specified LogLevel at a given Timestamp.
 

@@ -1,16 +1,4 @@
 # Hash Entity
-<table>
-    <tbody>
-        <tr>
-            <td class="row-header"><b>Category</b></td>
-            <td>Objects</td>
-        </tr>
-        <tr>
-            <td class="row-header"><b>Class</b></td>
-            <td>Hash</td>
-        </tr>
-    </tbody>
-</table>
 
 Hash Entities are used to store multiple Key/Value pairs.
 

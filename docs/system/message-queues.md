@@ -1,10 +1,10 @@
-# MessageQueues System HTTP API
+# MessageQueues System API
 MessageQueues is a System Level API in TrakHound used to send/receive messages in a way that mimics an AMQP Direct Queue.
 
 ## Subscribe
 The Subscribe endpoint is served using a WebSockets connection. The Queue is passed in the URL. Messages are received in the format below:
 
-### Request
+### HTTP Request
 
 **Subscribe to '0123456'**
 ```
@@ -99,7 +99,7 @@ My Name is John Doe
 ## Publish
 Messages are written to a Queue using an HTTP POST Request using the format below.
 
-### Request
+### HTTP Request
 ```
 POST : http://localhost:8472/_message-queues/publish?queue=0123456
 ```
@@ -135,7 +135,7 @@ The Request Body contains the raw bytes to store as the Message Content.
 ## Pull
 A single message can be pulled from a Queue using an HTTP GET Request using the format below.
 
-### Request
+### HTTP Request
 ```
 GET : http://localhost:8472/_message-queues?queue=0123456
 ```
@@ -168,7 +168,7 @@ GET : http://localhost:8472/_message-queues?queue=0123456
 ## Acknowledge
 A message that has been pulled from a Queue can be manually Acknowledged using an HTTP PUT Request using the format below.
 
-### Request
+### HTTP Request
 ```
 PUT : http://localhost:8472/_message-queues/acknowledge?queue=0123456&deliveryId=0123456:1
 ```
@@ -201,7 +201,7 @@ PUT : http://localhost:8472/_message-queues/acknowledge?queue=0123456&deliveryId
 ## Reject
 A message that has been pulled from a Queue can be manually Rejected and returned to the Queue using an HTTP PUT Request using the format below.
 
-### Request
+### HTTP Request
 ```
 PUT : http://localhost:8472/_message-queues/reject?queue=0123456&deliveryId=0123456:1
 ```

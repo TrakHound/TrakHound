@@ -9,6 +9,37 @@ API modules are used to create custom endpoint interfaces for external applicati
 - HTTP Methods : Typical HTTP REST Methods of GET, PUT, POST, DELETE, etc. are replaced with Query, Subscribe, Publish, and Delete.
 
 
+## Endpoints
+API Endpoints can have one of 4 types, Query, Subscribe, Publish, or Delete. These endpoint types were chosen instead of the standard HTTP REST methods of GET, PUT, POST, DELETE, etc. so that each endpont type may use a POST method and so that subscriptions can have specialized endpoints.
+
+### Query
+Query endpoints are used to return data in a single request. Query requests can use either the GET or POST HTTP methods.
+
+```
+GET : http://localhost:8472/entities/objects?path=/
+```
+
+### Subscribe
+Subscribe endpoints are used to establish a long running WebSocket connection to receive streaming data. Subscribe endpoints must end with the "/subscribe" suffix.
+
+```
+ws:/localhost:8472/entities/objects/observation/subscribe?path=*
+```
+
+### Publish
+Publish endpoints are used to write data in a single request. Publish endpoints can use either the PUT or POST HTTP methods. Publish endpoints must end with the "/publish" suffix.
+
+```
+PUT : http://localhost:8472/entities/objects/timestamp/publish?path=/Test/Timestamp&value=now
+```
+
+### Delete
+Delete endpoints are used to remove data in a single request. Delete endpoints can use either the DELETE or POST HTTP methods. Delete endpoints must end with the "/delete" suffix.
+
+```
+DELETE : http://localhost:8472/entities/objects/delete?path=/Test/String
+```
+
 ## Response
 <table style="width: 100%;">
     <thead>

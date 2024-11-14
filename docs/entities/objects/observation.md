@@ -1,16 +1,4 @@
 # Observation Entity
-<table>
-    <tbody>
-        <tr>
-            <td class="row-header"><b>Category</b></td>
-            <td>Objects</td>
-        </tr>
-        <tr>
-            <td class="row-header"><b>Class</b></td>
-            <td>Observation</td>
-        </tr>
-    </tbody>
-</table>
 
 Observation Entities are used to store a Value at a given Timestamp. Observations contain information to verify the order using the BatchId and Sequence properties.
 
@@ -102,3 +90,81 @@ SHA256({ObjectUuid}:{Timestamp})
   {Created}
 ]
 ```
+
+## DataType
+<table style="width: 100%;">
+    <thead>
+        <tr>
+            <th style="width: 40px;">ID</th>
+            <th style="width: 100px;">Name</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>0</td>
+            <td><b>String</b></td>
+            <td>Text</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td><b>Boolean</b></td>
+            <td>1 bit True or False</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><b>Byte</b></td>
+            <td>8 bit Signed Integer</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td><b>Int16</b></td>
+            <td>16 bit Signed Integer</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td><b>Int32</b></td>
+            <td>32 bit Signed Integer</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td><b>Int64</b></td>
+            <td>64 bit Signed Integer</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td><b>Float</b></td>
+            <td>32 bit Floating Point Integer</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td><b>Double</b></td>
+            <td>64 bit Floating Point Integer</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td><b>Decimal</b></td>
+            <td>128 bit numeric type for financial and monetary calculations</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td><b>Duration</b></td>
+            <td>64 bit Signed Integer representing the Nanoseconds that have elapsed</td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td><b>Reference</b></td>
+            <td>64 bit string of the Object UUID that is referenced</td>
+        </tr>
+        <tr>
+            <td>11</td>
+            <td><b>Timestamp</b></td>
+            <td>64 bit Signed Integer representing UNIX Nanoseconds</td>
+        </tr>
+        <tr>
+            <td>12</td>
+            <td><b>Vocabulary</b></td>
+            <td>264 bit string of the Definition UUID that is referenced</td>
+        </tr>
+    </tbody>
+</table>

@@ -1,16 +1,4 @@
 # State Entity
-<table>
-    <tbody>
-        <tr>
-            <td class="row-header"><b>Category</b></td>
-            <td>Objects</td>
-        </tr>
-        <tr>
-            <td class="row-header"><b>Class</b></td>
-            <td>State</td>
-        </tr>
-    </tbody>
-</table>
 
 State Entities are used to store a status of an Object at a given Timestamp. The TTL property is used to determine whether the status is still valid.
 
