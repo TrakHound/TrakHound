@@ -30,9 +30,12 @@
             <span class="title" title="@Object.Path">@title <span class="subtitle">@subtitle</span></span>
         </div>
 
-        <div class="value-container">
-            <ObjectExplorerTreeItemValue Object="@Object" />
-        </div>
+        @if (contentType != TrakHoundObjectContentType.Directory)
+        {
+            <div class="value-container">
+                <ObjectExplorerTreeItemValue Object="@Object" />
+            </div>
+        }
 
     </div>
 }

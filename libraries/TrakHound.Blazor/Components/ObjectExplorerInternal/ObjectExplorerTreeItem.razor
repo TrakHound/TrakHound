@@ -8,6 +8,8 @@
 
 @if (Object != null && ObjectExplorerService != null)
 {
+    //Console.WriteLine($"ObjectExplorerTreeItem.InvokeAsync(StateHasChanged) : Path = {Object.Path}");
+
     var treeItemClasses = new List<string>();
     var contentType = Object.ContentType.ConvertEnum<TrakHoundObjectContentType>();
 
@@ -33,24 +35,34 @@
 
                 if (!contentObjects.IsNullOrEmpty())
                 {
-                    if (childObjects.Count() > ObjectTreeView.OverscanCount)
+                    foreach (var child in contentObjects)
                     {
-                        <Virtualize TItem="ITrakHoundObjectEntity" Items="contentObjects" Context="child" OverscanCount="@ObjectTreeView.OverscanCount">
-                            <ObjectExplorerTreeItem Object="@child" Selected="ItemSelected" />
-                        </Virtualize>
+                        <ObjectExplorerTreeItem Object="@child" Selected="ItemSelected" />
                     }
-                    else
-                    {
-                        foreach (var child in contentObjects)
-                        {
-                            <ObjectExplorerTreeItem Object="@child" Selected="ItemSelected" />
-                        }
-                    }
+
+@*                      if (childObjects.Count() > ObjectTreeView.OverscanCount)
+                     {
+                         <Virtualize TItem="ITrakHoundObjectEntity" Items="contentObjects" Context="child" OverscanCount="@ObjectTreeView.OverscanCount">
+                             <ObjectExplorerTreeItem Object="@child" Selected="ItemSelected" />
+                         </Virtualize>
+                     }
+                     else
+                     {
+                         foreach (var child in contentObjects)
+                         {
+                             <ObjectExplorerTreeItem Object="@child" Selected="ItemSelected" />
+                         }
+                     } *@
                 }
 
                 if (!directoryObjects.IsNullOrEmpty())
                 {
-                    if (childObjects.Count() > ObjectTreeView.OverscanCount)
+                    foreach (var child in directoryObjects)
+                    {
+                        <ObjectExplorerTreeItem Object="@child" Selected="ItemSelected" Expanded="ItemExpanded" AllExpanded="ItemAllExpanded" />
+                    }
+
+@*                     if (childObjects.Count() > ObjectTreeView.OverscanCount)
                     {
                         <Virtualize TItem="ITrakHoundObjectEntity" Items="directoryObjects" Context="child" OverscanCount="@ObjectTreeView.OverscanCount">
                             <ObjectExplorerTreeItem @ref="@ChildTreeItem" Object="@child" Selected="ItemSelected" Expanded="ItemExpanded" AllExpanded="ItemAllExpanded" />
@@ -62,7 +74,7 @@
                         {
                             <ObjectExplorerTreeItem @ref="@ChildTreeItem" Object="@child" Selected="ItemSelected" Expanded="ItemExpanded" AllExpanded="ItemAllExpanded" />
                         }
-                    }
+                    } *@
                 }
             }
 
@@ -100,12 +112,13 @@
 @code {
 
     // Keep list of child Directory TreeItem references (to use for Expand/Collapse)
-    private readonly List<ObjectExplorerTreeItem> childTreeItems = new List<ObjectExplorerTreeItem>();
-    ObjectExplorerTreeItem ChildTreeItem
-    {
-        set { childTreeItems.Add(value); }
-    }
+    // private readonly List<ObjectExplorerTreeItem> childTreeItems = new List<ObjectExplorerTreeItem>();
+    // ObjectExplorerTreeItem ChildTreeItem
+    // {
+    //     set { childTreeItems.Add(value); }
+    // }
 
+    private bool hasRendered;
     private bool isLoading;
     private object _lock = new object();
 
@@ -157,6 +170,21 @@
         catch { }
     }
 
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //     if (Object != null && !firstRender) hasRendered = true;
+    // }
+
+    // protected override bool ShouldRender()
+    // {
+    //     if (!hasRendered)
+    //     {
+    //         hasRendered = true;
+    //         return true;
+    //     }
+
+    //     return false;
+    // }
 
     private void ItemSelected(string uuid)
     {

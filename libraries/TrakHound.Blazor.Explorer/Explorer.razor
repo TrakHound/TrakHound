@@ -193,22 +193,9 @@
         _notificationTimer.Start();
     }
 
-    protected async override Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
         explorerService.SelectedInstanceId = GetInstanceId(Path);
-        // if (explorerService.SelectedInstanceId == null)
-        // {
-        //     explorerService.SelectedInstanceId = Instances?.GetInstances()?.FirstOrDefault()?.Id;
-        //     if (explorerService.SelectedInstanceId != null)
-        //     {
-        //         await explorerService.LoadInstance(Instances, explorerService.SelectedInstanceId);
-
-        //         Path = explorerService.SelectedInstanceId;
-        //         navigationManager.NavigateTo(Url.Combine(BasePath, Path));
-
-        //         await InvokeAsync(StateHasChanged);
-        //     }
-        // }
     }
 
     private async void LocationChanged(object sender, LocationChangedEventArgs args)

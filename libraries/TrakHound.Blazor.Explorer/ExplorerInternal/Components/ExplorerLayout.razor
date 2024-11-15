@@ -83,6 +83,9 @@
         Navigation = 1
     }
 
+    [CascadingParameter(Name = "Explorer")]
+    public TrakHound.Blazor.Explorer Explorer { get; set; }
+
 
     private async void PageUpdated(object sender, EventArgs args)
     {
@@ -94,7 +97,7 @@
         loading = true;
         await InvokeAsync(StateHasChanged);
 
-        // await explorerService.LoadInstance();
+        await explorerService.LoadInstance(Explorer.Instances, explorerService.SelectedInstanceId, true);
 
         loading = false;
         await InvokeAsync(StateHasChanged);

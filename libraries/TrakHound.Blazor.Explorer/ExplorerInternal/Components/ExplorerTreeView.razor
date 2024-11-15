@@ -45,7 +45,7 @@
                         <TreeItem Id="@instanceItemId" CssClass="instance-tree-item" Title="@serverTitle" Icon="@serverIcon" Link="@GetLink(instance.Id)" IsLoading="@instanceLoading" IsExpanded="@explorerTreeViewService.IsExpanded(instanceItemId)" Expanded="InstanceExpanded" Collapsed="ItemCollapsed" Selected="ItemSelected">
 
                             @* Apps *@
-                            <TreeItem Id="@appsItemId" Title="Apps" Icon="@appsIcon" CssClass="folder" Link="@GetLink(instance.Id, "apps")" IsExpanded="@explorerTreeViewService.IsExpanded(appsItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
+                            <TreeItem Id="@appsItemId" Title="Apps" Icon="@explorerTreeViewService.GetFolderIcon(appsItemId)" CssClass="folder" Link="@GetLink(instance.Id, "apps")" IsExpanded="@explorerTreeViewService.IsExpanded(appsItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
 
                                 @if (!apps.IsNullOrEmpty())
                                 {
@@ -70,7 +70,7 @@
                             </TreeItem>
 
                             @* API *@
-                            <TreeItem Id="@apisItemId" Title="Api" Icon="@apisIcon" CssClass="folder" Link="@GetLink(instance.Id, "api")" IsExpanded="@explorerTreeViewService.IsExpanded(apisItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
+                            <TreeItem Id="@apisItemId" Title="Api" Icon="@explorerTreeViewService.GetFolderIcon(apisItemId)" CssClass="folder" Link="@GetLink(instance.Id, "api")" IsExpanded="@explorerTreeViewService.IsExpanded(apisItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
                                 @if (!apiRoutes.IsNullOrEmpty())
                                 {
                                     foreach (var api in apiRoutes.Where(o => !string.IsNullOrEmpty(o.Route)).OrderBy(o => o.Route))
@@ -200,7 +200,7 @@
                             </TreeItem>
 
                             @* Functions *@
-                            <TreeItem Id="@functionsItemId" Title="Functions" Icon="@functionsIcon" CssClass="folder" Link="@GetLink(instance.Id, "functions")" IsExpanded="@explorerTreeViewService.IsExpanded(functionsItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
+                            <TreeItem Id="@functionsItemId" Title="Functions" Icon="@explorerTreeViewService.GetFolderIcon(functionsItemId)" CssClass="folder" Link="@GetLink(instance.Id, "functions")" IsExpanded="@explorerTreeViewService.IsExpanded(functionsItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
                                 @if (!functions.IsNullOrEmpty())
                                 {
                                     foreach (var function in functions.Where(o => !string.IsNullOrEmpty(o.FunctionId)).OrderBy(o => o.FunctionId))
@@ -217,7 +217,7 @@
                             </TreeItem>
 
                             @* Services *@
-                            <TreeItem Id="@servicesItemId" Title="Services" Icon="@folderIcon" CssClass="folder" Link="@GetLink(instance.Id, "services")" IsExpanded="@explorerTreeViewService.IsExpanded(servicesItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
+                            <TreeItem Id="@servicesItemId" Title="Services" Icon="@explorerTreeViewService.GetFolderIcon(servicesItemId)" CssClass="folder" Link="@GetLink(instance.Id, "services")" IsExpanded="@explorerTreeViewService.IsExpanded(servicesItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
                                 @if (!services.IsNullOrEmpty())
                                 {
                                     foreach (var service in services.OrderBy(o => o.Name))
@@ -228,22 +228,11 @@
                             </TreeItem>
 
                             @* Entities *@
-                            <TreeItem Id="@entitiesItemId" Title="Entities" Icon="@folderIcon" CssClass="folder" Link="@GetLink(instance.Id, "entities")" IsExpanded="@explorerTreeViewService.IsExpanded(entitiesItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
+                            <TreeItem Id="@entitiesItemId" Title="Entities" Icon="@explorerTreeViewService.GetFolderIcon(entitiesItemId)" CssClass="folder" Link="@GetLink(instance.Id, "entities")" IsExpanded="@explorerTreeViewService.IsExpanded(entitiesItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
                                 <TreeItem Title="Objects" Icon="@objectEntitiesIcon" Link="@GetLink(instance.Id, "entities/objects")" Selected="ItemSelected" />
                                 <TreeItem Title="Definitions" Icon="@definitionEntitiesIcon" Link="@GetLink(instance.Id, "entities/definitions")" Selected="ItemSelected" />
                                 <TreeItem Title="Sources" Icon="@sourceEntitiesIcon" Link="@GetLink(instance.Id, "entities/sources")" Selected="ItemSelected" />
                             </TreeItem>
-
-
- @*                            <TreeItem Id="@systemItemId" Title="System" Icon="@folderIcon" CssClass="folder" Link="@GetLink(instance.Id, "system")" IsExpanded="@explorerTreeViewService.IsExpanded(systemItemId)" Expanded="ItemExpanded" Collapsed="ItemCollapsed">
-                                <TreeItem Title="Entities" Icon="@objectEntitiesIcon" Link="@GetLink(instance.Id, "entities/system/entities")" Selected="ItemSelected" />
-                                <TreeItem Title="Functions" Icon="@definitionEntitiesIcon" Link="@GetLink(instance.Id, "entities/system/functions")" Selected="ItemSelected" />
-                                <TreeItem Title="Services" Icon="@sourceEntitiesIcon" Link="@GetLink(instance.Id, "entities/system/services")" Selected="ItemSelected" />
-                                <TreeItem Title="Commands" Icon="@sourceEntitiesIcon" Link="@GetLink(instance.Id, "entities/system/commands")" Selected="ItemSelected" />
-                                <TreeItem Title="Blobs" Icon="@sourceEntitiesIcon" Link="@GetLink(instance.Id, "entities/system/blobs")" Selected="ItemSelected" />
-                                <TreeItem Title="Messages" Icon="@sourceEntitiesIcon" Link="@GetLink(instance.Id, "entities/system/messages")" Selected="ItemSelected" />
-                                <TreeItem Title="MessageQueues" Icon="@sourceEntitiesIcon" Link="@GetLink(instance.Id, "entities/system/message-queues")" Selected="ItemSelected" />
-                            </TreeItem> *@
 
                         </TreeItem>
                     }
@@ -282,9 +271,7 @@
     private const string pageIcon = "fa-regular fa-sharp fa-window";
     private const string objectEntitiesIcon = "fa-sharp fa-solid fa-sitemap";
     private const string definitionEntitiesIcon = "fa-sharp fa-solid fa-book";
-    // private const string definitionEntitiesIcon = "fa-solid fa-database";
     private const string sourceEntitiesIcon = "fa-sharp fa-regular fa-file-certificate";
-    // private const string sourceEntitiesIcon = "fa-solid fa-database";
 
     private readonly HashSet<string> instancesLoading = new HashSet<string>();
     private string selectedItemId;

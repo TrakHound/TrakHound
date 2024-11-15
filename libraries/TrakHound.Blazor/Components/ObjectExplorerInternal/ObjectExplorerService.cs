@@ -40,7 +40,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         private readonly Dictionary<TrakHoundObjectContentType, ITrakHoundConsumer> _consumers = new Dictionary<TrakHoundObjectContentType, ITrakHoundConsumer>();
         private readonly List<IContentConsumer> _contentConsumers = new List<IContentConsumer>();
         private readonly ConcurrentQueue<ContentUpdate> _contentUpdated = new ConcurrentQueue<ContentUpdate>();
-        private readonly DelayEvent _contentUpdateThrottle;
+        private readonly ThrottleEvent _contentUpdateThrottle;
         private readonly DelayEvent _selectedObjectLoadDelay;
         private readonly System.Timers.Timer _recentTimer;
         private readonly object _lock = new object();
@@ -150,8 +150,8 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             _recentTimer.Elapsed += ProcessRecentValues;
             _recentTimer.Start();
 
-            //_contentUpdateThrottle = new DelayEvent(500);
-            //_contentUpdateThrottle.Elapsed += ContentUpdateThrottleElapsed;
+            _contentUpdateThrottle = new ThrottleEvent(500);
+            _contentUpdateThrottle.Elapsed += ContentUpdateThrottleElapsed;
 
             _selectedObjectLoadDelay = new DelayEvent(500);
             _selectedObjectLoadDelay.Elapsed += SelectedObjectLoadDelayElapsed;
@@ -1420,59 +1420,70 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             }
         }
 
-        //private void ContentUpdateThrottleElapsed(object sender, EventArgs e)
-        //{
-        //    var updates = new List<ContentUpdate>();
-        //    for (var i = 0; i < 1000; i++)
-        //    {
-        //        _contentUpdated.TryDequeue(out var update);
-        //        if (update != null) updates.Add(update);
-        //        else break;
-        //    }
+        private void ContentUpdateThrottleElapsed(object sender, EventArgs e)
+        {
+            var updates = new List<ContentUpdate>();
+            for (var i = 0; i < 100; i++)
+            {
+                _contentUpdated.TryDequeue(out var update);
+                if (update != null) updates.Add(update);
+                else break;
+            }
 
-        //    if (!updates.IsNullOrEmpty())
-        //    {
-        //        var now = UnixDateTime.Now;
+            if (!updates.IsNullOrEmpty())
+            {
+                var now = UnixDateTime.Now;
 
-        //        var objectUuids = new HashSet<string>();
-        //        lock (_lock)
-        //        {
-        //            foreach (var update in updates)
-        //            {
-        //                var ts = update.Timestamp > 0 ? update.Timestamp : now;
+                //var objectUuids = new HashSet<string>();
+                //lock (_lock)
+                //{
+                //    foreach (var update in updates)
+                //    {
+                //        //var ts = update.Timestamp > 0 ? update.Timestamp : now;
 
-        //                if (update.Entity != null)
-        //                {
-        //                    _content.Remove(update.ObjectUuid);
-        //                    _content.Add(update.ObjectUuid, update.Entity);
-        //                }
+                //        //if (update.Entity != null)
+                //        //{
+                //        //    _content.Remove(update.ObjectUuid);
+                //        //    _content.Add(update.ObjectUuid, update.Entity);
+                //        //}
 
-        //                _values.Remove(update.ObjectUuid);
-        //                _values.Add(update.ObjectUuid, update.Value?.Trim());
+                //        //_values.Remove(update.ObjectUuid);
+                //        //_values.Add(update.ObjectUuid, update.Value?.Trim());
 
-        //                if (now - ts < _recentLimit)
-        //                {
-        //                    _recentValues.Remove(update.ObjectUuid);
-        //                    _recentValues.Add(update.ObjectUuid, ts);
-        //                }
+                //        //if (now - ts < _recentLimit)
+                //        //{
+                //        //    _recentValues.Remove(update.ObjectUuid);
+                //        //    _recentValues.Add(update.ObjectUuid, ts);
+                //        //}
 
-        //                objectUuids.Add(update.ObjectUuid);
-        //            }
-        //        }
+                //        objectUuids.Add(update.ObjectUuid);
+                //    }
+                //}
 
-        //        if (objectUuids.Count() > 5)
-        //        {
-        //            //if (Updated != null) Updated.Invoke(this, EventArgs.Empty);
-        //        }
-        //        else
-        //        {
-        //            foreach (var objectUuid in objectUuids)
-        //            {
-        //                if (ValueUpdated != null) ValueUpdated.Invoke(this, objectUuid);
-        //            }
-        //        }
-        //    }
-        //}
+                var objectUuids = new HashSet<string>();
+                foreach (var update in updates)
+                {
+                    objectUuids.Add(update.ObjectUuid);
+                }
+
+                foreach (var objectUuid in objectUuids)
+                {
+                    if (ValueUpdated != null) ValueUpdated.Invoke(this, objectUuid);
+                }
+
+                //if (objectUuids.Count() > 5)
+                //{
+                //    //if (Updated != null) Updated.Invoke(this, EventArgs.Empty);
+                //}
+                //else
+                //{
+                //    foreach (var objectUuid in objectUuids)
+                //    {
+                //        if (ValueUpdated != null) ValueUpdated.Invoke(this, objectUuid);
+                //    }
+                //}
+            }
+        }
 
         private void ConsumerValueUpdated(string objectUuid, ITrakHoundEntity entity, string value, long timestamp = 0)
         {
@@ -1499,19 +1510,19 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                     }
                 }
 
-                if (ValueUpdated != null) ValueUpdated.Invoke(this, objectUuid);
+                //if (ValueUpdated != null) ValueUpdated.Invoke(this, objectUuid);
             }
 
 
-           
-            //var update = new ContentUpdate();
-            //update.ObjectUuid = objectUuid;
+
+            var update = new ContentUpdate();
+            update.ObjectUuid = objectUuid;
             //update.Entity = entity;
             //update.Value = value;
-            //update.Timestamp = timestamp;
+            update.Timestamp = timestamp;
 
-            //_contentUpdated.Enqueue(update);
-            //_contentUpdateThrottle.Set();
+            _contentUpdated.Enqueue(update);
+            _contentUpdateThrottle.Set();
         }
 
         private async Task LoadContentWorker(IEnumerable<ITrakHoundObjectEntity> objs)

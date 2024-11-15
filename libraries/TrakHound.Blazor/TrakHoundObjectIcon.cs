@@ -18,7 +18,6 @@ namespace TrakHound.Blazor
                 case TrakHoundObjectContentType.Boolean: return "fa-regular fa-toggle-on";
                 case TrakHoundObjectContentType.Duration: return "fa-regular fa-hourglass";
                 case TrakHoundObjectContentType.Event: return "fa-sharp fa-solid fa-bolt";
-                //case TrakHoundObjectContentType.Feed: return "fa-sharp fa-solid fa-rss";
                 case TrakHoundObjectContentType.Group: return "fa-sharp fa-solid fa-layer-group";
                 case TrakHoundObjectContentType.Hash: return "fa-sharp fa-regular fa-list";
                 case TrakHoundObjectContentType.Log: return "fa-sharp fa-regular fa-triangle-exclamation";

@@ -43,6 +43,12 @@ namespace TrakHound.Blazor.ExplorerInternal.Services
             return false;
         }
 
+        public string GetFolderIcon(string path)
+        {
+            if (IsExpanded(path)) return "fa-duotone fa-folder-open";
+            else return "fa-sharp fa-solid fa-folder";
+        }
+
         public void SetExpanded(string path, bool expanded)
         {
             if (!string.IsNullOrEmpty(path))

@@ -4,6 +4,8 @@
 
 @if (Object != null && ObjectExplorerService != null && value != null)
 {
+    //Console.WriteLine($"ObjectExplorerTreeItemValue.InvokeAsync(StateHasChanged) : Path = {Object.Path}");
+
     var valueClass = recent ? "recent" : "";
 
     <div class="tree-item-value @valueClass">
@@ -15,6 +17,7 @@
 
     private string value;
     private bool recent;
+    //private bool hasRendered;
 
 
     [CascadingParameter(Name = "ObjectExplorerService")]
@@ -46,6 +49,16 @@
         }
         catch { }
     }
+
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //     if (Object != null && !firstRender) hasRendered = true;
+    // }
+
+    // protected override bool ShouldRender()
+    // {
+    //     return hasRendered == false;
+    // }
 
     private async void ValueUpdated(object sender, string objectUuid)
     {
