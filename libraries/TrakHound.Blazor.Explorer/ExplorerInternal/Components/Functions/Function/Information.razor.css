@@ -3,8 +3,6 @@
 }
 
     .information-panel .table {
-/*        background: #fafafa;
-        border: 1px solid #ddd;*/
         width: auto;
         min-width: 600px;
     }
@@ -18,11 +16,8 @@
                 background: var(--tableHeaderBackground);
                 width: 200px;
                 font-weight: bold;
-                border-right: 1px solid #ddd;
             }
 
             .information-panel .table td.value {
-/*                background: #fff;*/
-                border-bottom-color: #ddd;
                 padding-right: 50px;
             }

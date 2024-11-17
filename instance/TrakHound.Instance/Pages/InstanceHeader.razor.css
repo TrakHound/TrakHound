@@ -173,6 +173,15 @@
             margin-left: 0;
         }
 
+        .instance-header .instance-header-buttons .btn-theme .icon {
+            color: #fff;
+            font-size: 20px;
+            line-height: 48px;
+            margin-right: 0;
+            margin-left: 0;
+            width: 20px;
+        }
+
         .instance-header .instance-header-buttons .btn-logout {
             background: rgba(255, 255, 255, 0.05);
         }

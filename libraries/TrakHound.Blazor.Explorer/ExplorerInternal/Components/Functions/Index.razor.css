@@ -3,7 +3,6 @@
     grid-template-rows: max-content max-content 1fr;
     height: 100%;
     overflow: hidden;
-    background: #fff;
     background: var(--panelBackground);
 }
 
@@ -13,7 +12,6 @@
     padding-top: 15px;
     padding-left: 25px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
     border-bottom: 1px solid var(--borderColorLight);
 }
 
@@ -49,23 +47,13 @@
         font-size: 18px;
         font-weight: bold;
         line-height: 20px;
-        color: #333;
+        color: var(--textDark);
     }
 
     .header-panel .header-text .header-description {
         font-size: 12px;
-        color: #888;
+        color: var(--textMild);
     }
-
-    .header-panel .header-text .header-package {
-        display: inline-block;
-        font-size: 14px;
-        color: #555;
-    }
-
-        .header-panel .header-text .header-package .version {
-            margin-left: 10px;
-        }
 
 .toolbar-panel {
     grid-row: 2;
@@ -92,8 +80,8 @@
     }
 
         .status-panel ::deep .rz-data-grid td {
-            border-bottom: 1px solid #ddd;
-            border-right: 1px solid #ddd;
+/*            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #ddd;*/
             padding: 3px 10px;
         }
 

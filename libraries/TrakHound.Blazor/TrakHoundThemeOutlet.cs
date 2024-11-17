@@ -7,17 +7,18 @@ using Microsoft.AspNetCore.Components.Sections;
 
 namespace TrakHound.Blazor
 {
-    public class TrakHoundHeadOutlet : ComponentBase
+    public class TrakHoundThemeOutlet : ComponentBase
     {
-        internal const string TitleSectionName = "TrakHound.Page.Title";
+        internal const string ThemeSectionName = "TrakHound.Theme.Stylesheets";
+
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            builder.AddMarkupContent(0, "<!-- TrakHound Page Title -->");
+            builder.AddMarkupContent(0, "<!-- TrakHound Theme -->");
             builder.OpenComponent<SectionOutlet>(1);
-            builder.AddComponentParameter(2, nameof(SectionOutlet.SectionName), TitleSectionName);
+            builder.AddComponentParameter(2, nameof(SectionOutlet.SectionName), ThemeSectionName);
             builder.CloseComponent();
-            builder.AddMarkupContent(3, "<!-- End Page Title -->");
+            builder.AddMarkupContent(3, "<!-- End Theme -->");
         }
     }
 }

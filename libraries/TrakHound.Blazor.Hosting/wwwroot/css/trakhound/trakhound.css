@@ -208,6 +208,10 @@ a, .btn-link {
         background: var(--accentLight) !important;
     }
 
+.table {
+    border: 1px solid var(--tableBorderColor);
+}
+
 .table tbody {
     background: var(--tableBackground);
     border-color: var(--tableBorderColor);
@@ -216,13 +220,23 @@ a, .btn-link {
 .table th {
     background: var(--tableHeaderBackground);
     border-color: var(--tableHeaderBorderColor);
+    border-right: 1px solid var(--tableHeaderBorderColor);
     color: var(--tableHeaderText) !important;
 }
 
-table td {
+    .table th:last-child {
+        border-right: none;
+    }
+
+.table td {
     background: none;
     border-color: var(--tableBorderColor);
+    border-right: 1px solid var(--tableBorderColor);
     color: var(--tableText);
+}
+
+.table td:last-child {
+    border-right: none;
 }
 
 .rz-data-grid {

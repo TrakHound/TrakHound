@@ -10,31 +10,13 @@
     grid-auto-columns: max-content;
     grid-auto-flow: column;
     grid-column-gap: 10px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--borderColor);
     padding: 12px 10px 8px;
 }
 
 .toolbar-panel .btn .icon {
     margin: 0;
 }
-
-/*.content-panel {
-    grid-row: 2;
-    background: #334;
-    height: 100%;
-    width: 100%;
-    overflow: auto;
-    padding: 20px;
-}
-
-.content-panel p {
-    color: #eee;
-    overflow: auto;
-    overflow-wrap: unset;
-    font-size: 13px;
-    margin: 0;
-    margin-bottom: 1px;
-}*/
 
 
 .content-panel {

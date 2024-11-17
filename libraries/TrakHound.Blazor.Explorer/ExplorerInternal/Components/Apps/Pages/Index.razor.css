@@ -4,7 +4,6 @@
     grid-template-rows: max-content 1fr;
     height: 100%;
     overflow: hidden;
-    background: #fff;
     background: var(--panelBackground);
 }
 
@@ -44,6 +43,7 @@
             font-size: 12px;
             font-weight: bold;
             color: #555;
+            color: var(--textMild);
         }
 
         .header-panel .header-description-container .header-id {
@@ -51,12 +51,14 @@
             font-size: 18px;
             font-weight: bold;
             line-height: 26px;
+            color: var(--textDark);
         }
 
         .header-panel .header-description-container .header-description {
             display: block;
             font-size: 12px;
             color: #888;
+            color: var(--textMild);
         }
 
     .header-panel .header-package-icon-container {
@@ -68,6 +70,7 @@
         font-size: 30px;
         line-height: 30px;
         color: #ccc;
+        color: var(--textLight);
     }
 
     .header-panel .header-package-container {
@@ -82,6 +85,7 @@
             font-size: 12px;
             font-weight: bold;
             color: #555;
+            color: var(--textMild);
         }
 
         .header-panel .header-package-container .header-package {
@@ -89,6 +93,7 @@
             font-size: 14px;
             line-height: 20px;
             color: #333;
+            color: var(--textDark);
         }
 
         .header-panel .header-package-container .header-version {
@@ -96,17 +101,13 @@
             font-size: 12px;
             line-height: 14px;
             color: #555;
+            color: var(--textMild);
         }
 
 
 .information-panel {
     padding-top: 10px;
 }
-
-/*    .information-panel .table {
-        background: #fafafa;
-        border: 1px solid #ddd;
-    }*/
 
         .information-panel .table td {
             font-size: 12px;
@@ -117,14 +118,7 @@
                 background: var(--tableHeaderBackground);
                 width: 200px;
                 font-weight: bold;
-                border-right: 1px solid #ddd;
-                border-right: 1px solid var(--borderColor);
-                /*                border-right: 1px solid var(--borderColorLight);*/
-            }
-
-            .information-panel .table td.value {
-/*                background: #fff;*/
-                border-bottom-color: #ddd;
+                border-right: 1px solid var(--tableHeaderBorder);
             }
 
 

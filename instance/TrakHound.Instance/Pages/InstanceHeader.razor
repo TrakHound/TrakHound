@@ -1,10 +1,12 @@
 ﻿@rendermode InteractiveServer
 @implements IDisposable
 @inject ITrakHoundInstance instance
+@inject TrakHoundThemeService themeService
 @inject AdminAuthenticationService authenticationService
 @inject NavigationManager navigationManager
 @using TrakHound.Instances
 @using TrakHound.Instance.Services
+@using TrakHound.Blazor.Services
 
 @{
     var statusIcon = "";
@@ -20,6 +22,13 @@
     var timerTimestamp = instance.LastUpdated.ToLocalTime();
     var timerDuration = DateTime.Now - timerTimestamp;
     var timer = $"{timerTimestamp} ({timerDuration.ToSimpleFormattedString()})";
+
+    var themeIcon = "";
+    switch (themeService.Theme)
+    {
+        case TrakHoundThemes.Light: themeIcon = "fa-regular fa-sharp fa-sun-bright"; break;
+        case TrakHoundThemes.Dark: themeIcon = "fa-regular fa-sharp fa-moon"; break;
+    }
 }
 
 <div class="instance-header">
@@ -54,6 +63,7 @@
             <span class="instance-header-timer">@timer</span>
         </div>
         <div class="instance-header-buttons">
+            <button class="btn btn-theme" @onclick="ToggleTheme"><span class="icon @themeIcon"></span></button>
             <a href="settings" class="btn btn-settings"><span class="icon fa-solid fa-sharp fa-wrench"></span></a>
 
             @if (instance.Configuration.AdminAuthenticationEnabled)
@@ -85,6 +95,18 @@
     void IDisposable.Dispose()
     {
         if (updateTimer != null) updateTimer.Dispose();
+    }
+
+    private async void ToggleTheme()
+    {
+        var theme = themeService.Theme;
+        switch (theme)
+        {
+            case TrakHoundThemes.Light: theme = TrakHoundThemes.Dark; break;
+            case TrakHoundThemes.Dark: theme = TrakHoundThemes.Light; break;
+        }
+
+        await themeService.SetTheme(theme);
     }
 
     private async void Logout()

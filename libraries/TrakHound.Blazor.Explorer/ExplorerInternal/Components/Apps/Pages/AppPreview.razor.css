@@ -3,7 +3,6 @@
     grid-template-rows: max-content 1fr;
     height: 100%;
     padding: 10px;
-    border: 1px solid #eee;
     border: 1px solid var(--borderColorLight);
     border-top: none;
     border-radius: 2px;
@@ -11,7 +10,6 @@
 
 .toolbar-panel {
     grid-row: 1;
-    border-bottom: 1px solid #eee;
     border-bottom: 1px solid var(--borderColorLight);
     padding-bottom: 10px;
     margin-bottom: 10px;
@@ -44,7 +42,6 @@
     padding: 4px 10px !important;
     height: 31px !important;
     max-width: 100px;
-    border-color: #ddd;
     border-color: var(--borderColor);
     border-radius: 3px !important;
 }

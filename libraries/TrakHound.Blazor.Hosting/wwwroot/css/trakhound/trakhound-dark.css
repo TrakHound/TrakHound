@@ -31,9 +31,12 @@
     --borderColor: #374862;
     --borderColorLight: #444;
     --borderColorLight: #2e3c52;
+    --borderColorLight: #253041;
     --borderColorVeryLight: #253041;
+    --borderColorVeryLight: #1c2431;
     --borderColorVeryVeryLight: #222;
     --borderColorVeryVeryLight: #1c2431;
+    --borderColorVeryVeryLight: #090c10;
     --borderColorMedium: #ccc;
     --borderColorDark: #bbb;
     /* Text Colors */
@@ -53,6 +56,7 @@
     --tableHeaderBackground: #0d1726;
     --tableHeaderBackground: #1b2431;
     --tableHeaderBorderColor: #2e5185;
+    --tableHeaderBorderColor: #2d3d52;
     --tableHeaderText: var(--textMild);
     --tableBorderColor: #384861;
     --tableBorderColor: #2e3c52;
