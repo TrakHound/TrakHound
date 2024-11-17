@@ -94,7 +94,7 @@ namespace TrakHound.Entities
             string definitionUuid = null,
             string ns = DefaultNamespace,
             byte priority = DefaultPriority,
-            string transactionUuid = null,
+            string sourceUuid = null,
             long created = 0
             )
         {
@@ -106,7 +106,7 @@ namespace TrakHound.Entities
             ContentType = TrakHoundObjectContentTypes.GetString(contentType);
             DefinitionUuid = definitionUuid;
             Priority = priority;
-            SourceUuid = transactionUuid;
+            SourceUuid = sourceUuid;
             Created = created > 0 ? created : UnixDateTime.Now;
         }
 

@@ -1,0 +1,89 @@
+:root {
+    /* Accent Colors */
+    --accent: #2870bd;
+    --accentLight: #428ad7;
+    --accentKindaLight: #1a8cff;
+    --accentVeryLight: #cce6ff;
+    --accentVeryVeryLight: #e9f2fc;
+    --accentMild: #0079f2;
+    --accentDark: #1b4b7e;
+    --accentVeryDark: #123254;
+    --accentVeryVeryDark: #09192a;
+    --accentBackground: linear-gradient(0deg, #007bf7 0%, #0073e6 25%, #0073e6 50%, #0073e6 75%, #007bf7 100%);
+    /* Panel Colors */
+    --panelBackground: #fff;
+    --panelBackgroundMedium: #fcfcfe;
+    --panelBackgroundDark: #e9ecef;
+    --panelSidebarBackground: #fafafa;
+    --panelItemBackground: #fdfdfd;
+    --panelItemBackgroundHover: var(--accentVeryVeryLight);
+    /* Border Colors */
+    --borderColor: #ddd;
+    --borderColorLight: #eee;
+    --borderColorVeryLight: #f4f4f4;
+    --borderColorVeryVeryLight: #f8f8f8;
+    --borderColorMedium: #ccc;
+    --borderColorDark: #bbb;
+    /* Modal Colors */
+    --modalBackground: lime;
+    /* Table Colors */
+    --tableBackground: #fff;
+    --tableHeaderBackground: #f8f8f8;
+    /* Button Colors */
+    --buttonPrimaryBackground: linear-gradient(to bottom, #2d7dd2 0%,#2870bd 100%);
+    --buttonPrimaryBackgroundHover: #5797db;
+    --buttonPrimaryBorder: #0073e6;
+    --buttonPrimaryBorderHover: #0073e6;
+    --buttonPrimaryIcon: #fff;
+    --buttonPrimaryIconHover: #fff;
+    --buttonPrimaryText: #fff;
+    --buttonPrimaryTextHover: #fff;
+    --buttonLightBackground: var(--panelBackground);
+    --buttonLightBackgroundHover: var(--panelBackgroundMedium);
+    --buttonLightBorder: var(--borderColor);
+    --buttonLightBorderHover: var(--accentLight);
+    --buttonLightIcon: var(--accent);
+    --buttonLightIconHover: var(--accentLight);
+    --buttonLightText: var(--textDark);
+    --buttonLightTextHover: var(--accentLight);
+    --buttonSecondayBackground: blue;
+    --buttonSecondayBackgroundHover: lightblue;
+    --buttonSecondayBorder: #7FFFD4;
+    --buttonSecondayBorderHover: red;
+    --buttonSecondayIcon: #7FFFD4;
+    --buttonSecondayIconHover: red;
+    --buttonSecondayText: #7FFFD4;
+    --buttonSecondayTextHover: red;
+    --buttonCommandBackground: none;
+    --buttonCommandBackgroundHover: var(--panelBackgroundMedium);
+    --buttonCommandBorder: transparent;
+    --buttonCommandBorderHover: var(--borderColor);
+    --buttonCommandIcon: var(--accent);
+    --buttonCommandIconHover: var(--accentLight);
+    --buttonCommandText: var(--accent);
+    --buttonCommandTextHover: var(--accentLight);
+    --buttonToolbarBackground: none;
+    --buttonToolbarBackgroundHover: var(--panelBackgroundMedium);
+    --buttonToolbarBorder: var(--borderColor);
+    --buttonToolbarBorderHover: var(--accentLight);
+    --buttonToolbarIcon: var(--accent);
+    --buttonToolbarIconHover: var(--accentLight);
+    --buttonToolbarText: var(--accent);
+    --buttonToolbarTextHover: var(--accentLight);
+    --buttonRemoveBackground: none;
+    --buttonRemoveBackgroundHover: red;
+    --buttonRemoveBorder: red;
+    --buttonRemoveBorderHover: red;
+    --buttonRemoveIcon: red;
+    --buttonRemoveIconHover: white;
+    --buttonRemoveText: red;
+    --buttonRemoveTextHover: white;
+    /* Text Colors */
+    --textDark: #333;
+    --textMild: #555;
+    --textLight: #888;
+    --textMuted: #bbb;
+    --textVeryLight: #ccc;
+    --textLink: #0080ff;
+    --textBackground: #f8f8f8;
+}

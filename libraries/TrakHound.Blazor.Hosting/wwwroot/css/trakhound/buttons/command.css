@@ -1,14 +1,26 @@
 ﻿.btn-command {
     color: var(--textDark);
     color: var(--accent);
+    background: var(--buttonCommandBackground);
+    border: 1px solid var(--buttonCommandBorder);
+    color: var(--buttonCommandText);
     font-size: 14px;
     transition: none;
 }
 
+    .btn-command:focus {
+        box-shadow: none !important;
+        outline: none;
+        border: 1px solid var(--buttonCommandBorder);
+    }
+
     .btn-command:hover {
         color: var(--accent);
         color: var(--accentLight);
+        background: var(--buttonCommandBackgroundHover);
+        color: var(--buttonCommandTextHover);
         border: 1px solid var(--borderLight);
+        border: 1px solid var(--buttonCommandBorderHover);
         transition: none;
     }
 
@@ -28,6 +40,7 @@
         margin-right: 10px;
         color: var(--textMild);
         color: var(--accent);
+        color: var(--buttonCommandIcon);
         font-size: 14px;
         transition: none;
     }
@@ -35,6 +48,7 @@
     .btn-command:hover .icon {
         color: var(--accent);
         color: var(--accentLight);
+        color: var(--buttonCommandIconHover);
         transition: none;
     }
 

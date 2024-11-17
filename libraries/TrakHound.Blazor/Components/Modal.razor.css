@@ -16,6 +16,7 @@
 
     .modal .modal-content {
         background: var(--modalBackground);
+        border: 3px solid var(--borderColorVeryLight);
         border-radius: 0 !important;
         display: grid;
         grid-template-rows: max-content 1fr max-content;
@@ -25,7 +26,8 @@
     .modal .modal-header {
         grid-row: 1;
         font-size: 14px;
-        color: var(--textPrimary);
+        border-bottom: 1px solid var(--borderColor);
+        color: var(--textDark);
         text-align: left;
         justify-content: normal;
     }
@@ -57,6 +59,7 @@
 
     .modal .modal-footer {
         padding: 5px;
+        border-top: 1px solid var(--borderColor);
     }
 
         .modal .modal-footer ::deep .btn-primary {

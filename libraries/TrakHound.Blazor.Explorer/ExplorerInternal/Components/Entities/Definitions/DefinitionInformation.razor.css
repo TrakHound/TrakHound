@@ -13,12 +13,12 @@
     .definition-information .label {
         font-size: 12px;
         font-weight: bold;
-        color: #555;
+        color: var(--textMild);
         padding-right: 10px;
         min-width: 120px;
         vertical-align: top;
-        border-right: 1px solid #f8f8f8;
-        border-bottom: 1px solid #f8f8f8;
+        border-right: 1px solid var(--tableBorderColor);
+        border-bottom: 1px solid var(--tableBorderColor);
     }
 
     .definition-information tr:hover .label {
@@ -27,9 +27,8 @@
 
     .definition-information .value {
         font-size: 12px;
-        color: #000;
         padding-left: 10px;
-        border-bottom: 1px solid #f8f8f8;
+        border-bottom: 1px solid var(--tableBorderColor);
     }
 
         .definition-information .value a {

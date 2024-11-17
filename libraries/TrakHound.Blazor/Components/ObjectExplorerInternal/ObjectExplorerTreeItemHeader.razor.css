@@ -49,6 +49,7 @@
             font-size: 12px;
             line-height: 14px;
             color: #333;
+            color: var(--textDark);
             user-select: none !important;
         }
 
@@ -57,6 +58,7 @@
             line-height: 10px;
             margin-left: 5px;
             color: #888;
+            color: var(--textMild);
             text-decoration: none;
             user-select: none;
         }
@@ -86,9 +88,7 @@
     }
 
         .tree-item-header-container .value-container ::deep .tree-item-value {
-            background: #f8f8f8;
             height: 100%;
-            padding-right: 5px;
             padding: 0px 10px 0;
             line-height: 15px;
             white-space: nowrap;
@@ -96,20 +96,24 @@
             text-overflow: ellipsis;
             text-align: right;
             background: #f8f8f8;
+            background: rgba(0, 0, 0, 0.025);
         }
 
             .tree-item-header-container .value-container ::deep .tree-item-value .value {
                 font-size: 11px;
                 font-weight: bold;
                 color: #555;
+                color: var(--textDark);
             }
 
     .tree-item-header-container.selected {
         background: var(--accent);
     }
 
+
     .tree-item-header-container:hover .value-container ::deep .tree-item-value {
         background: var(--accentVeryVeryLight);
+        background: rgba(0, 0, 0, 0.05);
     }
 
         .tree-item-header-container:hover .value-container ::deep .tree-item-value .value {

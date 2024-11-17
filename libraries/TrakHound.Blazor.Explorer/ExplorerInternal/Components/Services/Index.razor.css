@@ -4,6 +4,7 @@
     height: 100%;
     overflow: hidden;
     background: #fff;
+    background: var(--panelBackground);
 }
 
 .header-panel .header-content {
@@ -13,6 +14,7 @@
     padding-left: 25px;
     padding-bottom: 10px;
     border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
 .header-panel .header-icon {

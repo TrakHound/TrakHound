@@ -47,6 +47,7 @@
         font-size: 16px;
         font-weight: bold;
         line-height: 20px;
+        color: var(--textDark);
     }
 
     .header-panel-text .header-panel-subtitle {
@@ -54,6 +55,7 @@
         font-size: 12px;
         line-height: 20px;
         color: #888;
+        color: var(--textMild);
     }
 
 
@@ -76,8 +78,11 @@
     grid-template-columns: max-content max-content max-content 1fr;
     grid-column-gap: 10px;
     background: #fafafa;
+    background: var(--panelBackgroundMedium);
     border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
     padding: 8px 8px 8px 20px;
+    color: var(--textDark);
 }
 
 .device-panel label {
@@ -134,7 +139,7 @@
 
         .table-panel ::deep .rz-data-grid th {
             padding: 0px 5px;
-            border-right: 1px solid #ddd;
+/*            border-right: 1px solid #ddd;*/
         }
 
             .table-panel ::deep .rz-data-grid th:last-child {
@@ -143,11 +148,11 @@
 
         .table-panel ::deep .rz-data-grid td {
             padding: 5px 10px;
-            border-right: 1px solid #ddd;
+/*            border-right: 1px solid #ddd;*/
         }
 
         .table-panel ::deep .rz-data-grid tr:last-child td {
-            border-bottom: 1px solid #ddd;
+/*            border-bottom: 1px solid #ddd;*/
         }
 
         .table-panel ::deep .rz-data-grid td:last-child {
@@ -177,5 +182,5 @@
 
     .table-panel ::deep .rz-data-grid td.assignment-id .rz-cell-data {
         font-size: 11px;
-        color: #888;
+/*        color: #888;*/
     }

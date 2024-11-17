@@ -1,7 +1,7 @@
-﻿.table {
+﻿/*.table {
     background: #fafafa;
     border: 1px solid #ddd;
-}
+}*/
 
     .table td {
         font-size: 12px;
@@ -9,12 +9,14 @@
     }
 
         .table td.label {
+            background: var(--tableHeaderBackground);
             width: 200px;
             font-weight: bold;
-            border-right: 1px solid #ddd;
+/*            border-right: 1px solid var(--tableHeaderBorderColor);*/
         }
 
         .table td.value {
-            background: #fff;
-            border-bottom-color: #ddd;
+/*            background: #fff;*/
+/*            border-bottom-color: #ddd;*/
+            border-bottom-color: var(--tableBorderColor);
         }

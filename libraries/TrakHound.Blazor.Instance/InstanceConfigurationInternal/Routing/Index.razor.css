@@ -43,6 +43,7 @@
     height: 100%;
     overflow: auto;
     background: #fafafa;
+    background: var(--panelSidebarBackground);
     border-right: 1px solid #ddd;
 }
 
@@ -126,6 +127,7 @@
     padding: 8px 10px 5px;
     background: var(--accentVeryLight);
     background: #fff;
+    background: var(--panelItemBackground);
     border: 1px solid var(--accent);
     border: 1px solid #ddd;
     border-radius: 2px;
@@ -192,6 +194,7 @@
     border: 1px solid var(--accent);
     background: var(--accentVeryLight);
     background: #fff;
+    background: var(--panelItemBackground);
     border: 1px solid var(--accent);
     border: 1px solid #ddd;
     margin-bottom: 8px;

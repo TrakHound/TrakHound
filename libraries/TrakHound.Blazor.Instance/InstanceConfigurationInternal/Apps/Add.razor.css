@@ -16,7 +16,9 @@
     grid-row: 2;
     padding: 20px;
     background: #fafafa;
+    background: var(--panelBackgroundMedium);
     border-top: 1px solid #ddd;
+    border-top: 1px solid var(--borderColor);
 }
 
 
@@ -64,6 +66,7 @@
     .configuration-container .container-content {
         padding: 15px;
         border: 1px solid #eee;
+        border: 1px solid var(--borderColorLight);
     }
 
 .confirm-panel {
@@ -120,6 +123,7 @@
 
     .parameters-panel .parameters-table th {
         border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--borderColor);
         font-size: 13px;
         font-weight: bold;
         background: #f8f8f8;
@@ -189,6 +193,7 @@
 
 .parameters-panel .parameter-add-container {
     border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
     border-top: none;
     padding: 10px;
 }

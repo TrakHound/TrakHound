@@ -14,6 +14,7 @@
     padding: 0 !important;
     text-transform: none;
     letter-spacing: normal;
+    color: var(--textDark) !important;
 }
 
 .add-modal-panel ::deep .edit-container {
@@ -31,6 +32,7 @@
         font-size: 12px;
         font-weight: bold;
         margin-bottom: 5px;
+        color: var(--textDark);
     }
 
     .add-modal-panel ::deep .add-modal .form-field .rz-textbox {
@@ -70,7 +72,7 @@
 
 .add-modal-panel ::deep textarea {
     height: 300px;
-    background: #fafafa;
+/*    background: #fafafa;*/
     padding: 5px 10px;
     font-size: 12px;
 }
@@ -78,6 +80,7 @@
 .add-modal-panel ::deep .add-modal .path-output {
     display: block;
     color: #555;
+    color: var(--textMild);
     margin-top: 5px;
     margin-left: 5px;
     font-size: 12px;

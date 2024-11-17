@@ -2,7 +2,7 @@
     font-size: 14px;
     line-height: 14px;
     text-decoration: none;
-    color: var(--accent) !important;
+    color: var(--buttonLinkText) !important;
     outline: none;
     box-shadow: none;
     border: none;
@@ -12,19 +12,19 @@
         color: #888 !important;
     }
 
-    .btn-link:focus {
-        outline: none;
-        box-shadow: none;
-        border: none;
-    }
-
     .btn-link:hover {
         color: var(--accentLight) !important;
+        color: var(--buttonLinkTextHover) !important;
         text-decoration: underline;
     }
 
     .btn-link .icon {
         font-size: 14px;
+        color: var(--buttonLink) !important;
+    }
+
+    .btn-link:hover .icon {
+        color: var(--buttonLinkTextHover) !important;
     }
 
     .btn-link.btn-sm {

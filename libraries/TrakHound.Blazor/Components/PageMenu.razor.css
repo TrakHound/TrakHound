@@ -9,6 +9,7 @@
         font-size: 11px !important;
         font-weight: bold;
         color: #888;
+        color: var(--textMild);
         margin-bottom: 7px !important;
     }
 
@@ -19,7 +20,9 @@
     .page-menu ::deep a {
         display: block;
         color: #555;
+        color: var(--textDark);
         border-left: 3px solid #eee;
+        border-left: 3px solid var(--borderColor);
         margin: 0;
         padding: 3px;
         padding-left: 15px;

@@ -6,6 +6,7 @@
     grid-template-columns: 1fr max-content 1fr;
     background: linear-gradient(0deg, rgba(45, 125, 210, 0.65), rgba(45, 125, 210, 1));
     background: var(--accentVeryDark);
+    background: var(--panelBackground);
 }
 
 .login-panel {
@@ -92,6 +93,7 @@
     grid-column: 2;
     text-align: left;
     background: rgba(0, 0, 0, 0.35);
+/*    background: var(--panelBackgroundDark);*/
     box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.1);
     padding: 30px;
     min-width: 425px;
@@ -105,12 +107,12 @@
         line-height: 36px !important;
         height: 60px !important;
         padding: 8px 15px !important;
-        background: #fff !important;
+/*        background: #fff !important;*/
         border: 2px solid var(--accent) !important;
     }
 
         .input-container ::deep input:focus {
-            background: var(--accentVeryVeryLight) !important;
+/*            background: var(--accentVeryVeryLight) !important;*/
             border: 1px solid var(--accent) !important;
         }
 

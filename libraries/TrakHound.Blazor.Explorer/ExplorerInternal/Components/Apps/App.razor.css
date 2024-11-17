@@ -3,6 +3,7 @@
     height: 100%;
     overflow: auto;
     background: #fff;
+    background: var(--panelBackground);
 }
 
 .header-panel {
@@ -17,6 +18,7 @@
         padding-left: 0px;
         padding-bottom: 5px;
         border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--borderColorLight);
     }
 
     .header-panel .header-icon-container {
@@ -34,6 +36,7 @@
         grid-column: 2;
         padding-right: 80px;
         border-right: 1px solid #eee;
+        border-right: 1px solid var(--borderColorLight);
         min-width: 470px;
     }
 
@@ -75,6 +78,7 @@
     .header-panel .header-package-container {
         grid-column: 4;
         border-left: 1px solid #eee;
+        border-left: 1px solid var(--borderColorLight);
         padding: 0 20px;
     }
 
@@ -107,10 +111,10 @@
     padding-top: 10px;
 }
 
-    .information-panel .table {
+/*    .information-panel .table {
         background: #fafafa;
         border: 1px solid #ddd;
-    }
+    }*/
 
         .information-panel .table td {
             font-size: 12px;
@@ -118,13 +122,14 @@
         }
 
             .information-panel .table td.label {
+                background: var(--tableHeaderBackground);
                 width: 200px;
                 font-weight: bold;
                 border-right: 1px solid #ddd;
             }
 
             .information-panel .table td.value {
-                background: #fff;
+/*                background: #fff;*/
                 border-bottom-color: #ddd;
                 padding-right: 50px;
             }

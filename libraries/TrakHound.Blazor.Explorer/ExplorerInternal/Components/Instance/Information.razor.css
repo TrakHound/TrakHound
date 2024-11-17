@@ -3,23 +3,20 @@
     padding-top: 20px;
 }
 
-    .information-panel .table {
-        background: #fafafa;
-        border: 1px solid #ddd;
+    .information-panel .table td {
+        font-size: 12px;
+        padding: 5px 15px;
     }
 
-        .information-panel .table td {
-            font-size: 12px;
-            padding: 5px 15px;
+        .information-panel .table td.label {
+            background: var(--tableHeaderBackground);
+            width: 200px;
+            font-weight: bold;
+            border-right: 1px solid #ddd;
+            border-right: 1px solid var(--tableHeaderBorderColor);
         }
 
-            .information-panel .table td.label {
-                width: 200px;
-                font-weight: bold;
-                border-right: 1px solid #ddd;
-            }
-
-            .information-panel .table td.value {
-                background: #fff;
-                border-bottom-color: #ddd;
-            }
+        .information-panel .table td.value {
+            border-bottom-color: #ddd;
+            border-bottom-color: var(--borderColor);
+        }

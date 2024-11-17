@@ -139,13 +139,55 @@ namespace TrakHound.Entities.Collections
             return null;
         }
 
-        public void OnAddObject(ITrakHoundObjectEntity entity) 
-        { 
-            if (!string.IsNullOrEmpty(entity.ParentUuid))
+        public void AddObject(ITrakHoundObjectEntity entity)
+        {
+            if (entity != null)
             {
-                _objectParents.Add(entity.ParentUuid, entity.Uuid);
+                var x = _objects.GetValueOrDefault(entity.Uuid);
+                if (x == null || (entity.Priority >= x.Priority && !ObjectExtensions.ByteArraysEqual(x.Hash, entity.Hash)))
+                {
+                    _objects.Remove(entity.Uuid);
+                    _objects.Add(entity.Uuid, new TrakHoundObjectEntity(entity));
+
+                    if (!string.IsNullOrEmpty(entity.ParentUuid))
+                    {
+                        _objectParents.Add(entity.ParentUuid, entity.Uuid);
+                    }
+                }
             }
         }
+
+        public void AddObjects(IEnumerable<ITrakHoundObjectEntity> entities)
+        {
+            if (!entities.IsNullOrEmpty())
+            {
+                foreach (var entity in entities)
+                {
+                    if (entity.Uuid != null)
+                    {
+                        var x = _objects.GetValueOrDefault(entity.Uuid);
+                        if (x == null || (entity.Priority >= x.Priority && !ObjectExtensions.ByteArraysEqual(x.Hash, entity.Hash)))
+                        {
+                            _objects.Remove(entity.Uuid);
+                            _objects.Add(entity.Uuid, new TrakHoundObjectEntity(entity));
+
+                            if (!string.IsNullOrEmpty(entity.ParentUuid))
+                            {
+                                _objectParents.Add(entity.ParentUuid, entity.Uuid);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //public void OnAddObject(ITrakHoundObjectEntity entity) 
+        //{ 
+        //    if (!string.IsNullOrEmpty(entity.ParentUuid))
+        //    {
+        //        _objectParents.Add(entity.ParentUuid, entity.Uuid);
+        //    }
+        //}
 
         public partial void OnClear()
         {

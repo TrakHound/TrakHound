@@ -4,6 +4,7 @@
     grid-template-columns: 1fr max-content 1fr;
     height: 100%;
     background: #fff;
+    background: var(--panelBackground);
 }
 
 .loading-panel.delay {
@@ -23,6 +24,7 @@
     font-size: 25px;
     color: var(--accent);
     color: #aaa;
+    color: var(--textLight);
 }
 
 .loading-message {
@@ -32,4 +34,5 @@
     margin-top: 20px;
     color: var(--accent);
     color: #888;
+    color: var(--textMild);
 }

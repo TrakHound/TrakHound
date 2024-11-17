@@ -6,6 +6,7 @@
     width: 100%;
     overflow: hidden;
     background: #fff;
+    background: var(--panelBackground);
 }
 
 .tab-panel {

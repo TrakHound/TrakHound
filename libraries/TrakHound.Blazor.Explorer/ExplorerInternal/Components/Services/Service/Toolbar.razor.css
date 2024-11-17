@@ -2,6 +2,7 @@
     display: grid;
     grid-template-columns: max-content max-content 1fr;
     background: #fafafa;
+    background: var(--panelBackgroundMedium);
     border: 1px solid #eee;
     border-top: none;
 }

@@ -37,13 +37,9 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         {
             if (_client != null && !objects.IsNullOrEmpty())
             {
-                var contentObjs = objects.Where(o => o.ContentType == TrakHoundObjectContentTypes.Message);
-                if (!contentObjs.IsNullOrEmpty())
-                {
-                    var objectUuids = contentObjs.Select(o => o.Uuid).Distinct();
+                var objectUuids = objects.Select(o => o.Uuid).Distinct();
 
-                    await Subscribe(objectUuids);
-                }  
+                await Subscribe(objectUuids);
             }
         }
 

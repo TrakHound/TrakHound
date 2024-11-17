@@ -10,6 +10,7 @@
     grid-row: 1;
     padding: 10px 20px 5px;
     border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
 
@@ -23,6 +24,7 @@
 
 .content-panel-sidebar {
     border-right: 1px solid #eee;
+    border-right: 1px solid var(--borderColorLight);
 }
 
     .content-panel-sidebar .btn {
@@ -31,6 +33,7 @@
         height: 36px;
         border: none;
         border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--borderColorLight);
     }
 
         .content-panel-sidebar .btn .icon {

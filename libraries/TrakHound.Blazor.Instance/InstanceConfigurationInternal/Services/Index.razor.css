@@ -4,6 +4,7 @@
     grid-template-rows: 1fr max-content 1fr;
     grid-template-columns: 1fr max-content 1fr;
     border-top: 1px solid #ddd;
+    border-top: 1px solid var(--borderColor);
 }
 
 .empty-container {
@@ -12,6 +13,7 @@
     padding: 40px 80px;
     border-radius: 2px;
     border: 1px solid #eee;
+    border: 1px solid var(--borderColorLight);
     text-align: center;
 }
 

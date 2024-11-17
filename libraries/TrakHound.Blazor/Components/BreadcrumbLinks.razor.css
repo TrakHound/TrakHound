@@ -1,8 +1,4 @@
 ﻿.breadcrumb-links ::deep .divider {
-/*    font-size: 11px;
-    margin-left: 10px;
-    margin-right: 10px;
-    color: #ccc;*/
     vertical-align: top;
     line-height: 30px;
 }
@@ -15,16 +11,12 @@
     font-size: 11px;
     margin-left: 10px;
     margin-right: 10px;
-    color: #ccc;
-/*    vertical-align: top;
-    line-height: 24px;*/
+    color: var(--borderColorLight);
 }
 
 .breadcrumb-links ::deep .divider-icon {
     font-size: 11px;
     margin-left: 10px;
     margin-right: 10px;
-    color: #ccc;
-/*    vertical-align: top;
-    line-height: 24px;*/
+    color: var(--borderColorLight);
 }

@@ -5,6 +5,7 @@
     height: 100%;
     overflow: hidden;
     background: #fff;
+    background: var(--panelBackground);
 }
 
 .header-panel {
@@ -34,6 +35,7 @@
     .tab-panel ::deep .rz-tabview-panels {
         height: 100%;
         overflow: hidden;
+        border-top: 1px solid var(--borderColor);
     }
 
     .tab-panel ::deep .rz-tabview-panel {

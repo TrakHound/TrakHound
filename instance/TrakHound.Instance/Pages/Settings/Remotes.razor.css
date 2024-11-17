@@ -22,7 +22,9 @@
 
     .table-panel ::deep .rz-data-grid td {
         border-right: 1px solid #ddd;
+        border-right: 1px solid var(--borderColor);
         border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--borderColor);
     }
 
     .table-panel ::deep .rz-data-grid td:last-child {
@@ -56,10 +58,10 @@
 
     .page ::deep .add-modal .form-field .rz-textbox {
         width: 100%;
-        background: #fafafa !important;
+/*        background: #fafafa !important;*/
     }
 
     .page ::deep .add-modal .form-field .rz-textarea {
         width: 100%;
-        background: #fafafa !important;
+/*        background: #fafafa !important;*/
     }

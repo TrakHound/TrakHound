@@ -13,43 +13,43 @@ namespace TrakHound.Entities.Collections
         public IEnumerable<ITrakHoundObjectEntity> Objects => _objects.Values;
 
 
-        public void AddObject(ITrakHoundObjectEntity entity)
-        {
-            if (entity != null)
-            {
-                var x = _objects.GetValueOrDefault(entity.Uuid);
-                if (x == null || !ObjectExtensions.ByteArraysEqual(x.Hash, entity.Hash))
-                {
-                    _objects.Remove(entity.Uuid);
-                    _objects.Add(entity.Uuid, new TrakHoundObjectEntity(entity));
+        //public void AddObject(ITrakHoundObjectEntity entity)
+        //{
+        //    if (entity != null)
+        //    {
+        //        var x = _objects.GetValueOrDefault(entity.Uuid);
+        //        if (x == null || !ObjectExtensions.ByteArraysEqual(x.Hash, entity.Hash))
+        //        {
+        //            _objects.Remove(entity.Uuid);
+        //            _objects.Add(entity.Uuid, new TrakHoundObjectEntity(entity));
 
 
-                    OnAddObject(entity);
-                }
-            }
-        }
+        //            OnAddObject(entity);
+        //        }
+        //    }
+        //}
 
-        public void AddObjects(IEnumerable<ITrakHoundObjectEntity> entities)
-        {
-            if (!entities.IsNullOrEmpty())
-            {
-                foreach (var entity in entities)
-                {
-                    if (entity.Uuid != null)
-                    {                    
-                        var x = _objects.GetValueOrDefault(entity.Uuid);
-                        if (x == null || !ObjectExtensions.ByteArraysEqual(x.Hash, entity.Hash))
-                        {
-                            _objects.Remove(entity.Uuid);
-                            _objects.Add(entity.Uuid, new TrakHoundObjectEntity(entity));
+        //public void AddObjects(IEnumerable<ITrakHoundObjectEntity> entities)
+        //{
+        //    if (!entities.IsNullOrEmpty())
+        //    {
+        //        foreach (var entity in entities)
+        //        {
+        //            if (entity.Uuid != null)
+        //            {                    
+        //                var x = _objects.GetValueOrDefault(entity.Uuid);
+        //                if (x == null || !ObjectExtensions.ByteArraysEqual(x.Hash, entity.Hash))
+        //                {
+        //                    _objects.Remove(entity.Uuid);
+        //                    _objects.Add(entity.Uuid, new TrakHoundObjectEntity(entity));
 
 
-                            OnAddObject(entity);
-                        }                   
-                    }
-                }
-            }
-        }
+        //                    OnAddObject(entity);
+        //                }                   
+        //            }
+        //        }
+        //    }
+        //}
 
 
         public ITrakHoundObjectEntity GetObject(string uuid)

@@ -35,7 +35,7 @@
             font-size: 20px;
             border-radius: 0 !important;
             border-right: none !important;
-            background: var(--inputBackground);
+            background: var(--textBackground);
             border: 1px solid #ccc;
             color: var(--textPrimary);
         }
@@ -96,13 +96,13 @@
         }
 
     .spin-edit .spin-edit-btn-top {
-        border: 1px solid var(--borderLight) !important;
+        border: 1px solid var(--borderColor) !important;
     }
 
     .spin-edit .spin-edit-btn-bottom {
-        border-bottom: 1px solid var(--borderLight) !important;
-        border-left: 1px solid var(--borderLight) !important;
-        border-right: 1px solid var(--borderLight) !important;
+        border-bottom: 1px solid var(--borderColor) !important;
+        border-left: 1px solid var(--borderColor) !important;
+        border-right: 1px solid var(--borderColor) !important;
     }
 
     .spin-edit .spin-edit-units {

@@ -31,7 +31,7 @@ namespace TrakHound.Requests
         [JsonPropertyName("id")]
         public string Id { get; set; }
 
-        [JsonPropertyName("parnetId")]
+        [JsonPropertyName("parentId")]
         public string ParentId { get; set; }
 
         [JsonPropertyName("metadata")]

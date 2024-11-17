@@ -17,6 +17,7 @@
             .results-panel .results-tabs-container > ::deep .rz-tabview > .rz-tabview-panels {
                 height: 100%;
                 overflow: hidden;
+                border-top: 1px solid var(--borderColor);
             }
 
                 .results-panel .results-tabs-container > ::deep .rz-tabview > .rz-tabview-panels > .rz-tabview-panel {
@@ -29,7 +30,9 @@
             .results-panel .results-tabs-container > ::deep .rz-tabview > .rz-tabview-nav li {
                 padding: 3px 20px;
                 border-top: 1px solid #ddd;
+                border-top: 1px solid var(--borderColor);
                 border-right: 1px solid #ddd;
+                border-right: 1px solid var(--borderColor);
                 border-bottom: 0px;
                 border-radius: 0 5px 0 0;
                 text-align: center;
@@ -37,7 +40,9 @@
 
             .results-panel .results-tabs-container > ::deep .rz-tabview > .rz-tabview-nav > li:hover {
                 border-top: 1px solid #ddd !important;
+                border-top: 1px solid var(--borderColor) !important;
                 border-right: 1px solid #ddd !important;
+                border-right: 1px solid var(--borderColor) !important;
                 border-bottom: 0px !important;
                 margin: 0;
                 padding: 3px 20px 2px !important;

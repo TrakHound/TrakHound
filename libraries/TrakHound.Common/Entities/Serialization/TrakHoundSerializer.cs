@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using TrakHound.Entities;
 using TrakHound.Entities.Collections;
 using TrakHound.Requests;
@@ -121,15 +122,16 @@ namespace TrakHound.Serialization
             if (obj != null)
             {
                 var objectRequest = new TrakHoundObjectEntry();
+                var objectType = obj.GetType();
 
                 string objectBasePath = basePath;
-                string objectPath = !string.IsNullOrEmpty(name) ? name : obj.GetType().Name;
+                string objectPath = !string.IsNullOrEmpty(name) ? name : objectType.Name;
 
                 var childRequests = new List<ITrakHoundEntityEntryOperation>(); // Name => ContentRequest
                 var contentRequests = new Dictionary<byte[], ITrakHoundEntityEntryOperation>(); // Name => ContentRequest
 
                 // Root Object Attribute
-                var rootObjectAttribute = GetAttribute<TrakHoundObjectAttribute>(obj.GetType());
+                var rootObjectAttribute = GetAttribute<TrakHoundObjectAttribute>(objectType);
                 if (rootObjectAttribute != null)
                 {
                     // Append Base Path
@@ -142,36 +144,39 @@ namespace TrakHound.Serialization
                     objectRequest.ContentType = rootObjectAttribute.ContentType.ToString();
                 }
 
-                // Root Definition Attribute
-                var rootDefinitionAttributes = GetAttributes<TrakHoundDefinitionAttribute>(obj.GetType());
-                if (!rootDefinitionAttributes.IsNullOrEmpty())
-                {
-                    string parentId = null;
+                // Set Object Definition
+                objectRequest.DefinitionId = CreateDefinitions(transaction, objectType);
 
-                    foreach (var rootDefinitionAttribute in rootDefinitionAttributes)
-                    {
-                        // Create Definition Entry
-                        var definitionRequest = new TrakHoundDefinitionEntry();
-                        definitionRequest.Id = rootDefinitionAttribute.Id;
-                        definitionRequest.ParentId = !string.IsNullOrEmpty(rootDefinitionAttribute.ParentId) ? rootDefinitionAttribute.ParentId : parentId;
+                //// Root Definition Attribute
+                //var rootDefinitionAttributes = GetAttributes<TrakHoundDefinitionAttribute>(obj.GetType());
+                //if (!rootDefinitionAttributes.IsNullOrEmpty())
+                //{
+                //    string parentId = null;
 
-                        // Set Description
-                        if (!string.IsNullOrEmpty(rootDefinitionAttribute.Description))
-                        {
-                            definitionRequest.Descriptions.Add(rootDefinitionAttribute.LanguageCode, rootDefinitionAttribute.Description);
-                        }
+                //    foreach (var rootDefinitionAttribute in rootDefinitionAttributes)
+                //    {
+                //        // Create Definition Entry
+                //        var definitionRequest = new TrakHoundDefinitionEntry();
+                //        definitionRequest.Id = rootDefinitionAttribute.Id;
+                //        definitionRequest.ParentId = !string.IsNullOrEmpty(rootDefinitionAttribute.ParentId) ? rootDefinitionAttribute.ParentId : parentId;
 
-                        contentRequests.Remove(definitionRequest.EntryId);
-                        contentRequests.Add(definitionRequest.EntryId, definitionRequest);
+                //        // Set Description
+                //        if (!string.IsNullOrEmpty(rootDefinitionAttribute.Description))
+                //        {
+                //            definitionRequest.Descriptions.Add(rootDefinitionAttribute.LanguageCode, rootDefinitionAttribute.Description);
+                //        }
 
-                        // Set Object Request Definition Properties
-                        objectRequest.DefinitionId = definitionRequest.Id;
-                        parentId = definitionRequest.Id;
-                    }
-                }
+                //        contentRequests.Remove(definitionRequest.EntryId);
+                //        contentRequests.Add(definitionRequest.EntryId, definitionRequest);
+
+                //        // Set Object Request Definition Properties
+                //        objectRequest.DefinitionId = definitionRequest.Id;
+                //        parentId = definitionRequest.Id;
+                //    }
+                //}
 
                 // Process Properties
-                var properties = obj.GetType().GetProperties();
+                var properties = objectType.GetProperties();
                 if (!properties.IsNullOrEmpty())
                 {
                     var isPathSet = false;
@@ -216,6 +221,7 @@ namespace TrakHound.Serialization
 
                     // Update Object Path
                     objectRequest.Path = TrakHoundPath.Combine(objectBasePath, objectPath);
+                    objectRequest.Path = TrakHoundPath.ToRoot(objectRequest.Path);
 
                     foreach (var property in properties)
                     {
@@ -270,6 +276,7 @@ namespace TrakHound.Serialization
 
                             var durationRequest = new TrakHoundDurationEntry();
                             durationRequest.ObjectPath = TrakHoundPath.Combine(objectRequest.Path, durationObjectPath);
+                            durationRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
                             durationRequest.Value = property.GetValue(obj).ToString();
 
                             transaction.Add(durationRequest);
@@ -286,6 +293,7 @@ namespace TrakHound.Serialization
 
                             var booleanRequest = new TrakHoundBooleanEntry();
                             booleanRequest.ObjectPath = TrakHoundPath.Combine(objectRequest.Path, booleanObjectPath);
+                            booleanRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
                             booleanRequest.Value = property.GetValue(obj).ToBoolean();
 
                             transaction.Add(booleanRequest);
@@ -305,6 +313,7 @@ namespace TrakHound.Serialization
                             {
                                 var eventRequest = new TrakHoundEventEntry();
                                 eventRequest.ObjectPath = TrakHoundPath.Combine(objectRequest.Path, eventObjectPath);
+                                eventRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
 
                                 transaction.Add(eventRequest);
                             }
@@ -330,6 +339,7 @@ namespace TrakHound.Serialization
 
                                 var groupRequest = new TrakHoundGroupEntry();
                                 groupRequest.GroupPath = TrakHoundPath.Combine(objectRequest.Path, groupObjectPath);
+                                groupRequest.GroupDefinitionId = CreateDefinitions(transaction, property);
                                 groupRequest.MemberPath = groupMemberPath;
 
                                 transaction.Add(groupRequest);
@@ -354,6 +364,7 @@ namespace TrakHound.Serialization
                                 {
                                     var hashKey = !string.IsNullOrEmpty(hashAttribute.KeyPrefix) ? hashAttribute.KeyPrefix + hashAttribute.Key : hashAttribute.Key;
                                     var hashRequest = new TrakHoundHashEntry(hashObjectPath, hashKey, (string)hashValue);
+                                    hashRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
 
                                     transaction.Add(hashRequest);
                                 }
@@ -380,6 +391,7 @@ namespace TrakHound.Serialization
                                     }
 
                                     var hashRequest = new TrakHoundHashEntry(hashObjectPath, hashValues);
+                                    hashRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
 
                                     transaction.Add(hashRequest);
                                 }
@@ -387,6 +399,7 @@ namespace TrakHound.Serialization
                                 {
                                     var hashKey = !string.IsNullOrEmpty(hashAttribute.KeyPrefix) ? hashAttribute.KeyPrefix + hashAttribute.Key : hashAttribute.Key;
                                     var hashRequest = new TrakHoundHashEntry(hashObjectPath, hashKey, hashValue.ToString());
+                                    hashRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
 
                                     transaction.Add(hashRequest);
                                 }
@@ -409,15 +422,7 @@ namespace TrakHound.Serialization
                             {
                                 var numberRequest = new TrakHoundNumberEntry();
                                 numberRequest.ObjectPath = TrakHoundPath.Combine(objectRequest.Path, numberObjectPath);
-
-                                // Set Definition
-                                var propertyDefinitionAttribute = GetAttribute<TrakHoundPropertyDefinitionAttribute>(property);
-                                if (propertyDefinitionAttribute != null)
-                                {
-                                    var propertyDefinitionType = !string.IsNullOrEmpty(propertyDefinitionAttribute.Type) ? propertyDefinitionAttribute.Type : property.Name;
-                                    numberRequest.ObjectDefinitionId = GetPropertyDefinitionId(ref contentRequests, objectRequest.DefinitionId, propertyDefinitionType, propertyDefinitionAttribute.Description, propertyDefinitionAttribute.LanguageCode, propertyDefinitionAttribute.ParentId);
-                                }
-
+                                numberRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
                                 numberRequest.Value = numberValue;
                                 numberRequest.DataType = dataType;
 
@@ -441,6 +446,7 @@ namespace TrakHound.Serialization
                             {
                                 var observationRequest = new TrakHoundObservationEntry();
                                 observationRequest.ObjectPath = TrakHoundPath.Combine(objectRequest.Path, observationObjectPath);
+                                observationRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
                                 observationRequest.Value = observationValue;
                                 observationRequest.DataType = observationDataType;
 
@@ -468,6 +474,7 @@ namespace TrakHound.Serialization
 
                                 var referenceRequest = new TrakHoundReferenceEntry();
                                 referenceRequest.ObjectPath = TrakHoundPath.Combine(objectRequest.Path, referenceObjectPath);
+                                referenceRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
                                 referenceRequest.TargetPath = referenceTargetPath;
 
                                 transaction.Add(referenceRequest);
@@ -491,6 +498,7 @@ namespace TrakHound.Serialization
                                 if (property.PropertyType == typeof(string))
                                 {
                                     var setRequest = new TrakHoundSetEntry(setObjectPath, (string)setValue);
+                                    setRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
                                     setRequest.EntryType = setAttribute.EntryType;
 
                                     transaction.Add(setRequest);
@@ -506,6 +514,7 @@ namespace TrakHound.Serialization
                                     }
 
                                     var setRequest = new TrakHoundSetEntry(setObjectPath, setValues);
+                                    setRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
                                     setRequest.EntryType = setAttribute.EntryType;
 
                                     transaction.Add(setRequest);
@@ -513,6 +522,7 @@ namespace TrakHound.Serialization
                                 else
                                 {
                                     var setRequest = new TrakHoundSetEntry(setObjectPath, setValue.ToString());
+                                    setRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
                                     setRequest.EntryType = setAttribute.EntryType;
 
                                     transaction.Add(setRequest);
@@ -534,8 +544,7 @@ namespace TrakHound.Serialization
                             {
                                 var stateRequest = new TrakHoundStateEntry();
                                 stateRequest.ObjectPath = TrakHoundPath.Combine(objectRequest.Path, stateObjectPath);
-
-                                stateRequest.DefinitionId = GetDefinitionId(objectPath, stateObjectPath, stateType);
+                                stateRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
 
                                 transaction.Add(stateRequest);
                             }
@@ -555,15 +564,7 @@ namespace TrakHound.Serialization
                             {
                                 var stringRequest = new TrakHoundStringEntry();
                                 stringRequest.ObjectPath = TrakHoundPath.Combine(objectRequest.Path, stringObjectPath);
-
-                                // Set Definition
-                                var propertyDefinitionAttribute = GetAttribute<TrakHoundPropertyDefinitionAttribute>(property);
-                                if (propertyDefinitionAttribute != null)
-                                {
-                                    var propertyDefinitionType = !string.IsNullOrEmpty(propertyDefinitionAttribute.Type) ? propertyDefinitionAttribute.Type : property.Name;
-                                    stringRequest.ObjectDefinitionId = GetPropertyDefinitionId(ref contentRequests, objectRequest.DefinitionId, propertyDefinitionType, propertyDefinitionAttribute.Description, propertyDefinitionAttribute.LanguageCode, propertyDefinitionAttribute.ParentId);
-                                }
-
+                                stringRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
                                 stringRequest.Value = stringValue;
 
                                 transaction.Add(stringRequest);
@@ -584,6 +585,7 @@ namespace TrakHound.Serialization
                             {
                                 var timestampRequest = new TrakHoundTimestampEntry();
                                 timestampRequest.ObjectPath = TrakHoundPath.Combine(objectRequest.Path, timestampObjectPath);
+                                timestampRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
 
                                 if (timestampValue.GetType() == typeof(DateTime))
                                 {
@@ -619,6 +621,7 @@ namespace TrakHound.Serialization
                                 {
                                     var timeRangeRequest = new TrakHoundTimeRangeEntry();
                                     timeRangeRequest.ObjectPath = TrakHoundPath.Combine(objectRequest.Path, timeRangeObjectPath);
+                                    timeRangeRequest.ObjectDefinitionId = CreateDefinitions(transaction, property);
                                     timeRangeRequest.Start = timeRange.From;
                                     timeRangeRequest.End = timeRange.To;
 
@@ -641,6 +644,7 @@ namespace TrakHound.Serialization
                                     {
                                         var childEntry = new TrakHoundObjectEntry();
                                         childEntry.Path = TrakHoundPath.Combine(objectRequest.Path, childObjectName);
+                                        childEntry.DefinitionId = CreateDefinitions(transaction, property);
                                         childEntry.ContentType = objectAttribute.ContentType.ToString();
                                         transaction.Add(childEntry);
                                     }
@@ -2218,6 +2222,57 @@ namespace TrakHound.Serialization
                 entries.Add(definitionRequest.EntryId, definitionRequest);
 
                 return definitionRequest;
+            }
+
+            return null;
+        }
+
+        private static string CreateDefinitions(TrakHoundEntityTransaction transaction, Type type)
+        {
+            if (transaction != null)
+            {
+                var definitionAttributes = GetAttributes<TrakHoundDefinitionAttribute>(type);
+                return CreateDefinitions(transaction, definitionAttributes);
+            }
+
+            return null;
+        }
+
+        private static string CreateDefinitions(TrakHoundEntityTransaction transaction, PropertyInfo propertyInfo)
+        {
+            if (transaction != null)
+            {
+                var definitionAttributes = GetAttributes<TrakHoundDefinitionAttribute>(propertyInfo);
+                return CreateDefinitions(transaction, definitionAttributes);
+            }
+
+            return null;
+        }
+
+        private static string CreateDefinitions(TrakHoundEntityTransaction transaction, IEnumerable<TrakHoundDefinitionAttribute> definitionAttributes)
+        {
+            if (transaction != null && !definitionAttributes.IsNullOrEmpty())
+            {
+                string parentId = null;
+
+                foreach (var definitionAttribute in definitionAttributes)
+                {
+                    // Create Definition Entry
+                    var definitionRequest = new TrakHoundDefinitionEntry();
+                    definitionRequest.Id = definitionAttribute.Id;
+                    definitionRequest.ParentId = !string.IsNullOrEmpty(definitionAttribute.ParentId) ? definitionAttribute.ParentId : parentId;
+
+                    // Set Description
+                    if (!string.IsNullOrEmpty(definitionAttribute.Description))
+                    {
+                        definitionRequest.Descriptions.Add(definitionAttribute.LanguageCode, definitionAttribute.Description);
+                    }
+
+                    parentId = definitionRequest.Id;
+                    transaction.Add(definitionRequest);
+                }
+
+                return parentId;
             }
 
             return null;

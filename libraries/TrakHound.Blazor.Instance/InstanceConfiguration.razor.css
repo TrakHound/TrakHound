@@ -13,6 +13,7 @@
     padding: 10px 20px 5px;
     margin-bottom: 5px;
     border-bottom: 1px solid #f8f8f8;
+    border-bottom: 1px solid var(--borderColorVeryVeryLight);
 }
 
 .sidebar-panel {
@@ -22,7 +23,9 @@
     overflow: auto;
     padding: 10px 20px 40px 20px;
     border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     background: #fafafa;
+    background: var(--panelSidebarBackground);
 }
 
 
@@ -35,6 +38,7 @@
     .content-panel ::deep .rz-data-grid {
         height: 100%;
         overflow: auto;
+        border-top: 1px solid var(--borderColor);
     }
 
         .content-panel ::deep .rz-data-grid td .rz-cell-data {
@@ -45,6 +49,7 @@
         .content-panel ::deep .rz-data-grid td.id .rz-cell-data {
             font-size: 12px;
             color: #888;
+            color: var(--textMild);
         }
 
 
@@ -59,12 +64,14 @@
     .configuration-page ::deep .configuration-table-panel .breadcrumb-panel {
         grid-row: 1;
         border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--borderColor);
         padding: 5px 20px;
     }
 
     .configuration-page ::deep .configuration-table-panel .header-panel {
         grid-row: 2;
         border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--borderColor);
         padding: 10px 20px;
     }
 
@@ -94,6 +101,7 @@
         line-height: 18px;
         font-weight: 500;
         color: #333;
+        color: var(--textDark);
     }
 
     .configuration-page ::deep .configuration-table-panel .header-panel-description {
@@ -101,6 +109,7 @@
         font-size: 12px;
         line-height: 14px;
         color: #888;
+        color: var(--textMild);
     }
 
     .configuration-page ::deep .configuration-table-panel .toolbar-panel {
@@ -172,11 +181,21 @@
     border-left: none;
 }
 
-.configuration-page ::deep .rz-data-grid td {
-    border-right: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    padding: 2px 10px;
-}
+    .configuration-page ::deep .rz-data-grid th {
+        border-right: 1px solid var(--tableHeaderBorderColor);
+        border-top: 1px solid var(--tableHeaderBorderColor);
+        border-bottom: 1px solid var(--tableHeaderBorderColor);
+        color: var(--textDark);
+    }
+
+    .configuration-page ::deep .rz-data-grid td {
+        border-right: 1px solid #ddd;
+        border-right: 1px solid var(--borderColor);
+        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--borderColor);
+        padding: 2px 10px;
+        color: var(--textDark);
+    }
 
 .configuration-page ::deep .rz-data-grid td:first-child {
     border-left: none;
@@ -186,10 +205,11 @@
         border-right: none;
     }
 
-    .configuration-page ::deep .rz-data-grid td .rz-cell-data {
-        font-size: 12px;
-        padding: 0;
-    }
+        .configuration-page ::deep .rz-data-grid td .rz-cell-data {
+            font-size: 12px;
+            padding: 0;
+            color: var(--textDark);
+        }
 
     .configuration-page ::deep .rz-data-grid .buttons {
         padding: 0;
@@ -243,12 +263,14 @@
         margin: 0;
         grid-row: 1;
         border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--borderColorLight);
     }
 
     .configuration-page ::deep .rz-steps .rz-steps-number {
         color: #555;
         background-color: #f8f8f8;
         border: 1px solid #ccc;
+        border: 1px solid var(--borderColorMedium);
         width: 30px;
         height: 30px;
         line-height: 22px;

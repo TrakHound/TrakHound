@@ -206,6 +206,7 @@ td {
     grid-template-columns: max-content max-content max-content max-content 1fr;
     font-size: 13px;
     background: #f8f8f8;
+    background: var(--panelBackgroundMedium);
     border: 1px solid #ddd;
     width: 100%;
     margin: 10px 0;
@@ -229,6 +230,7 @@ td {
     text-align: center;
     border-right: 1px solid #ddd;
     background: #f8f8f8;
+    background: var(--panelBackgroundMedium);
 }
 
 #request-duration {
@@ -242,6 +244,7 @@ td {
     text-align: center;
     border-right: 1px solid #ddd;
     background: #f8f8f8;
+    background: var(--panelBackgroundMedium);
 }
 
 .request-started {
@@ -254,6 +257,7 @@ td {
     text-align: center;
     border-right: 1px solid #ddd;
     background: #f8f8f8;
+    background: var(--panelBackgroundMedium);
 }
 
 .request-completed {
@@ -264,6 +268,7 @@ td {
     padding: 10px;
     text-align: center;
     background: #f8f8f8;
+    background: var(--panelBackgroundMedium);
 }
 
 .request-id {

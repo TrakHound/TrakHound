@@ -72,6 +72,7 @@
     display: grid;
     grid-template-columns: max-content 1fr;
     border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
 }
 
 .query-panel .query-label {
@@ -80,8 +81,10 @@
     font-weight: 500;
     padding: 5px 10px;
     border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     border-radius: 2px;
     color: #777;
+    color: var(--textMild);
 }
 
 .query-panel .btn-query {
@@ -105,11 +108,11 @@
     }
 
     .table-panel ::deep th {
-        border-bottom: 1px solid #ddd !important;
+/*        border-bottom: 1px solid #ddd !important;*/
     }
 
     .table-panel ::deep td {
-        border-bottom: 1px solid #ddd !important;
+/*        border-bottom: 1px solid #ddd !important;*/
     }
 
     .table-panel ::deep td .rz-cell-data {
@@ -123,7 +126,7 @@
     }
 
     .table-panel ::deep .dataset-cell-view {
-        border-right: 1px solid #e4e4e4;
+/*        border-right: 1px solid #e4e4e4;*/
         padding-right: 5px;
     }
 
@@ -139,7 +142,7 @@
     }
 
     .table-panel ::deep .table-cell-view {
-        border-right: 1px solid #e4e4e4;
+/*        border-right: 1px solid #e4e4e4;*/
         padding-right: 5px;
     }
 

@@ -11,6 +11,7 @@
     .identity-panel .icon-container {
         text-align: center;
         border: 1px solid #eee;
+        border: 1px solid var(--borderColorLight);
         padding: 3px;
     }
 
@@ -34,6 +35,7 @@
         line-height: 20px;
         display: block;
         margin-top: 8px;
+        color: var(--textDark);
     }
 
     .identity-panel .publisher {
@@ -41,6 +43,7 @@
         line-height: 20px;
         display: block;
         color: #555;
+        color: var(--textMild);
     }
 
 
@@ -52,6 +55,7 @@
     margin-bottom: 30px;
     padding: 10px 20px;
     background: var(--accentVeryVeryLight);
+    background: var(--panelBackgroundMedium);
     border: 1px solid var(--accentLight);
     border-radius: 2px;
 }
@@ -59,19 +63,19 @@
     .license-panel .license-buttons .btn-license {
         border: 1px solid var(--accent);
         font-size: 12px;
-        color: var(--accent);
+        color: var(--accentLight);
         padding: 8px 20px;
     }
 
     .license-panel .license-product-description {
         display: block;
-        color: var(--accent);
+        color: var(--accentLight);
         font-size: 12px;
     }
 
     .license-panel .license-product-id {
         display: block;
-        color: var(--accent);
+        color: var(--accentLight);
         font-size: 14px;
         font-weight: bold;
     }
@@ -85,6 +89,8 @@
     margin-bottom: 10px;
     border-top: 1px solid #eee;
     border-bottom: 1px solid #eee;
+    border-top: 1px solid var(--borderColorLight);
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
     .version-panel .label {
@@ -92,6 +98,7 @@
         font-size: 12px;
         font-weight: bold;
         line-height: 28px;
+        color: var(--textDark);
     }
 
     .version-panel ::deep .rz-dropdown {
@@ -118,21 +125,21 @@
     padding-bottom: 10px;
     font-size: 12px;
     border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
+    color: var(--textDark);
 }
 
 
-.properties-panel {
+.properties-panel table td {
+    font-size: 12px;
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
+    border-bottom: 1px solid #f8f8f8;
+    border-bottom: 1px solid var(--borderColorVeryVeryLight);
 }
 
-    .properties-panel table td {
-        font-size: 12px;
-        padding-top: 3px !important;
-        padding-bottom: 3px !important;
-        border-bottom: 1px solid #f8f8f8;
+    .properties-panel table td.label {
+        font-weight: bold;
+        padding-right: 15px;
+        vertical-align: top;
     }
-
-        .properties-panel table td.label {
-            font-weight: bold;
-            padding-right: 15px;
-            vertical-align: top;
-        }

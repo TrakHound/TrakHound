@@ -1,14 +1,19 @@
-@import url('colors/global.css');
+@import url('colors/status.css');
 @import url('icons/global.css');
 @import url('fonts/global.css');
 @import url('buttons/global.css');
 @import url('sidebar/global.css');
 @import url('tables/global.css');
 @import url('tabs/global.css');
+@import url('text/global.css');
 
 @import url('scroll-panel.css');
 @import url('tooltip.css');
 
+body {
+    scrollbar-color: var(--borderColor) var(--borderColorVeryLight);
+    scrollbar-width: thin;
+}
 
 .alert {
     padding: 8px 20px;
@@ -17,10 +22,10 @@
     font-size: 14px;
 }
 
-.alert .icon {
-    margin-right: 15px;
-    font-size: 16px;
-}
+    .alert .icon {
+        margin-right: 15px;
+        font-size: 16px;
+    }
 
 .rz-autocomplete-panel {
     border-radius: 0 0 5px 5px !important;
@@ -34,10 +39,10 @@
     padding: 0 !important;
 }
 
-.rz-autocomplete-list-item span {
-    padding: 0 15px !important;
-    font-size: 14px;
-}
+    .rz-autocomplete-list-item span {
+        padding: 0 15px !important;
+        font-size: 14px;
+    }
 
 
 h1:focus {
@@ -48,17 +53,41 @@ a, .btn-link {
     color: #0071c1;
 }
 
+.rz-splitter-bar {
+    background: var(--borderColor) !important;
+}
+
+.rz-tabview-panels {
+    border-top: 1px solid var(--borderColor) !important;
+}
+
 .rz-tabview-nav li {
     transition: none;
+    color: var(--textMild) !important;
 }
+
+    .rz-tabview-nav li:hover {
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
 
     .rz-tabview-nav li a {
         padding: 12px 30px;
         font-size: 14px;
         border-right: 1px solid #f4f4f4;
+        border-right: 1px solid var(--borderColorVeryLight);
+        color: var(--textMild) !important;
+    }
+
+    .rz-tabview-nav li:hover a {
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .rz-tabview-nav li .rz-tabview-title {
+        color: var(--textMild) !important;
     }
 
     .rz-tabview-nav li .tab-header {
+        color: var(--textMild);
     }
 
     .rz-tabview-nav li a .rz-tabview-left-icon {
@@ -70,6 +99,7 @@ a, .btn-link {
         font-size: 16px;
         line-height: 22px;
         color: #aaa;
+        color: var(--textLight);
         vertical-align: top;
     }
 
@@ -120,7 +150,22 @@ a, .btn-link {
     font-size: 14px;
     border-radius: 2px !important;
     height: 38px !important;
+    border-color: var(--borderColor);
+    background: var(--inputBackground) !important;
+    color: var(--inputText) !important;
 }
+
+    .rz-dropdown:hover {
+        border-color: var(--borderColorHover) !important;
+        background: var(--inputBackgroundHover) !important;
+        color: var(--inputTextHover) !important;
+    }
+
+    .rz-dropdown:focus {
+        border-color: var(--borderColorHighlight) !important;
+        background: var(--inputBackgroundHighlight) !important;
+        color: var(--inputTextHighlight) !important;
+    }
 
 .rz-dropdown-trigger {
     height: 35px !important;
@@ -163,22 +208,72 @@ a, .btn-link {
         background: var(--accentLight) !important;
     }
 
-.rz-data-grid .rz-column-title-content {
-    font-size: 12px;
-    font-weight: bold;
+.table tbody {
+    background: var(--tableBackground);
+    border-color: var(--tableBorderColor);
 }
 
-.rz-data-grid .rz-column-resizer:hover::after {
-    background-color: var(--accent);
+.table th {
+    background: var(--tableHeaderBackground);
+    border-color: var(--tableHeaderBorderColor);
+    color: var(--tableHeaderText) !important;
 }
 
-.rz-data-grid td,
-.rz-data-grid .rz-cell-data {
-    transition: none !important;
+table td {
+    background: none;
+    border-color: var(--tableBorderColor);
+    color: var(--tableText);
 }
+
+.rz-data-grid {
+    background: var(--tableBackground) !important;
+    border-color: var(--tableBorderColor) !important;
+}
+
+    .rz-data-grid table th {
+        background: var(--tableHeaderBackground);
+        border-color: var(--tableHeaderBorderColor) !important;
+    }
+
+        .rz-data-grid table th .rz-column-title {
+            color: var(--tableHeaderText);
+        }
+
+    .rz-data-grid table tr:not(.rz-expanded-row-content):nth-child(odd) > td {
+        background: none;
+    }
+
+    .rz-data-grid table tr:not(.rz-expanded-row-content):nth-child(even) > td {
+        background: rgba(0, 0, 0, 0.025);
+    }
+
+    .rz-data-grid .rz-column-title-content {
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .rz-data-grid .rz-column-resizer:hover::after {
+        background-color: var(--accent);
+    }
+
+    .rz-data-grid tr {
+        border-color: var(--tableBorderColor) !important;
+    }
+
+    .rz-data-grid td {
+        border-bottom: 1px solid var(--tableBorderColor) !important;
+    }
+
+    .rz-data-grid td,
+    .rz-data-grid .rz-cell-data {
+        transition: none !important;
+        border-color: var(--tableBorderColor) !important;
+        color: var(--tableText) !important;
+    }
 
 .rz-data-row:hover td {
     background: #f4f4f4 !important;
+    background: rgba(255, 255, 255, 0.05) !important;
     transition: none !important;
 }
 
@@ -201,10 +296,29 @@ a, .btn-link {
     }
 
 .text-box input,
+.text-area textarea,
 .spin-edit input,
 .rz-textbox {
-    background: #fbfbfb !important;
+    background: var(--inputBackground) !important;
+    border-color: var(--inputBorder) !important;
+    color: var(--inputText) !important;
 }
+
+    .text-box input:hover,
+    .text-area textarea:hover,
+    .spin-edit input:hover {
+        background: var(--inputBackgroundHover) !important;
+        border-color: var(--inputBorderHover) !important;
+        color: var(--inputTextHover) !important;
+    }
+
+    .text-box input:focus,
+    .text-area textarea:focus,
+    .spin-edit input:focus {
+        background: var(--inputBackgroundHighlight) !important;
+        border-color: var(--inputBorderHighlight) !important;
+        color: var(--inputTextHighlight) !important;
+    }
 
 .rz-menu {
     background: #fff !important;
@@ -220,6 +334,7 @@ a, .btn-link {
 
 .rz-menu > .rz-navigation-item > .rz-navigation-item-wrapper > .rz-navigation-item-link {
     border-right: 1px solid #eee;
+    border-right: 1px solid var(--borderColorLight);
     padding-right: 20px;
     margin-right: 10px;
 }
@@ -242,11 +357,11 @@ a, .btn-link {
 }
 
 
-.btn-primary {
+/*.btn-primary {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
-}
+}*/
 
 
 .text-box input:hover {
@@ -259,11 +374,19 @@ a, .btn-link {
     outline: none;
 }
 
-.rz-dropdown:focus {
-    border-color: var(--accentLight) !important;
-    box-shadow: inset 0px 0px 1px 1px var(--accentLight) !important;
-    outline: none;
+.rz-dropdown {
+    background: var(--inputBackground);
 }
+
+    .rz-dropdown:hover {
+        border: 1px solid var(--inputBorderHover) !important;
+    }
+
+    .rz-dropdown:focus {
+        border-color: var(--accentLight) !important;
+        box-shadow: inset 0px 0px 1px 1px var(--accentLight) !important;
+        outline: none;
+    }
 
 .rz-dropdown-item.rz-state-highlight {
     background: var(--accentVeryVeryLight) !important;
@@ -315,10 +438,10 @@ a, .btn-link {
         margin-bottom: 5px;
     }
 
-    #reconnection-toast .title .icon {
-        font-size: 16px;
-        margin-right: 15px;
-    }
+        #reconnection-toast .title .icon {
+            font-size: 16px;
+            margin-right: 15px;
+        }
 
     #reconnection-toast .label {
         display: block;
@@ -334,6 +457,7 @@ a, .btn-link {
     0% {
         opacity: 0;
     }
+
     100% {
         opacity: 1;
     }

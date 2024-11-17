@@ -5,11 +5,13 @@
     .text-box .title {
         font-size: 12px;
         color: var(--textSecondary);
+        color: var(--textDark);
         margin-bottom: 4px;
     }
 
     .text-box .subtitle {
         color: var(--textSecondary);
+        color: var(--textMild);
         margin-left: 5px;
     }
 
@@ -18,9 +20,10 @@
     }
 
     .text-box input {
-        background: var(--inputBackground);
-        border: 1px solid #ccc;
+        background: var(--inputBackground) !important;
+        border: 1px solid var(--inputBorder) !important;
         color: var(--textPrimary);
+        color: var(--inputText);
         height: auto !important;
         padding: 15px 25px;
         font-size: 24px;
@@ -33,14 +36,32 @@
         padding: 7px 15px;
     }
 
-        .text-box input:focus {
-            border: 1px solid var(--accentLight);
-        }
+    .text-box input:hover {
+        background: var(--inputBackgroundHover) !important;
+        border: 1px solid var(--inputBorderHover) !important;
+        color: var(--inputTextHover) !important;
+    }
+
+    .text-box input:focus {
+        border: 1px solid var(--accentLight);
+        background: var(--inputBackgroundHighlight) !important;
+        border: 1px solid var(--inputBorderHighlight) !important;
+        color: var(--inputTextHighlight) !important;
+    }
 
     .text-box input::placeholder {
         font-size: 15px !important;
         color: #aaa;
+        color: var(--inputPlaceholder);
         font-style: italic;
+    }
+
+    .text-box input:hover::placeholder {
+        color: var(--inputPlaceholderHover) !important;
+    }
+
+    .text-box input:focus::placeholder {
+        color: var(--inputPlaceholderHighlight) !important;
     }
 
     .text-box.small input::placeholder {

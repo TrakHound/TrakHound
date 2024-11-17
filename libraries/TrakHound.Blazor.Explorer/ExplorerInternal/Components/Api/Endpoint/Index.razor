@@ -32,7 +32,16 @@
                         <span class="header-description">@endPointInformation.Id</span>
                     </div>
                     <div class="header-package-icon-container">
-                        <span class="header-package-icon fa-solid fa-sharp fa-box"></span>
+
+                        @if (!string.IsNullOrEmpty(apiInformation.PackageIcon))
+                        {
+                            <img class="header-package-icon" src="@apiInformation.PackageIcon" />
+                        }
+                        else
+                        {
+                            <span class="header-package-icon fa-solid fa-sharp fa-box"></span>
+                        }
+
                     </div>
                     <div class="header-package-container">
                         <span class="header-title">Package</span>

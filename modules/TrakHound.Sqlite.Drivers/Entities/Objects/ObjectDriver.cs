@@ -6,11 +6,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using TrakHound.Drivers;
 using TrakHound.Drivers.Entities;
 using TrakHound.Entities;
 using TrakHound.Sqlite.Drivers.Models;
+using TrakHound.Utilities;
 
 namespace TrakHound.Sqlite.Drivers
 {
@@ -690,26 +692,75 @@ namespace TrakHound.Sqlite.Drivers
 
         protected async override Task<bool> OnPublish(IEnumerable<ITrakHoundObjectEntity> entities)
         {
-            var items = new List<PublishItem>();
+            var builder = new StringBuilder();
             foreach (var entity in entities)
             {
-                var item = new PublishItem();
-                item.Uuid = entity.Uuid;
-                item.ParentUuid = entity.ParentUuid;
-                item.Path = entity.Path;
-                item.Name = entity.Name;
-                item.Namespace = entity.Namespace;
-                item.ContentType = entity.ContentType;
-                item.DefinitionUuid = entity.DefinitionUuid;
-                item.SourceUuid = entity.SourceUuid;
-                item.Created = entity.Created;
-                items.Add(item);
+                builder.Append($"insert into {TableName}");
+                builder.Append(' ');
+                builder.Append("([uuid], [namespace], [path], [name], [parent_uuid], [content_type], [definition_uuid], [priority], [source_uuid], [created])");
+                builder.Append(' ');
+                builder.Append("values");
+                builder.Append(' ');
+                builder.Append($"({FormatValue(entity.Uuid)}, {FormatValue(entity.Namespace)}, {FormatValue(entity.Path)}, {FormatValue(entity.Name)}, {FormatValue(entity.ParentUuid)}, {FormatValue(entity.ContentType)}, {FormatValue(entity.DefinitionUuid)}, {FormatValue(entity.Priority)}, {FormatValue(entity.SourceUuid)}, {FormatValue(entity.Created)})");
+                builder.Append(' ');
+                builder.Append("on conflict ([uuid]) do update set");
+                builder.Append(' ');
+                builder.Append($"[content_type] = {FormatValue(entity.ContentType)}, [definition_uuid] = {FormatValue(entity.DefinitionUuid)}, [priority] = {FormatValue(entity.Priority)}, [source_uuid] = {FormatValue(entity.SourceUuid)}, [created] = {FormatValue(entity.Created)}");
+                builder.Append(' ');
+                builder.Append($"where [priority] <= {FormatValue(entity.Priority)}");
+                builder.Append(';');
             }
+            
+            var query = builder.ToString();
+            query = SqliteClient.CreateTableQuery<PublishItem>(TableName, new string[] { "uuid" }) + query;
 
-            _client.Insert(items, TableName, new string[] { "uuid" });
+            return _client.ExecuteNonQuery(query);
 
-            return true;
+            //var items = new List<PublishItem>();
+            //foreach (var entity in entities)
+            //{
+            //    var item = new PublishItem();
+            //    item.Uuid = entity.Uuid;
+            //    item.ParentUuid = entity.ParentUuid;
+            //    item.Path = entity.Path;
+            //    item.Name = entity.Name;
+            //    item.Namespace = entity.Namespace;
+            //    item.ContentType = entity.ContentType;
+            //    item.Priority = entity.Priority;
+            //    item.DefinitionUuid = entity.DefinitionUuid;
+            //    item.SourceUuid = entity.SourceUuid;
+            //    item.Created = entity.Created;
+            //    items.Add(item);
+            //}
+
+            //_client.Insert(items, TableName, new string[] { "uuid" });
+
+            //return true;
         }
+
+        //protected async override Task<bool> OnPublish(IEnumerable<ITrakHoundObjectEntity> entities)
+        //{
+        //    var items = new List<PublishItem>();
+        //    foreach (var entity in entities)
+        //    {
+        //        var item = new PublishItem();
+        //        item.Uuid = entity.Uuid;
+        //        item.ParentUuid = entity.ParentUuid;
+        //        item.Path = entity.Path;
+        //        item.Name = entity.Name;
+        //        item.Namespace = entity.Namespace;
+        //        item.ContentType = entity.ContentType;
+        //        item.Priority = entity.Priority;
+        //        item.DefinitionUuid = entity.DefinitionUuid;
+        //        item.SourceUuid = entity.SourceUuid;
+        //        item.Created = entity.Created;
+        //        items.Add(item);
+        //    }
+
+        //    _client.Insert(items, TableName, new string[] { "uuid" });
+
+        //    return true;
+        //}
 
 
         class IndexQueryResponse
@@ -943,6 +994,26 @@ namespace TrakHound.Sqlite.Drivers
             }
 
             return null;
+        }
+
+
+        private static object FormatValue(object value)
+        {
+            if (value != null)
+            {
+                if (value.GetType() == typeof(string))
+                {
+                    return $"'{value}'";
+                }
+                else
+                {
+                    return value;
+                }
+            }
+            else
+            {
+                return "null";
+            }
         }
     }
 }

@@ -36,8 +36,9 @@
 }
 
 .table {
-    background: #fafafa;
-    border: 1px solid #eee;
+/*    background: var(--tableBackground);*/
+/*    background: #fafafa;*/
+/*    border: 1px solid #eee;*/
     margin: 0;
 }
 
@@ -45,7 +46,7 @@ th {
     font-size: 13px;
     font-weight: bold;
     border: none !important;
-    border-right: 1px solid #eee !important;
+/*    border-right: 1px solid #eee !important;*/
     padding: 2px 10px;
 }
 
@@ -53,7 +54,7 @@ td {
     font-size: 13px;
     line-height: 26px;
     padding: 2px 15px;
-    background: #fff;
+/*    background: #fff;*/
     height: auto;
 }
 
@@ -96,8 +97,8 @@ td {
             padding: 0px 10px !important;
             line-height: 10px !important;
             height: 24px !important;
-            background: #fafafa;
             background: var(--accentVeryVeryLight) !important;
+            background: var(--accentVeryLight) !important;
         }
 
             .value-cell ::deep .text-box.small input::placeholder {
@@ -118,8 +119,8 @@ td {
         border: 1px solid transparent;
         border: 1px solid var(--accentKindaLight);
         min-height: 100px;
-        background: #fafafa;
         background: var(--accentVeryVeryLight) !important;
+        background: var(--accentVeryLight) !important;
         margin-top: 2px;
         margin-bottom: 0;
     }
@@ -143,6 +144,7 @@ td {
 
     .value-cell .body-upload-toolbar {
         background: var(--accentVeryVeryLight);
+        background: var(--accentVeryLight);
         padding: 0;
     }
 
@@ -150,6 +152,7 @@ td {
             width: 100px;
             border: none;
             background: var(--accentVeryVeryLight);
+            background: var(--accentVeryLight);
             color: var(--accent);
             border-right: 1px solid var(--accentVeryLight);
             border-radius: 0 !important;
@@ -242,6 +245,7 @@ td {
 
             .value-cell .body-upload-content .body-upload-file .body-upload-file-size {
                 background: var(--accentVeryVeryLight);
+                background: var(--accentVeryLight);
                 border-right: 1px solid var(--accentVeryLight);
                 padding: 0 15px;
                 line-height: 30px;
@@ -265,7 +269,7 @@ td {
     display: grid;
     grid-template-columns: max-content max-content max-content 1fr;
     font-size: 13px;
-    border: 1px solid #eee;
+    border: 1px solid var(--borderColorLight);
     width: 100%;
 }
 
@@ -273,17 +277,19 @@ td {
     padding: 10px;
     width: 70px;
     text-align: center;
-    border-right: 1px solid #eee;
-    background: #f8f8f8;
+    border-right: 1px solid var(--borderColorLight);
+/*    background: #f8f8f8;*/
+/*    background: #f8f8f8;*/
 }
 
 .request-method {
     font-weight: bold;
     color: #777;
+    color: var(--textMild);
 }
 
 .request-toolbar-container {
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
 }
 
     .request-toolbar-container .btn {
@@ -322,23 +328,23 @@ td {
         border-top: none;
     }
 
-.request-parameters table th {
-    position: sticky;
-    top: 0;
-    background: #fafafa;
-    border-bottom: 1px solid #eee !important;
-}
+        .request-parameters table th {
+            position: sticky;
+            top: 0;
+/*            background: #fafafa;*/
+/*            border-bottom: 1px solid var(--borderColorLight) !important;*/
+        }
 
 .response-information {
     grid-row: 3;
 }
 
     .response-information.success {
-        background: var(--colorGreenHover);
+        background: var(--colorGreenHover) !important;
     }
 
         .response-information.success td {
-            color: var(--colorGreenDark);
+            color: var(--colorGreenDark) !important;
         }
 
             .response-information.success td.label-cell {
@@ -353,11 +359,11 @@ td {
             }
 
     .response-information.error {
-        background: var(--colorRedHover);
+        background: var(--colorRedHover) !important;
     }
 
         .response-information.error td {
-            color: var(--colorRedDark);
+            color: var(--colorRedDark) !important;
         }
 
             .response-information.error td.label-cell {
@@ -373,11 +379,18 @@ td {
 
     .response-information table {
         width: auto;
-        background: none;
+        background: none !important;
+        border: none !important;
     }
 
+        .response-information table tbody {
+            background: none !important;
+            border: none !important;
+        }
+
         .response-information table td {
-            background: none;
+            background: none !important;
+            border-bottom: none !important;
         }
 
             .response-information table td.label-cell {
@@ -428,7 +441,7 @@ td {
 
         .response-parameters .table th {
             font-size: 12px !important;
-            border-bottom: 1px solid #ddd;
+/*            border-bottom: 1px solid #ddd;*/
         }
 
         .response-parameters .table td {
@@ -439,7 +452,7 @@ td {
 
             .response-parameters .table td.parameter-key {
                 min-width: 150px;
-                border-right: 1px solid #eee;
+                border-right: 1px solid var(--borderColorLight);
             }
 
             .response-parameters .table td.parameter-value {
@@ -450,5 +463,5 @@ td {
     grid-row: 5;
     height: 100%;
     overflow: hidden;
-    border: 1px solid #eee;
+    border: 1px solid var(--borderColorLight);
 }

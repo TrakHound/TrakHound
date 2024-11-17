@@ -4,6 +4,7 @@
     height: 100%;
     padding: 10px;
     border: 1px solid #eee;
+    border: 1px solid var(--borderColorLight);
     border-top: none;
     border-radius: 2px;
 }
@@ -11,6 +12,7 @@
 .toolbar-panel {
     grid-row: 1;
     border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
     padding-bottom: 10px;
     margin-bottom: 10px;
 }
@@ -43,6 +45,7 @@
     height: 31px !important;
     max-width: 100px;
     border-color: #ddd;
+    border-color: var(--borderColor);
     border-radius: 3px !important;
 }
 
@@ -64,16 +67,3 @@
     width: 100%;
     height: 100%;
 }
-
-/*.preview {
-    -ms-transform: scale(0.5);
-    -moz-transform: scale(0.5);
-    -o-transform: scale(0.5);
-    -webkit-transform: scale(0.5);
-    transform: scale(0.5);
-    -ms-transform-origin: 0 0;
-    -moz-transform-origin: 0 0;
-    -o-transform-origin: 0 0;
-    -webkit-transform-origin: 0 0;
-    transform-origin: 0 0;
-}*/
