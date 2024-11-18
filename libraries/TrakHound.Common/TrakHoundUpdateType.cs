@@ -3,7 +3,7 @@
 
 namespace TrakHound
 {
-    public enum TrakHoundAggregateType
+    public enum TrakHoundUpdateType
     {
         Absolute,
         Increment

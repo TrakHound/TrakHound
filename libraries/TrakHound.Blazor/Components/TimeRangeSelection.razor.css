@@ -1,0 +1,178 @@
+.time-range-selection {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+}
+
+    .time-range-selection .date-selection-container {
+        display: grid;
+        grid-auto-columns: max-content;
+        grid-auto-flow: column;
+    }
+
+    .time-range-selection .date-selection-container .select-container {
+        background: blue;
+    }
+
+.date-query-bar {
+    grid-row: 1;
+    padding: 5px 10px;
+}
+
+.date-query-bar-content {
+    display: grid;
+    grid-template-rows: max-content max-content;
+}
+
+.panel-top {
+    grid-row: 1;
+    display: grid;
+    grid-template-columns: max-content max-content max-content 1fr;
+    grid-column-gap: 8px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.panel-bottom {
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-column-gap: 30px;
+    padding-top: 5px;
+}
+
+.preset-container {
+    grid-column: 1;
+}
+
+.date-selection-container {
+    grid-column: 2;
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-flow: column;
+    grid-column-gap: 20px;
+}
+
+.btn {
+    font-size: 12px;
+}
+
+    .btn:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .btn .icon {
+        font-size: 14px;
+    }
+
+.btn-search {
+    width: 120px;
+    border-radius: 2px;
+    background: var(--accent);
+}
+
+.btn-clear {
+}
+
+    .btn-clear .icon {
+        margin-right: 0;
+    }
+
+.select-container label {
+    font-size: 12px;
+    color: #555;
+    padding-right: 10px;
+    line-height: 34px;
+}
+
+.select-container ::deep > div {
+    vertical-align: top;
+}
+
+.select-container ::deep .text-box.small {
+    display: inline-block;
+    vertical-align: top;
+    margin-bottom: 0;
+    height: 32px;
+    width: 100%;
+}
+
+    .select-container ::deep .text-box.small .form-group {
+        height: 32px !important;
+    }
+
+    .select-container ::deep .text-box.small input {
+        height: 32px !important;
+        font-size: 16px !important;
+    }
+
+        .select-container ::deep .text-box.small input::placeholder {
+            height: 32px !important;
+            font-size: 13px !important;
+        }
+
+.select-container ::deep .rz-dropdown {
+    display: inline-block;
+    vertical-align: top;
+    height: 32px !important;
+    padding: 5px 15px;
+}
+
+    .select-container ::deep .rz-dropdown .rz-dropdown-trigger {
+        height: 32px !important;
+        padding: 0;
+    }
+
+.select-container.query-selection ::deep .rz-dropdown {
+    margin-right: 15px;
+}
+
+.select-container ::deep .rz-calendar .rz-inputtext {
+    width: 175px !important;
+    vertical-align: top;
+}
+
+.select-container ::deep .rz-calendar .rz-inputtext {
+    width: 140px !important;
+    vertical-align: top;
+    font-size: 12px;
+    height: 32px;
+    border-radius: 2px;
+}
+
+.select-container ::deep .rz-calendar .rz-datepicker-trigger {
+    font-size: 18px;
+}
+
+.select-container.crew-selection ::deep .rz-dropdown {
+    width: 100px;
+    vertical-align: top;
+}
+
+.select-container.week-selection ::deep .rz-dropdown {
+    width: 100px;
+    vertical-align: top;
+}
+
+.select-container.month-selection ::deep .rz-dropdown {
+    width: 150px;
+    vertical-align: top;
+}
+
+.select-container.year-selection ::deep .rz-dropdown {
+    width: 120px;
+    vertical-align: top;
+}
+
+.btn-increment .icon {
+    margin-right: 0;
+}
+
+.btn-increment.disabled {
+    background: none;
+    border: 1px solid #ddd;
+}
+
+    .btn-increment.disabled .icon {
+        color: #aaa !important;
+    }

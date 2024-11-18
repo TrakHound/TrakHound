@@ -58,7 +58,7 @@ namespace TrakHound.Requests
         [JsonPropertyName("aggregateType")]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-        public TrakHoundAggregateType AggregateType { get; set; }
+        public TrakHoundUpdateType AggregateType { get; set; }
 
         [JsonPropertyName("timestamp")]
         public DateTime? Timestamp { get; set; }
@@ -72,7 +72,7 @@ namespace TrakHound.Requests
             Timestamp = DateTime.Now;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, double value, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, double value, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;
@@ -85,7 +85,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, double value, DateTime timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, double value, DateTime timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;
@@ -97,7 +97,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, double value, long timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, double value, long timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;
@@ -109,7 +109,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, string timeRangeId, double value, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, string timeRangeId, double value, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;
@@ -121,7 +121,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, DateTime from, DateTime to, double value, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, DateTime from, DateTime to, double value, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;
@@ -135,7 +135,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, long from, long to, double value, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, long from, long to, double value, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;
@@ -149,7 +149,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, string fromExpression, string toExpression, double value, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, string fromExpression, string toExpression, double value, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;
@@ -163,7 +163,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, string timeRangeId, double value, DateTime timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, string timeRangeId, double value, DateTime timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;
@@ -175,7 +175,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, DateTime from, DateTime to, double value, DateTime timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, DateTime from, DateTime to, double value, DateTime timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;
@@ -189,7 +189,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, long from, long to, double value, DateTime timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, long from, long to, double value, DateTime timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;
@@ -203,7 +203,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, string fromExpression, string toExpression, double value, DateTime timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, string fromExpression, string toExpression, double value, DateTime timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;
@@ -217,7 +217,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, string timeRangeId, double value, long timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, string timeRangeId, double value, long timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;
@@ -229,7 +229,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, DateTime from, DateTime to, double value, long timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, DateTime from, DateTime to, double value, long timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;
@@ -243,7 +243,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, long from, long to, double value, long timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, long from, long to, double value, long timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;
@@ -257,7 +257,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundStatisticEntry(string objectPath, string fromExpression, string toExpression, double value, long timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundStatisticEntry(string objectPath, string fromExpression, string toExpression, double value, long timestamp, TrakHoundStatisticDataType dataType = TrakHoundStatisticDataType.Float, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Statistic;

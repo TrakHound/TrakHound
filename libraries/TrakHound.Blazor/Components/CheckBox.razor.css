@@ -5,12 +5,12 @@
 
     .check-box .check-box-title {
         font-size: 12px;
-        color: var(--textSecondary);
+        color: var(--textDark);
         margin-bottom: 2px;
     }
 
     .check-box .check-box-subtitle {
-        color: var(--textSecondary);
+        color: var(--textMild);
         margin-left: 5px;
     }
 

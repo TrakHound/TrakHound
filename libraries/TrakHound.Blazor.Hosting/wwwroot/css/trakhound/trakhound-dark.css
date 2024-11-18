@@ -126,9 +126,9 @@
     --inputBorder: var(--borderColor);
     --inputBorderHover: var(--accent);
     --inputBorderHighlight: var(--accentLight);
-    --inputText: #aaa;
-    --inputTextHover: #ccc;
-    --inputTextHighlight: #eee;
+    --inputText: #ddd;
+    --inputTextHover: #eee;
+    --inputTextHighlight: #fff;
     --inputPlaceholder: #4a6082;
     --inputPlaceholderHover: #5d79a2;
     --inputPlaceholderHighlight: #6d86ab;

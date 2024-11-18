@@ -155,6 +155,11 @@ a, .btn-link {
     color: var(--inputText) !important;
 }
 
+.rz-dropdown .rz-placeholder {
+    font-size: 14px;
+    color: var(--inputPlaceholder) !important;
+}
+
     .rz-dropdown:hover {
         border-color: var(--borderColorHover) !important;
         background: var(--inputBackgroundHover) !important;

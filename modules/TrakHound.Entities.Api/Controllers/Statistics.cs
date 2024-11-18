@@ -163,7 +163,7 @@ namespace TrakHound.Entities.Api
                 var dt = !string.IsNullOrEmpty(dataType) ? dataType.ConvertEnum<TrakHoundStatisticDataType>() : TrakHoundStatisticDataType.Float;
                 DateTime? ts = !string.IsNullOrEmpty(timestamp) ? timestamp.ToDateTime() : null;
 
-                var aggregate = aggregateType.ConvertEnum<TrakHoundAggregateType>();
+                var aggregate = aggregateType.ConvertEnum<TrakHoundUpdateType>();
 
                 var entry = new TrakHoundStatisticEntry();
                 entry.ObjectPath = objectPath;
@@ -229,7 +229,7 @@ namespace TrakHound.Entities.Api
                 // Create Objects that are referenced by Path in entries
                 CreateContentObjects(collection, entries, ts);
 
-                var incrementEntries = entries.Where(o => o.AggregateType == TrakHoundAggregateType.Increment);
+                var incrementEntries = entries.Where(o => o.AggregateType == TrakHoundUpdateType.Increment);
                 if (!incrementEntries.IsNullOrEmpty())
                 {
                     var objectUuids = incrementEntries.Select(o => TrakHoundPath.GetUuid(o.ObjectPath)).Distinct();
@@ -269,7 +269,7 @@ namespace TrakHound.Entities.Api
                     }
                 }
 
-                var absoluteEntries = entries.Where(o => o.AggregateType == TrakHoundAggregateType.Absolute);
+                var absoluteEntries = entries.Where(o => o.AggregateType == TrakHoundUpdateType.Absolute);
                 if (!absoluteEntries.IsNullOrEmpty())
                 {
                     foreach (var entry in absoluteEntries)

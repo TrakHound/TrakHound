@@ -53,7 +53,7 @@
         font-size: 15px !important;
         color: #aaa;
         color: var(--inputPlaceholder);
-        font-style: italic;
+        font-style: normal;
     }
 
     .text-box input:hover::placeholder {
