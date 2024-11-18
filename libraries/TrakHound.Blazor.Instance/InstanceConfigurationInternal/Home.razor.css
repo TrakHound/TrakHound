@@ -28,7 +28,6 @@
 
 .category-panel {
     position: relative;
-    background: #fafafa;
     background: var(--panelItemBackground);
     border-radius: 2px;
     width: auto;
@@ -39,8 +38,7 @@
 
     .category-panel .category-click-panel {
         background: transparent;
-        border: 2px solid #e8e8e8;
-        border: 2px solid var(--borderColorVeryLight);
+        border: 2px solid var(--borderColorLight);
         border-radius: 2px;
         position: absolute;
         left: 0;
@@ -50,7 +48,6 @@
     }
 
         .category-panel .category-click-panel:hover {
-            /*background: var(--accentVeryVeryLight);*/
             border: 2px solid var(--accent);
             cursor: pointer;
         }
@@ -82,7 +79,6 @@
 
 .category-icon .icon {
     font-size: 28px;
-    color: #aaa;
     color: var(--accent);
 }
 
@@ -90,20 +86,17 @@
     display: block;
     font-size: 16px;
     font-weight: bold;
-    color: #333;
     color: var(--textDark);
 }
 
 .category-label .description {
     display: block;
     font-size: 12px;
-    color: #555;
     color: var(--textMild);
     max-width: 300px;
 }
 
 .category-content {
-    border-top: 1px solid #eee;
     border-top: 1px solid var(--borderColorLight);
 }
 
@@ -111,11 +104,20 @@
         display: block;
         width: auto;
         float: right;
+        background: none !important;
+    }
+
+    .category-content .count-table tbody {
+        background: none !important;
+    }
+
+    .category-content .count-table td {
+        background: none !important;
+        border: none !important;
     }
 
         .category-content .count-table .label {
             font-size: 12px;
-            color: #555;
             color: var(--textMild);
         }
 

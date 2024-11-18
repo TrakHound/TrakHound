@@ -183,21 +183,17 @@ td {
 }
 
     .response-information .table {
-/*        background: #fafafa;
-        border: 1px solid #ddd;*/
         width: 100%;
     }
 
         .response-information .table td {
             font-size: 14px;
             padding: 8px 20px;
-/*            background: #fafafa;*/
         }
 
             .response-information .table td.label {
                 width: 130px;
                 font-weight: bold;
-/*                border-right: 1px solid #ddd;*/
             }
 
 
@@ -205,7 +201,6 @@ td {
     display: grid;
     grid-template-columns: max-content max-content max-content max-content 1fr;
     font-size: 13px;
-    background: #f8f8f8;
     background: var(--panelBackgroundMedium);
     border: 1px solid var(--borderColor);
     width: 100%;
@@ -222,6 +217,7 @@ td {
 .request-status {
     font-weight: bold;
     color: #333;
+    color: var(--textDark);
 }
 
 .request-duration-container {
@@ -235,6 +231,7 @@ td {
 #request-duration {
     font-weight: bold;
     color: #333;
+    color: var(--textDark);
 }
 
 .request-started-container {
@@ -247,6 +244,7 @@ td {
 
 .request-started {
     color: #333;
+    color: var(--textDark);
 }
 
 .request-completed-container {

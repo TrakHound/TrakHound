@@ -4,12 +4,12 @@
 }
 
     .copy-label a {
-        color: var(--accentLight);
+        color: var(--buttonLinkText);
     }
 
     .copy-label a:hover label {
         cursor: pointer;
-        color: var(--accentVeryLight);
+        color: var(--buttonLinkTextHover);
     }
 
 .copy-label label {

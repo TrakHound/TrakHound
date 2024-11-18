@@ -44,7 +44,7 @@
         background: none;
         border-color: var(--borderColorLight);
         color: #888;
-        color: var(--textMild);
+        color: var(--textMild) !important;
         cursor: pointer;
     }
 

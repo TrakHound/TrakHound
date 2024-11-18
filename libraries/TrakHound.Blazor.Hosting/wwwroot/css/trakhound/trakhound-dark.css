@@ -19,12 +19,15 @@
     --panelBackgroundDark: #333;
     --panelBackgroundDark: #1c2431;
     --panelBackgroundDark: #121821;
+    /*    --panelBackgroundDark: #090c10;*/
     --panelSidebarBackground: #222;
     --panelSidebarBackground: #090c10;
     --panelSidebarBackground: #0d1726;
     --panelItemBackground: #1b2431;
     --panelItemBackgroundHover: var(--accentVeryVeryLight);
     --panelItemBackgroundHover: #364863;
+    --panelItemBackgroundLight: #203960;
+    --panelItemBackgroundLightHover: var(--accentVeryLight);
     /* Border Colors */
     --borderColor: #555;
     --borderColor: #1c2431;
@@ -37,8 +40,8 @@
     --borderColorVeryVeryLight: #222;
     --borderColorVeryVeryLight: #1c2431;
     --borderColorVeryVeryLight: #090c10;
-    --borderColorMedium: #ccc;
-    --borderColorDark: #bbb;
+    --borderColorMedium: #405472;
+    --borderColorDark: #496083;
     /* Text Colors */
     --textDark: #bec9da;
     --textMild: #7c93b6;
@@ -129,4 +132,16 @@
     --inputPlaceholder: #4a6082;
     --inputPlaceholderHover: #5d79a2;
     --inputPlaceholderHighlight: #6d86ab;
+    --inputPrimaryBackground: #99ceff;
+    --inputPrimaryBackgroundHover: #80c1ff;
+    --inputPrimaryBackgroundHighlight: #66b5ff;
+    --inputPrimaryBorder: var(--accentLight);
+    --inputPrimaryBorderHover: var(--accent);
+    --inputPrimaryBorderHighlight: var(--accentDark);
+    --inputPrimaryText: var(--accentDark);
+    --inputPrimaryTextHover: var(--accentDark);
+    --inputPrimaryTextHighlight: var(--accentDark);
+    --inputPrimaryPlaceholder: #4a6082;
+    --inputPrimaryPlaceholderHover: #5d79a2;
+    --inputPrimaryPlaceholderHighlight: #6d86ab;
 }

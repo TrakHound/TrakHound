@@ -54,7 +54,6 @@
         display: block;
         font-size: 12px;
         line-height: 20px;
-        color: #888;
         color: var(--textMild);
     }
 
@@ -77,9 +76,7 @@
     display: grid;
     grid-template-columns: max-content max-content max-content 1fr;
     grid-column-gap: 10px;
-    background: #fafafa;
     background: var(--panelBackgroundMedium);
-    border: 1px solid #ddd;
     border: 1px solid var(--borderColor);
     padding: 8px 8px 8px 20px;
     color: var(--textDark);
@@ -139,24 +136,10 @@
 
         .table-panel ::deep .rz-data-grid th {
             padding: 0px 5px;
-/*            border-right: 1px solid #ddd;*/
         }
-
-            .table-panel ::deep .rz-data-grid th:last-child {
-                border-right: none;
-            }
 
         .table-panel ::deep .rz-data-grid td {
             padding: 5px 10px;
-/*            border-right: 1px solid #ddd;*/
-        }
-
-        .table-panel ::deep .rz-data-grid tr:last-child td {
-/*            border-bottom: 1px solid #ddd;*/
-        }
-
-        .table-panel ::deep .rz-data-grid td:last-child {
-            border-right: none;
         }
 
         .table-panel ::deep .rz-data-grid .rz-cell-data {
@@ -182,5 +165,4 @@
 
     .table-panel ::deep .rz-data-grid td.assignment-id .rz-cell-data {
         font-size: 11px;
-/*        color: #888;*/
     }

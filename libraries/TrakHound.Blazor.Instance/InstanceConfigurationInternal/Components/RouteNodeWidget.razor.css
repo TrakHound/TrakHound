@@ -5,23 +5,28 @@
     background: #ffeedd;
     border: 1px solid orange;
     background: #fff;
+    background: var(--panelItemBackground);
     border: 1px solid #bbb;
+    border: 2px solid var(--borderColorMedium);
     border-radius: 4px;
 }
 
 .diagram-node .route-node:hover {
     background: var(--accentVeryVeryLight);
+    background: var(--panelItemBackgroundHover);
     border: 1px solid var(--accentLight);
 }
 
 .diagram-node.selected .route-node {
     background: var(--accentVeryLight);
+    background: var(--panelItemBackgroundHover);
     border: 1px solid var(--accent);
 }
 
 .route-node .node-type {
     font-size: 10px;
     color: rgba(0, 0, 0, 0.5);
+    color: var(--textMild);
     text-align: center;
     margin: 0;
     padding: 0;
@@ -62,6 +67,7 @@
 .route-node .node-id {
     font-size: 9px;
     color: rgba(0, 0, 0, 0.25);
+    color: var(--textLight);
     padding-top: 4px;
     text-align: center;
 }
@@ -76,7 +82,9 @@
     width: 18px;
     height: 18px;
     background: #fff;
+    background: var(--panelItemBackground);
     border: 1px solid #aaa;
+    border: 1px solid var(--borderColorMedium);
 }
 
     ::deep .diagram-port.has-links {

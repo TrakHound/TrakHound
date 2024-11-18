@@ -80,8 +80,6 @@
     }
 
         .status-panel ::deep .rz-data-grid td {
-/*            border-bottom: 1px solid #ddd;
-            border-right: 1px solid #ddd;*/
             padding: 3px 10px;
         }
 

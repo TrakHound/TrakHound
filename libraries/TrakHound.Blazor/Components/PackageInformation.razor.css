@@ -124,17 +124,19 @@
     margin-bottom: 20px;
     padding-bottom: 10px;
     font-size: 12px;
-    border-bottom: 1px solid #eee;
     border-bottom: 1px solid var(--borderColorLight);
     color: var(--textDark);
 }
 
 
+.properties-panel table {
+    border: none !important;
+}
+
 .properties-panel table td {
     font-size: 12px;
-    padding-top: 3px !important;
+    padding: 3px 10px !important;
     padding-bottom: 3px !important;
-    border-bottom: 1px solid #f8f8f8;
     border-bottom: 1px solid var(--borderColorVeryVeryLight);
 }
 
@@ -142,4 +144,5 @@
         font-weight: bold;
         padding-right: 15px;
         vertical-align: top;
+        min-width: 150px;
     }

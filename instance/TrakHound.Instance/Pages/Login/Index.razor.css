@@ -20,8 +20,9 @@
     grid-row-gap: 0px;
     border: 1px solid rgba(0, 0, 0, 0.5);
     background: rgba(0, 0, 0, 0.1);
-/*    border: 1px solid #ccc;*/
-/*    background: var(--accentVeryVeryDark);
+    background: var(--panelBackgroundMedium);
+    /*    border: 1px solid #ccc;*/
+    /*    background: var(--accentVeryVeryDark);
     box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.05);*/
 }
 
@@ -93,11 +94,13 @@
     grid-column: 2;
     text-align: left;
     background: rgba(0, 0, 0, 0.35);
-/*    background: var(--panelBackgroundDark);*/
+    background: rgba(0, 0, 0, 0.35);
+    background: var(--panelBackgroundDark);
+    /*    background: var(--panelBackgroundDark);*/
     box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.1);
     padding: 30px;
     min-width: 425px;
-/*    opacity: 0;
+    /*    opacity: 0;
     animation: fadeIn 0.75s normal forwards;
     animation-delay: 0.5s;*/
 }
@@ -118,10 +121,12 @@
 
     .input-container ::deep .text-box .title {
         color: var(--accentVeryLight) !important;
+        color: var(--textDark) !important;
     }
 
     .input-container ::deep .password-box .title {
         color: var(--accentVeryLight) !important;
+        color: var(--textDark) !important;
     }
 
     .input-container .btn-login {

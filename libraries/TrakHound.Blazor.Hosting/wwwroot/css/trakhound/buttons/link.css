@@ -9,7 +9,7 @@
 }
 
     .btn-link.disabled {
-        color: #888 !important;
+        color: var(--textLight) !important;
     }
 
     .btn-link:hover {

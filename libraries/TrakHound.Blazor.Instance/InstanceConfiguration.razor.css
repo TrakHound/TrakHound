@@ -12,7 +12,6 @@
     grid-column-end: 3;
     padding: 10px 20px 5px;
     margin-bottom: 5px;
-    border-bottom: 1px solid #f8f8f8;
     border-bottom: 1px solid var(--borderColorVeryVeryLight);
 }
 
@@ -22,9 +21,7 @@
     width: 150px;
     overflow: auto;
     padding: 10px 20px 40px 20px;
-    border-right: 1px solid #ddd;
     border-right: 1px solid var(--borderColor);
-    background: #fafafa;
     background: var(--panelSidebarBackground);
 }
 
@@ -48,7 +45,6 @@
 
         .content-panel ::deep .rz-data-grid td.id .rz-cell-data {
             font-size: 12px;
-            color: #888;
             color: var(--textMild);
         }
 
@@ -63,14 +59,12 @@
 
     .configuration-page ::deep .configuration-table-panel .breadcrumb-panel {
         grid-row: 1;
-        border-bottom: 1px solid #ddd;
         border-bottom: 1px solid var(--borderColor);
         padding: 5px 20px;
     }
 
     .configuration-page ::deep .configuration-table-panel .header-panel {
         grid-row: 2;
-        border-bottom: 1px solid #ddd;
         border-bottom: 1px solid var(--borderColor);
         padding: 10px 20px;
     }
@@ -100,7 +94,6 @@
         font-size: 14px;
         line-height: 18px;
         font-weight: 500;
-        color: #333;
         color: var(--textDark);
     }
 
@@ -108,7 +101,6 @@
         display: block;
         font-size: 12px;
         line-height: 14px;
-        color: #888;
         color: var(--textMild);
     }
 
@@ -189,9 +181,7 @@
     }
 
     .configuration-page ::deep .rz-data-grid td {
-        border-right: 1px solid #ddd;
         border-right: 1px solid var(--borderColor);
-        border-bottom: 1px solid #ddd;
         border-bottom: 1px solid var(--borderColor);
         padding: 2px 10px;
         color: var(--textDark);
@@ -262,15 +252,19 @@
         padding: 0 20px 10px;
         margin: 0;
         grid-row: 1;
-        border-bottom: 1px solid #eee;
         border-bottom: 1px solid var(--borderColorLight);
+    }
+
+    .configuration-page ::deep .rz-steps .rz-steps-item::after {
+        background-color: var(--borderColorLight);
     }
 
     .configuration-page ::deep .rz-steps .rz-steps-number {
         color: #555;
+        color: var(--textMild);
         background-color: #f8f8f8;
-        border: 1px solid #ccc;
-        border: 1px solid var(--borderColorMedium);
+        background-color: var(--panelBackgroundLight);
+        border: 1px solid var(--borderColorMedium) !important;
         width: 30px;
         height: 30px;
         line-height: 22px;
@@ -280,6 +274,7 @@
 
     .configuration-page ::deep .rz-steps .rz-steps-title {
         color: #333;
+        color: var(--textDark);
         font-size: 13px;
         line-height: 40px;
     }

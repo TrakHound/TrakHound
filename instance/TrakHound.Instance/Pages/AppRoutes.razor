@@ -3,6 +3,8 @@
 @using TrakHound.Instance.Security
 @using TrakHound.Instance.Services
 
+<TrakHoundTheme />
+
 <TrakHoundBlazorRouter>
     <Found Context="routeData">
         <CascadingValue Name="RouteManager" Value="@routeData.RouteManager">
