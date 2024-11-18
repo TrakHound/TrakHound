@@ -341,6 +341,155 @@ namespace TrakHound.Routing.Routers
 
         #endregion
 
+        #region "Aggregate"
+
+        public async Task<TrakHoundResponse<TrakHoundAggregate>> AggregateByObject(IEnumerable<string> paths, TrakHoundAggregateType aggregateType, long start, long stop, long objectSkip = 0, long objectTake = 1000, SortOrder objectSortOrder = SortOrder.Ascending, string requestId = null)
+        {
+            if (string.IsNullOrEmpty(requestId)) requestId = Guid.NewGuid().ToString();
+            var stpw = System.Diagnostics.Stopwatch.StartNew();
+
+            var objectQueryResponse = await Router.Entities.Objects.Objects.QueryUuids(paths, objectSkip, objectTake, objectSortOrder, requestId);
+            var objectUuids = objectQueryResponse.Content?.Select(o => o.Uuid);
+
+            var queryResponse = await AggregateByObjectUuid(objectUuids, aggregateType, start, stop, requestId);
+
+            stpw.Stop();
+            return new TrakHoundResponse<TrakHoundAggregate>(queryResponse.Results, stpw.ElapsedTicks);
+        }
+
+        public async Task<TrakHoundResponse<TrakHoundAggregate>> AggregateByObjectUuid(IEnumerable<string> objectUuids, TrakHoundAggregateType aggregateType, long start, long stop, string requestId = null)
+        {
+            var queries = new List<TrakHoundRangeQuery>();
+            foreach (var objectUuid in objectUuids)
+            {
+                queries.Add(new TrakHoundRangeQuery(objectUuid, start, stop));
+            }
+
+            return await AggregateByRange(queries, aggregateType, requestId);
+        }
+
+        public async Task<TrakHoundResponse<TrakHoundAggregate>> AggregateByRange(IEnumerable<TrakHoundRangeQuery> queries, TrakHoundAggregateType aggregateType, string requestId = null)
+        {
+            // Set Query Driver Function
+            Func<ParameterRouteTargetDriverRequest<IObjectObservationAggregateDriver, ITrakHoundObjectObservationEntity>, Task<TrakHoundResponse<TrakHoundAggregate>>> serviceFunction = async (serviceRequest) =>
+            {
+                var rangeQueries = new List<TrakHoundRangeQuery>();
+                foreach (var query in serviceRequest.Request.Queries)
+                {
+                    var queryStart = query.GetParameter<long>("start");
+                    var queryStop = query.GetParameter<long>("stop");
+                    rangeQueries.Add(new TrakHoundRangeQuery(query.Query, queryStart, queryStop));
+                }
+
+                return await serviceRequest.Driver.Aggregate(rangeQueries, aggregateType);
+            };
+
+            // Set Query Router Function
+            Func<ParameterRouteTargetRouterRequest<ITrakHoundObjectObservationEntity>, Task<TrakHoundResponse<TrakHoundAggregate>>> routerFunction = async (routerRequest) =>
+            {
+                var rangeQueries = new List<TrakHoundRangeQuery>();
+                foreach (var query in routerRequest.Request.Queries)
+                {
+                    var queryStart = query.GetParameter<long>("start");
+                    var queryStop = query.GetParameter<long>("stop");
+                    rangeQueries.Add(new TrakHoundRangeQuery(query.Query, queryStart, queryStop));
+                }
+
+                return await routerRequest.Router.Entities.Objects.Observations.AggregateByRange(rangeQueries, aggregateType, requestId: routerRequest.Request.Id);
+            };
+
+
+            var request = new EntityParameterRouteRequest<ITrakHoundObjectObservationEntity>("Aggregate", requestId, queries);
+
+            // Run Targets
+            var response = await ParameterRouteTarget.Run(
+                Router.Id,
+                request,
+                Router.Logger,
+                Router.GetTargets<IObjectObservationAggregateDriver>(TrakHoundObjectRoutes.ObservationsAggregate),
+                serviceFunction,
+                routerFunction,
+                ProcessAggregateRange
+                );
+
+            return new TrakHoundResponse<TrakHoundAggregate>(response.Results, response.Duration);
+        }
+
+
+        public async Task<TrakHoundResponse<TrakHoundAggregateWindow>> AggregateWindowByObject(IEnumerable<string> paths, TrakHoundAggregateType aggregateType, long start, long stop, long window, long objectSkip = 0, long objectTake = 1000, SortOrder objectSortOrder = SortOrder.Ascending, string requestId = null)
+        {
+            if (string.IsNullOrEmpty(requestId)) requestId = Guid.NewGuid().ToString();
+            var stpw = System.Diagnostics.Stopwatch.StartNew();
+
+            var objectQueryResponse = await Router.Entities.Objects.Objects.QueryUuids(paths, objectSkip, objectTake, objectSortOrder, requestId);
+            var objectUuids = objectQueryResponse.Content?.Select(o => o.Uuid);
+
+            var queryResponse = await AggregateWindowByObjectUuid(objectUuids, aggregateType, start, stop, window, requestId);
+
+            stpw.Stop();
+            return new TrakHoundResponse<TrakHoundAggregateWindow>(queryResponse.Results, stpw.ElapsedTicks);
+        }
+
+        public async Task<TrakHoundResponse<TrakHoundAggregateWindow>> AggregateWindowByObjectUuid(IEnumerable<string> objectUuids, TrakHoundAggregateType aggregateType, long start, long stop, long window, string requestId = null)
+        {
+            var queries = new List<TrakHoundRangeQuery>();
+            foreach (var objectUuid in objectUuids)
+            {
+                queries.Add(new TrakHoundRangeQuery(objectUuid, start, stop));
+            }
+
+            return await AggregateWindowByRange(queries, aggregateType, window, requestId);
+        }
+
+        public async Task<TrakHoundResponse<TrakHoundAggregateWindow>> AggregateWindowByRange(IEnumerable<TrakHoundRangeQuery> queries, TrakHoundAggregateType aggregateType, long window, string requestId = null)
+        {
+            // Set Query Driver Function
+            Func<ParameterRouteTargetDriverRequest<IObjectObservationAggregateDriver, ITrakHoundObjectObservationEntity>, Task<TrakHoundResponse<TrakHoundAggregateWindow>>> serviceFunction = async (serviceRequest) =>
+            {
+                var rangeQueries = new List<TrakHoundRangeQuery>();
+                foreach (var query in serviceRequest.Request.Queries)
+                {
+                    var queryStart = query.GetParameter<long>("start");
+                    var queryStop = query.GetParameter<long>("stop");
+                    rangeQueries.Add(new TrakHoundRangeQuery(query.Query, queryStart, queryStop));
+                }
+
+                return await serviceRequest.Driver.AggregateWindow(rangeQueries, aggregateType, window);
+            };
+
+            // Set Query Router Function
+            Func<ParameterRouteTargetRouterRequest<ITrakHoundObjectObservationEntity>, Task<TrakHoundResponse<TrakHoundAggregateWindow>>> routerFunction = async (routerRequest) =>
+            {
+                var rangeQueries = new List<TrakHoundRangeQuery>();
+                foreach (var query in routerRequest.Request.Queries)
+                {
+                    var queryStart = query.GetParameter<long>("start");
+                    var queryStop = query.GetParameter<long>("stop");
+                    rangeQueries.Add(new TrakHoundRangeQuery(query.Query, queryStart, queryStop));
+                }
+
+                return await routerRequest.Router.Entities.Objects.Observations.AggregateWindowByRange(rangeQueries, aggregateType, window, requestId: routerRequest.Request.Id);
+            };
+
+
+            var request = new EntityParameterRouteRequest<ITrakHoundObjectObservationEntity>("AggregateWindow", requestId, queries);
+
+            // Run Targets
+            var response = await ParameterRouteTarget.Run(
+                Router.Id,
+                request,
+                Router.Logger,
+                Router.GetTargets<IObjectObservationAggregateDriver>(TrakHoundObjectRoutes.ObservationsAggregate),
+                serviceFunction,
+                routerFunction,
+                ProcessAggregateWindowRange
+                );
+
+            return new TrakHoundResponse<TrakHoundAggregateWindow>(response.Results, response.Duration);
+        }
+
+        #endregion
+
         #region "Count"
 
         public async Task<TrakHoundResponse<TrakHoundCount>> CountByObject(IEnumerable<string> paths, long start, long stop, long objectSkip = 0, long objectTake = 1000, SortOrder objectSortOrder = SortOrder.Ascending, string requestId = null)

@@ -8,7 +8,7 @@ using TrakHound.Entities;
 namespace TrakHound.Drivers.Entities
 {
     /// <summary>
-    /// Api Driver used to Query TrakHound Observation Entities.
+    /// Driver used to Query TrakHound Observation Entities.
     /// </summary>
     public interface IObjectObservationQueryDriver : ITrakHoundDriver
     {
