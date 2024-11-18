@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundDefinitionWikiEntity> Wikis => _wikis.Values;
-
-
         public void AddWiki(ITrakHoundDefinitionWikiEntity entity)
         {
             if (entity != null)

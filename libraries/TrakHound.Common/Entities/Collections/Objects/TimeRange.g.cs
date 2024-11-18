@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectTimeRangeEntity> TimeRanges => _timeRanges.Values;
-
-
         public void AddTimeRange(ITrakHoundObjectTimeRangeEntity entity)
         {
             if (entity != null)

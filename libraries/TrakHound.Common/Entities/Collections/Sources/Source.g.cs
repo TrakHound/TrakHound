@@ -11,8 +11,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundSourceEntity> Sources => _sources.Values;
-
-
         public void AddSource(ITrakHoundSourceEntity entity)
         {
             if (entity != null)

@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectObservationEntity> Observations => _observations.Values;
-
-
         public void AddObservation(ITrakHoundObjectObservationEntity entity)
         {
             if (entity != null)

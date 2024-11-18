@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectReferenceEntity> References => _references.Values;
-
-
         public void AddReference(ITrakHoundObjectReferenceEntity entity)
         {
             if (entity != null)

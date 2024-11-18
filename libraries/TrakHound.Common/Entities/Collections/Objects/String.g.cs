@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectStringEntity> Strings => _strings.Values;
-
-
         public void AddString(ITrakHoundObjectStringEntity entity)
         {
             if (entity != null)

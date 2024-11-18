@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectNumberEntity> Numbers => _numbers.Values;
-
-
         public void AddNumber(ITrakHoundObjectNumberEntity entity)
         {
             if (entity != null)

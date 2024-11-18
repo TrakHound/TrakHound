@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectBlobEntity> Blobs => _blobs.Values;
-
-
         public void AddBlob(ITrakHoundObjectBlobEntity entity)
         {
             if (entity != null)

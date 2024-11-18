@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectDurationEntity> Durations => _durations.Values;
-
-
         public void AddDuration(ITrakHoundObjectDurationEntity entity)
         {
             if (entity != null)

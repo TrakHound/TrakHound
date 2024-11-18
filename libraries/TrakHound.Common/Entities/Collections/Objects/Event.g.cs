@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectEventEntity> Events => _events.Values;
-
-
         public void AddEvent(ITrakHoundObjectEventEntity entity)
         {
             if (entity != null)

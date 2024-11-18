@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectStatisticEntity> Statistics => _statistics.Values;
-
-
         public void AddStatistic(ITrakHoundObjectStatisticEntity entity)
         {
             if (entity != null)

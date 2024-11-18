@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundDefinitionDescriptionEntity> Descriptions => _descriptions.Values;
-
-
         public void AddDescription(ITrakHoundDefinitionDescriptionEntity entity)
         {
             if (entity != null)

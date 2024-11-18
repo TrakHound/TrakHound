@@ -17,8 +17,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectGroupEntity> Groups => _groups.Values;
-
-
         public void AddGroup(ITrakHoundObjectGroupEntity entity)
         {
             if (entity != null)

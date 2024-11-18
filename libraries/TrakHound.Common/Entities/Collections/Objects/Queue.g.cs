@@ -17,8 +17,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectQueueEntity> Queues => _queues.Values;
-
-
         public void AddQueue(ITrakHoundObjectQueueEntity entity)
         {
             if (entity != null)

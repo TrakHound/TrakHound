@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundDefinitionMetadataEntity> Metadata => _metadata.Values;
-
-
         public void AddMetadata(ITrakHoundDefinitionMetadataEntity entity)
         {
             if (entity != null)

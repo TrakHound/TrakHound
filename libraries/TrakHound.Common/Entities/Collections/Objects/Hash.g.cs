@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectHashEntity> Hashes => _hashes.Values;
-
-
         public void AddHash(ITrakHoundObjectHashEntity entity)
         {
             if (entity != null)

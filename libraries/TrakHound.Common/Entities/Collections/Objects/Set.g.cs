@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectSetEntity> Sets => _sets.Values;
-
-
         public void AddSet(ITrakHoundObjectSetEntity entity)
         {
             if (entity != null)

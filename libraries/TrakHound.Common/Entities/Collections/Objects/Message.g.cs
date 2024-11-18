@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectMessageEntity> Messages => _messages.Values;
-
-
         public void AddMessage(ITrakHoundObjectMessageEntity entity)
         {
             if (entity != null)
