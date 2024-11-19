@@ -10,7 +10,7 @@
     }
 
     .time-range-selection .date-selection-container .select-container {
-        background: blue;
+/*        background: blue;*/
     }
 
 .date-query-bar {
@@ -28,7 +28,7 @@
     display: grid;
     grid-template-columns: max-content max-content max-content 1fr;
     grid-column-gap: 8px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
     padding-bottom: 5px;
 }
 

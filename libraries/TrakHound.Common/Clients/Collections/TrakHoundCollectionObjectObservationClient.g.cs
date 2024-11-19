@@ -218,6 +218,42 @@ namespace TrakHound.Clients.Collections
             return default;
         }
 
+        public async Task<IEnumerable<TrakHoundCount>> CountByObject(
+            string path,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundCount>> CountByObject(
+            IEnumerable<string> paths,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundCount>> CountByObjectUuid(
+            string objectUuid,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundCount>> CountByObjectUuid(
+            IEnumerable<string> objectUuids,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            return default;
+        }
+
         public async Task<ITrakHoundConsumer<IEnumerable<ITrakHoundObjectObservationEntity>>> SubscribeByObject(
             IEnumerable<string> paths,
             int interval = 0,

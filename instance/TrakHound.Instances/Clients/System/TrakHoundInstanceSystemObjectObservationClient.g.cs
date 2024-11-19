@@ -410,6 +410,82 @@ namespace TrakHound.Clients
             return default;
         }
 
+        public async Task<IEnumerable<TrakHoundCount>> CountByObject(
+            string path,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.CountByObject(new string[] { path },start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundCount>> CountByObject(
+            IEnumerable<string> paths,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.CountByObject(paths,start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundCount>> CountByObjectUuid(
+            string objectUuid,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.CountByObjectUuid(new string[] { objectUuid },start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundCount>> CountByObjectUuid(
+            IEnumerable<string> objectUuids,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.CountByObjectUuid(objectUuids,start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
         public async Task<ITrakHoundConsumer<IEnumerable<ITrakHoundObjectObservationEntity>>> SubscribeByObject(
             IEnumerable<string> paths,
             int interval = 0,

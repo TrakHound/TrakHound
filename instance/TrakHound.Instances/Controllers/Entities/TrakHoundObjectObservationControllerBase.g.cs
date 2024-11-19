@@ -742,6 +742,146 @@ namespace TrakHound.Http.Entities
 
 
         /// <summary>
+        /// Count by Object
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> CountByObject(
+            [FromQuery] string path,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnCountByObject(client, path, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnCountByObject(
+            ITrakHoundClient client,
+            string path,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
+        /// Count by Object
+        /// </summary>
+        [HttpPost("object/path")]
+        public async Task<IActionResult> CountByObject(
+            [FromBody] IEnumerable<string> paths,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnCountByObject(client, paths, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnCountByObject(
+            ITrakHoundClient client,
+            IEnumerable<string> paths,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
+        /// Count by Object UUID
+        /// </summary>
+        [HttpGet("object/{objectUuid}")]
+        public async Task<IActionResult> CountByObjectUuid(
+            [FromRoute] string objectUuid,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnCountByObjectUuid(client, objectUuid, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnCountByObjectUuid(
+            ITrakHoundClient client,
+            string objectUuid,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
+        /// Count by Object UUID
+        /// </summary>
+        [HttpPost("object")]
+        public async Task<IActionResult> CountByObjectUuid(
+            [FromBody] IEnumerable<string> objectUuids,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnCountByObjectUuid(client, objectUuids, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnCountByObjectUuid(
+            ITrakHoundClient client,
+            IEnumerable<string> objectUuids,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
         /// Subscribe by Object
         /// </summary>
         [Route("object/path/subscribe")]

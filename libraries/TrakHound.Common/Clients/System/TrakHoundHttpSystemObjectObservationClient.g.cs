@@ -445,6 +445,86 @@ namespace TrakHound.Clients
             return ProcessResponse(result);
         }
 
+        public async Task<IEnumerable<TrakHoundCount>> CountByObject(
+            string path,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var route = "";
+            
+            route = Url.AddQueryParameter(route, "path", (string)path);
+            route = Url.AddQueryParameter(route, "start", (long)start);
+            route = Url.AddQueryParameter(route, "stop", (long)stop);
+            route = Url.AddQueryParameter(route, "routerId", BaseClient.GetRouterId(routerId));
+
+            var url = Url.Combine(BaseUrl, TrakHoundHttp.GetEntityPath<ITrakHoundObjectObservationEntity>());
+            url = Url.Combine(url, route);
+
+            var result = await RestRequest.Get<IEnumerable<TrakHoundHttpCountResponse>>(url);
+            return ProcessResponse(result);
+        }
+
+        public async Task<IEnumerable<TrakHoundCount>> CountByObject(
+            IEnumerable<string> paths,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var route = "";
+            route = Url.Combine(route, "object/path");
+            route = Url.AddQueryParameter(route, "start", (long)start);
+            route = Url.AddQueryParameter(route, "stop", (long)stop);
+            route = Url.AddQueryParameter(route, "routerId", BaseClient.GetRouterId(routerId));
+
+            var url = Url.Combine(BaseUrl, TrakHoundHttp.GetEntityPath<ITrakHoundObjectObservationEntity>());
+            url = Url.Combine(url, route);
+
+            var result = await RestRequest.Post<IEnumerable<TrakHoundHttpCountResponse>>(url, paths);
+
+            return ProcessResponse(result);
+        }
+
+        public async Task<IEnumerable<TrakHoundCount>> CountByObjectUuid(
+            string objectUuid,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var route = "";
+            route = Url.Combine(route, "object/{objectUuid}");
+            route = Url.AddRouteParameter(route, "object/{objectUuid}", "objectUuid", objectUuid);
+            route = Url.AddQueryParameter(route, "start", (long)start);
+            route = Url.AddQueryParameter(route, "stop", (long)stop);
+            route = Url.AddQueryParameter(route, "routerId", BaseClient.GetRouterId(routerId));
+
+            var url = Url.Combine(BaseUrl, TrakHoundHttp.GetEntityPath<ITrakHoundObjectObservationEntity>());
+            url = Url.Combine(url, route);
+
+            var result = await RestRequest.Get<IEnumerable<TrakHoundHttpCountResponse>>(url);
+            return ProcessResponse(result);
+        }
+
+        public async Task<IEnumerable<TrakHoundCount>> CountByObjectUuid(
+            IEnumerable<string> objectUuids,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var route = "";
+            route = Url.Combine(route, "object");
+            route = Url.AddQueryParameter(route, "start", (long)start);
+            route = Url.AddQueryParameter(route, "stop", (long)stop);
+            route = Url.AddQueryParameter(route, "routerId", BaseClient.GetRouterId(routerId));
+
+            var url = Url.Combine(BaseUrl, TrakHoundHttp.GetEntityPath<ITrakHoundObjectObservationEntity>());
+            url = Url.Combine(url, route);
+
+            var result = await RestRequest.Post<IEnumerable<TrakHoundHttpCountResponse>>(url, objectUuids);
+
+            return ProcessResponse(result);
+        }
+
         public async Task<ITrakHoundConsumer<IEnumerable<ITrakHoundObjectObservationEntity>>> SubscribeByObject(
             IEnumerable<string> paths,
             int interval = 0,

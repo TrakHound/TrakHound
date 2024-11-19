@@ -542,6 +542,106 @@ namespace TrakHound.Http.Entities
         }
 
 
+
+        protected async override Task<IActionResult> OnCountByObject(
+            ITrakHoundClient client,
+            string path,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.CountByObject(
+            path,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
+        protected async override Task<IActionResult> OnCountByObject(
+            ITrakHoundClient client,
+            IEnumerable<string> paths,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.CountByObject(
+            paths,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
+        protected async override Task<IActionResult> OnCountByObjectUuid(
+            ITrakHoundClient client,
+            string objectUuid,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.CountByObjectUuid(
+            objectUuid,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
+        protected async override Task<IActionResult> OnCountByObjectUuid(
+            ITrakHoundClient client,
+            IEnumerable<string> objectUuids,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.CountByObjectUuid(
+            objectUuids,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
         protected async override Task OnSubscribeByObject(
             ITrakHoundClient client,
             int interval,

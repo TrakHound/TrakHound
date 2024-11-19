@@ -13,11 +13,11 @@
     <div class="date-selection-container">
         <div class="select-container from-selection">
             <label>From</label>
-            <RadzenDatePicker @bind-Value="@From" DateFormat="d" Change="FromSelected" ShowTime="@ShowTime" HourFormat="12"  />
+            <RadzenDatePicker @bind-Value="@From" DateFormat="d" Kind="DateTimeKind.Local" Change="FromSelected" ShowTime="@ShowTime" HourFormat="12"  />
         </div>
         <div class="select-container to-selection">
             <label>To</label>
-            <RadzenDatePicker @bind-Value="@To" DateFormat="d" Change="ToSelected" ShowTime="@ShowTime" HourFormat="12" />
+            <RadzenDatePicker @bind-Value="@To" DateFormat="d" Kind="DateTimeKind.Local" Change="ToSelected" ShowTime="@ShowTime" HourFormat="12"  />
         </div>
         <div class="select-container month-selection">
             <label>Month</label>
@@ -49,13 +49,13 @@
     public DateTime From { get; set; }
 
     [Parameter]
-    public EventCallback<TimeRange> FromChanged { get; set; }
+    public EventCallback<DateTime> FromChanged { get; set; }
 
     [Parameter]
     public DateTime To { get; set; }
 
     [Parameter]
-    public EventCallback<TimeRange> ToChanged { get; set; }
+    public EventCallback<DateTime> ToChanged { get; set; }
 
     [Parameter]
     public DateTime? Max { get; set; }
