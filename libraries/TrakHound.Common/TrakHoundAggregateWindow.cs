@@ -12,5 +12,14 @@ namespace TrakHound
         public long End { get; set; }
 
         public double Value { get; set; }
+
+
+        public TrakHoundAggregateWindow(string target, long start, long end, double value)
+        {
+            Target = target;
+            Start = start;
+            End = end;
+            Value = value;
+        }
     }
 }

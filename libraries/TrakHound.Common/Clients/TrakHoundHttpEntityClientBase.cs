@@ -63,6 +63,16 @@ namespace TrakHound.Clients
             return response.ToCount();
         }
 
+        protected TrakHoundAggregate ProcessResponse(TrakHoundHttpAggregateResponse response)
+        {
+            return response.ToAggregate();
+        }
+
+        protected TrakHoundAggregateWindow ProcessResponse(TrakHoundHttpAggregateWindowResponse response)
+        {
+            return response.ToAggregateWindow();
+        }
+
         protected IEnumerable<TrakHoundCount> ProcessResponse(IEnumerable<TrakHoundHttpCountResponse> responses)
         {
             if (!responses.IsNullOrEmpty())
@@ -71,6 +81,36 @@ namespace TrakHound.Clients
                 foreach (var response in responses)
                 {
                     results.Add(response.ToCount());
+                }
+                return results;
+            }
+
+            return null;
+        }
+
+        protected IEnumerable<TrakHoundAggregate> ProcessResponse(IEnumerable<TrakHoundHttpAggregateResponse> responses)
+        {
+            if (!responses.IsNullOrEmpty())
+            {
+                var results = new List<TrakHoundAggregate>();
+                foreach (var response in responses)
+                {
+                    results.Add(response.ToAggregate());
+                }
+                return results;
+            }
+
+            return null;
+        }
+
+        protected IEnumerable<TrakHoundAggregateWindow> ProcessResponse(IEnumerable<TrakHoundHttpAggregateWindowResponse> responses)
+        {
+            if (!responses.IsNullOrEmpty())
+            {
+                var results = new List<TrakHoundAggregateWindow>();
+                foreach (var response in responses)
+                {
+                    results.Add(response.ToAggregateWindow());
                 }
                 return results;
             }

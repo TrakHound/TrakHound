@@ -416,7 +416,7 @@ namespace TrakHound.Routing.Routers
         }
 
 
-        public async Task<TrakHoundResponse<TrakHoundAggregateWindow>> AggregateWindowByObject(IEnumerable<string> paths, TrakHoundAggregateType aggregateType, long start, long stop, long window, long objectSkip = 0, long objectTake = 1000, SortOrder objectSortOrder = SortOrder.Ascending, string requestId = null)
+        public async Task<TrakHoundResponse<TrakHoundAggregateWindow>> AggregateWindowByObject(IEnumerable<string> paths, TrakHoundAggregateType aggregateType, long window, long start, long stop, long objectSkip = 0, long objectTake = 1000, SortOrder objectSortOrder = SortOrder.Ascending, string requestId = null)
         {
             if (string.IsNullOrEmpty(requestId)) requestId = Guid.NewGuid().ToString();
             var stpw = System.Diagnostics.Stopwatch.StartNew();
@@ -424,13 +424,13 @@ namespace TrakHound.Routing.Routers
             var objectQueryResponse = await Router.Entities.Objects.Objects.QueryUuids(paths, objectSkip, objectTake, objectSortOrder, requestId);
             var objectUuids = objectQueryResponse.Content?.Select(o => o.Uuid);
 
-            var queryResponse = await AggregateWindowByObjectUuid(objectUuids, aggregateType, start, stop, window, requestId);
+            var queryResponse = await AggregateWindowByObjectUuid(objectUuids, aggregateType, window, start, stop, requestId);
 
             stpw.Stop();
             return new TrakHoundResponse<TrakHoundAggregateWindow>(queryResponse.Results, stpw.ElapsedTicks);
         }
 
-        public async Task<TrakHoundResponse<TrakHoundAggregateWindow>> AggregateWindowByObjectUuid(IEnumerable<string> objectUuids, TrakHoundAggregateType aggregateType, long start, long stop, long window, string requestId = null)
+        public async Task<TrakHoundResponse<TrakHoundAggregateWindow>> AggregateWindowByObjectUuid(IEnumerable<string> objectUuids, TrakHoundAggregateType aggregateType, long window, long start, long stop, string requestId = null)
         {
             var queries = new List<TrakHoundRangeQuery>();
             foreach (var objectUuid in objectUuids)

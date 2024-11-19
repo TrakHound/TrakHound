@@ -134,6 +134,90 @@ namespace TrakHound.Clients.Collections
             return default;
         }
 
+        public async Task<IEnumerable<TrakHoundAggregate>> AggregateByObject(
+            string path,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundAggregate>> AggregateByObject(
+            IEnumerable<string> paths,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundAggregate>> AggregateByObjectUuid(
+            string objectUuid,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundAggregate>> AggregateByObjectUuid(
+            IEnumerable<string> objectUuids,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundAggregateWindow>> AggregateWindowByObject(
+            string path,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundAggregateWindow>> AggregateWindowByObject(
+            IEnumerable<string> paths,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundAggregateWindow>> AggregateWindowByObjectUuid(
+            string objectUuid,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundAggregateWindow>> AggregateWindowByObjectUuid(
+            IEnumerable<string> objectUuids,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            return default;
+        }
+
         public async Task<ITrakHoundConsumer<IEnumerable<ITrakHoundObjectObservationEntity>>> SubscribeByObject(
             IEnumerable<string> paths,
             int interval = 0,

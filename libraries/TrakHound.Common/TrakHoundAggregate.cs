@@ -8,5 +8,12 @@ namespace TrakHound
         public string Target { get; set; }
 
         public double Value { get; set; }
+
+
+        public TrakHoundAggregate(string target, double value)
+        {
+            Target = target;
+            Value = value;
+        }
     }
 }
