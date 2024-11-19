@@ -64,6 +64,7 @@
         </div>
         <div class="instance-header-buttons">
             <button class="btn btn-theme" @onclick="ToggleTheme"><span class="icon @themeIcon"></span></button>
+            <a href="https://github.com/TrakHound/TrakHound" target="_blank" class="btn btn-github"><span class="icon fa-brands fa-github"></span></a>
             <a href="settings" class="btn btn-settings"><span class="icon fa-solid fa-sharp fa-wrench"></span></a>
 
             @if (instance.Configuration.AdminAuthenticationEnabled)
@@ -106,7 +107,7 @@
             case TrakHoundThemes.Dark: theme = TrakHoundThemes.Light; break;
         }
 
-        await themeService.SetTheme(theme);
+        await themeService.SetTheme(AdminThemes.Key, theme);
     }
 
     private async void Logout()

@@ -1,14 +1,15 @@
 ﻿.calendar {
     background: #fafafa;
-    border: 1px solid #ccc;
+    background: var(--panelBackgroundMedium);
+    border: 1px solid var(--borderColorLight);
     font-family: Arial;
 }
 
     .calendar thead th {
         text-align: center;
-        border-right: 1px solid #ccc;
-        border-bottom: 1px solid #ccc;
-        background: #eee;
+        border-right: 1px solid var(--borderColorLight);
+        border-bottom: 1px solid var(--borderColorLight);
+        background: var(--panelBackgroundMedium);
         padding: 5px;
         font-size: 11px;
         font-weight: normal;
@@ -16,10 +17,11 @@
 
     .calendar tbody td {
         text-align: center;
-        border-right: 1px solid #ddd;
-        border-bottom: 1px solid #ddd;
+        border-right: 1px solid var(--borderColor);
+        border-bottom: 1px solid var(--borderColor);
         font-size: 12px;
         padding: 4px 10px;
+        color: var(--textDark);
     }
 
     .calendar tbody tr:last-child td {
@@ -31,13 +33,13 @@
     }
 
     .calendar tbody td.previous-month {
-        background: #ddd;
-        color: #888;
+        background: var(--panelBackgroundMedium);
+        color: var(--textLight);
     }
 
     .calendar tbody td.next-month {
-        background: #ddd;
-        color: #888;
+        background: var(--panelBackgroundMedium);
+        color: var(--textLight);
     }
 
     .calendar tbody td.selected-day {

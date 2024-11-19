@@ -15,9 +15,7 @@
 .footer-panel {
     grid-row: 2;
     padding: 20px;
-    background: #fafafa;
     background: var(--panelBackgroundMedium);
-    border-top: 1px solid #ddd;
     border-top: 1px solid var(--borderColor);
 }
 
@@ -41,8 +39,9 @@
 
     .configuration-panel ::deep .text-box.small.required input {
         font-size: 13px !important;
-        background: var(--accentVeryVeryLight) !important;
-        border: 1px solid var(--accentLight) !important;
+        background: var(--inputPrimaryBackground) !important;
+        border: 1px solid var(--inputPrimaryBorder) !important;
+        color: var(--inputPrimaryText) !important;
     }
 
     .configuration-panel ::deep .spin-edit.small input {
@@ -60,12 +59,11 @@
         margin-bottom: 10px;
         font-size: 13px;
         font-weight: bold;
-        color: #555;
+        color: var(--textMild);
     }
 
     .configuration-container .container-content {
         padding: 15px;
-        border: 1px solid #eee;
         border: 1px solid var(--borderColorLight);
     }
 
@@ -82,7 +80,7 @@
 .confirm-panel label {
     font-size: 12px;
     margin-bottom: 5px;
-    color: #555;
+    color: var(--textMild);
 }
 
     .confirm-panel .table td {
@@ -122,8 +120,6 @@
 }
 
     .parameters-panel .parameters-table th {
-        border-bottom: 1px solid #ddd;
-        border-bottom: 1px solid var(--borderColor);
         font-size: 13px;
         font-weight: bold;
         background: #f8f8f8;
@@ -160,22 +156,25 @@
 
         .parameters-panel .parameters-table .parameter-cell-value ::deep .text-box input,
         .parameters-panel .parameters-table .parameter-cell-value ::deep .password-box input {
-            border: 1px solid var(--accentLight) !important;
+            border: 1px solid var(--inputPrimaryBorder) !important;
             border-radius: 0;
             margin: 0 !important;
             padding: 0 15px !important;
             line-height: 12px !important;
             height: 26px !important;
             font-size: 13px !important;
-            background: var(--accentVeryVeryLight) !important;
+            background: var(--inputPrimaryBackground) !important;
+            color: var(--inputPrimaryText) !important;
         }
 
             .parameters-panel .parameters-table .parameter-cell-value ::deep .text-box input:focus,
             .parameters-panel .parameters-table .parameter-cell-value ::deep .password-box input:focus {
                 outline: none;
                 box-shadow: inset 0px 0px 1px 1px var(--accent);
-                border: 1px solid var(--accentLight) !important;
+                background: var(--inputPrimaryBackgroundHighlight) !important;
+                border: 1px solid var(--inputPrimaryBorderHighlight) !important;
                 border-radius: 0;
+                color: var(--inputPrimaryTextHighlight) !important;
             }
 
     .parameters-panel .parameters-table .parameter-cell-buttons {
@@ -192,7 +191,6 @@
         }
 
 .parameters-panel .parameter-add-container {
-    border: 1px solid #ddd;
     border: 1px solid var(--borderColor);
     border-top: none;
     padding: 10px;

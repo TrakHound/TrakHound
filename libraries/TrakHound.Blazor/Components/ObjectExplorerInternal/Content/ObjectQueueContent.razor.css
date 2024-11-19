@@ -58,7 +58,7 @@
 
     .input-panel-input ::deep .rz-spinner input {
         font-size: 14px;
-        background: #fafafa;
+/*        background: #fafafa;*/
     }
 
 .information-panel {
@@ -85,14 +85,6 @@
     .table-panel ::deep .rz-data-grid {
         height: 100%;
         width: auto;
-    }
-
-    .table-panel ::deep th {
-        border-bottom: 1px solid #ddd !important;
-    }
-
-    .table-panel ::deep td {
-        border-bottom: 1px solid #ddd !important;
     }
 
         .table-panel ::deep td .rz-cell-data {

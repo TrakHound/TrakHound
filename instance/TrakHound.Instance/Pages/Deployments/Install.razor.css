@@ -96,7 +96,6 @@
     .results-panel td {
         font-size: 12px;
         padding: 1px 20px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         color: var(--accentVeryLight);
     }
 

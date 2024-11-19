@@ -85,32 +85,32 @@
                                 {
                                     if (!acknowledgeLoading)
                                     {
-                                        <button class="btn btn-primary btn-acknowledge" @onclick="Acknowledge"><span class="icon fa-solid fa-check"></span>Acknowledge</button>
+                                        <button class="btn btn-light btn-acknowledge" @onclick="Acknowledge"><span class="icon fa-solid fa-check"></span>Acknowledge</button>
                                     }
                                     else
                                     {
-                                        <button class="btn btn-sm btn-light btn-acknowledge disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
+                                        <button class="btn btn-light btn-acknowledge disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
                                     }
                                 }
                                 else
                                 {
-                                    <button class="btn btn-sm btn-light btn-acknowledge disabled"><span class="icon fa-solid fa-check"></span>Acknowledge</button>
+                                    <button class="btn btn-light btn-acknowledge disabled"><span class="icon fa-solid fa-check"></span>Acknowledge</button>
                                 }
 
                                 @if (messageStatus == MessageStatus.Received)
                                 {
                                     if (!rejectLoading)
                                     {
-                                        <button class="btn btn-primary btn-reject" @onclick="Reject"><span class="icon fa-solid fa-xmark"></span>Reject</button>
+                                        <button class="btn btn-light btn-reject" @onclick="Reject"><span class="icon fa-solid fa-xmark"></span>Reject</button>
                                     }
                                     else
                                     {
-                                        <button class="btn btn-sm btn-light btn-reject disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
+                                        <button class="btn btn-light btn-reject disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
                                     }
                                 }
                                 else
                                 {
-                                    <button class="btn btn-sm btn-light btn-reject disabled"><span class="icon fa-solid fa-xmark"></span>Reject</button>
+                                    <button class="btn btn-light btn-reject disabled"><span class="icon fa-solid fa-xmark"></span>Reject</button>
                                 }
 
                             </div>

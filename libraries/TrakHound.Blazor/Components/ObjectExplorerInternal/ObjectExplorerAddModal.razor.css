@@ -72,14 +72,12 @@
 
 .add-modal-panel ::deep textarea {
     height: 300px;
-/*    background: #fafafa;*/
     padding: 5px 10px;
     font-size: 12px;
 }
 
 .add-modal-panel ::deep .add-modal .path-output {
     display: block;
-    color: #555;
     color: var(--textMild);
     margin-top: 5px;
     margin-left: 5px;

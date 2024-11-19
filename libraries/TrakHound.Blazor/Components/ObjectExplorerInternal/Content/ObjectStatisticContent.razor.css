@@ -15,7 +15,7 @@
 
 .input-panel-container {
     display: grid;
-    grid-template-columns: max-content 210px 210px 1fr max-content;
+    grid-template-columns: max-content 180px 180px 1fr max-content;
     grid-column-gap: 10px;
 }
 
@@ -78,12 +78,11 @@
 }
 
 .input-panel-time-range ::deep .rz-calendar input {
-    font-size: 14px;
+    font-size: 14px !important;
     padding: 0 10px 0 15px;
-    height: 44px;
+    height: 44px !important;
     line-height: 44px;
     width: 210px;
-    border: 1px solid #ddd;
     border-radius: 2px;
 }
 
@@ -107,7 +106,7 @@
 .query-panel-container {
     display: grid;
     grid-template-columns: max-content 1fr;
-    border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
 }
 
 .query-panel .query-label {
@@ -115,9 +114,9 @@
     font-size: 12px;
     font-weight: 500;
     padding: 5px 10px;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     border-radius: 2px;
-    color: #777;
+    color: var(--textMild);
 }
 
 .query-panel .btn-query {
@@ -143,7 +142,7 @@
 .range-panel label {
     font-size: 12px;
     line-height: 36px;
-    color: #555;
+    color: var(--textMild);
 }
 
 .range-panel-input ::deep .rz-dropdown {
@@ -178,14 +177,6 @@
     .table-panel ::deep .rz-data-grid {
         height: 100%;
         width: auto;
-    }
-
-    .table-panel ::deep th {
-        border-bottom: 1px solid #ddd !important;
-    }
-
-    .table-panel ::deep td {
-        border-bottom: 1px solid #ddd !important;
     }
 
     .table-panel ::deep td .rz-cell-data {

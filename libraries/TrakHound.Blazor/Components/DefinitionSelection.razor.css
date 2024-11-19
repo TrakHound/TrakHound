@@ -2,34 +2,25 @@
     width: 100%;
 }
 
-.definition-selection ::deep .rz-autocomplete {
-    width: 100%;
-    background: var(--inputBackground);
-    border-color: var(--inputBorderColor);
-}
-
-    .definition-selection ::deep .rz-autocomplete:hover {
+    .definition-selection ::deep .rz-autocomplete {
         width: 100%;
-        background: var(--inputBackgroundHover) !important;
-        border-color: var(--inputBorderColorHover) !important;
-    }
-
-    .definition-selection ::deep .rz-autocomplete:focus {
-        width: 100%;
-        background: var(--inputBackgroundHighlight) !important;
-        border: 2px solid var(--inputBorderColorHighlight) !important;
+        border-color: var(--inputBorder) !important;
     }
 
     .definition-selection ::deep .rz-autocomplete input {
-        color: var(--inputText);
+        width: 100%;
+        background: var(--inputBackground) !important;
+        border-color: var(--inputBorder) !important;
     }
 
-    .definition-selection ::deep .rz-autocomplete:hover input {
-        background: var(--inputBackgroundHover) !important;
-        color: var(--inputTextHover) !important;
-    }
+        .definition-selection ::deep .rz-autocomplete input:hover {
+            width: 100%;
+            background: var(--inputBackgroundHover) !important;
+            border-color: var(--inputBorderHover) !important;
+        }
 
-    .definition-selection ::deep .rz-autocomplete input:focus {
-        background: var(--inputBackgroundHighlight) !important;
-        color: var(--inputTextHighlight) !important;
-    }
+        .definition-selection ::deep .rz-autocomplete input:focus {
+            width: 100%;
+            background: var(--inputBackgroundHighlight) !important;
+            border: 2px solid var(--inputBorderHighlight) !important;
+        }

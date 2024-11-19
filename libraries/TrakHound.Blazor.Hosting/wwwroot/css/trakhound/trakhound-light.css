@@ -15,7 +15,8 @@
     --panelBackgroundMedium: #fcfcfe;
     --panelBackgroundDark: #e9ecef;
     --panelSidebarBackground: #fafafa;
-    --panelItemBackground: #fdfdfd;
+/*    --panelItemBackground: #fdfdfd;*/
+    --panelItemBackground: #f8f8f8;
     --panelItemBackgroundHover: var(--accentVeryLight);
     /* Border Colors */
     --borderColor: #ddd;

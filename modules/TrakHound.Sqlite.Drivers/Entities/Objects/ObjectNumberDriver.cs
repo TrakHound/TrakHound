@@ -22,6 +22,7 @@ namespace TrakHound.Sqlite.Drivers
             TableColumnList = new List<string> {
                 "[uuid]",
                 "[object_uuid]",
+                "[data_type]",
                 "[value]",
                 "[source_uuid]",
                 "[created]"
@@ -32,6 +33,7 @@ namespace TrakHound.Sqlite.Drivers
         {
             public string Uuid { get; set; }
             public string ObjectUuid { get; set; }
+            public int DataType { get; set; }
             public string Value { get; set; }
             public string SourceUuid { get; set; }
             public long Created { get; set; }      
@@ -46,6 +48,7 @@ namespace TrakHound.Sqlite.Drivers
                 var item = new PublishItem();
                 item.Uuid = entity.Uuid;
                 item.ObjectUuid = entity.ObjectUuid;
+                item.DataType = entity.DataType;
                 item.Value = entity.Value;
                 item.SourceUuid = entity.SourceUuid;
                 item.Created = entity.Created;

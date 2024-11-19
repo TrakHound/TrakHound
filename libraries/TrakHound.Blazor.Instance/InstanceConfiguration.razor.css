@@ -260,9 +260,7 @@
     }
 
     .configuration-page ::deep .rz-steps .rz-steps-number {
-        color: #555;
         color: var(--textMild);
-        background-color: #f8f8f8;
         background-color: var(--panelBackgroundLight);
         border: 1px solid var(--borderColorMedium) !important;
         width: 30px;
@@ -273,7 +271,6 @@
     }
 
     .configuration-page ::deep .rz-steps .rz-steps-title {
-        color: #333;
         color: var(--textDark);
         font-size: 13px;
         line-height: 40px;
@@ -319,6 +316,7 @@
         font-size: 12px;
         font-weight: bold;
         margin-bottom: 5px;
+        color: var(--textDark);
     }
 
 .configuration-page ::deep .spin-edit {
@@ -339,7 +337,6 @@
     width: 100%;
     font-size: 14px;
     height: 100px;
-    background: #fbfbfb !important;
 }
 
 .configuration-page ::deep .deploy-modal {
@@ -375,6 +372,7 @@
     font-size: 14px;
     font-weight: bold;
     margin-bottom: 5px;
+    color: var(--textDark);
 }
 
 .configuration-page ::deep .deploy-confirm-panel .btn .icon {

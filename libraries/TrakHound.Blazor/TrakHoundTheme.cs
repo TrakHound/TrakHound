@@ -13,6 +13,9 @@ namespace TrakHound.Blazor
         [Inject]
         public TrakHoundThemeService Service { get; set; }
 
+        [Parameter]
+        public string Key { get; set; }
+
 
         protected override void OnInitialized()
         {
@@ -26,7 +29,7 @@ namespace TrakHound.Blazor
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            if (Service != null) await Service.Load();
+            if (Service != null) await Service.Load(Key);
         }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)

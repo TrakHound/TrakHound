@@ -19,7 +19,7 @@
     --panelBackgroundDark: #333;
     --panelBackgroundDark: #1c2431;
     --panelBackgroundDark: #121821;
-    /*    --panelBackgroundDark: #090c10;*/
+    --panelBackgroundDark: #090c10;
     --panelSidebarBackground: #222;
     --panelSidebarBackground: #090c10;
     --panelSidebarBackground: #0d1726;
@@ -58,6 +58,7 @@
     --tableHeaderBackground: #121821;
     --tableHeaderBackground: #0d1726;
     --tableHeaderBackground: #1b2431;
+/*    --tableHeaderBackground: #213a5f;*/
     --tableHeaderBorderColor: #2e5185;
     --tableHeaderBorderColor: #2d3d52;
     --tableHeaderText: var(--textMild);
@@ -138,7 +139,7 @@
     --inputPrimaryBorder: var(--accentLight);
     --inputPrimaryBorderHover: var(--accent);
     --inputPrimaryBorderHighlight: var(--accentDark);
-    --inputPrimaryText: var(--accentDark);
+    --inputPrimaryText: var(--accentVeryDark);
     --inputPrimaryTextHover: var(--accentDark);
     --inputPrimaryTextHighlight: var(--accentDark);
     --inputPrimaryPlaceholder: #4a6082;

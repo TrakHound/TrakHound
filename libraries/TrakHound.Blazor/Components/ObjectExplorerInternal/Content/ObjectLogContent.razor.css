@@ -67,7 +67,7 @@
 .query-panel-container {
     display: grid;
     grid-template-columns: max-content 1fr;
-    border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
 }
 
 .query-panel .query-label {
@@ -75,9 +75,9 @@
     font-size: 12px;
     font-weight: 500;
     padding: 5px 10px;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     border-radius: 2px;
-    color: #777;
+    color: var(--textMild);
 }
 
 .query-panel .btn-query {
@@ -98,14 +98,6 @@
     .table-panel ::deep .rz-data-grid {
         height: 100%;
         width: auto;
-    }
-
-    .table-panel ::deep th {
-        border-bottom: 1px solid #ddd !important;
-    }
-
-    .table-panel ::deep td {
-        border-bottom: 1px solid #ddd !important;
     }
 
     .table-panel ::deep td .rz-cell-data {

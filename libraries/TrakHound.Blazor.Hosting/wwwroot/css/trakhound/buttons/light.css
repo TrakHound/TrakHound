@@ -1,10 +1,7 @@
 ﻿.btn-light {
-    background: white;
     background: var(--buttonLightBackground);
-    border: 1px solid var(--borderLight);
     border: 1px solid var(--buttonLightBorder);
     border-radius: 2px;
-    color: var(--textMild);
     color: var(--buttonLightText);
 }
 
@@ -16,8 +13,6 @@
     }
 
     .btn-light:hover {
-        background: #eee;
-        border: 1px solid #ccc;
         background: var(--buttonLightBackgroundHover);
         border: 1px solid var(--buttonLightBorderHover);
         color: var(--buttonLightTextHover);
@@ -30,12 +25,10 @@
     }
 
     .btn-light .icon {
-        color: var(--accent);
         color: var(--buttonLightIcon);
     }
 
     .btn-light:hover .icon {
-        color: var(--accent);
         color: var(--buttonLightIconHover);
     }
 

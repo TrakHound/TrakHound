@@ -3,8 +3,6 @@
 @using TrakHound.Instance.Security
 @using TrakHound.Instance.Services
 
-<TrakHoundTheme />
-
 <TrakHoundBlazorRouter>
     <Found Context="routeData">
         <CascadingValue Name="RouteManager" Value="@routeData.RouteManager">
@@ -18,6 +16,8 @@
                                         <CascadingValue Name="BaseUrl" Value="@routeData.BaseUrl">
                                             <CascadingValue Name="BasePath" Value="@routeData.BasePath">
                                                 <CascadingValue Name="BaseLocation" Value="@routeData.BaseLocation">
+
+                                                    <TrakHoundTheme Key="@GetThemeKey(routeData.AppId)" />
 
                                                     <TrakHoundAppPackageStylesheets AppId="@routeData.AppId" />
                                                     <TrakHoundAppPackageScripts AppId="@routeData.AppId" />
@@ -37,3 +37,11 @@
         </CascadingValue>
     </Found>
 </TrakHoundBlazorRouter>
+
+@code {
+
+    private static string GetThemeKey(string appId)
+    {
+        return $"trakhound.app.theme.{appId}";
+    }
+}

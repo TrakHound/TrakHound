@@ -155,21 +155,27 @@ a, .btn-link {
     color: var(--inputText) !important;
 }
 
+.rz-dropdown {
+    background: var(--inputBackground);
+}
+
 .rz-dropdown .rz-placeholder {
     font-size: 14px;
     color: var(--inputPlaceholder) !important;
 }
 
     .rz-dropdown:hover {
-        border-color: var(--borderColorHover) !important;
+        border: 1px solid var(--inputBorderHover) !important;
         background: var(--inputBackgroundHover) !important;
         color: var(--inputTextHover) !important;
     }
 
     .rz-dropdown:focus {
-        border-color: var(--borderColorHighlight) !important;
+        border-color: var(--inputBorderHighlight) !important;
         background: var(--inputBackgroundHighlight) !important;
         color: var(--inputTextHighlight) !important;
+        box-shadow: inset 0px 0px 1px 1px var(--accentLight) !important;
+        outline: none;
     }
 
 .rz-dropdown-trigger {
@@ -182,9 +188,25 @@ a, .btn-link {
     padding-top: 5px;
 }
 
+.rz-dropdown-panel {
+    background: var(--panelItemBackground);
+}
+
 .rz-dropdown-item {
     padding: 2px 8px !important;
+    color: var(--textDark);
+    font-size: 14px;
 }
+
+    .rz-dropdown-item:hover {
+        background: var(--panelItemBackgroundHover) !important;
+        color: var(--textDark) !important;
+    }
+
+    .rz-dropdown-item.rz-state-highlight {
+        background: var(--panelItemBackgroundHover) !important;
+        color: var(--textDark) !important;
+    }
 
 
 .rz-selectbutton .rz-button-text {
@@ -213,9 +235,6 @@ a, .btn-link {
         background: var(--accentLight) !important;
     }
 
-table {
-/*    border: 1px solid var(--tableBorderColor);*/
-}
 
 table tbody {
     background: var(--tableBackground);
@@ -223,18 +242,13 @@ table tbody {
 }
 
     table th {
-        background: var(--tableHeaderBackground);
+        background: var(--tableHeaderBackground) !important;
         border-color: var(--tableHeaderBorderColor);
-/*        border-top: 1px solid var(--tableHeaderBorderColor) !important;*/
         border-right: 1px solid var(--tableHeaderBorderColor) !important;
         border-bottom: 1px solid var(--tableHeaderBorderColor) !important;
         color: var(--tableHeaderText) !important;
     }
 
-/*        table th:first-child {
-            border-left: 1px solid var(--tableHeaderBorderColor) !important;
-        }
-*/
         table th:last-child {
             border-right: none !important;
         }
@@ -336,7 +350,10 @@ table td:last-child {
 
 .text-box input,
 .text-area textarea,
+textarea,
 .spin-edit input,
+.rz-spinner input,
+.rz-datepicker input,
 .rz-textbox {
     background: var(--inputBackground) !important;
     border-color: var(--inputBorder) !important;
@@ -345,6 +362,9 @@ table td:last-child {
 
     .text-box input:hover,
     .text-area textarea:hover,
+    textarea:hover,
+    .rz-spinner input:hover,
+    .rz-datepicker input:hover,
     .spin-edit input:hover {
         background: var(--inputBackgroundHover) !important;
         border-color: var(--inputBorderHover) !important;
@@ -353,6 +373,9 @@ table td:last-child {
 
     .text-box input:focus,
     .text-area textarea:focus,
+    textarea:focus,
+    .rz-spinner input:focus,
+    .rz-datepicker input:focus,
     .spin-edit input:focus {
         background: var(--inputBackgroundHighlight) !important;
         border-color: var(--inputBorderHighlight) !important;
@@ -396,13 +419,6 @@ table td:last-child {
 }
 
 
-/*.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-}*/
-
-
 .text-box input:hover {
     border-color: #555 !important;
 }
@@ -413,24 +429,7 @@ table td:last-child {
     outline: none;
 }
 
-.rz-dropdown {
-    background: var(--inputBackground);
-}
 
-    .rz-dropdown:hover {
-        border: 1px solid var(--inputBorderHover) !important;
-    }
-
-    .rz-dropdown:focus {
-        border-color: var(--accentLight) !important;
-        box-shadow: inset 0px 0px 1px 1px var(--accentLight) !important;
-        outline: none;
-    }
-
-.rz-dropdown-item.rz-state-highlight {
-    background: var(--accentVeryVeryLight) !important;
-    color: var(--accent) !important;
-}
 
 .rz-calendar input:focus {
     border-color: var(--accentLight) !important;
@@ -438,8 +437,33 @@ table td:last-child {
     outline: none;
 }
 
+
+/*.rz-datepicker input {
+    border-color: var(--inputBorderColor) !important;
+    background: var(--inputBackground) !important;
+    color: var(--inputText) !important;
+}
+
+.rz-datepicker input {
+    border-color: var(--inputBorderColor) !important;
+    background: var(--inputBackground) !important;
+    color: var(--inputText) !important;
+}
+
 .rz-datepicker .rz-state-active {
     background: var(--accent) !important;
+}*/
+
+.rz-datepicker input {
+    font-size: 14px !important;
+}
+
+.rz-datepicker .rz-button-icon-left {
+    color: var(--textMild);
+}
+
+.rz-datepicker .rz-button-icon-left:hover {
+    color: var(--inputTextHighlight);
 }
 
 

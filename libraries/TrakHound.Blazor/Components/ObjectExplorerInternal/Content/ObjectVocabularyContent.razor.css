@@ -63,57 +63,6 @@
     padding: 5px 15px;
 }
 
-/*.input-panel {
-    grid-row: 1;
-    padding: 8px 10px 2px;
-}
-
-.input-panel-container {
-    display: grid;
-    grid-template-columns: max-content 1fr max-content;
-    grid-column-gap: 10px;
-}
-
-.input-panel-buttons {
-    padding-top: 1px;
-}
-
-.input-panel .btn-save {
-    height: 42px;
-    width: 130px;
-    font-size: 14px;
-    border-radius: 0;
-    padding: 0;
-    margin-right: 5px;
-}
-
-    .input-panel .btn-save .icon {
-        font-size: 16px;
-    }
-
-.input-panel .btn-refresh {
-    height: 42px;
-    width: 42px;
-    font-size: 14px;
-    border-radius: 0;
-    padding: 0;
-}
-
-    .input-panel .btn-refresh .icon {
-        font-size: 16px;
-        margin-right: 0;
-    }
-
-.input-panel ::deep .definition-selection input {
-    padding: 6px 15px 4px;
-    height: 43px !important;
-    font-size: 14px;
-}
-
-.input-panel .btn-light {
-    height: 45px;
-    padding: 5px 15px;
-}*/
 .query-panel {
     grid-row: 2;
     padding: 0 10px 10px;
@@ -122,7 +71,7 @@
 .query-panel-container {
     display: grid;
     grid-template-columns: max-content 1fr;
-    border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
 }
 
 .query-panel .query-label {
@@ -130,9 +79,9 @@
     font-size: 12px;
     font-weight: 500;
     padding: 5px 10px;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     border-radius: 2px;
-    color: #777;
+    color: var(--textMild);
 }
 
 .query-panel .btn-query {
@@ -160,27 +109,29 @@
     grid-row: 1;
     padding: 10px 20px;
     overflow-y: auto;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
-.value-panel .value-type {
-    display: block;
-    font-size: 18px;
-    font-weight: bold;
-}
+    .value-panel .value-type {
+        display: block;
+        font-size: 18px;
+        font-weight: bold;
+        color: var(--textDark);
+    }
 
     .value-panel .value-definition {
         display: block;
         font-size: 12px;
-        color: #555;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--borderColorLight);
         padding-bottom: 10px;
         margin-bottom: 10px;
+        color: var(--textMild);
     }
 
     .value-panel .value-description {
         display: block;
         font-size: 14px;
+        color: var(--textDark);
     }
 
     .value-panel ::deep .text-area {
@@ -196,12 +147,10 @@
         min-height: 100px;
         height: 100%;
         border-radius: 0;
-        background: #fafafa;
         padding: 10px 20px;
     }
 
         .value-panel ::deep textarea:focus {
-            background: #fff;
             box-shadow: none;
         }
 
@@ -212,7 +161,6 @@
 
     .information-panel .table td {
         font-size: 12px;
-        border-color: #eee;
     }
 
         .information-panel .table td.key {

@@ -126,7 +126,7 @@
 .query-panel-container {
     display: grid;
     grid-template-columns: max-content 1fr;
-    border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
 }
 
 .query-panel .query-label {
@@ -134,9 +134,9 @@
     font-size: 12px;
     font-weight: 500;
     padding: 5px 10px;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     border-radius: 2px;
-    color: #777;
+    color: var(--textDark);
 }
 
 .query-panel .btn-query {
@@ -160,7 +160,7 @@
     height: 100%;
     max-width: 100%;
     overflow: hidden;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--borderColorLight);
 }
 
 .message-response-panel {
@@ -192,13 +192,13 @@
 
     .message-response-information .message-response-delivery-id {
         padding: 4px 10px;
-        border-right: 1px solid var(--accentVeryLight);
+        border-right: 1px solid var(--accentLight);
     }
 
     .message-response-information .message-response-ago {
         min-width: 110px;
         padding: 4px 10px;
-        border-right: 1px solid var(--accentVeryLight);
+        border-right: 1px solid var(--accentLight);
         text-align: right;
     }
 
@@ -214,7 +214,7 @@
 
     .message-response-information .message-response-timestamp {
         padding: 4px 10px;
-        border-right: 1px solid var(--accentVeryLight);
+        border-right: 1px solid var(--accentLight);
         text-align: left;
     }
 
@@ -225,7 +225,7 @@
     }
 
         .message-response-information.acknowledged .message-response-label {
-            background: var(--colorGreenVeryLight);
+            background: var(--colorGreenLight);
             color: #fff;
         }
 
@@ -261,8 +261,9 @@
 
     .message-response-toolbar .btn-acknowledge {
         width: 150px;
+/*        background: #f4f4f4 !important;
         background: #f4f4f4 !important;
-        border: 1px solid #ddd !important;
+        border: 1px solid #ddd !important;*/
         color: var(--colorGreenLight) !important;
     }
 
@@ -281,8 +282,8 @@
 
     .message-response-toolbar .btn-reject {
         width: 100px;
-        background: #f4f4f4 !important;
-        border: 1px solid #ddd !important;
+/*        background: #f4f4f4 !important;
+        border: 1px solid #ddd !important;*/
         color: var(--colorRedLight) !important;
     }
 
@@ -312,11 +313,12 @@
     height: 100%;
     overflow: hidden;
     border-top: 1px solid #ddd;
+    border-top: 1px solid var(--borderColor);
 }
 
 .payload-panel {
-    background: #fafafa;
-    border: 1px solid #ddd;
+    background: var(--panelBackground);
+    border: 1px solid var(--borderColor);
     border-top: none;
     height: 100%;
     overflow: hidden;
@@ -328,6 +330,7 @@
         width: 100%;
         font-size: 12px;
         font-family: inherit;
+        color: var(--textDark);
     }
 
 .information-panel {
@@ -336,7 +339,7 @@
 
     .information-panel .table td {
         font-size: 12px;
-        border-color: #eee;
+/*        border-color: #eee;*/
     }
 
         .information-panel .table td.key {
@@ -379,13 +382,14 @@
         height: 100%;
         width: 100%;
         border-radius: 0;
-        background: #fafafa;
+/*        background: #fafafa;
+        background: var(--panelBackground);*/
         padding: 10px 10px;
         font-size: 12px;
     }
 
         .message-publish-panel ::deep textarea:focus {
-            background: #fff;
+/*            background: #fff;*/
             box-shadow: none;
         }
 

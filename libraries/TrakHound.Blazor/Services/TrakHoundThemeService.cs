@@ -8,8 +8,6 @@ namespace TrakHound.Blazor.Services
 {
     public class TrakHoundThemeService
     {
-        private const string _themeKey = "trakhound.theme";
-
         private readonly ITrakHoundAppLocalStorageService _localStorage;
         private TrakHoundThemes _theme;
         private bool _themeSet;
@@ -25,13 +23,13 @@ namespace TrakHound.Blazor.Services
             _localStorage = localStorage;
         }
 
-        public async Task Load()
+        public async Task Load(string key)
         {
-            if (!_themeSet)
+            if (!_themeSet && !string.IsNullOrEmpty(key))
             {
                 _themeSet = true;
 
-                var value = await _localStorage.GetItem<string>(_themeKey);
+                var value = await _localStorage.GetItem<string>(key);
                 if (value != null)
                 {
                     _theme = value.ConvertEnum<TrakHoundThemes>();
@@ -41,13 +39,13 @@ namespace TrakHound.Blazor.Services
             }
         }
 
-        public async Task SetTheme(TrakHoundThemes theme)
+        public async Task SetTheme(string key, TrakHoundThemes theme)
         {
-            if (_theme != theme)
+            if (_theme != theme && !string.IsNullOrEmpty(key))
             {
                 _theme = theme;
 
-                await _localStorage.SetItem<string>(_themeKey, theme.ToString());
+                await _localStorage.SetItem<string>(key, theme.ToString());
 
                 if (ThemeChanged != null) ThemeChanged.Invoke(this, theme);
             }

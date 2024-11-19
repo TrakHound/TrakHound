@@ -1,22 +1,15 @@
 ﻿.source-table {
-/*    border-left: 1px solid #ddd !important;
-    border-left: 1px solid var(--borderColor) !important;*/
+    border: 1px solid var(--tableHeaderBorderColor) !important;
 }
 
     .source-table th {
         font-size: 12px;
-        color: #555;
-/*        border-bottom: 1px solid #ddd !important;
-        border-bottom: 1px solid var(--borderColor) !important;*/
         padding: 5px 10px;
     }
 
     .source-table td {
         font-size: 12px;
-/*        color: #333;*/
         padding: 5px 10px;
-/*        border-right: 1px solid #ddd !important;
-        border-right: 1px solid var(--borderColor) !important;*/
     }
 
         .source-table td a {

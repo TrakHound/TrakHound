@@ -4,13 +4,11 @@
 
     .text-box .title {
         font-size: 12px;
-        color: var(--textSecondary);
         color: var(--textDark);
         margin-bottom: 4px;
     }
 
     .text-box .subtitle {
-        color: var(--textSecondary);
         color: var(--textMild);
         margin-left: 5px;
     }
@@ -22,7 +20,6 @@
     .text-box input {
         background: var(--inputBackground) !important;
         border: 1px solid var(--inputBorder) !important;
-        color: var(--textPrimary);
         color: var(--inputText);
         height: auto !important;
         padding: 15px 25px;
@@ -51,7 +48,6 @@
 
     .text-box input::placeholder {
         font-size: 15px !important;
-        color: #aaa;
         color: var(--inputPlaceholder);
         font-style: normal;
     }
