@@ -11,4 +11,10 @@
     background: var(--accentVeryVeryDark);
     background: #000;*/
     background: var(--panelBackground);
+    background: var(--accentBackground);
+    background: #2870bd;
+    background: #1f5793;
+/*    background: #123254;*/
+/*    background: #0d253f;*/
+/*    background: #09192a;*/
 }

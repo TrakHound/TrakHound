@@ -7,7 +7,7 @@
 
 .input-panel {
     grid-row: 1;
-    padding: 7px 10px 11px;
+    padding: 7px 10px 6px;
 }
 
 .input-panel-container {
@@ -55,13 +55,13 @@
         margin-right: 0;
     }
 
-.input-panel ::deep .rz-spinner {
+.input-panel ::deep .rz-numeric {
     height: 44px !important;
 }
 
-.input-panel ::deep .rz-spinner input {
-    font-size: 14px;
-}
+    .input-panel ::deep .rz-numeric input {
+        font-size: 14px;
+    }
 
 .input-panel-type ::deep .rz-dropdown {
     width: 200px;

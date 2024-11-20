@@ -76,7 +76,7 @@
                                                         <span class="duration-cell-value">@context.Duration.ToFormattedString()</span>
                                                     </Template>
                                                 </RadzenDataGridColumn>
-                                                <RadzenDataGridColumn TItem="CurrentTableItem" Property="Timestamp" Title="Timestamp" Width="150px" />
+                                                <RadzenDataGridColumn TItem="CurrentTableItem" Property="Timestamp" Title="Timestamp" Width="170px" />
                                                 <RadzenDataGridColumn TItem="CurrentTableItem" CssClass="remove" Width="70px" Sortable="false">
                                                     <Template Context="context">
                                                         <button class="btn-link btn btn-sm" @onclick="() => RemoveClicked(context.MemberPath)">Remove</button>
@@ -124,8 +124,8 @@
                                                         <span class="duration-cell-value">@context.Duration.ToFormattedString()</span>
                                                     </Template>
                                                 </RadzenDataGridColumn>
-                                                <RadzenDataGridColumn TItem="QueryTableItem" Property="AddTimestamp" Title="Add Timestamp" Width="150px" />
-                                                <RadzenDataGridColumn TItem="QueryTableItem" Property="RemoveTimestamp" Title="Remove Timestamp" Width="150px">
+                                                <RadzenDataGridColumn TItem="QueryTableItem" Property="AddTimestamp" Title="Add Timestamp" Width="170px" />
+                                                <RadzenDataGridColumn TItem="QueryTableItem" Property="RemoveTimestamp" Title="Remove Timestamp" Width="170px">
                                                     <Template Context="context">
                                                         @if (context.RemoveTimestamp.HasValue)
                                                         {

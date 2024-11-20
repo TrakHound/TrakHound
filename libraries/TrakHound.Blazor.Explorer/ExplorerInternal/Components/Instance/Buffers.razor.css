@@ -96,7 +96,6 @@
         }
 
         .drivers-list .driver-panel .driver-chart-time-axis .chart-tick-mark {
-            border-left: 1px solid #ccc;
             border-left: 1px solid var(--borderColorMedium);
         }
 
@@ -128,7 +127,6 @@
         }
 
         .drivers-list .driver-panel .driver-chart-queue-axis .chart-tick-marks {
-            border-right: 1px solid #ccc;
             border-right: 1px solid var(--borderColorMedium);
             width: 5px;
             display: grid;
@@ -137,7 +135,6 @@
         }
 
         .drivers-list .driver-panel .driver-chart-queue-axis .chart-tick-mark {
-            border-top: 1px solid #ccc;
             border-top: 1px solid var(--borderColorMedium);
         }
 
@@ -171,7 +168,6 @@
         }
 
         .drivers-list .driver-panel .driver-chart-buffer-axis .chart-tick-marks {
-            border-left: 1px solid #ccc;
             border-left: 1px solid var(--borderColorMedium);
             width: 5px;
             display: grid;
@@ -180,7 +176,6 @@
         }
 
         .drivers-list .driver-panel .driver-chart-buffer-axis .chart-tick-mark {
-            border-top: 1px solid #ccc;
             border-top: 1px solid var(--borderColorMedium);
         }
 
@@ -280,5 +275,5 @@
 
             .buffers-page ::deep .rz-data-grid td .rz-cell-data span.recent {
                 color: var(--accentDark);
-                background: var(--accentVeryVeryLight);
+                background: var(--accentVeryLight);
             }

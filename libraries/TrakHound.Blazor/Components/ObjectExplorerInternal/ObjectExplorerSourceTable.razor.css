@@ -1,5 +1,5 @@
 ﻿.source-table {
-    border: 1px solid var(--tableHeaderBorderColor) !important;
+    border: 1px solid var(--tableHeaderBorderColor);
 }
 
     .source-table th {

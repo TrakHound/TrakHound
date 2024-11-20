@@ -14,20 +14,20 @@
                 if (InstancesService.QueryConsumer == null)
                 {
                     <button class="btn-query btn btn-sm btn-primary" @onclick=Query><span class="icon fa-solid fa-sharp fa-magnifying-glass"></span>Query</button>
-                    <button class="btn btn-sm btn-light" @onclick=Subscribe><span class="icon fa-solid fa-sharp fa-play"></span></button>
+                    @* <button class="btn btn-sm btn-light" @onclick=Subscribe><span class="icon fa-solid fa-sharp fa-play"></span></button> *@
                     <button class="btn btn-sm btn-light" @onclick=Home><span class="icon fa-regular fa-sharp fa-home"></span></button>
                 }
                 else
                 {
                     <button class="btn-query btn btn-sm btn-primary disabled"><span class="icon"><ListeningIndicator /></span>Subscribed..</button>
-                    <button class="btn btn-sm btn-light" @onclick=Unsubscribe><span class="icon fa-solid fa-sharp fa-pause"></span></button>
+                    @* <button class="btn btn-sm btn-light" @onclick=Unsubscribe><span class="icon fa-solid fa-sharp fa-pause"></span></button> *@
                     <button class="btn btn-sm btn-light" @onclick=Home><span class="icon fa-regular fa-sharp fa-home"></span></button>
                 }
             }
             else
             {
                 <button class="btn-query btn btn-sm btn-secondary"><div class="icon-container"><span class="icon fa-solid fa-sharp fa-loader spin"></span></div>Loading..</button>
-                <button class="btn btn-sm btn-light" disabled><span class="icon fa-solid fa-sharp fa-play"></span></button>
+                @* <button class="btn btn-sm btn-light" disabled><span class="icon fa-solid fa-sharp fa-play"></span></button> *@
                 <button class="btn btn-sm btn-light" disabled><span class="icon fa-regular fa-sharp fa-home"></span></button>
             }
 

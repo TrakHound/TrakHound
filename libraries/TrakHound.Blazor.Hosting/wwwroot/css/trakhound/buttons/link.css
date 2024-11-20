@@ -5,7 +5,7 @@
     color: var(--buttonLinkText) !important;
     outline: none;
     box-shadow: none;
-    border: none;
+    border: 1px solid var(--buttonLinkBorder);
 }
 
     .btn-link.disabled {
@@ -21,7 +21,7 @@
     .btn-link:focus {
         box-shadow: none !important;
         outline: none;
-        border: 1px solid var(--buttonCommandBorder);
+        border: 1px solid var(--buttonLinkBorder);
     }
 
     .btn-link .icon {

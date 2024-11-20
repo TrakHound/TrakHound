@@ -10,7 +10,7 @@
     grid-row: 1;
     grid-column-start: 1;
     grid-column-end: 3;
-    padding: 8px 10px 0;
+    padding: 8px 10px 5px;
 }
 
 .input-panel-container {

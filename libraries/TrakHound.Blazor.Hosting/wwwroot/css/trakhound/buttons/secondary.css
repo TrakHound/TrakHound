@@ -8,6 +8,12 @@
     transition: none;
 }
 
+    .btn-secondary:focus {
+        box-shadow: none !important;
+        outline: none;
+        border: 1px solid var(--buttonCommandBorder);
+    }
+
     .btn-secondary:hover {
         background: #eee;
         background: var(--buttonSecondaryBackgroundHover);

@@ -8,7 +8,7 @@
 
 .input-panel {
     grid-row: 1;
-    padding: 8px 10px 0;
+    padding: 8px 10px 5px;
 }
 
 .input-panel-container {
@@ -50,6 +50,14 @@
 .input-panel-input ::deep .text-box.small input {
     height: 44px !important;
 }
+
+.input-panel ::deep .rz-numeric {
+    height: 44px !important;
+}
+
+    .input-panel ::deep .rz-numeric input {
+        font-size: 14px;
+    }
 
 
 .query-panel {

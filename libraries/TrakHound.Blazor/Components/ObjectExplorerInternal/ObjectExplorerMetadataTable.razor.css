@@ -1,22 +1,15 @@
 ﻿.metadata-table {
-    border-left: 1px solid #ddd !important;
-    border-left: 1px solid var(--borderColor) !important;
+    border: 1px solid var(--tableHeaderBorderColor);
 }
 
     .metadata-table th {
         font-size: 12px;
-        color: #555;
-        border-bottom: 1px solid #ddd !important;
-        border-bottom: 1px solid var(--borderColor) !important;
         padding: 5px 10px;
     }
 
     .metadata-table td {
         font-size: 12px;
-/*        color: #333;*/
         padding: 5px 10px;
-        border-right: 1px solid #ddd !important;
-        border-right: 1px solid var(--borderColor) !important;
     }
 
         .metadata-table td a {
@@ -36,15 +29,15 @@
         padding: 0;
     }
 
-    .metadata-table .delete .btn {
-        height: 30px;
-        width: 30px;
-        border: none;
-        border-radius: 0;
-        padding: 0;
-    }
-
-        .metadata-table .delete .btn .icon {
-            margin: 0;
-            font-size: 12px;
+        .metadata-table .delete .btn {
+            height: 30px;
+            width: 30px;
+            border: none;
+            border-radius: 0;
+            padding: 0;
         }
+
+            .metadata-table .delete .btn .icon {
+                margin: 0;
+                font-size: 12px;
+            }

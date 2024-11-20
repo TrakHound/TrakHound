@@ -16,7 +16,7 @@
 
     .content-preview-toolbar .toolbar-panel .btn {
         padding: 2px 8px;
-        background: none;
+        background: var(--inputBackground) !important;
         border-color: var(--borderColor) !important;
     }
 
@@ -27,7 +27,6 @@
         .content-preview-toolbar .toolbar-panel .btn .icon {
             margin: 0;
             font-size: 12px;
-            color: #888;
             color: var(--textMild);
         }
 
@@ -43,7 +42,6 @@
         margin: 0;
         background: none;
         border-color: var(--borderColorLight);
-        color: #888;
         color: var(--textMild) !important;
         cursor: pointer;
     }
@@ -61,7 +59,6 @@
 
         .content-preview-toolbar .toolbar-panel ::deep .rz-dropdown .rz-dropdown-trigger {
             height: 30px !important;
-            color: #aaa;
             color: var(--textLight);
         }
 
@@ -93,8 +90,6 @@
             height: 100%;
             overflow: auto;
             padding: 10px 10px 10px;
-            font-size: 12px;
-            font-family: inherit;
             font-size: 12px;
             font-family: Consolas;
             color: var(--textDark);

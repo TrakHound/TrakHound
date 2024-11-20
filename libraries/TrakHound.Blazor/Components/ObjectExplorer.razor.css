@@ -117,7 +117,6 @@
     grid-row-start: 3;
     grid-row-end: 6;
     grid-column: 1;
-    border-right: 1px solid #ddd;
     border-right: 1px solid var(--borderColor);
     display: grid;
     grid-template-rows: max-content 1fr;
@@ -127,7 +126,6 @@
 
 .objects-tree-toolbar {
     grid-row: 1;
-    border-bottom: 1px solid #ddd;
     border-bottom: 1px solid var(--borderColor);
 }
 
@@ -137,7 +135,6 @@
     height: 100%;
     overflow-x: auto;
     overflow-y: auto;
-    background: #fcfcfe;
     background: var(--panelBackgroundMedium);
 }
 
@@ -151,21 +148,17 @@
     grid-row: 2;
     height: 100%;
     overflow: hidden;
-    border-left: 1px solid #ddd;
     border-left: 1px solid var(--borderColor);
-    background: #e9ecef;
-    background: var(--panelBackgroundDark);
+    background: var(--panelBackground);
 }
 
     .objects-content ::deep .rz-tabview {
         height: 100%;
         overflow: auto;
-        background: #fff;
         background: var(--panelBackground);
     }
 
     .objects-content ::deep .object-information {
-        background: #fff;
         background: var(--panelBackground);
     }
 

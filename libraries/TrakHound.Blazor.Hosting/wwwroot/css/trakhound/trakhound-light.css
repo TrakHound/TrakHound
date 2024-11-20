@@ -15,7 +15,7 @@
     --panelBackgroundMedium: #fcfcfe;
     --panelBackgroundDark: #e9ecef;
     --panelSidebarBackground: #fafafa;
-/*    --panelItemBackground: #fdfdfd;*/
+    /*    --panelItemBackground: #fdfdfd;*/
     --panelItemBackground: #f8f8f8;
     --panelItemBackgroundHover: var(--accentVeryLight);
     /* Border Colors */
@@ -62,14 +62,14 @@
     --buttonLightIconHover: var(--accentLight);
     --buttonLightText: var(--textDark);
     --buttonLightTextHover: var(--accentLight);
-    --buttonSecondaryBackground: blue;
-    --buttonSecondaryBackgroundHover: lightblue;
-    --buttonSecondaryBorder: #7FFFD4;
-    --buttonSecondaryBorderHover: red;
-    --buttonSecondaryIcon: #7FFFD4;
-    --buttonSecondaryIconHover: red;
-    --buttonSecondaryText: #7FFFD4;
-    --buttonSecondaryTextHover: red;
+    --buttonSecondaryBackground: none;
+    --buttonSecondaryBackgroundHover: var(--panelBackgroundMedium);
+    --buttonSecondaryBorder: var(--borderColor);
+    --buttonSecondaryBorderHover: var(--accentLight);
+    --buttonSecondaryIcon: #888;
+    --buttonSecondaryIconHover: var(--accentLight);
+    --buttonSecondaryText: #555;
+    --buttonSecondaryTextHover: var(--accentLight);
     --buttonCommandBackground: none;
     --buttonCommandBackgroundHover: var(--panelBackgroundMedium);
     --buttonCommandBorder: transparent;
@@ -112,4 +112,16 @@
     --inputPlaceholder: #ccc;
     --inputPlaceholderHover: #aaa;
     --inputPlaceholderHighlight: var(--accentLight);
+    --inputPrimaryBackground: var(--accentVeryLight);
+    --inputPrimaryBackgroundHover: #80c1ff;
+    --inputPrimaryBackgroundHighlight: #66b5ff;
+    --inputPrimaryBorder: var(--accentLight);
+    --inputPrimaryBorderHover: var(--accent);
+    --inputPrimaryBorderHighlight: var(--accentDark);
+    --inputPrimaryText: var(--accentVeryDark);
+    --inputPrimaryTextHover: var(--accentDark);
+    --inputPrimaryTextHighlight: var(--accentDark);
+    --inputPrimaryPlaceholder: #4a6082;
+    --inputPrimaryPlaceholderHover: #5d79a2;
+    --inputPrimaryPlaceholderHighlight: #6d86ab;
 }

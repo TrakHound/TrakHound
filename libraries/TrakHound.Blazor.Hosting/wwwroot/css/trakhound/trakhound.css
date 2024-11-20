@@ -255,8 +255,10 @@ table tbody {
 
 table td {
     background: none;
+    border: none;
     border-color: var(--tableBorderColor);
     border-right: 1px solid var(--tableBorderColor);
+    border-bottom: 1px solid var(--tableBorderColor);
     color: var(--tableText);
 }
 
@@ -352,7 +354,7 @@ table td:last-child {
 .text-area textarea,
 textarea,
 .spin-edit input,
-.rz-spinner input,
+.rz-numeric input,
 .rz-datepicker input,
 .rz-textbox {
     background: var(--inputBackground) !important;
@@ -363,7 +365,7 @@ textarea,
     .text-box input:hover,
     .text-area textarea:hover,
     textarea:hover,
-    .rz-spinner input:hover,
+    .rz-numeric input:hover,
     .rz-datepicker input:hover,
     .spin-edit input:hover {
         background: var(--inputBackgroundHover) !important;
@@ -374,7 +376,7 @@ textarea,
     .text-box input:focus,
     .text-area textarea:focus,
     textarea:focus,
-    .rz-spinner input:focus,
+    .rz-numeric input:focus,
     .rz-datepicker input:focus,
     .spin-edit input:focus {
         background: var(--inputBackgroundHighlight) !important;

@@ -15,7 +15,6 @@
 /* Explorer Navigation Sidebar */
 .explorer-navigation-sidebar {
     grid-column: 1;
-    border-right: 1px solid #ddd;
     border-right: 1px solid var(--borderColor);
 }
 
@@ -24,7 +23,6 @@
         width: 40px;
         height: 36px;
         border: none;
-        border-bottom: 1px solid #eee;
         border-bottom: 1px solid var(--borderColorLight);
     }
 
@@ -46,8 +44,6 @@
 /* Explorer Treeview Sidebar */
 .explorer-sidebar {
     min-width: 175px;
-    border-right: 1px solid #f0f0f0;
-    border-right: 1px solid #ddd;
     border-right: 1px solid var(--borderColor);
     height: 100%;
     overflow: hidden;
@@ -63,7 +59,6 @@
 
 .explorer-sidebar-header {
     grid-row: 1;
-    border-bottom: 1px solid #eee;
     border-bottom: 1px solid var(--borderColorLight);
     padding-top: 5px;
     padding-left: 5px;
@@ -103,7 +98,6 @@
         display: block;
         font-size: 12px;
         line-height: 18px;
-        color: #888;
         color: var(--textMild);
     }
 
@@ -112,7 +106,6 @@
     display: grid;
     grid-auto-columns: max-content;
     grid-auto-flow: column;
-    border-bottom: 1px solid #eee;
     border-bottom: 1px solid var(--borderColorLight);
     padding-top: 2px;
     padding-left: 2px;
@@ -149,7 +142,6 @@
     grid-template-rows: max-content 1fr;
     height: 100%;
     overflow: hidden;
-    border-left: 1px solid #ddd;
     border-left: 1px solid var(--borderColor);
 }
 
@@ -157,7 +149,6 @@
 .explorer-breadcrumbs {
     grid-row: 1;
     padding: 5px 10px 5px;
-    border-bottom: 1px solid #ddd;
     border-bottom: 1px solid var(--borderColor);
 }
 
@@ -165,8 +156,7 @@
     grid-row: 2;
     height: 100%;
     overflow: hidden;
-    background: #e9ecef;
-    background: var(--panelBackgroundDark);
+    background: var(--panelBackground);
 }
 
 
@@ -203,7 +193,6 @@
     overflow: hidden;
     overflow-y: auto;
     height: 100%;
-    border-left: 1px solid #ddd;
     border-left: 1px solid var(--borderColor);
     padding-top: 10px;
 }

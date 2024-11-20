@@ -49,13 +49,14 @@
 
     .content-preview-toolbar .toolbar-panel .btn {
         padding: 2px 8px;
-        background: var(--panelBackground);
+        background: var(--inputBackground) !important;
         border-color: var(--borderColor) !important;
     }
 
         .content-preview-toolbar .toolbar-panel .btn .icon {
             margin: 0;
             font-size: 12px;
+            color: var(--textMild);
         }
 
     .content-preview-toolbar .toolbar-panel ::deep .rz-dropdown {

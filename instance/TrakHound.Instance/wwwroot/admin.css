@@ -8,6 +8,7 @@
 html, body {
     height: 100%;
     font-family: 'Roboto';
+    background: var(--panelBackground);
 }
 
 .rz-tabview li:hover a {

@@ -7,6 +7,12 @@
     transition: none;
 }
 
+    .btn-remove:focus {
+        box-shadow: none !important;
+        outline: none;
+        border: 1px solid var(--buttonRemoveBorder) !important;
+    }
+
     .btn-remove .icon {
         color: red;
         color: red;

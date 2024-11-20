@@ -4,9 +4,7 @@
     display: grid;
     grid-template-rows: 0.4fr max-content 1.6fr max-content;
     grid-template-columns: 1fr max-content 1fr;
-    background: linear-gradient(0deg, rgba(45, 125, 210, 0.65), rgba(45, 125, 210, 1));
-    background: var(--accentVeryDark);
-    background: var(--panelBackground);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.35), transparent);
 }
 
 .login-panel {
@@ -20,10 +18,6 @@
     grid-row-gap: 0px;
     border: 1px solid rgba(0, 0, 0, 0.5);
     background: rgba(0, 0, 0, 0.1);
-    background: var(--panelBackgroundMedium);
-    /*    border: 1px solid #ccc;*/
-    /*    background: var(--accentVeryVeryDark);
-    box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.05);*/
 }
 
 .login-top-panel {
@@ -32,7 +26,6 @@
     grid-template-rows: max-content 1fr;
     grid-column-gap: 80px;
     padding: 40px 50px;
-/*    background: linear-gradient(0deg, rgba(45, 125, 210, 0.65), rgba(45, 125, 210, 1));*/
 }
 
 .title-container {
@@ -65,8 +58,15 @@
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
+        .connection-container .table tbody {
+            margin: 0;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         .connection-container .table td {
             border-right: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
             .connection-container .table td:last-child {
@@ -94,15 +94,9 @@
     grid-column: 2;
     text-align: left;
     background: rgba(0, 0, 0, 0.35);
-    background: rgba(0, 0, 0, 0.35);
-    background: var(--panelBackgroundDark);
-    /*    background: var(--panelBackgroundDark);*/
     box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.1);
     padding: 30px;
     min-width: 425px;
-    /*    opacity: 0;
-    animation: fadeIn 0.75s normal forwards;
-    animation-delay: 0.5s;*/
 }
 
     .input-container ::deep input {
@@ -110,23 +104,19 @@
         line-height: 36px !important;
         height: 60px !important;
         padding: 8px 15px !important;
-/*        background: #fff !important;*/
         border: 2px solid var(--accent) !important;
     }
 
         .input-container ::deep input:focus {
-/*            background: var(--accentVeryVeryLight) !important;*/
             border: 1px solid var(--accent) !important;
         }
 
     .input-container ::deep .text-box .title {
         color: var(--accentVeryLight) !important;
-        color: var(--textDark) !important;
     }
 
     .input-container ::deep .password-box .title {
         color: var(--accentVeryLight) !important;
-        color: var(--textDark) !important;
     }
 
     .input-container .btn-login {
@@ -160,8 +150,8 @@
     grid-row-gap: 15px;
     padding-top: 30px;
     padding-bottom: 10px;
-    border-top: 1px solid rgba(0, 0, 0, 0.5);
-    background: rgba(0, 0, 0, 0.5);
+    border-top: 1px solid rgba(0, 0, 0, 0.25);
+    background: rgba(0, 0, 0, 0.25);
 }
 
 .company-panel {
@@ -201,33 +191,22 @@
 }
 
 .footer-container .footer-label {
-    color: #4d6580;
-    color: #bbb;
     color: rgba(255, 255, 255, 0.15);
 }
 
 .footer-container:hover .footer-label {
-    color: #607e9f;
-    color: #888;
-    color: rgba(255, 255, 255, 0.5);
     color: var(--accentVeryLight);
 }
 
 .footer-container .footer-label a {
-    color: #4d6580;
-    color: #bbb;
     color: rgba(255, 255, 255, 0.15);
 }
 
 .footer-container:hover .footer-label a {
-    color: #607e9f;
-    color: #888;
-    color: rgba(255, 255, 255, 0.5);
     color: var(--accentVeryLight);
 }
 
 .footer-container .footer-label a:hover {
-    color: var(--accentVeryLight);
     color: var(--accent);
 }
 
@@ -286,7 +265,6 @@
 }
 
     .social-link:hover {
-        color: var(--accentVeryLight) !important;
         color: var(--accent) !important;
     }
 
@@ -343,14 +321,10 @@
 
     .login-container ::deep .loading-panel .loading-icon {
         font-size: 30px;
-        color: #607e9f;
-        color: #888;
         color: var(--accentVeryLight);
     }
 
     .login-container ::deep .loading-panel .loading-message {
         font-size: 16px;
-        color: #607e9f;
-        color: #888;
         color: var(--accentVeryLight);
     }

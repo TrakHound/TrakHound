@@ -12,6 +12,9 @@
     .btn-primary:focus {
         box-shadow: none !important;
         outline: none;
+        background: var(--buttonPrimaryBackground) !important;
+        border-color: var(--buttonPrimaryBorder) !important;
+        color: var(--buttonPrimaryText) !important;
     }
 
     .btn-primary .icon {
