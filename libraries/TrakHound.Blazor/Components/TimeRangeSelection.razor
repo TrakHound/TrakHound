@@ -4,29 +4,31 @@
 }
 
 <div class="time-range-selection">
-@*     <div class="preset-container">
-        <button class="btn btn-light btn-increment @disabled" @onclick="MonthPreviousSelected"><span class="icon fa-solid fa-sharp fa-chevron-left"></span></button>
-        <button class="btn btn-light btn-increment @nextDisabled @disabled" @onclick="MonthNextSelected"><span class="icon fa-solid fa-sharp fa-chevron-right"></span></button>
-        <button class="btn btn-light @disabled" @onclick="ThisMonthSelected"><span class="icon fa-solid fa-sharp fa-calendar-week"></span>This Month</button>
-        <button class="btn btn-light @disabled" @onclick="LastMonthSelected"><span class="icon fa-solid fa-sharp fa-calendar-range"></span>Last Month</button>
-    </div> *@
     <div class="date-selection-container">
         <div class="select-container from-selection">
-            <label>From</label>
-            <RadzenDatePicker @bind-Value="@From" DateFormat="d" Kind="DateTimeKind.Local" Change="FromSelected" ShowTime="@ShowTime" HourFormat="12"  />
+            <RadzenDatePicker TValue="DateTime" Value="@From" Change="FromSelected" ShowTime="@ShowTime" ShowSeconds="true" HoursStep="1" MinutesStep="1" SecondsStep="1" Kind="DateTimeKind.Local" HourFormat="12" />
         </div>
         <div class="select-container to-selection">
             <label>To</label>
-            <RadzenDatePicker @bind-Value="@To" DateFormat="d" Kind="DateTimeKind.Local" Change="ToSelected" ShowTime="@ShowTime" HourFormat="12"  />
+            <RadzenDatePicker TValue="DateTime" Value="@To" Change="ToSelected" ShowTime="@ShowTime" ShowSeconds="true" HoursStep="1" MinutesStep="1" SecondsStep="1" Kind="DateTimeKind.Local" HourFormat="12" />
         </div>
-        <div class="select-container month-selection">
-            <label>Month</label>
-            <RadzenDropDown TValue="string" Data="@GetMonthList()" @bind-Value="@selectedMonth" Change="MonthSelected" />
-        </div>
-        <div class="select-container year-selection">
-            <label>Year</label>
-            <RadzenDropDown TValue="string" Data="@GetYearList()" @bind-Value="@selectedYear" Change="YearSelected" />
-        </div>
+
+        @if (ShowMonths)
+        {
+            <div class="select-container month-selection">
+                <label>Month</label>
+                <RadzenDropDown TValue="string" Data="@GetMonthList()" @bind-Value="@selectedMonth" Change="MonthSelected" />
+            </div>
+        }
+
+        @if (ShowYears)
+        {
+            <div class="select-container year-selection">
+                <label>Year</label>
+                <RadzenDropDown TValue="string" Data="@GetYearList()" @bind-Value="@selectedYear" Change="YearSelected" />
+            </div>
+        }
+
     </div>
 </div>
 
@@ -234,6 +236,9 @@
     {
         if (value != null)
         {
+            From = value.Value;
+            await FromChanged.InvokeAsync(value.Value);
+
             selectedWeek = null;
             selectedMonth = null;
             await InvokeAsync(StateHasChanged);
@@ -244,6 +249,9 @@
     {
         if (value != null)
         {
+            To = value.Value;
+            await ToChanged.InvokeAsync(value.Value);
+
             selectedWeek = null;
             selectedMonth = null;
             await InvokeAsync(StateHasChanged);

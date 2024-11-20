@@ -18,6 +18,12 @@
         text-decoration: underline;
     }
 
+    .btn-link:focus {
+        box-shadow: none !important;
+        outline: none;
+        border: 1px solid var(--buttonCommandBorder);
+    }
+
     .btn-link .icon {
         font-size: 14px;
         color: var(--buttonLink) !important;

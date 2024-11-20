@@ -9,9 +9,6 @@
         grid-auto-flow: column;
     }
 
-    .time-range-selection .date-selection-container .select-container {
-/*        background: blue;*/
-    }
 
 .date-query-bar {
     grid-row: 1;
@@ -80,9 +77,9 @@
 
 .select-container label {
     font-size: 12px;
-    color: #555;
+    color: var(--textMild);
     padding-right: 10px;
-    line-height: 34px;
+    line-height: 38px;
 }
 
 .select-container ::deep > div {
@@ -127,26 +124,16 @@
     margin-right: 15px;
 }
 
-.select-container ::deep .rz-calendar .rz-inputtext {
-    width: 175px !important;
-    vertical-align: top;
-}
-
-.select-container ::deep .rz-calendar .rz-inputtext {
-    width: 140px !important;
+.select-container ::deep .rz-datepicker .rz-inputtext {
+    width: 220px !important;
     vertical-align: top;
     font-size: 12px;
-    height: 32px;
+    height: 38px;
     border-radius: 2px;
 }
 
-.select-container ::deep .rz-calendar .rz-datepicker-trigger {
+.select-container ::deep .rz-datepicker .rz-datepicker-trigger {
     font-size: 18px;
-}
-
-.select-container.crew-selection ::deep .rz-dropdown {
-    width: 100px;
-    vertical-align: top;
 }
 
 .select-container.week-selection ::deep .rz-dropdown {

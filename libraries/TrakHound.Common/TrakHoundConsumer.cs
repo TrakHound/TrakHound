@@ -183,6 +183,7 @@ namespace TrakHound
         private readonly CancellationTokenSource _cancellationTokenSource;
         private readonly List<ITrakHoundConsumer<TInput>> _inputConsumers = new List<ITrakHoundConsumer<TInput>>();
         private readonly List<ITrakHoundConsumer<TInput, TOutput>> _inputOutputConsumers = new List<ITrakHoundConsumer<TInput, TOutput>>();
+        private readonly ITrakHoundConsumer<IEnumerable<TInput>> _internalListConsumer;
         private readonly bool _allowNull;
         private bool _disposed;
 
@@ -378,6 +379,23 @@ namespace TrakHound
             }
         }
 
+        public TrakHoundConsumer(ITrakHoundConsumer<IEnumerable<TInput>> consumer, string consumerId = null, bool allowNull = false)
+        {
+            _id = !string.IsNullOrEmpty(consumerId) ? consumerId : Guid.NewGuid().ToString();
+            _cancellationTokenSource = new CancellationTokenSource();
+            _cancellationToken = _cancellationTokenSource.Token;
+            _allowNull = allowNull;
+
+            if (consumer != null)
+            {
+                _internalListConsumer = consumer;
+                _internalListConsumer.Received += InternalConsumerReceived;
+                _internalListConsumer.Disposed += InternalConsumerDisposed;
+            }
+
+            OnDisposed = DisposeInternal;
+        }
+
 
         public void Dispose()
         {
@@ -401,6 +419,16 @@ namespace TrakHound
 
                 if (Disposed != null) Disposed.Invoke(this, Id);
             }
+        }
+
+        private void DisposeInternal()
+        {
+            if (_internalListConsumer != null) _internalListConsumer.Dispose();
+        }
+
+        private void InternalConsumerDisposed(object sender, string e)
+        {
+            Dispose();
         }
 
         public virtual bool Push(TInput item)
@@ -441,6 +469,17 @@ namespace TrakHound
         private void Receive(TOutput item)
         {
             if (Received != null) Received.Invoke(this, item);
+        }
+
+        private void InternalConsumerReceived(object sender, IEnumerable<TInput> items)
+        {
+            if (items != null)
+            {
+                foreach (var item in items)
+                {
+                    Push(item);
+                }
+            }
         }
     }
 }

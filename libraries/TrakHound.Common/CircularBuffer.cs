@@ -8,7 +8,7 @@ namespace TrakHound
 {
     public class CircularBuffer<TKey, TValue>
     {
-        private readonly Dictionary<TKey, Buffer> _buffers = new Dictionary<TKey, Buffer>();
+        private readonly Dictionary<TKey, CircularBuffer<TValue>> _buffers = new Dictionary<TKey, CircularBuffer<TValue>>();
         private readonly int _bufferLength;
         private readonly object _lock = new object();
 
@@ -30,7 +30,7 @@ namespace TrakHound
                     }
                     else
                     {
-                        buffer = new Buffer(_bufferLength);
+                        buffer = new CircularBuffer<TValue>(_bufferLength);
                         buffer.Add(item);
                         _buffers.Add(key, buffer);
                     }
@@ -51,60 +51,59 @@ namespace TrakHound
 
             return default;
         }
+    }
+
+    public class CircularBuffer<TValue>
+    {
+        private readonly object _lock = new object();
+        private readonly int _itemLimit;
+        private readonly TValue[] _items;
+        private int _itemIndex;
+        private int _itemCount = 0;
 
 
-        private class Buffer
+        public int Limit => _itemLimit;
+
+        /// <summary>
+        /// Gets the current number of Items in the Queue
+        /// </summary>
+        public int Count
         {
-            private readonly object _lock = new object();
-            private readonly int _itemLimit;
-            private readonly TValue[] _items;
-            private int _itemIndex;
-            private int _itemCount = 0;
-
-
-            public int Limit => _itemLimit;
-
-            /// <summary>
-            /// Gets the current number of Items in the Queue
-            /// </summary>
-            public int Count
+            get
             {
-                get
-                {
-                    lock (_lock) return _itemCount;
-                }
+                lock (_lock) return _itemCount;
             }
+        }
 
 
-            public Buffer(int limit = 5000000)
+        public CircularBuffer(int limit = 5000000)
+        {
+            _itemLimit = limit;
+            _items = new TValue[limit];
+            _itemIndex = 0;
+        }
+
+
+        public TValue[] Get()
+        {
+            lock (_lock)
             {
-                _itemLimit = limit;
-                _items = new TValue[limit];
-                _itemIndex = 0;
+                var result = new TValue[_itemLimit];
+
+                Array.Copy(_items, 0, result, 0, _itemLimit);
+
+                return result;
             }
+        }
 
-
-            public TValue[] Get()
+        public void Add(TValue item)
+        {
+            if (item != null)
             {
                 lock (_lock)
                 {
-                    var result = new TValue[_itemLimit];
-
-                    Array.Copy(_items, 0, result, 0, _itemLimit);
-
-                    return result;
-                }
-            }
-
-            public void Add(TValue item)
-            {
-                if (item != null)
-                {
-                    lock (_lock)
-                    {
-                        Array.Copy(_items, 0, _items, 1, _itemLimit - 1);
-                        _items[0] = item;
-                    }
+                    Array.Copy(_items, 0, _items, 1, _itemLimit - 1);
+                    _items[0] = item;
                 }
             }
         }
