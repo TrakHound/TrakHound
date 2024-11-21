@@ -1,6 +1,7 @@
 // Copyright (c) 2024 TrakHound Inc., All Rights Reserved.
 // TrakHound Inc. licenses this file to you under the MIT license.
 
+using System.Collections.Generic;
 using System.Text;
 
 namespace TrakHound.Entities.Filters
@@ -8,15 +9,17 @@ namespace TrakHound.Entities.Filters
     public class TrakHoundEntityOnChangeFilter
     {
         private readonly string _id;
-        private readonly PersistentDictionary<string, string> _values;
+        private readonly Dictionary<string, string> _values;
+        //private readonly PersistentDictionary<string, string> _values;
         private readonly object _lock = new object();
 
 
         public TrakHoundEntityOnChangeFilter(string id)
         {
             _id = id;
-            _values = new PersistentDictionary<string, string>(id);
-            _values.Recover();
+            _values = new Dictionary<string, string>();
+            //_values = new PersistentDictionary<string, string>(id);
+            //_values.Recover();
         }
 
 
@@ -28,7 +31,8 @@ namespace TrakHound.Entities.Filters
                 {
                     var update = false;
 
-                    var existing = _values.Get(uuid);
+                    //var existing = _values.Get(uuid);
+                    var existing = _values.GetValueOrDefault(uuid);
                     if (existing != null)
                     {
                         update = existing != value;
@@ -40,6 +44,7 @@ namespace TrakHound.Entities.Filters
 
                     if (update)
                     {
+                        if (existing != null) _values.Remove(uuid);
                         _values.Add(uuid, value);
                         return true;
                     }

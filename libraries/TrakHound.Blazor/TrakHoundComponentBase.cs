@@ -93,7 +93,7 @@ namespace TrakHound.Blazor
 
         protected string GetUrl(string destination)
         {
-            return Url.Combine(BaseUrl, destination);
+            return $"/{Url.Combine(BaseUrl, destination)}";
         }
 
         protected string GetPath(string destination)

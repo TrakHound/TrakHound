@@ -8,7 +8,7 @@
 .toolbar-panel {
     grid-row: 1;
     padding: 10px 10px 3px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--borderColor);
 }
 
 .toolbar-container {
@@ -50,6 +50,7 @@
     font-size: 28px;
     font-weight: bold;
     color: #ccc;
+    color: var(--textLight);
     margin-bottom: 10px;
 }
 

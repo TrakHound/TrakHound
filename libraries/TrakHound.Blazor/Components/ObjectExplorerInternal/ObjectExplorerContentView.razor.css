@@ -12,7 +12,7 @@
     padding: 6px 20px 4px;
     padding: 0;
     padding: 0 10px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
     .header-panel .header-content-type-container {
@@ -21,7 +21,7 @@
         grid-template-columns: max-content max-content 1fr;
         grid-column-gap: 12px;
         padding: 7px 10px 4px;
-        border-right: 1px solid #ddd;
+        border-right: 1px solid var(--borderColor);
     }
 
     .header-panel .icon-container {
@@ -30,8 +30,8 @@
 
     .header-panel .icon {
         font-size: 16px;
-        color: var(--accent);
-        color: #aaa;
+        line-height: 24px;
+        color: var(--textLight);
     }
 
     .header-panel .title-container {
@@ -42,8 +42,7 @@
         font-size: 13px;
         font-weight: bold;
         line-height: 18px;
-        color: var(--accent);
-        color: #555;
+        color: var(--textMild);
     }
 
     .header-panel .description-container {
@@ -95,7 +94,7 @@
     }
 
         .content-panel ::deep .timestamp-panel .timestamp-selection {
-            border: 1px solid #f4f4f4;
+            border: 1px solid var(--borderColorVeryLight);
             border-radius: 4px;
             padding: 10px;
         }

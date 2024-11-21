@@ -1,11 +1,17 @@
 ﻿.disconnection-page {
     background: #e9ecef !important;
+    background: var(--panelBackground) !important;
+    background: #1f5793 !important;
+    background: #0d253f !important;
+    background: #123254 !important;
+    background: linear-gradient(180deg, #2464a8, #1f5793) !important;
     position: absolute;
     left: 0;
     top: 0;
     height: 100%;
     width: 100%;
     z-index: 9999;
+    /*display: block !important;*/ /* DEBUG ONLY*/
 }
 
 .disconnection-panel {
@@ -23,6 +29,8 @@
     grid-row: 2;
     grid-column: 2;
     border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
+    border: 1px solid rgba(0, 0, 0, 0.25);
     min-width: 1000px;
 }
 
@@ -35,6 +43,8 @@
     grid-column-end: 3;
     padding: 15px 20px 10px;
     border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--borderColor);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 }
 
 .disconnection-header-logo-container {
@@ -58,6 +68,8 @@
     font-weight: 600;
     font-family: Roboto;
     color: #bbb;
+    color: var(--textLight);
+    color: rgba(0, 0, 0, 0.25);
 }
 
 
@@ -69,6 +81,8 @@
 
 .disconnection-icon {
     color: rgba(0, 0, 0, 0.05);
+    color: var(--textVeryLight);
+    color: rgba(0, 0, 0, 0.15);
     font-size: 150px;
 }
 
@@ -82,14 +96,20 @@
     font-size: 30px;
     font-weight: bold;
     color: #aaa;
+    color: var(--textLight);
+    color: rgba(0, 0, 0, 0.25);
 }
 
 .disconnection-panel-label {
     font-size: 16px;
     color: #888;
+    color: var(--textMild);
+    color: rgba(0, 0, 0, 0.35);
 }
 
 .disconnection-panel-description {
     font-size: 14px;
     color: #333;
+    color: var(--textDark);
+    color: rgba(0, 0, 0, 0.5);
 }

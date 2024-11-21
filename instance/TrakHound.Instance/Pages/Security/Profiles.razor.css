@@ -34,6 +34,7 @@
 .toolbar-panel label {
     display: block;
     line-height: 40px;
+    color: var(--textMild);
 }
 
     .toolbar-panel .btn {
@@ -43,7 +44,9 @@
 
     .toolbar-panel ::deep .spin-edit {
         margin: 0;
+        height: 42px !important;
         width: 140px;
+        margin: 0;
     }
 
     .toolbar-panel ::deep .rz-dropdown {

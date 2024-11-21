@@ -1,16 +1,16 @@
 ﻿.spin-edit {
     display: block;
-    margin: 5px 0px 10px;
+    margin: 0px;
 }
 
     .spin-edit .title {
         font-size: 12px;
-        color: var(--textSecondary);
+        color: var(--textDark);
         margin-bottom: 2px;
     }
 
     .spin-edit .subtitle {
-        color: var(--textSecondary);
+        color: var(--textMild);
         margin-left: 5px;
     }
 
@@ -22,7 +22,6 @@
     .spin-edit .spin-edit-input {
         grid-column: 1;
         min-width: 100px;
-        /*max-width: 180px;*/
     }
 
         .spin-edit .spin-edit-input.small {
@@ -35,8 +34,8 @@
             font-size: 20px;
             border-radius: 0 !important;
             border-right: none !important;
-            background: var(--inputBackground);
-            border: 1px solid #ccc;
+            background: var(--textBackground);
+            border: 1px solid var(--borderColor);
             color: var(--textPrimary);
         }
 
@@ -96,13 +95,13 @@
         }
 
     .spin-edit .spin-edit-btn-top {
-        border: 1px solid var(--borderLight) !important;
+        border: 1px solid var(--borderColor) !important;
     }
 
     .spin-edit .spin-edit-btn-bottom {
-        border-bottom: 1px solid var(--borderLight) !important;
-        border-left: 1px solid var(--borderLight) !important;
-        border-right: 1px solid var(--borderLight) !important;
+        border-bottom: 1px solid var(--borderColor) !important;
+        border-left: 1px solid var(--borderColor) !important;
+        border-right: 1px solid var(--borderColor) !important;
     }
 
     .spin-edit .spin-edit-units {
@@ -115,5 +114,5 @@
         line-height: 35px;
         vertical-align: baseline;
         height: 100%;
-        color: #555;
+        color: var(--textMild);
     }

@@ -2,12 +2,13 @@
     display: grid;
     grid-template-columns: max-content max-content 1fr;
     background: #fafafa;
-    border: 1px solid #eee;
+    background: var(--panelBackgroundMedium);
+    border: 1px solid var(--borderColorLight);
     border-top: none;
 }
 
 .toolbar-buttons-container {
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     padding: 9px 10px 5px;
 }
 
@@ -17,13 +18,13 @@
 }
 
 .toolbar-panel .btn.disabled {
-    background: #efefef;
-    color: #aaa !important;
-    border-color: #ddd !important;
+    background: var(--panelBackgroundLight);
+    color: var(--textLight) !important;
+    border-color: var(--borderColor) !important;
 }
 
     .toolbar-panel .btn.disabled .icon {
-        color: #aaa !important;
+        color: var(--textLight) !important;
     }
 
 
@@ -67,6 +68,7 @@
 
 .toolbar-status-container {
     border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     padding: 8px 40px;
 }
 

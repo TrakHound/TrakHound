@@ -50,7 +50,7 @@
                                 <a href="@GetObjectLink(context.Member)" class="member-item">@context.Member</a>
                             </Template>
                         </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="TableItem" Property="Timestamp" Title="Timestamp" Width="150px" />
+                        <RadzenDataGridColumn TItem="TableItem" Property="Timestamp" Title="Timestamp" Width="170px" />
                         <RadzenDataGridColumn TItem="TableItem" CssClass="delete" Width="70px" Sortable="false">
                             <Template Context="context">
                                 <button class="btn-link btn btn-sm" @onclick="() => DeleteClicked(context.Uuid)">Delete</button>

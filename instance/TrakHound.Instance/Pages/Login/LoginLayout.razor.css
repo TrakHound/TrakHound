@@ -1,7 +1,7 @@
 .login-page {
     height: 100%;
     overflow: hidden;
-    background: #f4f4f4;
+    /*    background: #f4f4f4;
     background: var(--accentVeryDark);
     background: radial-gradient(var(--accentVeryDark), var(--accentVeryVeryDark));
     background: var(--accentVeryVeryDark);
@@ -9,5 +9,12 @@
     background: radial-gradient(#eee, #ddd);
     background: #e9ecef;
     background: var(--accentVeryVeryDark);
-    background: #000;
+    background: #000;*/
+    background: var(--panelBackground);
+    background: var(--accentBackground);
+    background: #2870bd;
+    background: #1f5793;
+/*    background: #123254;*/
+/*    background: #0d253f;*/
+/*    background: #09192a;*/
 }

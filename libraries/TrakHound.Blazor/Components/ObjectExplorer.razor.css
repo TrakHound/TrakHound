@@ -22,6 +22,7 @@
     .object-results ::deep .rz-tabview-panels {
         height: 100%;
         overflow: hidden;
+        border-top: 1px solid var(--borderColor);
     }
 
     .object-results ::deep .rz-tabview-panel {
@@ -61,6 +62,7 @@
     .object-results ::deep .sidebar-tab-header {
         padding: 8px 12px;
         border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--borderColorLight);
     }
 
         .object-results ::deep .sidebar-tab-header .sidebar-tab-header-icon {
@@ -115,7 +117,7 @@
     grid-row-start: 3;
     grid-row-end: 6;
     grid-column: 1;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     display: grid;
     grid-template-rows: max-content 1fr;
     height: 100%;
@@ -124,7 +126,7 @@
 
 .objects-tree-toolbar {
     grid-row: 1;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--borderColor);
 }
 
 .objects-tree-content {
@@ -133,7 +135,7 @@
     height: 100%;
     overflow-x: auto;
     overflow-y: auto;
-    background: #fcfcfe;
+    background: var(--panelBackgroundMedium);
 }
 
     .objects-tree-view ::deep .server-tree-view {
@@ -146,49 +148,21 @@
     grid-row: 2;
     height: 100%;
     overflow: hidden;
-    border-left: 1px solid #ddd;
-    background: #e9ecef;
+    border-left: 1px solid var(--borderColor);
+    background: var(--panelBackground);
 }
 
     .objects-content ::deep .rz-tabview {
         height: 100%;
         overflow: auto;
-        background: #fff;
+        background: var(--panelBackground);
     }
 
     .objects-content ::deep .object-information {
-        background: #fff;
+        background: var(--panelBackground);
     }
 
     .objects-content ::deep .rz-tabview-panel {
         height: 100%;
         overflow: auto;
     }
-
-
-/*.objects-panel ::deep .add-modal .modal-body {
-    padding: 20px 50px 0;
-}
-
-.objects-panel ::deep .add-modal .form-field {
-    display: block;
-    margin-bottom: 20px;
-    width: 100%;
-}
-
-    .objects-panel ::deep .add-modal .form-field label {
-        display: block;
-        font-size: 12px;
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-
-    .objects-panel ::deep .add-modal .form-field .rz-textbox {
-        display: block;
-        width: 100%;
-    }
-
-.objects-panel ::deep .add-modal .btn-primary.disabled .icon {
-    animation: spin 1s linear infinite;
-}*/
-

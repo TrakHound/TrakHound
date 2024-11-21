@@ -5,7 +5,7 @@
     grid-row-gap: 5px;
     padding: 5px 0 0px;
     height: 100%;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
 }
 
 .tool-bar-buttons-left {
@@ -21,7 +21,7 @@
         padding: 3px 8px 2px;
         font-size: 12px;
         border-radius: 2px;
-        margin-right: 0px;
+        margin-right: 5px;
     }
 
     .tool-bar-buttons-left .btn .icon {
@@ -102,8 +102,7 @@
     display: inline-block;
     vertical-align: middle;
     line-height: normal;
-    color: var(--accent);
-    color: #aaa;
+    color: var(--textMild);
     font-size: 12px;
 }
 
@@ -149,8 +148,7 @@
     grid-column-end: 5;
     height: 100%;
     overflow: hidden;
-    /*padding-bottom: 10px;*/
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--borderColor);
 }
 
     .tool-bar-input ::deep .text-area {
@@ -173,22 +171,23 @@
         resize: none;
         border: 1px solid transparent;
         border-radius: 0;
-/*        background: var(--accent);
-        color: white;*/
-background: #fafafa;
-        /*font-weight: 600;*/
+        background: var(--inputBackground) !important;
     }
 
-        .tool-bar-input ::deep textarea:focus {
-            border: 1px solid var(--accentLight);
-            background: #fff;
+        .tool-bar-input ::deep textarea:hover {
+            border: 1px solid var(--inputBorderHover) !important;
+            background: var(--inputBackgroundHover) !important;
         }
 
-        .tool-bar-query-input {
-            border-top: 1px solid #ddd;
-            height: 100%;
-            /*padding-top: 5px;*/
+        .tool-bar-input ::deep textarea:focus {
+            border: 1px solid var(--inputBorderHighlight) !important;
+            background: var(--inputBackgroundHighlight) !important;
         }
+
+.tool-bar-query-input {
+    border-top: 1px solid var(--borderColor);
+    height: 100%;
+}
 
 .tool-bar-expression-input {
     height: 100%;

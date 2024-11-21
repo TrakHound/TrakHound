@@ -24,10 +24,25 @@ namespace TrakHound.Serialization
             Class = TrakHoundObjectsEntityClass.Number.ToString();
         }
 
+        public TrakHoundNumberAttribute(string name)
+        {
+            Category = TrakHoundEntityCategory.Objects.ToString();
+            Class = TrakHoundObjectsEntityClass.Number.ToString();
+            Name = name;
+        }
+
         public TrakHoundNumberAttribute(TrakHoundNumberDataType dataType)
         {
             Category = TrakHoundEntityCategory.Objects.ToString();
             Class = TrakHoundObjectsEntityClass.Number.ToString();
+            DataType = dataType;
+        }
+
+        public TrakHoundNumberAttribute(string name, TrakHoundNumberDataType dataType)
+        {
+            Category = TrakHoundEntityCategory.Objects.ToString();
+            Class = TrakHoundObjectsEntityClass.Number.ToString();
+            Name = name;
             DataType = dataType;
         }
 

@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectLogEntity> Logs => _logs.Values;
-
-
         public void AddLog(ITrakHoundObjectLogEntity entity)
         {
             if (entity != null)

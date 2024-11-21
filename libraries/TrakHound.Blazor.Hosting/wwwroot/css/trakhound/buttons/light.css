@@ -1,0 +1,48 @@
+﻿.btn-light {
+    background: var(--buttonLightBackground);
+    border: 1px solid var(--buttonLightBorder);
+    border-radius: 2px;
+    color: var(--buttonLightText);
+}
+
+    .btn-light:focus {
+        box-shadow: none !important;
+        outline: none;
+        background: var(--buttonLightBackgroundHover) !important;
+        border: 1px solid var(--buttonLightBorderHover) !important;
+    }
+
+    .btn-light:hover {
+        background: var(--buttonLightBackgroundHover);
+        border: 1px solid var(--buttonLightBorderHover);
+        color: var(--buttonLightTextHover);
+    }
+
+    .btn-light.disabled {
+        background: var(--buttonLightBackgroundHover) !important;
+        border-color: var(--buttonLightBorderHover) !important;
+        color: var(--textLight) !important;
+    }
+
+    .btn-light .icon {
+        color: var(--buttonLightIcon);
+    }
+
+    .btn-light:hover .icon {
+        color: var(--buttonLightIconHover);
+    }
+
+.btn-light-success {
+    background: white;
+    border: 1px solid var(--borderLight);
+    font-size: 0.75em;
+}
+
+    .btn-light-success:hover {
+        background: #eee;
+        border: 1px solid #ccc;
+    }
+
+    .btn-light-success .icon {
+        color: var(--colorGreen);
+    }

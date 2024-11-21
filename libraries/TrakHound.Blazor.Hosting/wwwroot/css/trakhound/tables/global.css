@@ -1,7 +1,7 @@
-.table {
+/*.table {
     background: var(--tableBackground);
     border-color: var(--borderVeryLight);
-}
+}*/
 
 .table-head {
     margin-bottom: 0;
@@ -69,13 +69,13 @@
     font-size: 14px;
 }
 
-.table thead th {
+/*.table thead th {
     border: 1px solid var(--borderVeryLight);
-}
+}*/
 
-.table thead tr:first-child {
+/*.table thead tr:first-child {
     border-top: none !important;
-}
+}*/
 
 .table-row.total {
     background: #f8f8f8;

@@ -6,4 +6,15 @@
     --tabHeaderBackground: linear-gradient(0deg, rgb(251,251,251) 0%, rgb(251,251,251) 25%, white 100%);
     --tableBackground: #fff;
     --modalBackground: #fff;
+    /* New Colors (11-16-2024) */
+    --panelBackground: #fff;
+    --panelBackgroundMedium: #fcfcfe;
+    --panelBackgroundDark: #e9ecef;
+    --panelBackground: pink;
+    --panelBackgroundMedium: lightblue;
+    --panelBackgroundDark: hotpink;
+    --panelSidebarBackground: #fafafa;
+    --panelSidebarBackground: purple;
+    --panelItemBackground: #fdfdfd;
+    --panelItemBackground: lavender;
 }

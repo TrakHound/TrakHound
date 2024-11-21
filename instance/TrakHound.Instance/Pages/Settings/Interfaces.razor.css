@@ -6,6 +6,11 @@
     padding: 40px 50px 100px;
 }
 
+    .page ::deep .text-box {
+        margin-bottom: 10px;
+    }
+
     .page ::deep .spin-edit {
         width: 150px;
+        margin-bottom: 10px;
     }

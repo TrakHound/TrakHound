@@ -12,7 +12,7 @@
 .toolbar-panel {
     grid-row: 1;
     padding: 15px 20px 10px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--borderColor);
 }
 
 .toolbar-panel-container {
@@ -34,20 +34,22 @@
         border-radius: 2px;
     }
 
-    .toolbar-panel-browse .btn-browse {
-        height: 43px;
-        width: 120px;
-        font-size: 14px;
-        border-radius: 0;
-        padding: 0;
-        background: #fafafa;
-        border: 1px solid #ccc;
-    }
+.toolbar-panel-browse .btn-browse {
+    height: 43px;
+    width: 120px;
+    font-size: 14px;
+    border-radius: 0;
+    padding: 0;
+/*    background: #fafafa;*/
+/*    border: 1px solid #ccc;*/
+/*    border-bottom: 1px solid var(--borderColorMedium);*/
+}
 
-        .toolbar-panel-browse .btn-browse:hover {
-            background: #eee;
-            border: 1px solid #bbb;
-        }
+    .toolbar-panel-browse .btn-browse:hover {
+/*        background: #eee;
+        border: 1px solid #bbb;
+        border: 1px solid var(--borderColorDark);*/
+    }
 
         .toolbar-panel-browse .btn-browse .icon {
             font-size: 16px;
@@ -94,7 +96,6 @@
     .results-panel td {
         font-size: 12px;
         padding: 1px 20px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         color: var(--accentVeryLight);
     }
 

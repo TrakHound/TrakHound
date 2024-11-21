@@ -5,6 +5,7 @@
     padding-bottom: 200px;
     padding-top: 15px;
     background: #fcfcfe;
+    background: var(--panelBackgroundMedium);
 }
 
     .explorer-tree-view ::deep .folder > .tree-item-content > .tree-item-header-container > .tree-item-header > .default-header-content-container > .icon-container > .icon {

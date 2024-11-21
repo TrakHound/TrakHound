@@ -24,9 +24,9 @@ namespace TrakHound.Clients
         Task<ITrakHoundConsumer<IEnumerable<TrakHoundStatistic>>> SubscribeStatistics(string objectPath, string routerId = null);
 
 
-        Task<bool> PublishStatistic(string objectPath, DateTime rangeStart, DateTime rangeEnd, object value, TrakHoundStatisticDataType? dataType = null, DateTime? timestamp = null, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute, bool async = false, string routerId = null);
+        Task<bool> PublishStatistic(string objectPath, DateTime rangeStart, DateTime rangeEnd, object value, TrakHoundStatisticDataType? dataType = null, DateTime? timestamp = null, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute, bool async = false, string routerId = null);
 
-        Task<bool> PublishStatistic(string objectPath, string rangeStart, string rangeEnd, object value, TrakHoundStatisticDataType? dataType = null, DateTime? timestamp = null, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute, bool async = false, string routerId = null);
+        Task<bool> PublishStatistic(string objectPath, string rangeStart, string rangeEnd, object value, TrakHoundStatisticDataType? dataType = null, DateTime? timestamp = null, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute, bool async = false, string routerId = null);
 
         Task<bool> PublishStatistics(IEnumerable<TrakHoundStatisticEntry> entries, bool async = false, string routerId = null);
     }

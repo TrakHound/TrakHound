@@ -2,6 +2,25 @@
     width: 100%;
 }
 
-.definition-selection ::deep .rz-autocomplete {
-    width: 100%;
-}
+    .definition-selection ::deep .rz-autocomplete {
+        width: 100%;
+        border-color: var(--inputBorder) !important;
+    }
+
+    .definition-selection ::deep .rz-autocomplete input {
+        width: 100%;
+        background: var(--inputBackground) !important;
+        border-color: var(--inputBorder) !important;
+    }
+
+        .definition-selection ::deep .rz-autocomplete input:hover {
+            width: 100%;
+            background: var(--inputBackgroundHover) !important;
+            border-color: var(--inputBorderHover) !important;
+        }
+
+        .definition-selection ::deep .rz-autocomplete input:focus {
+            width: 100%;
+            background: var(--inputBackgroundHighlight) !important;
+            border: 2px solid var(--inputBorderHighlight) !important;
+        }

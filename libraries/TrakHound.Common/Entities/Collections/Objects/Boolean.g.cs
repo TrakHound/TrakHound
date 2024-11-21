@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectBooleanEntity> Booleans => _booleans.Values;
-
-
         public void AddBoolean(ITrakHoundObjectBooleanEntity entity)
         {
             if (entity != null)

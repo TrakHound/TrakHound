@@ -121,7 +121,7 @@ namespace TrakHound.Clients
         }
 
 
-        public async Task<bool> PublishStatistic(string objectPath, DateTime rangeStart, DateTime rangeEnd, object value, TrakHoundStatisticDataType? dataType = null, DateTime? timestamp = null, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute, bool async = false, string routerId = null)
+        public async Task<bool> PublishStatistic(string objectPath, DateTime rangeStart, DateTime rangeEnd, object value, TrakHoundStatisticDataType? dataType = null, DateTime? timestamp = null, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute, bool async = false, string routerId = null)
         {
             if (!string.IsNullOrEmpty(objectPath) && value != null)
             {
@@ -145,7 +145,7 @@ namespace TrakHound.Clients
             return false;
         }
 
-        public async Task<bool> PublishStatistic(string objectPath, string rangeStart, string rangeEnd, object value, TrakHoundStatisticDataType? dataType = null, DateTime? timestamp = null, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute, bool async = false, string routerId = null)
+        public async Task<bool> PublishStatistic(string objectPath, string rangeStart, string rangeEnd, object value, TrakHoundStatisticDataType? dataType = null, DateTime? timestamp = null, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute, bool async = false, string routerId = null)
         {
             if (!string.IsNullOrEmpty(objectPath) && value != null)
             {

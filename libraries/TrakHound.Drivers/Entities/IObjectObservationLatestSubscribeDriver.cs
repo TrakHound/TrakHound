@@ -8,7 +8,7 @@ using TrakHound.Entities;
 namespace TrakHound.Drivers.Entities
 {
     /// <summary>
-    /// Entity Driver used to Subscribe to TrakHound Object Observation Entities
+    /// Driver used to Subscribe to TrakHound Object Observation Entities
     /// </summary>
     public interface IObjectObservationLatestSubscribeDriver : ITrakHoundDriver
     {

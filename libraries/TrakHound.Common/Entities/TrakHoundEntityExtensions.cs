@@ -16,9 +16,38 @@ namespace TrakHound.Entities
                 var x = new Dictionary<string, TEntity>();
                 foreach (var entity in entities)
                 {
-                    if (entity != null && entity.Uuid != null && x.GetValueOrDefault(entity.Uuid) == null)
+                    if (entity != null && entity.Uuid != null)
                     {
-                        x.TryAdd(entity.Uuid, entity);
+                        var existing = x.GetValueOrDefault(entity.Uuid);
+                        if (existing != null)
+                        {
+                            if (typeof(TEntity) == typeof(ITrakHoundObjectEntity))
+                            {
+                                var existingObject = (ITrakHoundObjectEntity)existing;
+                                var entityObject = (ITrakHoundObjectEntity)entity;
+
+                                if (entityObject.Priority >= existingObject.Priority)
+                                {
+                                    if (entity.Created >= existing.Created)
+                                    {
+                                        x.Remove(entity.Uuid);
+                                        x.Add(entity.Uuid, entity);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (entity.Created >= existing.Created)
+                                {
+                                    x.Remove(entity.Uuid);
+                                    x.Add(entity.Uuid, entity);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            x.Add(entity.Uuid, entity);
+                        }
                     }
                 }
                 return x.Select(o => o.Value);
@@ -26,6 +55,24 @@ namespace TrakHound.Entities
 
             return Enumerable.Empty<TEntity>();
         }
+
+        //public static IEnumerable<TEntity> ToDistinct<TEntity>(this IEnumerable<TEntity> entities) where TEntity : ITrakHoundEntity
+        //{
+        //    if (!entities.IsNullOrEmpty())
+        //    {
+        //        var x = new Dictionary<string, TEntity>();
+        //        foreach (var entity in entities)
+        //        {
+        //            if (entity != null && entity.Uuid != null && x.GetValueOrDefault(entity.Uuid) == null)
+        //            {
+        //                x.TryAdd(entity.Uuid, entity);
+        //            }
+        //        }
+        //        return x.Select(o => o.Value);
+        //    }
+
+        //    return Enumerable.Empty<TEntity>();
+        //}
 
 
         //public static object Convert<TEntity>(this TEntity entity, Type type) where TEntity : ITrakHoundEntity

@@ -81,6 +81,90 @@ namespace TrakHound.Clients
             long timestamp,
             string routerId = null);
 
+        Task<IEnumerable<TrakHoundAggregate>> AggregateByObject(
+            string path,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            string routerId = null);
+
+        Task<IEnumerable<TrakHoundAggregate>> AggregateByObject(
+            IEnumerable<string> paths,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            string routerId = null);
+
+        Task<IEnumerable<TrakHoundAggregate>> AggregateByObjectUuid(
+            string objectUuid,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            string routerId = null);
+
+        Task<IEnumerable<TrakHoundAggregate>> AggregateByObjectUuid(
+            IEnumerable<string> objectUuids,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            string routerId = null);
+
+        Task<IEnumerable<TrakHoundAggregateWindow>> AggregateWindowByObject(
+            string path,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            string routerId = null);
+
+        Task<IEnumerable<TrakHoundAggregateWindow>> AggregateWindowByObject(
+            IEnumerable<string> paths,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            string routerId = null);
+
+        Task<IEnumerable<TrakHoundAggregateWindow>> AggregateWindowByObjectUuid(
+            string objectUuid,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            string routerId = null);
+
+        Task<IEnumerable<TrakHoundAggregateWindow>> AggregateWindowByObjectUuid(
+            IEnumerable<string> objectUuids,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            string routerId = null);
+
+        Task<IEnumerable<TrakHoundCount>> CountByObject(
+            string path,
+            long start,
+            long stop,
+            string routerId = null);
+
+        Task<IEnumerable<TrakHoundCount>> CountByObject(
+            IEnumerable<string> paths,
+            long start,
+            long stop,
+            string routerId = null);
+
+        Task<IEnumerable<TrakHoundCount>> CountByObjectUuid(
+            string objectUuid,
+            long start,
+            long stop,
+            string routerId = null);
+
+        Task<IEnumerable<TrakHoundCount>> CountByObjectUuid(
+            IEnumerable<string> objectUuids,
+            long start,
+            long stop,
+            string routerId = null);
+
         Task<ITrakHoundConsumer<IEnumerable<ITrakHoundObjectObservationEntity>>> SubscribeByObject(
             IEnumerable<string> paths,
             int interval = 0,

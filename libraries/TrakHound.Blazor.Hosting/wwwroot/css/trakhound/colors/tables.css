@@ -1,5 +1,5 @@
 :root {
-    --tableHeaderBackground: #fafafa;
+    /*    --tableHeaderBackground: #fafafa;
     --tableHeaderTextColor: var(--textDark);
     --tableHeaderIconColor: var(--textLight);
     --tableHeaderBorderColor: var(--borderVeryLight);
@@ -14,5 +14,9 @@
     --tableHoverBackground: #fafafa;
     --tableHoverTextColor: inherit;
     --tableHoverIconColor: inherit;
-    --tableHoverBorderColor: inherit;
+    --tableHoverBorderColor: inherit;*/
+    --tableBackground: #fff;
+    --tableBackground: #6495ED;
+    --tableHeaderBackground: #f8f8f8;
+    --tableHeaderBackground: #D2691E;
 }

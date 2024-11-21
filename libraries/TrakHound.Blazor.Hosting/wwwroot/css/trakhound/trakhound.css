@@ -1,0 +1,536 @@
+@import url('colors/status.css');
+@import url('icons/global.css');
+@import url('fonts/global.css');
+@import url('buttons/global.css');
+@import url('sidebar/global.css');
+@import url('tables/global.css');
+@import url('tabs/global.css');
+@import url('text/global.css');
+
+@import url('scroll-panel.css');
+@import url('tooltip.css');
+
+body {
+    scrollbar-color: var(--borderColor) var(--borderColorVeryLight);
+    scrollbar-width: thin;
+}
+
+.alert {
+    padding: 8px 20px;
+    font-size: 14px;
+    border-radius: 2px;
+    font-size: 14px;
+}
+
+    .alert .icon {
+        margin-right: 15px;
+        font-size: 16px;
+    }
+
+.rz-autocomplete-panel {
+    border-radius: 0 0 5px 5px !important;
+}
+
+.rz-autocomplete-items {
+    border-radius: 0 !important;
+}
+
+.rz-autocomplete-list-item {
+    padding: 0 !important;
+}
+
+    .rz-autocomplete-list-item span {
+        padding: 0 15px !important;
+        font-size: 14px;
+    }
+
+
+h1:focus {
+    outline: none;
+}
+
+a, .btn-link {
+    color: #0071c1;
+}
+
+.rz-splitter-bar {
+    background: var(--borderColor) !important;
+}
+
+.rz-tabview-panels {
+    border-top: 1px solid var(--borderColor) !important;
+}
+
+.rz-tabview-nav li {
+    transition: none;
+    color: var(--textMild) !important;
+}
+
+    .rz-tabview-nav li:hover {
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .rz-tabview-nav li a {
+        padding: 12px 30px;
+        font-size: 14px;
+        border-right: 1px solid #f4f4f4;
+        border-right: 1px solid var(--borderColorVeryLight);
+        color: var(--textMild) !important;
+    }
+
+    .rz-tabview-nav li:hover a {
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .rz-tabview-nav li .rz-tabview-title {
+        color: var(--textMild) !important;
+    }
+
+    .rz-tabview-nav li .tab-header {
+        color: var(--textMild);
+    }
+
+    .rz-tabview-nav li a .rz-tabview-left-icon {
+        margin-right: 10px;
+    }
+
+
+    .rz-tabview-nav li a .icon {
+        font-size: 16px;
+        line-height: 22px;
+        color: #aaa;
+        color: var(--textLight);
+        vertical-align: top;
+    }
+
+.rz-tabview-selected .icon {
+    color: #0073e6 !important;
+}
+
+.rz-tabview-nav li a .title {
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+
+.rz-notification {
+    position: fixed !important;
+    top: unset !important;
+    bottom: 0px !important;
+    width: 450px;
+}
+
+    .rz-notification .rz-growl-item {
+        padding: 10px 20px;
+        width: 450px;
+    }
+
+        .rz-notification .rz-growl-item .rz-growl-image {
+            font-size: 24px;
+            margin-top: 2px;
+        }
+
+        .rz-notification .rz-growl-item .rz-growl-title {
+            font-size: 12px;
+            display: block;
+        }
+
+        .rz-notification .rz-growl-item p {
+            font-size: 12px;
+        }
+
+        .rz-notification .rz-growl-item .rz-growl-icon-close {
+            font-size: 18px;
+            margin-top: 3px;
+        }
+
+
+.rz-dropdown {
+    padding: 7px 20px 7px 15px;
+    font-size: 14px;
+    border-radius: 2px !important;
+    height: 38px !important;
+    border-color: var(--borderColor);
+    background: var(--inputBackground) !important;
+    color: var(--inputText) !important;
+}
+
+.rz-dropdown {
+    background: var(--inputBackground);
+}
+
+.rz-dropdown .rz-placeholder {
+    font-size: 14px;
+    color: var(--inputPlaceholder) !important;
+}
+
+    .rz-dropdown:hover {
+        border: 1px solid var(--inputBorderHover) !important;
+        background: var(--inputBackgroundHover) !important;
+        color: var(--inputTextHover) !important;
+    }
+
+    .rz-dropdown:focus {
+        border-color: var(--inputBorderHighlight) !important;
+        background: var(--inputBackgroundHighlight) !important;
+        color: var(--inputTextHighlight) !important;
+        box-shadow: inset 0px 0px 1px 1px var(--accentLight) !important;
+        outline: none;
+    }
+
+.rz-dropdown-trigger {
+    height: 35px !important;
+    line-height: 35px !important;
+}
+
+.rz-dropdown-trigger-icon {
+    height: 35px !important;
+    padding-top: 5px;
+}
+
+.rz-dropdown-panel {
+    background: var(--panelItemBackground);
+}
+
+.rz-dropdown-item {
+    padding: 2px 8px !important;
+    color: var(--textDark);
+    font-size: 14px;
+}
+
+    .rz-dropdown-item:hover {
+        background: var(--panelItemBackgroundHover) !important;
+        color: var(--textDark) !important;
+    }
+
+    .rz-dropdown-item.rz-state-highlight {
+        background: var(--panelItemBackgroundHover) !important;
+        color: var(--textDark) !important;
+    }
+
+
+.rz-selectbutton .rz-button-text {
+    font-size: 12px;
+    text-decoration: none;
+    text-transform: none;
+}
+
+.rz-datepicker-calendar td .rz-state-active {
+    background-color: var(--accent);
+}
+
+    .rz-datepicker-calendar td .rz-state-active:hover {
+        background-color: var(--accentLight);
+    }
+
+.rz-datepicker.rz-popup .rz-button-md {
+    background: var(--accent) !important;
+}
+
+    .rz-datepicker.rz-popup .rz-button-md:hover {
+        background: var(--accentLight) !important;
+    }
+
+    .rz-datepicker.rz-popup .rz-button-md:hover {
+        background: var(--accentLight) !important;
+    }
+
+
+table tbody {
+    background: var(--tableBackground);
+    border-color: var(--tableBorderColor);
+}
+
+    table th {
+        background: var(--tableHeaderBackground) !important;
+        border-color: var(--tableHeaderBorderColor);
+        border-right: 1px solid var(--tableHeaderBorderColor) !important;
+        border-bottom: 1px solid var(--tableHeaderBorderColor) !important;
+        color: var(--tableHeaderText) !important;
+    }
+
+        table th:last-child {
+            border-right: none !important;
+        }
+
+table td {
+    background: none;
+    border: none;
+    border-color: var(--tableBorderColor);
+    border-right: 1px solid var(--tableBorderColor);
+    border-bottom: 1px solid var(--tableBorderColor);
+    color: var(--tableText);
+}
+
+table td:last-child {
+    border-right: none;
+}
+
+.rz-data-grid {
+    background: var(--tableBackground) !important;
+    border-color: var(--tableBorderColor) !important;
+}
+
+    .rz-data-grid table thead {
+        border-bottom: 1px solid var(--tableHeaderBorderColor) !important;
+    }
+
+    .rz-data-grid table th {
+        background: var(--tableHeaderBackground);
+        border-bottom: 1px solid var(--tableHeaderBorderColor) !important;
+        border-right: 1px solid var(--tableHeaderBorderColor) !important;
+    }
+
+    .rz-data-grid table th:last-child {
+        border-right: none !important;
+    }
+
+        .rz-data-grid table th .rz-column-title {
+            color: var(--tableHeaderText);
+        }
+
+    .rz-data-grid table tr:not(.rz-expanded-row-content):nth-child(odd) > td {
+        background: none;
+    }
+
+    .rz-data-grid table tr:not(.rz-expanded-row-content):nth-child(even) > td {
+        background: rgba(0, 0, 0, 0.025);
+    }
+
+    .rz-data-grid .rz-column-title-content {
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .rz-data-grid .rz-column-resizer:hover::after {
+        background-color: var(--accent);
+    }
+
+    .rz-data-grid tr {
+        border-color: var(--tableBorderColor) !important;
+    }
+
+    .rz-data-grid td {
+        border-bottom: 1px solid var(--tableBorderColor) !important;
+        border-right: 1px solid var(--tableBorderColor) !important;
+    }
+
+    .rz-data-grid td:last-child {
+        border-right: none !important;
+    }
+
+    .rz-data-grid td,
+    .rz-data-grid .rz-cell-data {
+        transition: none !important;
+        border-color: var(--tableBorderColor) !important;
+        color: var(--tableText) !important;
+    }
+
+.rz-data-row:hover td {
+    background: #f4f4f4 !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    transition: none !important;
+}
+
+.rz-data-row.rz-state-highlight td {
+    border-bottom: 1px solid #99ccff;
+}
+
+.rz-data-row.rz-state-highlight td {
+    background: #cce6ff !important;
+    color: #004d99 !important;
+}
+
+.rz-data-row.rz-state-highlight .rz-cell-data,
+.rz-data-row.rz-state-highlight .rz-cell-data a {
+    color: #004d99 !important;
+}
+
+    .rz-data-row.rz-state-highlight .rz-cell-data a:hover {
+        color: #0073e6 !important;
+    }
+
+.text-box input,
+.text-area textarea,
+textarea,
+.spin-edit input,
+.rz-numeric input,
+.rz-datepicker input,
+.rz-textbox {
+    background: var(--inputBackground) !important;
+    border-color: var(--inputBorder) !important;
+    color: var(--inputText) !important;
+}
+
+    .text-box input:hover,
+    .text-area textarea:hover,
+    textarea:hover,
+    .rz-numeric input:hover,
+    .rz-datepicker input:hover,
+    .spin-edit input:hover {
+        background: var(--inputBackgroundHover) !important;
+        border-color: var(--inputBorderHover) !important;
+        color: var(--inputTextHover) !important;
+    }
+
+    .text-box input:focus,
+    .text-area textarea:focus,
+    textarea:focus,
+    .rz-numeric input:focus,
+    .rz-datepicker input:focus,
+    .spin-edit input:focus {
+        background: var(--inputBackgroundHighlight) !important;
+        border-color: var(--inputBorderHighlight) !important;
+        color: var(--inputTextHighlight) !important;
+    }
+
+.rz-menu {
+    background: #fff !important;
+    color: var(--accent);
+    padding-left: 10px !important;
+}
+
+.rz-navigation-item-link,
+.rz-navigation-item-text,
+.rz-navigation-item-icon {
+    color: inherit !important;
+}
+
+.rz-menu > .rz-navigation-item > .rz-navigation-item-wrapper > .rz-navigation-item-link {
+    border-right: 1px solid #eee;
+    border-right: 1px solid var(--borderColorLight);
+    padding-right: 20px;
+    margin-right: 10px;
+}
+
+.rz-navigation-item-link:hover {
+    color: var(--accentLight) !important;
+}
+
+.rz-navigation-item-text {
+    font-size: 12px;
+}
+
+.rz-navigation-item-icon {
+    font-size: 16px;
+}
+
+.rz-navigation-item-icon-children {
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+
+.text-box input:hover {
+    border-color: #555 !important;
+}
+
+.text-box input:focus {
+    border-color: var(--accentLight) !important;
+    box-shadow: inset 0px 0px 1px 1px var(--accentLight) !important;
+    outline: none;
+}
+
+
+
+.rz-calendar input:focus {
+    border-color: var(--accentLight) !important;
+    box-shadow: inset 0px 0px 1px 1px var(--accentLight) !important;
+    outline: none;
+}
+
+
+/*.rz-datepicker input {
+    border-color: var(--inputBorderColor) !important;
+    background: var(--inputBackground) !important;
+    color: var(--inputText) !important;
+}
+
+.rz-datepicker input {
+    border-color: var(--inputBorderColor) !important;
+    background: var(--inputBackground) !important;
+    color: var(--inputText) !important;
+}
+
+.rz-datepicker .rz-state-active {
+    background: var(--accent) !important;
+}*/
+
+.rz-datepicker input {
+    font-size: 14px !important;
+}
+
+.rz-datepicker .rz-button-icon-left {
+    color: var(--textMild);
+}
+
+.rz-datepicker .rz-button-icon-left:hover {
+    color: var(--inputTextHighlight);
+}
+
+
+#reconnection-panel {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 9998;
+}
+
+#reconnection-toast {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    width: 275px;
+    height: 100px;
+    background: rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 8px 0px rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 3px;
+    padding: 20px;
+    text-align: left;
+    z-index: 9999;
+}
+
+    #reconnection-toast .title {
+        display: block;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+        #reconnection-toast .title .icon {
+            font-size: 16px;
+            margin-right: 15px;
+        }
+
+    #reconnection-toast .label {
+        display: block;
+        font-size: 14px;
+    }
+
+
+.spin {
+    animation: spin 0.75s infinite forwards linear;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}

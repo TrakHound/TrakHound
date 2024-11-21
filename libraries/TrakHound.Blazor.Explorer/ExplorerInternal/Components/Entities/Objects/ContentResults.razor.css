@@ -7,7 +7,7 @@
 
     .results-panel .results-toolbar-panel {
         grid-row: 1;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--borderColor);
         padding: 5px;
         display: grid;
         grid-template-columns: max-content 1fr max-content;
@@ -39,14 +39,14 @@
         padding: 3px 8px !important;
         margin-right: 0px;
         border-radius: 0;
-        border: 1px solid #ddd;
+        border: 1px solid var(--borderColor);
         border-right: none;
         font-size: 13px;
         line-height: 18px;
     }
 
         .results-panel .results-toolbar-panel .btn:last-child {
-            border-right: 1px solid #ddd;
+            border-right: 1px solid var(--borderColor);
         }
 
         .results-panel .results-toolbar-panel .btn:focus {
@@ -85,10 +85,10 @@
         padding: 5px 10px;
     }
 
-.results-table-panel ::deep th {
-    border-right: 1px solid #ddd !important;
-    padding: 0;
-}
+            .results-table-panel ::deep th {
+                border-right: 1px solid var(--borderColor) !important;
+                padding: 0;
+            }
 
     .results-table-panel ::deep th > div {
         padding: 0 !important;
@@ -115,15 +115,19 @@
     font-size: 12px;
 }
 
-.results-table-panel ::deep td {
-    border-right: 1px solid #ddd !important;
-    border-bottom: 1px solid #ddd !important;
-    padding: 5px 10px;
-}
+            .results-table-panel ::deep td {
+                border-right: 1px solid var(--borderColor) !important;
+                border-bottom: 1px solid var(--borderColor) !important;
+                padding: 5px 10px;
+            }
 
 .results-table-panel ::deep .rz-density-compact td {
     padding: 1px 5px;
 }
+
+    .results-table-panel ::deep td .rz-cell-data a {
+        color: var(--buttonLinkText) !important;
+    }
 
 .results-table-panel ::deep td:last-child {
     border-right: none !important;

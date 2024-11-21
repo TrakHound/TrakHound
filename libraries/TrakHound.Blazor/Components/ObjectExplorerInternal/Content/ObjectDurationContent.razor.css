@@ -7,7 +7,7 @@
 
 .input-panel {
     grid-row: 1;
-    padding: 7px 10px 11px;
+    padding: 7px 10px 6px;
 }
 
 .input-panel-container {
@@ -55,13 +55,13 @@
         margin-right: 0;
     }
 
-.input-panel ::deep .rz-spinner {
+.input-panel ::deep .rz-numeric {
     height: 44px !important;
 }
 
-.input-panel ::deep .rz-spinner input {
-    font-size: 14px;
-}
+    .input-panel ::deep .rz-numeric input {
+        font-size: 14px;
+    }
 
 .input-panel-type ::deep .rz-dropdown {
     width: 200px;
@@ -79,13 +79,13 @@
 .query-panel {
     grid-row: 2;
     padding: 0 10px 12px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
 .query-panel-container {
     display: grid;
     grid-template-columns: max-content 1fr;
-    border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
 }
 
 .query-panel .query-label {
@@ -93,9 +93,9 @@
     font-size: 12px;
     font-weight: 500;
     padding: 5px 10px;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     border-radius: 2px;
-    color: #777;
+    color: var(--textMild);
 }
 
 .query-panel .btn-query {
@@ -126,7 +126,7 @@
 
     .value-panel .table td {
         font-size: 12px;
-        border-color: #f8f8f8;
+/*        border-color: #f8f8f8;*/
     }
 
         .value-panel .table td.key {
@@ -137,12 +137,12 @@
 .information-panel {
     grid-row: 2;
     padding: 5px 10px 0;
-    border-top: 1px solid #eee;
+/*    border-top: 1px solid #eee;*/
 }
 
     .information-panel .table td {
         font-size: 12px;
-        border-color: #eee;
+/*        border-color: #eee;*/
     }
 
         .information-panel .table td.key {

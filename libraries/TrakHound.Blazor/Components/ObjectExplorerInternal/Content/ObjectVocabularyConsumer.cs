@@ -32,22 +32,18 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         {
             if (_client != null && !objects.IsNullOrEmpty())
             {
-                var contentObjs = objects.Where(o => o.ContentType == TrakHoundObjectContentTypes.Vocabulary);
-                if (!contentObjs.IsNullOrEmpty())
+                var objectUuids = objects.Select(o => o.Uuid).Distinct();
+
+                var entities = await _client.System.Entities.Objects.Vocabulary.QueryByObjectUuid(objectUuids);
+                if (!entities.IsNullOrEmpty())
                 {
-                    var objectUuids = contentObjs.Select(o => o.Uuid).Distinct();
-
-                    var entities = await _client.System.Entities.Objects.Vocabulary.QueryByObjectUuid(objectUuids);
-                    if (!entities.IsNullOrEmpty())
+                    foreach (var entity in entities)
                     {
-                        foreach (var entity in entities)
-                        {
-                            UpdateValue(entity);
-                        }
+                        await UpdateValue(entity);
                     }
+                }
 
-                    await Subscribe(objectUuids);
-                }  
+                await Subscribe(objectUuids);
             }
         }
 

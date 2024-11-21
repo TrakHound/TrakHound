@@ -2,12 +2,12 @@
     display: block;
     padding: 0 20px 20px 40px;
     margin-bottom: 20px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
     .description-panel .panel-label {
         padding-bottom: 5px;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--borderColorLight);
     }
 
     .description-panel td {
@@ -16,13 +16,12 @@
 
 .description-panel .label {
     font-size: 12px;
-    color: #555;
+    color: var(--textMild);
     padding-right: 20px;
 }
 
     .description-panel .value {
         font-size: 12px;
-        color: #000;
     }
 
     .description-panel .value a {
@@ -35,7 +34,7 @@
     display: block;
     padding: 0px 20px 0 40px;
     margin-bottom: 40px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
 .metadata-panel-container {
@@ -56,7 +55,6 @@
 
     .metadata-toolbar-container .btn {
         font-size: 13px;
-        border-color: #ddd;
         border-radius: 2px;
         padding: 8px 15px;
     }
@@ -75,13 +73,13 @@
 .inheritance-panel {
     display: block;
     padding: 0px 20px 0 40px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
 .transaction-panel {
     display: block;
     padding: 0px 20px 0 40px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
 .source-panel {
@@ -93,6 +91,6 @@
     display: block;
     font-size: 28px;
     font-weight: bold;
-    color: #ccc;
+    color: var(--textVeryLight);
     margin-bottom: 10px;
 }

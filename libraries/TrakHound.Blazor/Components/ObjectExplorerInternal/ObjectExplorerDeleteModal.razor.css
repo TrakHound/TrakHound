@@ -1,0 +1,7 @@
+.delete-modal-message {
+    color: var(--textMild);
+}
+
+.delete-modal-item {
+    color: var(--textDark);
+}

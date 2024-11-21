@@ -34,25 +34,25 @@
     grid-column-start: 1;
     grid-column-end: 3;
     padding: 0px 10px 15px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
     .header-panel .icon {
         font-size: 16px;
-        color: #aaa;
+        color: var(--textLight);
         margin-right: 5px;
     }
 
     .header-panel .title {
         font-size: 14px;
         font-weight: bold;
-        color: #333;
+        color: var(--textDark);
         margin-right: 10px;
     }
 
     .header-panel .subtitle {
         font-size: 12px;
-        color: #888;
+        color: var(--textMild);
     }
 
 .toolbar-panel {
@@ -75,23 +75,23 @@
 }
 
 
-.table {
+/*.table {
     background: #fafafa;
     border: 1px solid #eee;
-}
+}*/
 
 th {
     font-size: 13px;
     font-weight: bold;
     border: none !important;
-    border-right: 1px solid #eee !important;
+/*    border-right: 1px solid #eee !important;*/
     padding: 5px 10px;
 }
 
 td {
     font-size: 13px;
     padding: 5px 15px;
-    background: #fff;
+/*    background: #fff;*/
     height: auto;
 }
 
@@ -144,7 +144,7 @@ td {
             line-height: 10px !important;
             height: 24px;
             background: #fafafa;
-            background: var(--accentVeryVeryLight) !important;
+            background: var(--accentVeryLight) !important;
         }
 
             td ::deep .text-box input:focus {
@@ -183,21 +183,17 @@ td {
 }
 
     .response-information .table {
-        background: #fafafa;
-        border: 1px solid #ddd;
         width: 100%;
     }
 
         .response-information .table td {
             font-size: 14px;
             padding: 8px 20px;
-            background: #fafafa;
         }
 
             .response-information .table td.label {
                 width: 130px;
                 font-weight: bold;
-                border-right: 1px solid #ddd;
             }
 
 
@@ -205,8 +201,8 @@ td {
     display: grid;
     grid-template-columns: max-content max-content max-content max-content 1fr;
     font-size: 13px;
-    background: #f8f8f8;
-    border: 1px solid #ddd;
+    background: var(--panelBackgroundMedium);
+    border: 1px solid var(--borderColor);
     width: 100%;
     margin: 10px 0;
 }
@@ -215,55 +211,58 @@ td {
     padding: 10px;
     width: 120px;
     text-align: center;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
 }
 
 .request-status {
     font-weight: bold;
     color: #333;
+    color: var(--textDark);
 }
 
 .request-duration-container {
     padding: 10px;
     min-width: 100px;
     text-align: center;
-    border-right: 1px solid #ddd;
-    background: #f8f8f8;
+    border-right: 1px solid var(--borderColor);
+    background: var(--panelBackgroundMedium);
 }
 
 #request-duration {
     font-weight: bold;
     color: #333;
+    color: var(--textDark);
 }
 
 .request-started-container {
     padding: 10px;
     width: 250px;
     text-align: center;
-    border-right: 1px solid #ddd;
-    background: #f8f8f8;
+    border-right: 1px solid var(--borderColor);
+    background: var(--panelBackgroundMedium);
 }
 
 .request-started {
     color: #333;
+    color: var(--textDark);
 }
 
 .request-completed-container {
     padding: 10px;
     width: 250px;
     text-align: center;
-    border-right: 1px solid #ddd;
-    background: #f8f8f8;
+    border-right: 1px solid var(--borderColor);
+    background: var(--panelBackgroundMedium);
 }
 
 .request-completed {
-    color: #333;
+    color: var(--textDark);
 }
 
 .request-id-container {
     padding: 10px;
     text-align: center;
-    background: #f8f8f8;
+    background: var(--panelBackgroundMedium);
 }
 
 .request-id {

@@ -5,23 +5,28 @@
     background: var(--accentVeryLight);
     border: 1px solid var(--accent);
     background: #fff;
+    background: var(--panelItemBackground);
     border: 1px solid #bbb;
+    border: 2px solid var(--borderColorMedium);
     border-radius: 4px;
 }
 
 .diagram-node .target-node:hover {
     background: var(--accentVeryVeryLight);
+    background: var(--panelItemBackgroundHover);
     border: 1px solid var(--accentLight);
 }
 
 .diagram-node.selected .target-node {
     background: var(--accentVeryLight);
+    background: var(--panelItemBackgroundHover);
     border: 1px solid var(--accent);
 }
 
 .target-node .node-type {
     font-size: 10px;
     color: rgba(0, 0, 0, 0.5);
+    color: var(--textMild);
     text-align: center;
     margin: 0;
     padding: 0;
@@ -41,21 +46,25 @@
 .target-node .node-package {
     font-size: 11px;
     font-weight: bold;
+    color: var(--textMild);
 }
 
     .target-node .node-package .icon {
         margin-right: 8px;
         color: rgba(0, 0, 0, 0.4);
+        color: var(--textMild);
     }
 
 .target-node .node-name {
     font-size: 13px;
     font-weight: bold;
+    color: var(--textDark);
 }
 
 .target-node .node-id {
     font-size: 9px;
     color: rgba(0, 0, 0, 0.25);
+    color: var(--textLight);
     text-align: center;
 }
 
@@ -69,7 +78,9 @@
     width: 18px;
     height: 18px;
     background: #fff;
+    background: var(--panelItemBackground);
     border: 1px solid #aaa;
+    border: 1px solid var(--borderColorMedium);
 }
 
     ::deep .diagram-port:hover {

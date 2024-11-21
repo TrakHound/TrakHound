@@ -17,8 +17,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectAssignmentEntity> Assignments => _assignments.Values;
-
-
         public void AddAssignment(ITrakHoundObjectAssignmentEntity entity)
         {
             if (entity != null)

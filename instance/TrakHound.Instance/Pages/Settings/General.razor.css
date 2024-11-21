@@ -5,3 +5,7 @@
     max-width: 600px;
     padding: 40px 50px 100px;
 }
+
+.page ::deep .text-box {
+    margin-bottom: 10px;
+}

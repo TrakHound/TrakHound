@@ -8,7 +8,7 @@
 
 .input-panel {
     grid-row: 1;
-    padding: 8px 10px 0;
+    padding: 8px 10px 5px;
 }
 
 .input-panel-container {
@@ -51,6 +51,14 @@
     height: 44px !important;
 }
 
+.input-panel ::deep .rz-numeric {
+    height: 44px !important;
+}
+
+    .input-panel ::deep .rz-numeric input {
+        font-size: 14px;
+    }
+
 
 .query-panel {
     grid-row: 2;
@@ -60,7 +68,7 @@
 .query-panel-container {
     display: grid;
     grid-template-columns: max-content 1fr;
-    border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
 }
 
 .query-panel .query-label {
@@ -68,9 +76,9 @@
     font-size: 12px;
     font-weight: 500;
     padding: 5px 10px;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     border-radius: 2px;
-    color: #777;
+    color: var(--textMild);
 }
 
 .query-panel .btn-query {
@@ -93,14 +101,6 @@
         width: auto;
     }
 
-    .table-panel ::deep th {
-        border-bottom: 1px solid #ddd !important;
+    .table-panel ::deep td .rz-cell-data {
+        font-size: 12px;
     }
-
-    .table-panel ::deep td {
-        border-bottom: 1px solid #ddd !important;
-    }
-
-        .table-panel ::deep td .rz-cell-data {
-            font-size: 12px;
-        }

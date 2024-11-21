@@ -36,24 +36,34 @@
 }
 
 .table {
-    background: #fafafa;
-    border: 1px solid #eee;
     margin: 0;
+    border-top: none !important;
+}
+
+thead {
+    border: none !important;
+    border-top: none !important;
+    border-bottom: 1px solid var(--tableHeaderBorderColor) !important;
+}
+
+thead tr {
+    border: none !important;
 }
 
 th {
     font-size: 13px;
     font-weight: bold;
     border: none !important;
-    border-right: 1px solid #eee !important;
+    border-top: none !important;
     padding: 2px 10px;
+    background: var(--tableHeaderBackground) !important;
+    color: var(--tableHeaderText) !important;
 }
 
 td {
     font-size: 13px;
     line-height: 26px;
     padding: 2px 15px;
-    background: #fff;
     height: auto;
 }
 
@@ -92,12 +102,13 @@ td {
             width: 100%;
             font-size: 13px !important;
             border-radius: 0;
-            border: 1px solid var(--accentKindaLight);
+            border: 1px solid var(--inputPrimaryBorder) !important;
             padding: 0px 10px !important;
             line-height: 10px !important;
             height: 24px !important;
-            background: #fafafa;
-            background: var(--accentVeryVeryLight) !important;
+            background: var(--accentVeryLight) !important;
+            background: var(--inputPrimaryBackground) !important;
+            color: var(--inputPrimaryText) !important;
         }
 
             .value-cell ::deep .text-box.small input::placeholder {
@@ -117,9 +128,11 @@ td {
         border-radius: 0;
         border: 1px solid transparent;
         border: 1px solid var(--accentKindaLight);
+        border: 1px solid var(--inputPrimaryBorder) !important;
         min-height: 100px;
-        background: #fafafa;
         background: var(--accentVeryVeryLight) !important;
+        background: var(--accentVeryLight) !important;
+        background: var(--inputPrimaryBackground) !important;
         margin-top: 2px;
         margin-bottom: 0;
     }
@@ -143,6 +156,8 @@ td {
 
     .value-cell .body-upload-toolbar {
         background: var(--accentVeryVeryLight);
+        background: var(--accentVeryLight);
+        background: var(--inputPrimaryBackground) !important;
         padding: 0;
     }
 
@@ -150,8 +165,12 @@ td {
             width: 100px;
             border: none;
             background: var(--accentVeryVeryLight);
+            background: var(--accentVeryLight);
+            background: var(--inputPrimaryBackground) !important;
             color: var(--accent);
+            color: var(--inputPrimaryText) !important;
             border-right: 1px solid var(--accentVeryLight);
+            border-right: 1px solid var(--inputPrimaryBorder) !important;
             border-radius: 0 !important;
             margin: 0;
             top: 0px;
@@ -162,22 +181,26 @@ td {
             .value-cell .body-upload-toolbar ::deep .rz-dropdown:focus {
                 border: none !important;
                 border-right: 1px solid var(--accentVeryLight) !important;
+                border-right: 1px solid var(--inputPrimaryBorder) !important;
                 outline: none !important;
                 box-shadow: none !important;
             }
 
         .value-cell .body-upload-toolbar ::deep .rz-dropdown-trigger {
             height: 30px !important;
+            color: var(--inputPrimaryText) !important;
         }
 
     .value-cell .body-upload-content {
         border-top: 1px solid var(--accentVeryLight);
+        border-top: 1px solid var(--inputPrimaryBorder);
     }
 
         .value-cell .body-upload-content ::deep textarea {
             height: 100%;
             margin: 0 !important;
             border: none;
+            color: var(--inputPrimaryText);
         }
 
             .value-cell .body-upload-content ::deep textarea:hover {
@@ -198,13 +221,17 @@ td {
             .value-cell .body-upload-content .body-upload-file .body-upload-file-button {
                 border-left: 1px solid var(--accentLight);
                 border-right: 1px solid var(--accentLight);
+                border-left: 1px solid var(--inputPrimaryBorder);
+                border-right: 1px solid var(--inputPrimaryBorder);
             }
 
                 .value-cell .body-upload-content .body-upload-file .body-upload-file-button .btn {
                     height: 31px;
                     font-size: 12px !important;
                     background: var(--accentVeryLight);
+                    background: var(--inputPrimaryBackground);
                     color: var(--accentDark);
+                    color: var(--inputPrimaryText);
                     border: none !important;
                     border-radius: 0 !important;
                     margin: 0 !important;
@@ -242,10 +269,14 @@ td {
 
             .value-cell .body-upload-content .body-upload-file .body-upload-file-size {
                 background: var(--accentVeryVeryLight);
+                background: var(--accentVeryLight);
+                background: var(--inputPrimaryBackground);
                 border-right: 1px solid var(--accentVeryLight);
+                border-right: 1px solid var(--inputPrimaryBorder);
                 padding: 0 15px;
                 line-height: 30px;
                 color: var(--accent);
+                color: var(--inputPrimaryText);
                 font-size: 12px;
                 font-weight: bold;
             }
@@ -265,7 +296,7 @@ td {
     display: grid;
     grid-template-columns: max-content max-content max-content 1fr;
     font-size: 13px;
-    border: 1px solid #eee;
+    border: 1px solid var(--borderColorLight);
     width: 100%;
 }
 
@@ -273,17 +304,16 @@ td {
     padding: 10px;
     width: 70px;
     text-align: center;
-    border-right: 1px solid #eee;
-    background: #f8f8f8;
+    border-right: 1px solid var(--borderColorLight);
 }
 
 .request-method {
     font-weight: bold;
-    color: #777;
+    color: var(--textMild);
 }
 
 .request-toolbar-container {
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
 }
 
     .request-toolbar-container .btn {
@@ -293,8 +323,7 @@ td {
     }
 
         .request-toolbar-container .btn:hover {
-            border: none;
-            background: var(--accentVeryVeryLight);
+            border: none !important;
         }
 
         .request-toolbar-container .btn .icon {
@@ -316,29 +345,37 @@ td {
 
 .request-parameters {
     overflow: auto;
+    border-top: 1px solid var(--tableBorderColor);
+    border-left: 1px solid var(--tableBorderColor);
 }
 
-    .request-parameters table {
-        border-top: none;
-    }
+/*    .request-parameters .table {
+        border-top: none !important;
+        border-color: red !important;
+        border-top: 1px solid blue !important;
+    }*/
 
-.request-parameters table th {
-    position: sticky;
-    top: 0;
-    background: #fafafa;
-    border-bottom: 1px solid #eee !important;
-}
+/*    .request-parameters table thead {
+        border-top: none !important;
+    }*/
+
+        .request-parameters table th {
+            position: sticky;
+            top: 0;
+            border-top: none !important;
+            border-bottom: 1px solid var(--tableHeaderBorderColor) !important;
+        }
 
 .response-information {
     grid-row: 3;
 }
 
     .response-information.success {
-        background: var(--colorGreenHover);
+        background: var(--colorGreenHover) !important;
     }
 
         .response-information.success td {
-            color: var(--colorGreenDark);
+            color: var(--colorGreenDark) !important;
         }
 
             .response-information.success td.label-cell {
@@ -353,11 +390,11 @@ td {
             }
 
     .response-information.error {
-        background: var(--colorRedHover);
+        background: var(--colorRedHover) !important;
     }
 
         .response-information.error td {
-            color: var(--colorRedDark);
+            color: var(--colorRedDark) !important;
         }
 
             .response-information.error td.label-cell {
@@ -373,11 +410,18 @@ td {
 
     .response-information table {
         width: auto;
-        background: none;
+        background: none !important;
+        border: none !important;
     }
 
+        .response-information table tbody {
+            background: none !important;
+            border: none !important;
+        }
+
         .response-information table td {
-            background: none;
+            background: none !important;
+            border-bottom: none !important;
         }
 
             .response-information table td.label-cell {
@@ -408,12 +452,13 @@ td {
 .response-parameters {
     width: 100%;
     overflow: hidden;
+    border-top: 1px solid var(--tableBorderColor);
+    border-left: 1px solid var(--tableBorderColor);
 }
 
     .response-parameters .table {
         width: auto;
         min-width: 400px;
-        max-width: 1000px;
         border-top: none;
     }
 
@@ -428,7 +473,6 @@ td {
 
         .response-parameters .table th {
             font-size: 12px !important;
-            border-bottom: 1px solid #ddd;
         }
 
         .response-parameters .table td {
@@ -439,7 +483,7 @@ td {
 
             .response-parameters .table td.parameter-key {
                 min-width: 150px;
-                border-right: 1px solid #eee;
+                border-right: 1px solid var(--borderColorLight);
             }
 
             .response-parameters .table td.parameter-value {
@@ -450,5 +494,5 @@ td {
     grid-row: 5;
     height: 100%;
     overflow: hidden;
-    border: 1px solid #eee;
+    border: 1px solid var(--borderColorLight);
 }

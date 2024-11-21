@@ -30,12 +30,12 @@
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
 
     @* TrakHound Stylesheets *@
-    <link rel="stylesheet" href="_content/TrakHound.Blazor.Hosting/css/trakhound/light/trakhound-ui.css" />
+    <link rel="stylesheet" href="_content/TrakHound.Blazor.Hosting/css/trakhound/trakhound.css" />
     <link rel="stylesheet" href="_content/TrakHound.Blazor.Diagrams/style.css" />
     <link rel="stylesheet" href="_content/TrakHound.Blazor.Diagrams/default.styles.css" />
 
     @* Application Stylesheet *@
-    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="admin.css" />
     <link rel="stylesheet" href="TrakHound.Instance.styles.css" />
 
     @* Favicon *@
@@ -58,6 +58,7 @@
     <meta name="theme-color" content="#ffffff">
 
     <TrakHoundHeadOutlet @rendermode="new InteractiveServerRenderMode(prerender: true)" />
+    <TrakHoundThemeOutlet @rendermode="new InteractiveServerRenderMode(prerender: true)" />
 
 </head>
 

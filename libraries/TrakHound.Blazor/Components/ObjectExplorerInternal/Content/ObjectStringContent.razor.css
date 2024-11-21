@@ -45,7 +45,7 @@
 .query-panel-container {
     display: grid;
     grid-template-columns: max-content 1fr;
-    border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
 }
 
 .query-panel .query-label {
@@ -53,9 +53,9 @@
     font-size: 12px;
     font-weight: 500;
     padding: 5px 10px;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     border-radius: 2px;
-    color: #777;
+    color: var(--textMild);
 }
 
 .query-panel .btn-query {
@@ -98,12 +98,10 @@
         min-height: 100px;
         height: 100%;
         border-radius: 0;
-        background: #fafafa;
         padding: 10px 20px;
     }
 
         .value-panel ::deep textarea:focus {
-            background: #fff;
             box-shadow: none;
         }
 
@@ -114,7 +112,6 @@
 
     .information-panel .table td {
         font-size: 12px;
-        border-color: #eee;
     }
 
         .information-panel .table td.key {

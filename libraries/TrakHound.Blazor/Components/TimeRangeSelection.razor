@@ -1,0 +1,278 @@
+﻿@{
+    var disabled = IsEnabled ? "" : "disabled";
+    var nextDisabled = Max != null && To >= Max ? "disabled" : "";
+}
+
+<div class="time-range-selection">
+    <div class="date-selection-container">
+        <div class="select-container from-selection">
+            <RadzenDatePicker TValue="DateTime" Value="@From" Change="FromSelected" ShowTime="@ShowTime" ShowSeconds="true" HoursStep="1" MinutesStep="1" SecondsStep="1" Kind="DateTimeKind" HourFormat="12" />
+        </div>
+        <div class="select-container to-selection">
+            <label>To</label>
+            <RadzenDatePicker TValue="DateTime" Value="@To" Change="ToSelected" ShowTime="@ShowTime" ShowSeconds="true" HoursStep="1" MinutesStep="1" SecondsStep="1" Kind="DateTimeKind" HourFormat="12" />
+        </div>
+
+        @if (ShowMonths)
+        {
+            <div class="select-container month-selection">
+                <label>Month</label>
+                <RadzenDropDown TValue="string" Data="@GetMonthList()" @bind-Value="@selectedMonth" Change="MonthSelected" />
+            </div>
+        }
+
+        @if (ShowYears)
+        {
+            <div class="select-container year-selection">
+                <label>Year</label>
+                <RadzenDropDown TValue="string" Data="@GetYearList()" @bind-Value="@selectedYear" Change="YearSelected" />
+            </div>
+        }
+
+    </div>
+</div>
+
+@code {
+
+    private IEnumerable<string> weeks;
+
+    private string selectedWeek;
+    private string selectedMonth;
+    private string selectedYear;
+
+
+    [Parameter]
+    public bool IsEnabled { get; set; } = true;
+
+    [Parameter]
+    public EventCallback<TimeRange> Changed { get; set; }
+
+    [Parameter]
+    public DateTime From { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTime> FromChanged { get; set; }
+
+    [Parameter]
+    public DateTime To { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTime> ToChanged { get; set; }
+
+    [Parameter]
+    public DateTime? Max { get; set; }
+
+    [Parameter]
+    public DateTime? Min { get; set; }
+
+    [Parameter]
+    public DateTimeKind DateTimeKind { get; set; }
+
+    [Parameter]
+    public bool ShowYears { get; set; }
+
+    [Parameter]
+    public bool ShowMonths { get; set; }
+
+    [Parameter]
+    public bool ShowDays { get; set; }
+
+    [Parameter]
+    public bool ShowTime { get; set; }
+
+
+    private IEnumerable<string> GetMonthList()
+    {
+        return new string[]
+        {
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        };
+    }
+
+    private IEnumerable<string> GetYearList()
+    {
+        var currentYear = DateTime.Now.Year;
+
+        var year = 2000;
+        var n = Math.Min(1, currentYear - year);
+        var years = new string[n];
+        for (var i = 0; i < n; i++)
+        {
+            years[i] = (year + i).ToString();
+        }
+        return years;
+    }
+
+    private async void MonthSelected(object value)
+    {
+        if (value != null)
+        {
+            selectedWeek = null;
+            selectedMonth = value.ToString();
+
+            await UpdateFilter();
+        }
+    }
+
+    private async void YearSelected(object value)
+    {
+        if (value != null)
+        {
+            selectedYear = value.ToString();
+
+            await UpdateFilter();
+        }
+    }
+
+    private async Task UpdateFilter()
+    {
+        var year = selectedYear.ToInt();
+
+        if (selectedMonth != null)
+        {
+            var month = selectedMonth;
+            int days;
+
+            switch (month.ToString())
+            {
+                case "January":
+                    days = DateTime.DaysInMonth(year, 1);
+                    From = new DateTime(year, 1, 1);
+                    To = new DateTime(year, 1, days);
+                    break;
+
+                case "February":
+                    days = DateTime.DaysInMonth(year, 2);
+                    From = new DateTime(year, 2, 1);
+                    To = new DateTime(year, 2, days);
+                    break;
+
+                case "March":
+                    days = DateTime.DaysInMonth(year, 3);
+                    From = new DateTime(year, 3, 1);
+                    To = new DateTime(year, 3, days);
+                    break;
+
+                case "April":
+                    days = DateTime.DaysInMonth(year, 4);
+                    From = new DateTime(year, 4, 1);
+                    To = new DateTime(year, 4, days);
+                    break;
+
+                case "May":
+                    days = DateTime.DaysInMonth(year, 5);
+                    From = new DateTime(year, 5, 1);
+                    To = new DateTime(year, 5, days);
+                    break;
+
+                case "June":
+                    days = DateTime.DaysInMonth(year, 6);
+                    From = new DateTime(year, 6, 1);
+                    To = new DateTime(year, 6, days);
+                    break;
+
+                case "July":
+                    days = DateTime.DaysInMonth(year, 7);
+                    From = new DateTime(year, 7, 1);
+                    To = new DateTime(year, 7, days);
+                    break;
+
+                case "August":
+                    days = DateTime.DaysInMonth(year, 8);
+                    From = new DateTime(year, 8, 1);
+                    To = new DateTime(year, 8, days);
+                    break;
+
+                case "September":
+                    days = DateTime.DaysInMonth(year, 9);
+                    From = new DateTime(year, 9, 1);
+                    To = new DateTime(year, 9, days);
+                    break;
+
+                case "October":
+                    days = DateTime.DaysInMonth(year, 10);
+                    From = new DateTime(year, 10, 1);
+                    To = new DateTime(year, 10, days);
+                    break;
+
+                case "November":
+                    days = DateTime.DaysInMonth(year, 11);
+                    From = new DateTime(year, 11, 1);
+                    To = new DateTime(year, 11, days);
+                    break;
+
+                case "December":
+                    days = DateTime.DaysInMonth(year, 12);
+                    From = new DateTime(year, 12, 1);
+                    To = new DateTime(year, 12, days);
+                    break;
+            }
+        }
+        else if (selectedWeek != null)
+        {
+            var week = selectedWeek.ToInt();
+            if (week > 0)
+            {
+                var x = System.Globalization.ISOWeek.ToDateTime(year, week, DayOfWeek.Monday);
+                From = x;
+                To = From.AddDays(6);
+
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void FromSelected(DateTime? value)
+    {
+        if (value != null)
+        {
+            var timestamp = DateTime.SpecifyKind(value.Value, DateTimeKind);
+
+            From = timestamp;
+            await FromChanged.InvokeAsync(timestamp);
+
+            selectedWeek = null;
+            selectedMonth = null;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async void ToSelected(DateTime? value)
+    {
+        if (value != null)
+        {
+            var timestamp = DateTime.SpecifyKind(value.Value, DateTimeKind);
+
+            To = timestamp;
+            await ToChanged.InvokeAsync(timestamp);
+
+            selectedWeek = null;
+            selectedMonth = null;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private IEnumerable<string> GenerateWeeks()
+    {
+        var x = new List<string>();
+        for (var i = 1; i < 53; i++)
+        {
+            x.Add(i.ToString());
+        }
+        return x;
+    }
+
+}

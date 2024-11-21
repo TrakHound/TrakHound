@@ -4,6 +4,7 @@
     grid-template-columns: max-content 1fr;
     height: 100%;
     overflow: hidden;
+    background: var(--panelBackground);
 }
 
 .instance-header {
@@ -21,8 +22,8 @@
 .instance-sidebar {
     grid-row: 2;
     grid-column: 1;
-    border-right: 1px solid #ddd;
-    background: #fafafa;
+    border-right: 1px solid var(--borderColorLight);
+    background: var(--panelSidebarBackground);
 }
 
     .instance-sidebar ::deep .btn-navigation {
@@ -31,22 +32,19 @@
         width: 65px;
         border: none;
         border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--borderColorVeryLight);
         border-radius: 0;
         padding: 0;
         padding-top: 12px;
     }
 
-        .instance-sidebar ::deep .btn-navigation:hover {
-            background: #f4f4f4;
-        }
-
         .instance-sidebar ::deep .btn-navigation.active {
             background: #2870bd;
         }
 
-    .instance-sidebar ::deep .btn-navigation:focus {
-        box-shadow: none;
-    }
+        .instance-sidebar ::deep .btn-navigation:focus {
+            box-shadow: none;
+        }
 
         .instance-sidebar ::deep .btn-navigation .icon {
             display: block;

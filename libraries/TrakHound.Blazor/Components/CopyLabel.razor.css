@@ -1,10 +1,15 @@
 ﻿.copy-label {
     position: relative;
+    color: var(--textDark);
 }
+
+    .copy-label a {
+        color: var(--buttonLinkText);
+    }
 
     .copy-label a:hover label {
         cursor: pointer;
-        color: var(--accentLight);
+        color: var(--buttonLinkTextHover);
     }
 
 .copy-label label {

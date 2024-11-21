@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using TrakHound.Apps;
 using TrakHound.Blazor.Apps;
 using TrakHound.Blazor.Routing;
+using TrakHound.Blazor.Services;
 using TrakHound.Instances;
 using TrakHound.Modules;
 
@@ -18,6 +19,10 @@ namespace TrakHound.Blazor
             instance.ConfigurationProfile.Load<TrakHoundAppConfiguration>(TrakHoundAppConfiguration.ConfigurationCategory);
 
             services.AddSingleton(instance.PackageManager);
+
+
+            services.AddScoped<TrakHoundThemeService>();
+
 
             var contextId = Guid.NewGuid().ToString();
             var context = new TrakHoundModuleContext(contextId);
@@ -36,7 +41,6 @@ namespace TrakHound.Blazor
             services.AddSingleton<ITrakHoundPageRouteManager>(routeManager);
 
 
-            //var appService = new TrakHoundAppService(instance, instance.ConfigurationProfile, routeManager, instance.PackageManager, instance.ModuleProvider, context);
             var appService = new TrakHoundAppService(instance, instance.ConfigurationProfile, routeManager, instance.PackageManager, instance.ModuleProvider);
             services.AddSingleton<ITrakHoundAppProvider>(appService);
         }

@@ -132,7 +132,7 @@
 .query-panel-container {
     display: grid;
     grid-template-columns: max-content 1fr;
-    border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
 }
 
 .query-panel .query-label {
@@ -140,9 +140,9 @@
     font-size: 12px;
     font-weight: 500;
     padding: 5px 10px;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     border-radius: 2px;
-    color: #777;
+    color: var(--textMild);
 }
 
 .query-panel .btn-query {
@@ -166,7 +166,7 @@
     height: 100%;
     max-width: 100%;
     overflow: hidden;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--borderColorLight);
 }
 
 .message-response-panel {
@@ -183,9 +183,9 @@
     grid-row: 1;
     display: grid;
     grid-template-columns: 50px 1fr max-content 230px 65px;
-    background: var(--accentVeryVeryLight);
+    background: var(--accentVeryLight);
     color: var(--accentDark);
-    border: var(--accentVeryLight);
+    border: var(--accentLight);
     font-size: 12px;
 }
 
@@ -234,7 +234,7 @@
     grid-row: 2;
     height: 100%;
     overflow: hidden;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--borderColorLight);
 }
 
     .message-response-tabs ::deep .rz-tabview {
@@ -250,8 +250,8 @@
     }
 
 .payload-panel {
-    background: #fafafa;
-    border: 1px solid #ddd;
+    background: var(--panelBackground);
+    border: 1px solid var(--borderColor);
     border-top: none;
     height: 100%;
     overflow: hidden;
@@ -263,6 +263,7 @@
         width: 100%;
         font-size: 12px;
         font-family: inherit;
+        color: var(--textDark);
     }
 
 .information-panel {
@@ -314,13 +315,11 @@
         height: 100%;
         width: 100%;
         border-radius: 0;
-        background: #fafafa;
         padding: 10px 10px;
         font-size: 12px;
     }
 
         .message-publish-panel ::deep textarea:focus {
-            background: #fff;
             box-shadow: none;
         }
 
@@ -343,18 +342,18 @@
 }
 
     .message-content ::deep .broker-panel table {
-        border: 1px solid #ddd;
+        border: 1px solid var(--borderColor);
     }
 
-    .message-content ::deep .broker-panel table td {
-        border-bottom: 1px solid #ddd;
-        padding: 4px 10px;
-        font-size: 12px;
-    }
-
-        .message-content ::deep .broker-panel table td.name-cell {
-            background: #fafafa;
-            font-weight: bold;
-            width: 150px;
-            border-right: 1px solid #ddd;
+        .message-content ::deep .broker-panel table td {
+            border-bottom: 1px solid var(--borderColor);
+            padding: 4px 10px;
+            font-size: 12px;
         }
+
+            .message-content ::deep .broker-panel table td.name-cell {
+                background: var(--panelbackground);
+                font-weight: bold;
+                width: 150px;
+                border-right: 1px solid var(--borderColor);
+            }

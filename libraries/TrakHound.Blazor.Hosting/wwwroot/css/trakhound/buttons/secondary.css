@@ -1,0 +1,37 @@
+﻿.btn-secondary {
+    background: none;
+    background: var(--buttonSecondaryBackground);
+    border: 1px solid var(--buttonSecondaryBorder);
+    color: #333;
+    color: var(--buttonSecondaryText);
+    font-size: 12px;
+    transition: none;
+}
+
+    .btn-secondary:focus {
+        box-shadow: none !important;
+        outline: none;
+        border: 1px solid var(--buttonCommandBorder);
+    }
+
+    .btn-secondary:hover {
+        background: #eee;
+        background: var(--buttonSecondaryBackgroundHover);
+        border: 1px solid #ccc;
+        border: 1px solid var(--buttonSecondaryBorderHover);
+        color: #000;
+        color: var(--buttonSecondaryTextHover);
+        transition: none;
+    }
+
+    .btn-secondary .icon {
+        color: #888;
+        color: var(--buttonSecondaryIcon);
+        transition: none;
+    }
+
+    .btn-secondary:hover .icon {
+        color: #333;
+        color: var(--buttonSecondaryIconHover);
+        transition: none;
+    }

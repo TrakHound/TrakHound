@@ -7,13 +7,13 @@
 
 .input-panel {
     grid-row: 1;
-    padding: 8px 10px 11px;
+    padding: 8px 10px 5px;
 }
 
 .input-panel-container {
     display: grid;
     grid-template-columns: max-content max-content max-content 1fr;
-    grid-column-gap: 10px;
+    grid-column-gap: 20px;
 }
 
 .input-panel-buttons {
@@ -22,7 +22,7 @@
 
 .timestamp-container label {
     font-size: 14px;
-    color: #555;
+    color: var(--textMild);
     margin-right: 5px;
 }
 
@@ -59,35 +59,29 @@
     padding: 10px 15px;
 }
 
-.input-panel ::deep .rz-calendar input {
-    font-size: 15px;
-    padding: 0 20px;
+.input-panel ::deep .rz-datepicker input {
+    font-size: 14px !important;
+    padding: 0 15px;
     height: 44px;
-    max-width: 230px;
-    border: 1px solid #ddd;
+    width: 230px;
     border-radius: 2px;
 }
 
-.input-panel ::deep .rz-calendar-button .rz-button-icon-left {
-    color: var(--accent);
+.input-panel ::deep .rz-button-icon-left {
     font-size: 20px;
-}
-
-.input-panel ::deep .rz-calendar-button:hover .rz-button-icon-left {
-    color: var(--accentLight);
 }
 
 
 .query-panel {
     grid-row: 2;
     padding: 0 10px 12px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
 .query-panel-container {
     display: grid;
     grid-template-columns: max-content 1fr;
-    border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
 }
 
 .query-panel .query-label {
@@ -95,9 +89,9 @@
     font-size: 12px;
     font-weight: 500;
     padding: 5px 10px;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     border-radius: 2px;
-    color: #777;
+    color: var(--textMild);
 }
 
 .query-panel .btn-query {

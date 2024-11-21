@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectStateEntity> States => _states.Values;
-
-
         public void AddState(ITrakHoundObjectStateEntity entity)
         {
             if (entity != null)

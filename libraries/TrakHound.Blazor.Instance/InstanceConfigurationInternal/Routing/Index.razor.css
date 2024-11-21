@@ -13,6 +13,7 @@
 .loading-cover {
     display: block;
     background: #eee;
+    background: var(--panelBackgroundMedium);
     opacity: 0.5;
     position: absolute;
     top: 0;
@@ -43,13 +44,16 @@
     height: 100%;
     overflow: auto;
     background: #fafafa;
+    background: var(--panelSidebarBackground);
     border-right: 1px solid #ddd;
+    border-right: 1px solid var(--boderColor);
 }
 
 .diagram-toolbar {
     grid-row: 1;
     grid-column: 2;
     border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--boderColor);
 }
 
 .diagram-container {
@@ -59,7 +63,7 @@
     width: 100%;
     height: 100%;
     border: none;
-    background: #eee;
+    background: var(--panelBackgroundDark);
 }
 
 .diagram-toolbar .btn:focus {
@@ -94,6 +98,7 @@
 
 .diagram-toolbar .btn-create {
     border-right: 1px solid #eee !important;
+    border-right: 1px solid var(--boderColorLight) !important;
 }
 
 .diagram-toolbar .btn-save {
@@ -126,14 +131,17 @@
     padding: 8px 10px 5px;
     background: var(--accentVeryLight);
     background: #fff;
+    background: var(--panelItemBackground);
     border: 1px solid var(--accent);
     border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
     border-radius: 2px;
     margin-bottom: 8px;
 }
 
     .router-target-item:hover {
         background: var(--accentVeryVeryLight);
+        background: var(--panelItemBackgroundHover);
         border-color: var(--accent);
         cursor: pointer;
     }
@@ -142,6 +150,7 @@
         display: block;
         font-size: 9px;
         color: rgba(0, 0, 0, 0.5);
+        color: var(--textMild);
     }
 
     .router-target-item:hover .router-target-item-type {
@@ -158,12 +167,14 @@
         font-size: 14px;
         line-height: 26px;
         font-weight: bold;
+        color: var(--textDark);
     }
 
     .router-target-item .router-target-item-description {
         display: block;
         font-size: 10px;
         display: none;
+        color: var(--textMild);
     }
 
     .router-target-item .router-target-item-id {
@@ -171,6 +182,7 @@
         font-size: 10px;
         line-height: 14px;
         color: rgba(0, 0, 0, 0.4);
+        color: var(--textLight);
     }
 
     .router-target-item:hover .router-target-item-id {
@@ -192,13 +204,16 @@
     border: 1px solid var(--accent);
     background: var(--accentVeryLight);
     background: #fff;
+    background: var(--panelItemBackground);
     border: 1px solid var(--accent);
     border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
     margin-bottom: 8px;
 }
 
     .driver-target-item:hover {
         background: var(--accentVeryVeryLight);
+        background: var(--panelItemBackgroundHover);
         border-color: var(--accent);
         cursor: pointer;
     }
@@ -207,6 +222,7 @@
         display: block;
         font-size: 9px;
         color: rgba(0, 0, 0, 0.5);
+        color: var(--textMild);
     }
 
     .driver-target-item:hover .driver-target-item-type {
@@ -223,11 +239,13 @@
         font-size: 12px;
         line-height: 26px;
         font-weight: bold;
+        color: var(--textDark);
     }
 
     .driver-target-item .driver-target-item-description {
         display: block;
         font-size: 10px;
+        color: var(--textMild);
     }
 
     .driver-target-item .driver-target-item-id {
@@ -235,6 +253,7 @@
         font-size: 9px;
         line-height: 14px;
         color: rgba(0, 0, 0, 0.25);
+        color: var(--textLight);
     }
 
     .driver-target-item:hover .driver-target-item-id {

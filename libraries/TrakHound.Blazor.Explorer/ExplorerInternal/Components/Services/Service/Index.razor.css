@@ -5,6 +5,7 @@
     height: 100%;
     overflow: hidden;
     background: #fff;
+    background: var(--panelBackground);
 }
 
 .header-panel {

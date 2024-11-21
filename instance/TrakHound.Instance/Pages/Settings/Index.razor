@@ -82,6 +82,9 @@
 
         var baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config");
 
+        // Prevent Empty string
+        if (string.IsNullOrEmpty(editInstanceConfiguration.BasePath)) editInstanceConfiguration.BasePath = null;
+
         editInstanceConfiguration.Save(Path.Combine(baseDir, TrakHoundInstanceConfiguration.Filename));
         editRemotesConfiguration.Save(Path.Combine(baseDir, RemotesConfiguration.Filename));
 

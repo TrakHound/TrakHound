@@ -7,11 +7,11 @@
     grid-row: 1;
     display: grid;
     grid-template-columns: max-content 1fr;
-    border: 1px solid #eee;
+    border: 1px solid var(--borderColorLight);
 }
 
 .collapse-panel-toolbar-button {
-    border-right: 1px solid #eee;
+    border-right: 1px solid var(--borderColorLight);
 }
 
 .collapse-panel-toolbar-button .btn {
@@ -27,7 +27,7 @@
     .collapse-panel-toolbar-button .btn .icon {
         margin: 0;
         font-size: 14px;
-        color: #aaa;
+        color: var(--textLight);
     }
 
     .collapse-panel-toolbar-button .btn:hover .icon {
@@ -38,7 +38,7 @@
     font-size: 12px;
     line-height: 30px;
     padding: 0 20px;
-    color: #888;
+    color: var(--textMild);
 }
 
 .collapse-panel-content {

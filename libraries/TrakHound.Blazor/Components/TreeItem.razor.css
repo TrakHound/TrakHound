@@ -20,7 +20,7 @@
         .tree-item .tree-item-content .expand-border-tab {
             grid-column: 1;
             width: 9px;
-            border-top: 1px dotted var(--borderVeryLight);
+            border-top: 1px dotted var(--borderColorVeryLight);
             margin-left: -9.5px;
             margin-top: 9px;
         }
@@ -47,6 +47,7 @@
     font-size: 12px;
     line-height: 16px;
     color: #555;
+    color: var(--textLight);
     transition: none;
 }
 
@@ -89,6 +90,7 @@
     line-height: 19px;
     font-size: 14px;
     color: #888;
+    color: var(--textLight);
     margin-left: 4px;
     margin-right: 4px;
 }
@@ -146,7 +148,7 @@
 }
 
     .tree-view > .tree-item > .tree-item-children .tree-item .expand-border > div {
-        border-left: 1px dotted var(--borderVeryLight);
+        border-left: 1px dotted var(--borderColorVeryLight);
         height: 100%;
         width: 100%;
     }

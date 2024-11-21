@@ -139,6 +139,7 @@ namespace TrakHound.Routing.Routers
         public const string ObservationsRead = "Objects.Observations.Read.Absolute";
         public const string ObservationsLatest = "Objects.Observations.Read.Latest";
         public const string ObservationsQuery = "Objects.Observations.Read.Query";
+        public const string ObservationsAggregate = "Objects.Observations.Read.Aggregate";
         public const string ObservationsSubscribe = "Objects.Observations.Read.Subscribe";
         public const string ObservationsSubscribeLatest = "Objects.Observations.Read.Subscribe.Latest";
         public const string ObservationsPublish = "Objects.Observations.Write.Publish";
@@ -383,6 +384,7 @@ namespace TrakHound.Routing.Routers
             { typeof(IEntityReadDriver<ITrakHoundObjectObservationEntity>), ObservationsRead },
             { typeof(IObjectObservationLatestDriver), ObservationsLatest },
             { typeof(IObjectObservationQueryDriver), ObservationsQuery },
+            { typeof(IObjectObservationAggregateDriver), ObservationsAggregate },
             { typeof(IEntitySubscribeDriver<ITrakHoundObjectObservationEntity>), ObservationsSubscribe },
             { typeof(IObjectObservationLatestSubscribeDriver), ObservationsSubscribeLatest },
             { typeof(IEntityPublishDriver<ITrakHoundObjectObservationEntity>), ObservationsPublish },

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TrakHound.Api;
 using TrakHound.Clients;
 using TrakHound.Entities.Collections;
+using TrakHound.Http;
 using TrakHound.Requests;
 
 namespace TrakHound.Entities.Api
@@ -93,6 +94,78 @@ namespace TrakHound.Entities.Api
                         }
                     }
                     return Ok(results);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [TrakHoundApiQuery("aggregate")]
+        public async Task<TrakHoundApiResponse> AggregateObservations(
+            [FromQuery] string objectPath,
+            [FromBody(ContentType = "application/json")] IEnumerable<string> objectPaths,
+            [FromQuery] string aggregateType,
+            [FromQuery] string start,
+            [FromQuery] string stop,
+            [FromQuery] string routerId = null
+            )
+        {
+            if (!string.IsNullOrEmpty(objectPath) || !objectPaths.IsNullOrEmpty())
+            {
+                var paths = !string.IsNullOrEmpty(objectPath) ? new string[] { objectPath } : objectPaths;
+
+                var startTimestamp = start.ToDateTime().ToUnixTime();
+                var stopTimestamp = stop.ToDateTime().ToUnixTime();
+
+                var type = aggregateType.ConvertEnum<TrakHoundAggregateType>();
+
+                var aggregates = await Client.System.Entities.Objects.Observation.AggregateByObject(paths, type, startTimestamp, stopTimestamp, routerId);
+                if (!aggregates.IsNullOrEmpty())
+                {
+                    return Ok(TrakHoundHttpAggregateResponse.Create(aggregates));
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [TrakHoundApiQuery("aggregate/window")]
+        public async Task<TrakHoundApiResponse> AggregateWindowObservations(
+            [FromQuery] string objectPath,
+            [FromBody(ContentType = "application/json")] IEnumerable<string> objectPaths,
+            [FromQuery] string aggregateType,
+            [FromQuery] string aggregateWindow,
+            [FromQuery] string start,
+            [FromQuery] string stop,
+            [FromQuery] string routerId = null
+            )
+        {
+            if (!string.IsNullOrEmpty(objectPath) || !objectPaths.IsNullOrEmpty())
+            {
+                var paths = !string.IsNullOrEmpty(objectPath) ? new string[] { objectPath } : objectPaths;
+
+                var startTimestamp = start.ToDateTime().ToUnixTime();
+                var stopTimestamp = stop.ToDateTime().ToUnixTime();
+
+                var type = aggregateType.ConvertEnum<TrakHoundAggregateType>();
+                var window = (long)aggregateWindow.ToTimeSpan().TotalNanoseconds;
+
+                var aggregateWindows = await Client.System.Entities.Objects.Observation.AggregateWindowByObject(paths, type, window, startTimestamp, stopTimestamp, routerId);
+                if (!aggregateWindows.IsNullOrEmpty())
+                {
+                    return Ok(TrakHoundHttpAggregateWindowResponse.Create(aggregateWindows));
                 }
                 else
                 {

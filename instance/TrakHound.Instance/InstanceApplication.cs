@@ -152,6 +152,9 @@ namespace TrakHound.Instance
                 // Add TrakHound Blazor Services(Apps)
                 builder.Services.AddTrakHoundHosting(_instance);
 
+                // Set Default Admin Theme
+                TrakHoundThemeService.SetDefaultTheme(AdminThemes.Key, instanceConfiguration.AdminDefaultTheme.ConvertEnum<TrakHoundThemes>());
+
                 // Set Blazor Upload File Size Limit
                 builder.Services.AddSignalR(options =>
                 {

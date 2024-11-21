@@ -1,0 +1,37 @@
+﻿.btn-remove {
+    color: red;
+    background: var(--buttonRemoveBackground);
+    border: 1px solid var(--buttonRemoveBorder);
+    color: var(--buttonRemoveText);
+    border-radius: 0;
+    transition: none;
+}
+
+    .btn-remove:focus {
+        box-shadow: none !important;
+        outline: none;
+        border: 1px solid var(--buttonRemoveBorder) !important;
+    }
+
+    .btn-remove .icon {
+        color: red;
+        color: red;
+        color: var(--buttonRemoveIcon);
+    }
+
+    .btn-remove:hover {
+        color: white;
+        background: red;
+        border-color: #b30000;
+        background: var(--buttonRemoveBackgroundHover);
+        border: 1px solid var(--buttonRemoveBorderHover);
+        color: var(--buttonRemoveTextHover);
+        cursor: pointer;
+        transition: none;
+    }
+
+        .btn-remove:hover .icon {
+            color: white;
+            color: var(--buttonRemoveIconHover);
+        }
+

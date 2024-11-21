@@ -165,6 +165,8 @@ namespace TrakHound.Utilities
             }
             catch (SqliteException ex)
             {
+                Console.WriteLine($"ERROR : {ex.Message} : {query}");
+
                 if (Error != null) Error.Invoke(this, ex);
             }
             catch (Exception ex)

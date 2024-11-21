@@ -11,14 +11,14 @@
     grid-column-start: 1;
     grid-column-end: 3;
     padding: 8px 20px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
 .header-panel {
     grid-row: 2;
     grid-column: 1;
     padding: 6px 20px 4px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
     .header-panel .header-panel-container {
@@ -34,8 +34,7 @@
     .header-panel .icon {
         font-size: 16px;
         line-height: 36px;
-        color: var(--accent);
-        color: #aaa;
+        color: var(--textLight);
     }
 
     .header-panel .title-container {
@@ -45,9 +44,8 @@
     .header-panel .title {
         font-size: 13px;
         font-weight: bold;
-        line-height: 36px;
-        color: var(--accent);
-        color: #555;
+        line-height: 38px;
+        color: var(--textMild);
     }
 
     .header-panel .description-container {
@@ -57,7 +55,7 @@
 .toolbar-panel {
     grid-row: 2;
     grid-column: 2;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
     text-align: right;
 }
 
@@ -68,14 +66,9 @@
     .toolbar-panel .toolbar-panel-container .btn {
         margin-left: 8px;
         font-size: 13px;
-        border-color: #ddd;
         border-radius: 2px;
         padding: 8px 15px;
     }
-
-        .toolbar-panel .toolbar-panel-container .btn-remove {
-            border-color: #ff0000;
-        }
 
         .toolbar-panel .toolbar-panel-container .btn .icon {
             font-size: 14px;
@@ -87,19 +80,18 @@
     grid-column-end: 3;
     height: 100%;
     overflow: auto;
-/*    padding-top: 15px;*/
     padding-bottom: 50px;
 }
 
 .description-panel {
     display: block;
     padding: 15px 20px 20px 40px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
     .description-panel .panel-label {
         padding-bottom: 5px;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--borderColorLight);
     }
 
     .description-panel td {
@@ -109,12 +101,12 @@
     .description-panel .label {
         font-size: 12px;
         font-weight: bold;
-        color: #555;
+        color: var(--textMild);
         padding-right: 10px;
         min-width: 120px;
         vertical-align: top;
-        border-right: 1px solid #f8f8f8;
-        border-bottom: 1px solid #f8f8f8;
+        border-right: 1px solid var(--borderColorVeryVeryLight);
+        border-bottom: 1px solid var(--borderColorVeryVeryLight);
     }
 
     .description-panel tr:hover .label {
@@ -123,21 +115,22 @@
 
     .description-panel .value {
         font-size: 12px;
-        color: #000;
+        color: var(--textDark);
         padding-left: 10px;
-        border-bottom: 1px solid #f8f8f8;
+        border-bottom: 1px solid var(--borderColorVeryVeryLight);
     }
 
-    .description-panel .value a {
-        font-size: 12px;
-        text-decoration: none;
-    }
+        .description-panel .value a {
+            font-size: 12px;
+            text-decoration: none;
+            color: var(--accentVeryLight) !important;
+        }
 
 
 .metadata-panel {
     display: block;
     padding: 20px 20px 0 40px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
 .metadata-panel-container {
@@ -158,7 +151,6 @@
 
     .metadata-toolbar-container .btn {
         font-size: 13px;
-        border-color: #ddd;
         border-radius: 2px;
         padding: 8px 15px;
     }
@@ -177,13 +169,13 @@
 .inheritance-panel {
     display: block;
     padding: 20px 20px 0 40px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
 .transaction-panel {
     display: block;
     padding: 20px 20px 0 40px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
 .source-panel {
@@ -195,7 +187,7 @@
     display: block;
     font-size: 28px;
     font-weight: bold;
-    color: #ccc;
+    color: var(--textVeryLight);
     margin-bottom: 10px;
 }
 

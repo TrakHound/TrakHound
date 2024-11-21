@@ -23,17 +23,54 @@ namespace TrakHound.Requests
                             var existingEntry = _object.GetValueOrDefault(x.EntryId);
                             if (existingEntry != null)
                             {
+                                var o = existingEntry;
+                                if (x.Priority >= o.Priority)
+                                {
+                                    o.Priority = x.Priority;
+                                    o.ContentType = x.ContentType;
+                                    o.DefinitionId = x.DefinitionId;
+                                }
+
                                 if (!existingEntry.Indexes.IsNullOrEmpty())
                                 {
                                     var indexEntries = new List<TrakHoundIndexEntry>();
                                     indexEntries.AddRange(existingEntry.Indexes);
                                     if (!x.Indexes.IsNullOrEmpty()) indexEntries.AddRange(x.Indexes);
 
-                                    x.Indexes = indexEntries;
+                                    o.Indexes = indexEntries;
+                                }
+                                else if (!x.Indexes.IsNullOrEmpty())
+                                {
+                                    o.Indexes = x.Indexes;
                                 }
 
-                                _object.Remove(x.EntryId);
-                                _object.Add(x.EntryId, x);
+                                if (!existingEntry.Metadata.IsNullOrEmpty())
+                                {
+                                    var metadata = new Dictionary<string, string>();
+
+                                    foreach (var m in existingEntry.Metadata)
+                                    {
+                                        metadata.Remove(m.Key);
+                                        metadata.Add(m.Key, m.Value);
+                                    }
+
+                                    if (!x.Indexes.IsNullOrEmpty())
+                                    {
+                                        foreach (var m in x.Metadata)
+                                        {
+                                            if (!metadata.ContainsKey(m.Key) || x.Priority >= o.Priority)
+                                            {
+                                                metadata.Remove(m.Key);
+                                                metadata.Add(m.Key, m.Value);
+                                            }
+                                        }
+                                    }
+
+                                    o.Metadata = metadata;
+                                }
+
+                                _object.Remove(o.EntryId);
+                                _object.Add(o.EntryId, o);
                             }
                             else
                             {

@@ -48,7 +48,7 @@ namespace TrakHound.Requests
         [JsonPropertyName("aggregateType")]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-        public TrakHoundAggregateType AggregateType { get; set; }
+        public TrakHoundUpdateType AggregateType { get; set; }
 
         [JsonPropertyName("value")]
         public string Value { get; set; }
@@ -60,7 +60,7 @@ namespace TrakHound.Requests
             Class = TrakHoundObjectsEntityClassId.Number;
         }
 
-        public TrakHoundNumberEntry(string objectPath, object value, TrakHoundNumberDataType dataType, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundNumberEntry(string objectPath, object value, TrakHoundNumberDataType dataType, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Number;
@@ -71,7 +71,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundNumberEntry(string objectPath, byte value, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundNumberEntry(string objectPath, byte value, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Number;
@@ -82,7 +82,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundNumberEntry(string objectPath, short value, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundNumberEntry(string objectPath, short value, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Number;
@@ -93,7 +93,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundNumberEntry(string objectPath, int value, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundNumberEntry(string objectPath, int value, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Number;
@@ -104,7 +104,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundNumberEntry(string objectPath, long value, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundNumberEntry(string objectPath, long value, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Number;
@@ -115,7 +115,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundNumberEntry(string objectPath, float value, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundNumberEntry(string objectPath, float value, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Number;
@@ -126,7 +126,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundNumberEntry(string objectPath, double value, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundNumberEntry(string objectPath, double value, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Number;
@@ -137,7 +137,7 @@ namespace TrakHound.Requests
             AggregateType = aggregateType;
         }
 
-        public TrakHoundNumberEntry(string objectPath, decimal value, TrakHoundAggregateType aggregateType = TrakHoundAggregateType.Absolute)
+        public TrakHoundNumberEntry(string objectPath, decimal value, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute)
         {
             Category = TrakHoundEntityCategoryId.Objects;
             Class = TrakHoundObjectsEntityClassId.Number;

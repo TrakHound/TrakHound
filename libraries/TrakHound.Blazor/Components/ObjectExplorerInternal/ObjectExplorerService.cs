@@ -150,8 +150,8 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             _recentTimer.Elapsed += ProcessRecentValues;
             _recentTimer.Start();
 
-            _contentUpdateThrottle = new ThrottleEvent(500);
-            _contentUpdateThrottle.Elapsed += ContentUpdateThrottleElapsed;
+            //_contentUpdateThrottle = new ThrottleEvent(500);
+            //_contentUpdateThrottle.Elapsed += ContentUpdateThrottleElapsed;
 
             _selectedObjectLoadDelay = new DelayEvent(500);
             _selectedObjectLoadDelay.Elapsed += SelectedObjectLoadDelayElapsed;
@@ -1231,6 +1231,11 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                     }           
                 }
 
+                if (SelectedObject != null && SelectedObject.Uuid == targetObject.Uuid)
+                {
+                    SelectObject(null);
+                }
+
                 if (targetObject != null && string.IsNullOrEmpty(targetObject.ParentUuid))
                 {
                     _targetUuids.Remove(uuid);
@@ -1420,70 +1425,70 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             }
         }
 
-        private void ContentUpdateThrottleElapsed(object sender, EventArgs e)
-        {
-            var updates = new List<ContentUpdate>();
-            for (var i = 0; i < 100; i++)
-            {
-                _contentUpdated.TryDequeue(out var update);
-                if (update != null) updates.Add(update);
-                else break;
-            }
+        //private void ContentUpdateThrottleElapsed(object sender, EventArgs e)
+        //{
+        //    var updates = new List<ContentUpdate>();
+        //    for (var i = 0; i < 100; i++)
+        //    {
+        //        _contentUpdated.TryDequeue(out var update);
+        //        if (update != null) updates.Add(update);
+        //        else break;
+        //    }
 
-            if (!updates.IsNullOrEmpty())
-            {
-                var now = UnixDateTime.Now;
+        //    if (!updates.IsNullOrEmpty())
+        //    {
+        //        var now = UnixDateTime.Now;
 
-                //var objectUuids = new HashSet<string>();
-                //lock (_lock)
-                //{
-                //    foreach (var update in updates)
-                //    {
-                //        //var ts = update.Timestamp > 0 ? update.Timestamp : now;
+        //        //var objectUuids = new HashSet<string>();
+        //        //lock (_lock)
+        //        //{
+        //        //    foreach (var update in updates)
+        //        //    {
+        //        //        //var ts = update.Timestamp > 0 ? update.Timestamp : now;
 
-                //        //if (update.Entity != null)
-                //        //{
-                //        //    _content.Remove(update.ObjectUuid);
-                //        //    _content.Add(update.ObjectUuid, update.Entity);
-                //        //}
+        //        //        //if (update.Entity != null)
+        //        //        //{
+        //        //        //    _content.Remove(update.ObjectUuid);
+        //        //        //    _content.Add(update.ObjectUuid, update.Entity);
+        //        //        //}
 
-                //        //_values.Remove(update.ObjectUuid);
-                //        //_values.Add(update.ObjectUuid, update.Value?.Trim());
+        //        //        //_values.Remove(update.ObjectUuid);
+        //        //        //_values.Add(update.ObjectUuid, update.Value?.Trim());
 
-                //        //if (now - ts < _recentLimit)
-                //        //{
-                //        //    _recentValues.Remove(update.ObjectUuid);
-                //        //    _recentValues.Add(update.ObjectUuid, ts);
-                //        //}
+        //        //        //if (now - ts < _recentLimit)
+        //        //        //{
+        //        //        //    _recentValues.Remove(update.ObjectUuid);
+        //        //        //    _recentValues.Add(update.ObjectUuid, ts);
+        //        //        //}
 
-                //        objectUuids.Add(update.ObjectUuid);
-                //    }
-                //}
+        //        //        objectUuids.Add(update.ObjectUuid);
+        //        //    }
+        //        //}
 
-                var objectUuids = new HashSet<string>();
-                foreach (var update in updates)
-                {
-                    objectUuids.Add(update.ObjectUuid);
-                }
+        //        var objectUuids = new HashSet<string>();
+        //        foreach (var update in updates)
+        //        {
+        //            objectUuids.Add(update.ObjectUuid);
+        //        }
 
-                foreach (var objectUuid in objectUuids)
-                {
-                    if (ValueUpdated != null) ValueUpdated.Invoke(this, objectUuid);
-                }
+        //        foreach (var objectUuid in objectUuids)
+        //        {
+        //            if (ValueUpdated != null) ValueUpdated.Invoke(this, objectUuid);
+        //        }
 
-                //if (objectUuids.Count() > 5)
-                //{
-                //    //if (Updated != null) Updated.Invoke(this, EventArgs.Empty);
-                //}
-                //else
-                //{
-                //    foreach (var objectUuid in objectUuids)
-                //    {
-                //        if (ValueUpdated != null) ValueUpdated.Invoke(this, objectUuid);
-                //    }
-                //}
-            }
-        }
+        //        //if (objectUuids.Count() > 5)
+        //        //{
+        //        //    //if (Updated != null) Updated.Invoke(this, EventArgs.Empty);
+        //        //}
+        //        //else
+        //        //{
+        //        //    foreach (var objectUuid in objectUuids)
+        //        //    {
+        //        //        if (ValueUpdated != null) ValueUpdated.Invoke(this, objectUuid);
+        //        //    }
+        //        //}
+        //    }
+        //}
 
         private void ConsumerValueUpdated(string objectUuid, ITrakHoundEntity entity, string value, long timestamp = 0)
         {
@@ -1510,19 +1515,19 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                     }
                 }
 
-                //if (ValueUpdated != null) ValueUpdated.Invoke(this, objectUuid);
+                if (ValueUpdated != null) ValueUpdated.Invoke(this, objectUuid);
             }
 
 
 
-            var update = new ContentUpdate();
-            update.ObjectUuid = objectUuid;
-            //update.Entity = entity;
-            //update.Value = value;
-            update.Timestamp = timestamp;
+            //var update = new ContentUpdate();
+            //update.ObjectUuid = objectUuid;
+            ////update.Entity = entity;
+            ////update.Value = value;
+            //update.Timestamp = timestamp;
 
-            _contentUpdated.Enqueue(update);
-            _contentUpdateThrottle.Set();
+            //_contentUpdated.Enqueue(update);
+            //_contentUpdateThrottle.Set();
         }
 
         private async Task LoadContentWorker(IEnumerable<ITrakHoundObjectEntity> objs)
@@ -1539,108 +1544,112 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                 {
                     var tasks = new List<Task>();
 
-                    if (objs.Any(o => o.ContentType == TrakHoundObjectContentTypes.Assignment))
+                    var contentTypes = new TrakHoundObjectContentTypeDictionary();
+                    contentTypes.Add(objs);
+
+
+                    if (contentTypes.ContentTypes.Contains(TrakHoundObjectContentType.Assignment))
                     {
                         var assignmentConsumer = new ObjectAssignmentConsumer(_client, _consumerId);
                         assignmentConsumer.ValueUpdated += ConsumerValueUpdated;
                         _contentConsumers.Add(assignmentConsumer);
-                        tasks.Add(assignmentConsumer.Load(objs));
+                        tasks.Add(assignmentConsumer.Load(contentTypes.Get(TrakHoundObjectContentType.Assignment)));
                     }
 
-                    if (objs.Any(o => o.ContentType == TrakHoundObjectContentTypes.Blob))
+                    if (contentTypes.ContentTypes.Contains(TrakHoundObjectContentType.Blob))
                     {
                         var blobConsumer = new ObjectBlobConsumer(_client, _consumerId);
                         blobConsumer.ValueUpdated += ConsumerValueUpdated;
                         _contentConsumers.Add(blobConsumer);
-                        tasks.Add(blobConsumer.Load(objs));
+                        tasks.Add(blobConsumer.Load(contentTypes.Get(TrakHoundObjectContentType.Blob)));
                     }
 
-                    if (objs.Any(o => o.ContentType == TrakHoundObjectContentTypes.Boolean))
+                    if (contentTypes.ContentTypes.Contains(TrakHoundObjectContentType.Boolean))
                     {
                         var booleanConsumer = new ObjectBooleanConsumer(_client, _consumerId);
                         booleanConsumer.ValueUpdated += ConsumerValueUpdated;
                         _contentConsumers.Add(booleanConsumer);
-                        tasks.Add(booleanConsumer.Load(objs));
+                        tasks.Add(booleanConsumer.Load(contentTypes.Get(TrakHoundObjectContentType.Boolean)));
                     }
 
-                    if (objs.Any(o => o.ContentType == TrakHoundObjectContentTypes.Duration))
+                    if (contentTypes.ContentTypes.Contains(TrakHoundObjectContentType.Duration))
                     {
                         var durationConsumer = new ObjectDurationConsumer(_client, _consumerId);
                         durationConsumer.ValueUpdated += ConsumerValueUpdated;
                         _contentConsumers.Add(durationConsumer);
-                        tasks.Add(durationConsumer.Load(objs));
+                        tasks.Add(durationConsumer.Load(contentTypes.Get(TrakHoundObjectContentType.Duration)));
                     }
 
-                    if (objs.Any(o => o.ContentType == TrakHoundObjectContentTypes.Event))
+                    if (contentTypes.ContentTypes.Contains(TrakHoundObjectContentType.Event))
                     {
                         var eventConsumer = new ObjectEventConsumer(_client, _consumerId);
                         eventConsumer.ValueUpdated += ConsumerValueUpdated;
                         _contentConsumers.Add(eventConsumer);
-                        tasks.Add(eventConsumer.Load(objs));
+                        tasks.Add(eventConsumer.Load(contentTypes.Get(TrakHoundObjectContentType.Event)));
                     }
 
-                    if (objs.Any(o => o.ContentType == TrakHoundObjectContentTypes.Message))
+                    if (contentTypes.ContentTypes.Contains(TrakHoundObjectContentType.Message))
                     {
                         var messageConsumer = new ObjectMessageConsumer(_client, _consumerId);
                         messageConsumer.ValueUpdated += ConsumerValueUpdated;
                         _contentConsumers.Add(messageConsumer);
-                        tasks.Add(messageConsumer.Load(objs));
+                        tasks.Add(messageConsumer.Load(contentTypes.Get(TrakHoundObjectContentType.Message)));
                     }
 
-                    if (objs.Any(o => o.ContentType == TrakHoundObjectContentTypes.Number))
+                    if (contentTypes.ContentTypes.Contains(TrakHoundObjectContentType.Number))
                     {
                         var numberConsumer = new ObjectNumberConsumer(_client, _consumerId);
                         numberConsumer.ValueUpdated += ConsumerValueUpdated;
                         _contentConsumers.Add(numberConsumer);
-                        tasks.Add(numberConsumer.Load(objs));
+                        tasks.Add(numberConsumer.Load(contentTypes.Get(TrakHoundObjectContentType.Number)));
                     }
 
-                    if (objs.Any(o => o.ContentType == TrakHoundObjectContentTypes.Observation))
+                    if (contentTypes.ContentTypes.Contains(TrakHoundObjectContentType.Observation))
                     {
                         var observationConsumer = new ObjectObservationConsumer(_client, _consumerId);
                         observationConsumer.ValueUpdated += ConsumerValueUpdated;
                         _contentConsumers.Add(observationConsumer);
-                        tasks.Add(observationConsumer.Load(objs));
+                        tasks.Add(observationConsumer.Load(contentTypes.Get(TrakHoundObjectContentType.Observation)));
                     }
 
-                    if (objs.Any(o => o.ContentType == TrakHoundObjectContentTypes.Reference))
+                    if (contentTypes.ContentTypes.Contains(TrakHoundObjectContentType.Reference))
                     {
                         var referenceConsumer = new ObjectReferenceConsumer(_client, _consumerId);
                         referenceConsumer.ValueUpdated += ConsumerValueUpdated;
                         _contentConsumers.Add(referenceConsumer);
-                        tasks.Add(referenceConsumer.Load(objs));
+                        tasks.Add(referenceConsumer.Load(contentTypes.Get(TrakHoundObjectContentType.Reference)));
                     }
 
-                    if (objs.Any(o => o.ContentType == TrakHoundObjectContentTypes.State))
+                    if (contentTypes.ContentTypes.Contains(TrakHoundObjectContentType.State))
                     {
                         var stateConsumer = new ObjectStateConsumer(_client, _consumerId);
                         stateConsumer.ValueUpdated += ConsumerValueUpdated;
                         _contentConsumers.Add(stateConsumer);
-                        tasks.Add(stateConsumer.Load(objs));
+                        tasks.Add(stateConsumer.Load(contentTypes.Get(TrakHoundObjectContentType.State)));
                     }
 
-                    if (objs.Any(o => o.ContentType == TrakHoundObjectContentTypes.String))
+                    if (contentTypes.ContentTypes.Contains(TrakHoundObjectContentType.String))
                     {
                         var stringConsumer = new ObjectStringConsumer(_client, _consumerId);
                         stringConsumer.ValueUpdated += ConsumerValueUpdated;
                         _contentConsumers.Add(stringConsumer);
-                        tasks.Add(stringConsumer.Load(objs));
+                        tasks.Add(stringConsumer.Load(contentTypes.Get(TrakHoundObjectContentType.String)));
                     }
 
-                    if (objs.Any(o => o.ContentType == TrakHoundObjectContentTypes.Timestamp))
+                    if (contentTypes.ContentTypes.Contains(TrakHoundObjectContentType.Timestamp))
                     {
                         var timestampConsumer = new ObjectTimestampConsumer(_client, _consumerId);
                         timestampConsumer.ValueUpdated += ConsumerValueUpdated;
                         _contentConsumers.Add(timestampConsumer);
-                        tasks.Add(timestampConsumer.Load(objs));
+                        tasks.Add(timestampConsumer.Load(contentTypes.Get(TrakHoundObjectContentType.Timestamp)));
                     }
 
-                    if (objs.Any(o => o.ContentType == TrakHoundObjectContentTypes.Vocabulary))
+                    if (contentTypes.ContentTypes.Contains(TrakHoundObjectContentType.Vocabulary))
                     {
                         var vocabularyConsumer = new ObjectVocabularyConsumer(_client, _consumerId);
                         vocabularyConsumer.ValueUpdated += ConsumerValueUpdated;
                         _contentConsumers.Add(vocabularyConsumer);
-                        tasks.Add(vocabularyConsumer.Load(objs));
+                        tasks.Add(vocabularyConsumer.Load(contentTypes.Get(TrakHoundObjectContentType.Vocabulary)));
                     }
 
                     await Task.WhenAll(tasks);

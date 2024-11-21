@@ -9,6 +9,7 @@
     grid-row: 1;
     padding: 0px 10px 15px;
     border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
     .header-panel .icon {
@@ -21,12 +22,14 @@
         font-size: 14px;
         font-weight: bold;
         color: #333;
+        color: var(--textDark);
         margin-right: 10px;
     }
 
     .header-panel .subtitle {
         font-size: 12px;
         color: #888;
+        color: var(--textMild);
     }
 
 .toolbar-panel {
@@ -58,6 +61,7 @@
 .toolbar-panel label {
     font-size: 14px;
     color: #888;
+    color: var(--textMild);
     line-height: 40px;
     margin-right: 10px;
 }
@@ -165,6 +169,7 @@
     height: 100%;
     overflow: hidden;
     border: 1px solid #eee;
+    border: 1px solid var(--borderColorLight);
 }
 
     .not-found-panel .not-found-container {
@@ -176,7 +181,7 @@
     .not-found-panel .icon {
         display: block;
         font-size: 36px;
-        color: #ddd;
+        color: var(--textVeryLight);
         margin: 0;
         height: 36px;
         text-align: center;
@@ -186,7 +191,7 @@
         display: block;
         font-size: 16px;
         font-weight: bold;
-        color: #888;
+        color: var(--textMild);
         margin-top: 20px;
         text-align: center;
     }
@@ -194,7 +199,7 @@
     .not-found-panel .subtitle {
         display: block;
         font-size: 12px;
-        color: #888;
+        color: var(--textMild);
         margin-top: 5px;
         text-align: center;
     }

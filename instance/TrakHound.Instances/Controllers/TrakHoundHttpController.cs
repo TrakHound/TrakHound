@@ -43,6 +43,38 @@ namespace TrakHound.Http
             return result;
         }
 
+        public IActionResult ProcessJsonContentResponse(TrakHoundAggregate aggregate, bool indent = false)
+        {
+            var result = new ContentResult();
+            result.Content = new TrakHoundHttpAggregateResponse(aggregate).ToJson(indent);
+            result.ContentType = "application/json";
+            return result;
+        }
+
+        public IActionResult ProcessJsonContentResponse(IEnumerable<TrakHoundAggregate> aggregates, bool indent = false)
+        {
+            var result = new ContentResult();
+            result.Content = TrakHoundHttpAggregateResponse.Create(aggregates).ToJson(indent);
+            result.ContentType = "application/json";
+            return result;
+        }
+
+        public IActionResult ProcessJsonContentResponse(TrakHoundAggregateWindow aggregateWindow, bool indent = false)
+        {
+            var result = new ContentResult();
+            result.Content = new TrakHoundHttpAggregateWindowResponse(aggregateWindow).ToJson(indent);
+            result.ContentType = "application/json";
+            return result;
+        }
+
+        public IActionResult ProcessJsonContentResponse(IEnumerable<TrakHoundAggregateWindow> aggregateWindows, bool indent = false)
+        {
+            var result = new ContentResult();
+            result.Content = TrakHoundHttpAggregateWindowResponse.Create(aggregateWindows).ToJson(indent);
+            result.ContentType = "application/json";
+            return result;
+        }
+
         public IActionResult ProcessJsonContentResponse(TrakHoundTimeRangeSpan span, bool indent = false)
         {
             var result = new ContentResult();

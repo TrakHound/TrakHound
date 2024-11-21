@@ -438,6 +438,450 @@ namespace TrakHound.Http.Entities
 
 
         /// <summary>
+        /// Aggregate by Object
+        /// </summary>
+        [HttpGet("aggregate")]
+        public async Task<IActionResult> AggregateByObject(
+            [FromQuery] string path,
+            [FromQuery] TrakHound.TrakHoundAggregateType aggregateType,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnAggregateByObject(client, path, aggregateType, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnAggregateByObject(
+            ITrakHoundClient client,
+            string path,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
+        /// Aggregate by Object
+        /// </summary>
+        [HttpPost("aggregate")]
+        public async Task<IActionResult> AggregateByObject(
+            [FromBody] IEnumerable<string> paths,
+            [FromQuery] TrakHound.TrakHoundAggregateType aggregateType,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnAggregateByObject(client, paths, aggregateType, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnAggregateByObject(
+            ITrakHoundClient client,
+            IEnumerable<string> paths,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
+        /// Aggregate by Object UUID
+        /// </summary>
+        [HttpGet("aggregate/object/{objectUuid}")]
+        public async Task<IActionResult> AggregateByObjectUuid(
+            [FromRoute] string objectUuid,
+            [FromQuery] TrakHound.TrakHoundAggregateType aggregateType,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnAggregateByObjectUuid(client, objectUuid, aggregateType, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnAggregateByObjectUuid(
+            ITrakHoundClient client,
+            string objectUuid,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
+        /// Aggregate by Object UUID
+        /// </summary>
+        [HttpPost("aggregate/object")]
+        public async Task<IActionResult> AggregateByObjectUuid(
+            [FromBody] IEnumerable<string> objectUuids,
+            [FromQuery] TrakHound.TrakHoundAggregateType aggregateType,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnAggregateByObjectUuid(client, objectUuids, aggregateType, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnAggregateByObjectUuid(
+            ITrakHoundClient client,
+            IEnumerable<string> objectUuids,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
+        /// Aggregate Window by Object
+        /// </summary>
+        [HttpGet("aggregate/window")]
+        public async Task<IActionResult> AggregateWindowByObject(
+            [FromQuery] string path,
+            [FromQuery] TrakHound.TrakHoundAggregateType aggregateType,
+            [FromQuery] long window,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnAggregateWindowByObject(client, path, aggregateType, window, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnAggregateWindowByObject(
+            ITrakHoundClient client,
+            string path,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
+        /// Aggregate Window by Object
+        /// </summary>
+        [HttpPost("aggregate/window")]
+        public async Task<IActionResult> AggregateWindowByObject(
+            [FromBody] IEnumerable<string> paths,
+            [FromQuery] TrakHound.TrakHoundAggregateType aggregateType,
+            [FromQuery] long window,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnAggregateWindowByObject(client, paths, aggregateType, window, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnAggregateWindowByObject(
+            ITrakHoundClient client,
+            IEnumerable<string> paths,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
+        /// Aggregate Window by Object UUID
+        /// </summary>
+        [HttpGet("aggregate/window/object/{objectUuid}")]
+        public async Task<IActionResult> AggregateWindowByObjectUuid(
+            [FromRoute] string objectUuid,
+            [FromQuery] TrakHound.TrakHoundAggregateType aggregateType,
+            [FromQuery] long window,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnAggregateWindowByObjectUuid(client, objectUuid, aggregateType, window, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnAggregateWindowByObjectUuid(
+            ITrakHoundClient client,
+            string objectUuid,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
+        /// Aggregate Window by Object UUID
+        /// </summary>
+        [HttpPost("aggregate/window/object")]
+        public async Task<IActionResult> AggregateWindowByObjectUuid(
+            [FromBody] IEnumerable<string> objectUuids,
+            [FromQuery] TrakHound.TrakHoundAggregateType aggregateType,
+            [FromQuery] long window,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnAggregateWindowByObjectUuid(client, objectUuids, aggregateType, window, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnAggregateWindowByObjectUuid(
+            ITrakHoundClient client,
+            IEnumerable<string> objectUuids,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
+        /// Count by Object
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> CountByObject(
+            [FromQuery] string path,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnCountByObject(client, path, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnCountByObject(
+            ITrakHoundClient client,
+            string path,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
+        /// Count by Object
+        /// </summary>
+        [HttpPost("object/path")]
+        public async Task<IActionResult> CountByObject(
+            [FromBody] IEnumerable<string> paths,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnCountByObject(client, paths, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnCountByObject(
+            ITrakHoundClient client,
+            IEnumerable<string> paths,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
+        /// Count by Object UUID
+        /// </summary>
+        [HttpGet("object/{objectUuid}")]
+        public async Task<IActionResult> CountByObjectUuid(
+            [FromRoute] string objectUuid,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnCountByObjectUuid(client, objectUuid, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnCountByObjectUuid(
+            ITrakHoundClient client,
+            string objectUuid,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
+        /// Count by Object UUID
+        /// </summary>
+        [HttpPost("object")]
+        public async Task<IActionResult> CountByObjectUuid(
+            [FromBody] IEnumerable<string> objectUuids,
+            [FromQuery] long start,
+            [FromQuery] long stop,
+            [FromQuery] string routerId = null,
+            [FromQuery] bool indentOutput = false
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                return await OnCountByObjectUuid(client, objectUuids, start, stop, indentOutput);
+            }
+            else
+            {
+                return StatusCode(500, "Entity Client Not Found");
+            }
+        }
+
+        protected virtual Task<IActionResult> OnCountByObjectUuid(
+            ITrakHoundClient client,
+            IEnumerable<string> objectUuids,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            return Task.FromResult<IActionResult>(NotFound());
+        }
+
+
+        /// <summary>
         /// Subscribe by Object
         /// </summary>
         [Route("object/path/subscribe")]

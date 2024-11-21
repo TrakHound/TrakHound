@@ -50,7 +50,7 @@
                                 GridLines="DataGridGridLines.Vertical">
                     <Columns>
                         <RadzenDataGridColumn TItem="TableItem" Property="Value" Title="Value" />
-                        <RadzenDataGridColumn TItem="TableItem" Property="CreatedLocal" Title="Created" Width="150px" />
+                        <RadzenDataGridColumn TItem="TableItem" Property="CreatedLocal" Title="Created" Width="170px" />
                         <RadzenDataGridColumn TItem="TableItem" CssClass="delete" Width="70px" Sortable="false">
                             <Template Context="context">
                                 <button class="btn-link btn btn-sm" @onclick="() => DeleteClicked(context.Uuid)">Delete</button>

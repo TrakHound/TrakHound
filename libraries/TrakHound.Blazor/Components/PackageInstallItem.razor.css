@@ -1,14 +1,14 @@
 ﻿.package-item {
     padding: 10px 10px 10px 25px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
     border-radius: 2px;
     margin-top: 5px;
     min-height: 55px;
-    background: #fdfdfd;
+    background: var(--panelItemBackground);
 }
 
     .package-item.active {
-        background: var(--accentVeryVeryLight);
+        background: var(--panelItemBackgroundHover);
         border: 1px solid var(--accentLight);
     }
 
@@ -56,12 +56,12 @@
             font-size: 12px;
             font-weight: bold;
             margin-right: 40px;
-            color: #555;
+            color: var(--textDark);
             min-width: 150px;
         }
 
         .package-item .package-item-content > .identity .publisher {
-            color: #888;
+            color: var(--textLight);
             font-size: 11px;
             font-weight: normal;
             margin-left: 8px;
@@ -70,12 +70,12 @@
         .package-item .package-item-content > .identity .description {
             display: block;
             font-size: 11px;
-            color: #888;
+            color: var(--textMild);
         }
 
     .package-item.active .package-item-content > .identity .publisher,
     .package-item.active .package-item-content > .identity .description {
-        color: #555;
+        color: var(--textDark);
     }
 
 
@@ -88,16 +88,19 @@
             color: var(--accent);
             font-size: 11px;
             padding: 5px 10px;
-            border: 1px solid var(--accent);
-            border: 1px solid #ddd;
+            border: 1px solid var(--borderColor);
             border-radius: 2px;
         }
 
-            .package-item .package-item-content > .license .license-label .icon {
-                color: var(--accent);
-                margin-right: 10px;
-                font-size: 11px;
-            }
+    .package-item.active .package-item-content > .license .license-label {
+        border: 1px solid var(--accentLight);
+    }
+
+    .package-item .package-item-content > .license .license-label .icon {
+        color: var(--accent);
+        margin-right: 10px;
+        font-size: 11px;
+    }
 
 
     .package-item .package-item-content > .buttons {
@@ -116,6 +119,11 @@
             width: 90px;
         }
 
+
+            .package-item .package-item-content > .buttons .btn .icon {
+                color: var(--accentLight) !important;
+            }
+
             .package-item .package-item-content > .buttons .btn:last-child {
                 margin-right: 0;
             }
@@ -130,7 +138,7 @@
         }
 
         .package-item:hover .package-item-content > .buttons .btn-install .icon {
-            color: #fff;
+            color: #fff !important;
         }
 
 
@@ -146,7 +154,7 @@
     }
 
     .package-item.active .installed {
-        color: #555;
+        color: var(--textDark);
     }
 
     .package-item .installing {
@@ -158,16 +166,16 @@
         color: var(--accent);
         width: 90px;
         height: 28px;
-        padding: 3px 5px 0;
+        padding: 2px 5px 0;
     }
 
-        .package-item .installing ::deep .lds-spinner {
+/*        .package-item .installing ::deep .lds-spinner {
             padding-top: 5px;
         }
 
             .package-item .installing ::deep .lds-spinner div:after {
                 background: var(--accent);
-            }
+            }*/
 
 
     .package-item .version {
@@ -175,9 +183,13 @@
         margin-right: 20px;
         font-size: 12px;
         line-height: 36px;
-        color: #333;
+        color: var(--textMild);
     }
 
-        .package-item .version .symbol {
-            font-size: 12px;
-        }
+    .package-item.active .version {
+        color: var(--textDark);
+    }
+
+    .package-item .version .symbol {
+        font-size: 12px;
+    }

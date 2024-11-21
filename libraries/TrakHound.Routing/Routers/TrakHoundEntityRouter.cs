@@ -167,6 +167,16 @@ namespace TrakHound.Routing.Routers
             return 0;
         }
 
+        protected virtual long FilterAggregateRange(TrakHoundResult<TrakHoundAggregate> result)
+        {
+            return 0;
+        }
+
+        protected virtual long FilterAggregateWindowRange(TrakHoundResult<TrakHoundAggregateWindow> result)
+        {
+            return 0;
+        }
+
 
         internal IParameterRouteRequest ProcessQueryTime(IParameterRouteRequest request, IEnumerable<TrakHoundResult<TEntity>> results)
         {
@@ -482,6 +492,122 @@ namespace TrakHound.Routing.Routers
                         {
                             maxFound = results.Where(o => o.Type == TrakHoundResultType.Ok).Max(o => FilterCountRange(o));
                             minFound = results.Where(o => o.Type == TrakHoundResultType.Ok).Min(o => FilterCountRange(o));
+                        }
+                    }
+
+                    long redirectStart = maxFound > queryStart ? maxFound + 1 : queryStart;
+                    long redirectStop = queryStop;
+
+                    if (redirectStop - redirectStart > 0)
+                    {
+                        Router.Logger?.LogTrace($"{request.Id} : > Count Redirect = {query.Query} ::: Start = {redirectStart} :: Stop = {redirectStop}");
+
+                        var redirectParameters = new List<RouteQueryParameter>();
+                        redirectParameters.Add(new RouteQueryParameter("start", redirectStart));
+                        redirectParameters.Add(new RouteQueryParameter("stop", redirectStop));
+                        redirectParameters.Add(new RouteQueryParameter("span", querySpan));
+                        redirectQueries.Add(new RouteQuery(query.Query, redirectParameters));
+                    }
+                }
+
+                var redirectRequest = new ParameterRouteRequest();
+                redirectRequest.Name = request.Name;
+                redirectRequest.Id = request.Id;
+
+                // Add Skip & Take Parameters to Request
+                var requestParameters = new List<RouteQueryParameter>();
+                redirectRequest.Parameters = requestParameters;
+
+                // Add Queries
+                if (!redirectQueries.IsNullOrEmpty()) redirectRequest.AddQueries(redirectQueries);
+
+                return redirectRequest;
+            }
+
+            return request;
+        }
+
+        internal IParameterRouteRequest ProcessAggregateRange(IParameterRouteRequest request, IEnumerable<TrakHoundResult<TrakHoundAggregate>> results)
+        {
+            if (!request.Queries.IsNullOrEmpty())
+            {
+                var redirectQueries = new List<RouteQuery>();
+
+                foreach (var query in request.Queries)
+                {
+                    long queryStart = query.GetParameter<long>("start");
+                    long queryStop = query.GetParameter<long>("stop");
+                    long querySpan = query.GetParameter<long>("span");
+
+                    long maxFound = 0;
+                    long minFound = 0;
+
+                    var queryResults = results.Where(o => o.Request == query.Query);
+                    if (!queryResults.IsNullOrEmpty())
+                    {
+                        var okResults = queryResults.Where(o => o.Type == TrakHoundResultType.Ok);
+                        if (!okResults.IsNullOrEmpty())
+                        {
+                            maxFound = results.Where(o => o.Type == TrakHoundResultType.Ok).Max(o => FilterAggregateRange(o));
+                            minFound = results.Where(o => o.Type == TrakHoundResultType.Ok).Min(o => FilterAggregateRange(o));
+                        }
+                    }
+
+                    long redirectStart = maxFound > queryStart ? maxFound + 1 : queryStart;
+                    long redirectStop = queryStop;
+
+                    if (redirectStop - redirectStart > 0)
+                    {
+                        Router.Logger?.LogTrace($"{request.Id} : > Count Redirect = {query.Query} ::: Start = {redirectStart} :: Stop = {redirectStop}");
+
+                        var redirectParameters = new List<RouteQueryParameter>();
+                        redirectParameters.Add(new RouteQueryParameter("start", redirectStart));
+                        redirectParameters.Add(new RouteQueryParameter("stop", redirectStop));
+                        redirectParameters.Add(new RouteQueryParameter("span", querySpan));
+                        redirectQueries.Add(new RouteQuery(query.Query, redirectParameters));
+                    }
+                }
+
+                var redirectRequest = new ParameterRouteRequest();
+                redirectRequest.Name = request.Name;
+                redirectRequest.Id = request.Id;
+
+                // Add Skip & Take Parameters to Request
+                var requestParameters = new List<RouteQueryParameter>();
+                redirectRequest.Parameters = requestParameters;
+
+                // Add Queries
+                if (!redirectQueries.IsNullOrEmpty()) redirectRequest.AddQueries(redirectQueries);
+
+                return redirectRequest;
+            }
+
+            return request;
+        }
+
+        internal IParameterRouteRequest ProcessAggregateWindowRange(IParameterRouteRequest request, IEnumerable<TrakHoundResult<TrakHoundAggregateWindow>> results)
+        {
+            if (!request.Queries.IsNullOrEmpty())
+            {
+                var redirectQueries = new List<RouteQuery>();
+
+                foreach (var query in request.Queries)
+                {
+                    long queryStart = query.GetParameter<long>("start");
+                    long queryStop = query.GetParameter<long>("stop");
+                    long querySpan = query.GetParameter<long>("span");
+
+                    long maxFound = 0;
+                    long minFound = 0;
+
+                    var queryResults = results.Where(o => o.Request == query.Query);
+                    if (!queryResults.IsNullOrEmpty())
+                    {
+                        var okResults = queryResults.Where(o => o.Type == TrakHoundResultType.Ok);
+                        if (!okResults.IsNullOrEmpty())
+                        {
+                            maxFound = results.Where(o => o.Type == TrakHoundResultType.Ok).Max(o => FilterAggregateWindowRange(o));
+                            minFound = results.Where(o => o.Type == TrakHoundResultType.Ok).Min(o => FilterAggregateWindowRange(o));
                         }
                     }
 

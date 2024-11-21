@@ -56,7 +56,7 @@ namespace TrakHound
             var s = ts.Second;
             var ms = ts.Millisecond;
 
-            var b = new DateTime(y, m, d, h, 0, 0);
+            var b = new DateTime(y, m, d, h, 0, 0, ts.Kind);
             var seg = b.AddSeconds(increment);
             while (ts >= seg)
             {
@@ -78,7 +78,7 @@ namespace TrakHound
             var s = ts.Second;
             var ms = ts.Millisecond;
 
-            var b = new DateTime(y, m, d, h, 0, 0);
+            var b = new DateTime(y, m, d, h, 0, 0, ts.Kind);
             b = b.AddHours(1);
 
             var seg = b.AddSeconds(increment * -1);

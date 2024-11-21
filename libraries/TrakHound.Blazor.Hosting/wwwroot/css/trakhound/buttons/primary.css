@@ -1,0 +1,37 @@
+﻿.btn-primary {
+    background: #0080ff !important;
+    background: linear-gradient(to bottom, #0080ff 0%,#0073e6 100%) !important;
+    background: linear-gradient(to bottom, #2d7dd2 0%,#2870bd 100%) !important;
+    background: var(--buttonPrimaryBackground) !important;
+    border-color: #0073e6 !important;
+    border-color: var(--buttonPrimaryBorder) !important;
+    color: var(--buttonPrimaryText) !important;
+    transition: none;
+}
+
+    .btn-primary:focus {
+        box-shadow: none !important;
+        outline: none;
+        background: var(--buttonPrimaryBackground) !important;
+        border-color: var(--buttonPrimaryBorder) !important;
+        color: var(--buttonPrimaryText) !important;
+    }
+
+    .btn-primary .icon {
+        color: white;
+        color: var(--buttonPrimaryIcon);
+    }
+
+    .btn-primary:hover {
+        background: #0066cc !important;
+        background: #428ad7 !important;
+        background: #5797db !important;
+        background: var(--buttonPrimaryBackgroundHover) !important;
+        border-color: var(--buttonPrimaryBorderHover) !important;
+        color: var(--buttonPrimaryTextHover) !important;
+        transition: none;
+    }
+
+        .btn-primary:hover .icon {
+            color: var(--buttonPrimaryIconHover);
+        }

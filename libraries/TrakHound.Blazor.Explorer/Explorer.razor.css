@@ -15,7 +15,7 @@
 /* Explorer Navigation Sidebar */
 .explorer-navigation-sidebar {
     grid-column: 1;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
 }
 
     .explorer-navigation-sidebar .btn {
@@ -23,7 +23,7 @@
         width: 40px;
         height: 36px;
         border: none;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--borderColorLight);
     }
 
         .explorer-navigation-sidebar .btn .icon {
@@ -44,8 +44,7 @@
 /* Explorer Treeview Sidebar */
 .explorer-sidebar {
     min-width: 175px;
-    border-right: 1px solid #f0f0f0;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--borderColor);
     height: 100%;
     overflow: hidden;
     padding-top: 5px;
@@ -60,7 +59,7 @@
 
 .explorer-sidebar-header {
     grid-row: 1;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
     padding-top: 5px;
     padding-left: 5px;
     padding-bottom: 5px;
@@ -92,13 +91,14 @@
         font-size: 16px;
         font-weight: bold;
         line-height: 18px;
+        color: var(--textDark);
     }
 
     .explorer-sidebar-header-text .subtitle {
         display: block;
         font-size: 12px;
         line-height: 18px;
-        color: #888;
+        color: var(--textMild);
     }
 
 .explorer-sidebar-toolbar {
@@ -106,7 +106,7 @@
     display: grid;
     grid-auto-columns: max-content;
     grid-auto-flow: column;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
     padding-top: 2px;
     padding-left: 2px;
     padding-bottom: 2px;
@@ -115,8 +115,6 @@
     .explorer-sidebar-toolbar .btn {
         padding: 3px 8px !important;
         min-width: 0px !important;
-        /*margin-right: 4px;*/
-        /*border: 1px solid #ddd;*/
     }
 
     .explorer-sidebar-toolbar .btn:focus {
@@ -144,21 +142,21 @@
     grid-template-rows: max-content 1fr;
     height: 100%;
     overflow: hidden;
-    border-left: 1px solid #ddd;
+    border-left: 1px solid var(--borderColor);
 }
 
 
 .explorer-breadcrumbs {
     grid-row: 1;
     padding: 5px 10px 5px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--borderColor);
 }
 
 .explorer-body {
     grid-row: 2;
     height: 100%;
     overflow: hidden;
-    background: #e9ecef;
+    background: var(--panelBackground);
 }
 
 
@@ -195,10 +193,9 @@
     overflow: hidden;
     overflow-y: auto;
     height: 100%;
-    border-left: 1px solid #ddd;
+    border-left: 1px solid var(--borderColor);
     padding-top: 10px;
 }
-
 
 
 .explorer-page ::deep .rz-splitter {

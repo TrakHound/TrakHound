@@ -17,6 +17,8 @@
                                             <CascadingValue Name="BasePath" Value="@routeData.BasePath">
                                                 <CascadingValue Name="BaseLocation" Value="@routeData.BaseLocation">
 
+                                                    <TrakHoundTheme Key="@GetThemeKey(routeData.AppId)" />
+
                                                     <TrakHoundAppPackageStylesheets AppId="@routeData.AppId" />
                                                     <TrakHoundAppPackageScripts AppId="@routeData.AppId" />
 
@@ -35,3 +37,11 @@
         </CascadingValue>
     </Found>
 </TrakHoundBlazorRouter>
+
+@code {
+
+    private static string GetThemeKey(string appId)
+    {
+        return $"trakhound.app.theme.{appId}";
+    }
+}

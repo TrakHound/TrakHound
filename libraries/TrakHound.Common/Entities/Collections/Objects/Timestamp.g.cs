@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectTimestampEntity> Timestamps => _timestamps.Values;
-
-
         public void AddTimestamp(ITrakHoundObjectTimestampEntity entity)
         {
             if (entity != null)

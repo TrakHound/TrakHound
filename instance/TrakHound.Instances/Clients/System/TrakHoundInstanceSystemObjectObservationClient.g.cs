@@ -246,6 +246,246 @@ namespace TrakHound.Clients
             return default;
         }
 
+        public async Task<IEnumerable<TrakHoundAggregate>> AggregateByObject(
+            string path,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.AggregateByObject(new string[] { path },aggregateType,start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundAggregate>> AggregateByObject(
+            IEnumerable<string> paths,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.AggregateByObject(paths,aggregateType,start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundAggregate>> AggregateByObjectUuid(
+            string objectUuid,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.AggregateByObjectUuid(new string[] { objectUuid },aggregateType,start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundAggregate>> AggregateByObjectUuid(
+            IEnumerable<string> objectUuids,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.AggregateByObjectUuid(objectUuids,aggregateType,start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundAggregateWindow>> AggregateWindowByObject(
+            string path,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.AggregateWindowByObject(new string[] { path },aggregateType,window,start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundAggregateWindow>> AggregateWindowByObject(
+            IEnumerable<string> paths,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.AggregateWindowByObject(paths,aggregateType,window,start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundAggregateWindow>> AggregateWindowByObjectUuid(
+            string objectUuid,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.AggregateWindowByObjectUuid(new string[] { objectUuid },aggregateType,window,start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundAggregateWindow>> AggregateWindowByObjectUuid(
+            IEnumerable<string> objectUuids,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.AggregateWindowByObjectUuid(objectUuids,aggregateType,window,start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundCount>> CountByObject(
+            string path,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.CountByObject(new string[] { path },start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundCount>> CountByObject(
+            IEnumerable<string> paths,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.CountByObject(paths,start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundCount>> CountByObjectUuid(
+            string objectUuid,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.CountByObjectUuid(new string[] { objectUuid },start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TrakHoundCount>> CountByObjectUuid(
+            IEnumerable<string> objectUuids,
+            long start,
+            long stop,
+            string routerId = null)
+        {
+            var router = BaseClient.GetRouter(routerId);
+            if (router != null)
+            {
+                var response = await router.Entities.Objects.Observations.CountByObjectUuid(objectUuids,start,stop);
+                if (response.IsSuccess)
+                {
+                    return response.Content;
+                }
+            }
+
+            return default;
+        }
+
         public async Task<ITrakHoundConsumer<IEnumerable<ITrakHoundObjectObservationEntity>>> SubscribeByObject(
             IEnumerable<string> paths,
             int interval = 0,

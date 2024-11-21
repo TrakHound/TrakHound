@@ -236,28 +236,6 @@ namespace TrakHound.Entities.Api
                     resultConsumer.OnReceivedAsync = async (entities) =>
                     {
                         return TrakHoundApiJsonResponse.Ok(await GetObjects(entities, routerId));
-
-                        //var objectUuids = entities.Select(o => o.ObjectUuid).Distinct();
-                        //var objects = await Client.System.Entities.Objects.ReadByUuid(objectUuids, routerId);
-                        //var dObjects = objects?.ToDictionary(o => o.Uuid);
-
-                        //var results = new List<TrakHoundString>();
-                        //foreach (var entity in entities)
-                        //{
-                        //    var obj = dObjects?.GetValueOrDefault(entity.ObjectUuid);
-                        //    if (obj != null)
-                        //    {
-                        //        var result = new TrakHoundString();
-                        //        result.Uuid = entity.Uuid;
-                        //        result.Object = obj.GetAbsolutePath();
-                        //        result.ObjectUuid = entity.ObjectUuid;
-                        //        result.Value = entity.Value;
-                        //        result.SourceUuid = entity.SourceUuid;
-                        //        result.Created = entity.Created.ToDateTime();
-                        //        results.Add(result);
-                        //    }
-                        //}
-                        //return TrakHoundApiJsonResponse.Ok(results);
                     };
 
                     return resultConsumer;

@@ -17,7 +17,7 @@ namespace TrakHound.Blazor
             builder.OpenComponent<SectionOutlet>(1);
             builder.AddComponentParameter(2, nameof(SectionOutlet.SectionName), TitleSectionName);
             builder.CloseComponent();
-            builder.AddMarkupContent(3, "<!-- End Package Stylesheets -->");
+            builder.AddMarkupContent(3, "<!-- End Page Title -->");
         }
     }
 }

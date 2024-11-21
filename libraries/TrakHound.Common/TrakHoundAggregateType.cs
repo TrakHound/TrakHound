@@ -5,7 +5,12 @@ namespace TrakHound
 {
     public enum TrakHoundAggregateType
     {
-        Absolute,
-        Increment
+        Mean,
+        Median,
+        Max,
+        Min,
+        Sum,
+        Ceiling,
+        Floor,
     }
 }

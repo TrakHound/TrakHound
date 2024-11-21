@@ -40,15 +40,16 @@ namespace TrakHound.Instances
 
 
         [JsonPropertyName("adminInterfaceEnabled")]
-        [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         public bool AdminInterfaceEnabled { get; set; }
 
         [JsonPropertyName("adminAuthenticationEnabled")]
-        [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         public bool AdminAuthenticationEnabled { get; set; }
 
-        [JsonPropertyName("systemApiEnabled")]
+        [JsonPropertyName("adminDefaultTheme")]
         [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        public string AdminDefaultTheme { get; set; }
+
+        [JsonPropertyName("systemApiEnabled")]
         public bool SystemApiEnabled { get; set; }
 
 
@@ -62,6 +63,7 @@ namespace TrakHound.Instances
 
 
         [JsonPropertyName("basePath")]
+        [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         public string BasePath { get; set; }
 
 
@@ -80,6 +82,7 @@ namespace TrakHound.Instances
             HttpPort = 8472;
             AdminInterfaceEnabled = true;
             AdminAuthenticationEnabled = true;
+            AdminDefaultTheme = "Dark";
             SystemApiEnabled = true;
         }
 

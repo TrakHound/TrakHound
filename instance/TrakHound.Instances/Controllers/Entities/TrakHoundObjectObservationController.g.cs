@@ -318,6 +318,330 @@ namespace TrakHound.Http.Entities
         }
 
 
+
+        protected async override Task<IActionResult> OnAggregateByObject(
+            ITrakHoundClient client,
+            string path,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.AggregateByObject(
+            path,
+            aggregateType,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
+        protected async override Task<IActionResult> OnAggregateByObject(
+            ITrakHoundClient client,
+            IEnumerable<string> paths,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.AggregateByObject(
+            paths,
+            aggregateType,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
+        protected async override Task<IActionResult> OnAggregateByObjectUuid(
+            ITrakHoundClient client,
+            string objectUuid,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.AggregateByObjectUuid(
+            objectUuid,
+            aggregateType,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
+        protected async override Task<IActionResult> OnAggregateByObjectUuid(
+            ITrakHoundClient client,
+            IEnumerable<string> objectUuids,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.AggregateByObjectUuid(
+            objectUuids,
+            aggregateType,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
+        protected async override Task<IActionResult> OnAggregateWindowByObject(
+            ITrakHoundClient client,
+            string path,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.AggregateWindowByObject(
+            path,
+            aggregateType,
+            window,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
+        protected async override Task<IActionResult> OnAggregateWindowByObject(
+            ITrakHoundClient client,
+            IEnumerable<string> paths,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.AggregateWindowByObject(
+            paths,
+            aggregateType,
+            window,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
+        protected async override Task<IActionResult> OnAggregateWindowByObjectUuid(
+            ITrakHoundClient client,
+            string objectUuid,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.AggregateWindowByObjectUuid(
+            objectUuid,
+            aggregateType,
+            window,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
+        protected async override Task<IActionResult> OnAggregateWindowByObjectUuid(
+            ITrakHoundClient client,
+            IEnumerable<string> objectUuids,
+            TrakHound.TrakHoundAggregateType aggregateType,
+            long window,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.AggregateWindowByObjectUuid(
+            objectUuids,
+            aggregateType,
+            window,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
+        protected async override Task<IActionResult> OnCountByObject(
+            ITrakHoundClient client,
+            string path,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.CountByObject(
+            path,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
+        protected async override Task<IActionResult> OnCountByObject(
+            ITrakHoundClient client,
+            IEnumerable<string> paths,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.CountByObject(
+            paths,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
+        protected async override Task<IActionResult> OnCountByObjectUuid(
+            ITrakHoundClient client,
+            string objectUuid,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.CountByObjectUuid(
+            objectUuid,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
+        protected async override Task<IActionResult> OnCountByObjectUuid(
+            ITrakHoundClient client,
+            IEnumerable<string> objectUuids,
+            long start,
+            long stop,
+            bool indentOutput = false
+        )
+        {
+            var result = await client.System.Entities.Objects.Observation.CountByObjectUuid(
+            objectUuids,
+            start,
+            stop);
+
+            if (!IsNullOrEmpty(result))
+            {
+                return ProcessJsonContentResponse(result, indentOutput);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
         protected async override Task OnSubscribeByObject(
             ITrakHoundClient client,
             int interval,

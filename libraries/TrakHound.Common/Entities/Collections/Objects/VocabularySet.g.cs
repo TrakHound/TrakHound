@@ -14,8 +14,6 @@ namespace TrakHound.Entities.Collections
 
 
         public IEnumerable<ITrakHoundObjectVocabularySetEntity> VocabularySets => _vocabularySets.Values;
-
-
         public void AddVocabularySet(ITrakHoundObjectVocabularySetEntity entity)
         {
             if (entity != null)

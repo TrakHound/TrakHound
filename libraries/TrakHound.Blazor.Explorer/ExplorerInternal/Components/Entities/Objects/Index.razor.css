@@ -8,7 +8,7 @@
 
 .objects-panel-sidebar {
     grid-column: 2;
-    border-left: 1px solid #ddd;
+    border-left: 1px solid var(--borderColor);
 }
 
     .objects-panel-sidebar .btn {
@@ -17,7 +17,7 @@
         width: 40px;
         height: 36px;
         border: none;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--borderColor);
     }
 
         .objects-panel-sidebar .btn .icon {
@@ -73,7 +73,7 @@
 }
 
 .objects-toolbar ::deep .rz-menu > .rz-navigation-item > .rz-navigation-item-wrapper > .rz-navigation-item-link {
-    border-right: 1px solid #eee;
+    border-right: 1px solid var(--borderColorLight);
     padding-right: 20px;
     margin-right: 10px;
 }
@@ -100,8 +100,8 @@
 .objects-content {
     height: 100%;
     overflow: hidden;
-    border-top: 1px solid #ddd;
-    border-right: 1px solid #ddd;
+    border-top: 1px solid var(--borderColor);
+    border-right: 1px solid var(--borderColor);
 }
 
     .objects-content > ::deep .rz-tabview {
@@ -143,7 +143,7 @@
 
 .objects-searchbar {
     grid-row: 3;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
     padding-top: 5px;
 }
 
@@ -155,7 +155,7 @@
 .queries-panel {
     height: 100%;
     overflow: hidden;
-    border-left: 1px solid #ddd;
+    border-left: 1px solid var(--borderColor);
 }
 
 

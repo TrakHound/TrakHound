@@ -1,20 +1,14 @@
-﻿.table {
-    background: #fafafa;
-    border: 1px solid #ddd;
+﻿.table td {
+    font-size: 12px;
+    padding: 5px 15px;
 }
 
-    .table td {
-        font-size: 12px;
-        padding: 5px 15px;
+    .table td.label {
+        background: var(--tableHeaderBackground);
+        width: 200px;
+        font-weight: bold;
     }
 
-        .table td.label {
-            width: 200px;
-            font-weight: bold;
-            border-right: 1px solid #ddd;
-        }
-
-        .table td.value {
-            background: #fff;
-            border-bottom-color: #ddd;
-        }
+    .table td.value {
+        border-bottom-color: var(--tableBorderColor);
+    }

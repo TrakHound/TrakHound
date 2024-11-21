@@ -23,8 +23,9 @@
             padding: 10px 10px 10px;
             font-size: 12px;
             font-family: Consolas;
-            border: 1px solid #eee;
+            border: 1px solid var(--borderColorLight);
             border-bottom: none;
+            color: var(--textDark);
         }
 
         .content-preview-display .preview-container img {
@@ -42,20 +43,21 @@
     display: grid;
     grid-template-columns: max-content 1fr max-content max-content;
     grid-column-gap: 5px;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid var(--borderColor);
     padding: 5px;
 }
 
     .content-preview-toolbar .toolbar-panel .btn {
         padding: 2px 8px;
-        background: #fafafa;
-        border-color: #ddd !important;
+        background: var(--inputBackground) !important;
+        border-color: var(--borderColor) !important;
     }
 
-    .content-preview-toolbar .toolbar-panel .btn .icon {
-        margin: 0;
-        font-size: 12px;
-    }
+        .content-preview-toolbar .toolbar-panel .btn .icon {
+            margin: 0;
+            font-size: 12px;
+            color: var(--textMild);
+        }
 
     .content-preview-toolbar .toolbar-panel ::deep .rz-dropdown {
         height: 30px !important;
@@ -63,8 +65,9 @@
         font-size: 12px;
         line-height: 16px;
         margin: 0;
-        background: #fafafa;
-        border-color: #ddd;
+        background: var(--panelBackground);
+        border-color: var(--borderColor);
+        color: var(--textMild);
     }
 
     .content-preview-toolbar .toolbar-panel ::deep .rz-dropdown-trigger {
@@ -76,12 +79,12 @@
         padding: 0 10px;
     }
 
-    .content-preview-toolbar .size-toolbar-panel .content-size {
-        font-size: 11px;
-        font-weight: bold;
-        line-height: 30px;
-        color: #555;
-    }
+        .content-preview-toolbar .size-toolbar-panel .content-size {
+            font-size: 11px;
+            font-weight: bold;
+            line-height: 30px;
+            color: var(--textMild);
+        }
 
     .content-preview-toolbar .buttons-toolbar-panel {
         grid-column: 3;

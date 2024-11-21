@@ -13,6 +13,7 @@
     padding-left: 25px;
     padding-bottom: 10px;
     border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borderColorLight);
 }
 
 .header-panel .header-icon {
@@ -48,11 +49,13 @@
         font-weight: bold;
         line-height: 20px;
         color: #333;
+        color: var(--textDark);
     }
 
     .header-panel .header-text .header-description {
         font-size: 12px;
         color: #888;
+        color: var(--textMild);
     }
 
     .header-panel .header-text .header-package {
@@ -78,7 +81,9 @@
 
 .menu-item {
     background: #fafafa;
+    background: var(--panelItemBackground);
     border: 1px solid #ddd;
+    border: 1px solid var(--borderColor);
     border-radius: 2px;
     padding: 20px;
     min-width: 250px;
@@ -114,6 +119,7 @@
     font-size: 14px;
     font-weight: bold;
     color: var(--accent);
+    color: var(--textDark);
 }
 
 .menu-item-description-container {
@@ -124,10 +130,11 @@
 .menu-item-description {
     font-size: 11px;
     color: #888;
+    color: var(--textMild);
 }
 
 
 .menu-item:hover {
-    background: var(--accentVeryVeryLight);
+    background: var(--panelItemBackgroundHover);
     border: 1px solid var(--accent);
 }
