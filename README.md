@@ -1,4 +1,4 @@
-![trakhound-logo](static/trakhound-logo-v5-100px.png)
+![trakhound-logo](https://raw.githubusercontent.com/TrakHound/TrakHound/refs/heads/main/static/trakhound-logo-v5-100px.png)
 
 # TrakHound
 Open Source Application Framework for Industrial Enterprise & IoT Applications. Provides Data Interoperability, Flexible Architecture (Cloud, On-Premise, or Hybrid), Package Based Deployments. Built on .NET 8 and Blazor. Use cases include custom MES, ERP, CMMS, QMS applications as well as many other IIoT related solutions. The primary purpose of the framework is to allow multiple systems to work together in a seamless way.
@@ -20,25 +20,25 @@ https://www.trakhound.com/demo/_admin
     <tbody>
         <tr>
             <td>Instance</td>
-            <td><img src="static/windows-logo.svg" style="height:20px;width:20px;vertical-align: middle;" /></td>
+            <td><img src="https://raw.githubusercontent.com/TrakHound/TrakHound/refs/heads/main/static/windows-logo.svg" style="height:20px;width:20px;vertical-align: middle;" /></td>
             <td>Installer</td>
             <td><a href="https://github.com/TrakHound/TrakHound/releases/latest">https://github.com/TrakHound/TrakHound/releases/latest</a></td>
         </tr>        
         <tr>
             <td>Instance</td>
-            <td><img src="static/docker-logo.svg" style="height:20px;width:20px;vertical-align: middle;" /></td>
+            <td><img src="https://raw.githubusercontent.com/TrakHound/TrakHound/refs/heads/main/static/docker-logo.svg" style="height:20px;width:20px;vertical-align: middle;" /></td>
             <td>Docker</td>
             <td><a href="https://hub.docker.com/repository/docker/trakhound/instance">https://hub.docker.com/repository/docker/trakhound/instance</a></td>
         </tr>
         <tr>
             <td>SDK</td>
-            <td><img src="static/nuget-logo.svg" style="height:20px;width:20px;vertical-align: middle;" /></td>
+            <td><img src="https://raw.githubusercontent.com/TrakHound/TrakHound/refs/heads/main/static/nuget-logo.svg" style="height:20px;width:20px;vertical-align: middle;" /></td>
             <td>Nuget</td>
             <td><a href="https://www.nuget.org/profiles/TrakHound">https://www.nuget.org/profiles/TrakHound</a></td>
         </tr>
         <tr>
             <td>CLI</td>
-            <td><img src="static/windows-logo.svg" style="height:20px;width:20px;vertical-align: middle;" /></td>
+            <td><img src="https://raw.githubusercontent.com/TrakHound/TrakHound/refs/heads/main/static/windows-logo.svg" style="height:20px;width:20px;vertical-align: middle;" /></td>
             <td>Installer</td>
             <td><a href="https://github.com/TrakHound/TrakHound/releases/latest">https://github.com/TrakHound/TrakHound/releases/latest</a></td>
         </tr>  
@@ -62,8 +62,19 @@ https://github.com/TrakHound/TrakHound/tree/dev/docs
 > Note that Documentation is still a work in progress. This will be a focus during the initial beta.
 
 ## Getting Started
+
+### Windows
 - Download and Install TrakHound Instance
-- Install the TrakHound.Core.Bundle package using the Admin UI
+- Browse to http://localhost:8472/_admin
+- (If First Open) Create an Admin username and password and click **Setup**
+- Install the **TrakHound.Core.Bundle** package using the Admin UI
+
+### Docker
+```
+docker pull trakhound/instance
+docker container run -p 8472:8080 trakhound/instance
+```
+After Docker container is running, browse to http://localhost:8472/_admin/packages and install the **TrakHound.Core.Bundle** package.
 
 ## Overview
 Simplify application development and utilize modern software tools and concepts to develop industrial resource tracking systems such as MES, ERP, etc. Although TrakHound is designed with industrial applications in mind, as they require many very small custom applications, any application can be developed with the framework.
@@ -104,18 +115,18 @@ The Admin UI is used to install/manage TrakHound Packages, to explore App, Api, 
 > Note that this UI can be protected through Authentication or can be disabled entirely.
 
 ### Explorer (Entities)
-![Explorer-Entities-Screenshot](static/explorer-entities.png)
+![Explorer-Entities-Screenshot](https://raw.githubusercontent.com/TrakHound/TrakHound/refs/heads/main/static/explorer-entities.png)
 
 ### Packages
-![Packages-Screenshot](static/packages.png)
+![Packages-Screenshot](https://raw.githubusercontent.com/TrakHound/TrakHound/refs/heads/main/static/packages.png)
 
 ### Configuration
-![Configuration-Screenshot](static/configuration.png)
+![Configuration-Screenshot](https://raw.githubusercontent.com/TrakHound/TrakHound/refs/heads/main/static/configuration.png)
 
 ## Architecture
 Configurable architecture that creates an abstraction layer between applications and infrastructure. Routing can be configured as needed whether that is to implement more of a monolith or more of a distributed architecture.
 
-![Routing-Screenshot](static/routing.png)
+![Routing-Screenshot](https://raw.githubusercontent.com/TrakHound/TrakHound/refs/heads/main/static/routing.png)
 
 ## Support
 TrakHound provides commercial **Enterprise Support Plans** to maintain uptime and provide professional consulting and setup assistance. Please feel free to contact us for more information at info@trakhound.com.

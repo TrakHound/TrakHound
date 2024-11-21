@@ -506,7 +506,7 @@ namespace TrakHound.Instance
             Console.WriteLine("TrakHound Instance : Version " + version.ToString());
             Console.WriteLine("--------------------");
             Console.WriteLine("This application is licensed under the MIT License (https://choosealicense.com/licenses/mit/)");
-            Console.WriteLine("Source code available at Github.com (https://github.com/TrakHound/MTConnect.NET)");
+            Console.WriteLine("Source code available at Github.com (https://github.com/TrakHound/TrakHound)");
             Console.WriteLine("--------------------");
         }
     }
