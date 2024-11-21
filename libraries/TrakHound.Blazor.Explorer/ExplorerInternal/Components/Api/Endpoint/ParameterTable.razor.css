@@ -1,20 +1,25 @@
-﻿.table {
-/*    background: #fafafa;*/
-/*    border: 1px solid #eee;*/
+﻿table {
+    border: 1px solid var(--tableBorderColor) !important;
 }
+
+thead {
+    border-top: none !important;
+}
+
+    thead tr {
+        border-top: none !important;
+    }
 
 th {
     font-size: 12px;
     font-weight: bold;
-    border: none !important;
-/*    border-right: 1px solid #eee !important;*/
     padding: 2px 10px;
+    border-top: red !important;
 }
 
 td {
     font-size: 12px;
     padding: 2px 10px;
-/*    background: #fff;*/
 }
 
 .type-cell {

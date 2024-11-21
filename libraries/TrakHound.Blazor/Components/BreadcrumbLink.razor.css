@@ -2,7 +2,6 @@
     color: var(--buttonLinkText);
     font-size: 13px;
     display: inline-block;
-    margin-right: 5px;
     text-decoration: none;
 }
 
@@ -12,9 +11,10 @@
     }
 
 .breadcrumb-organizer {
-    color: var(--textMild);
+    color: var(--textDark);
     font-size: 13px;
     display: inline-block;
+    margin-left: 5px;
     margin-right: 5px;
     text-decoration: none;
 }

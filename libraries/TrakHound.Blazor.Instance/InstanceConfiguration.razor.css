@@ -392,6 +392,19 @@
 }
 
 
+.configuration-page ::deep .add-panel .container-label {
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--textMild);
+}
+
+.configuration-page ::deep .add-panel .container-content {
+    padding: 15px;
+    border: 1px solid var(--borderColorLight);
+}
+
+
 .loading-panel {
     grid-row-start: 1;
     grid-row-end: 5;

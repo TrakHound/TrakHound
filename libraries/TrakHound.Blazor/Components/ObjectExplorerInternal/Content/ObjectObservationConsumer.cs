@@ -50,7 +50,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                     }
                 }
 
-                //await Subscribe(objectUuids);
+                await Subscribe(objectUuids);
 
 
 

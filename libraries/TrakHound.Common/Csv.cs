@@ -29,7 +29,8 @@ namespace TrakHound
 
                         if (property.PropertyType == typeof(DateTime))
                         {
-                            val = ((DateTime)val).ToUnixTime();
+                            val = ((DateTime)val).ToISO8601String();
+                            //val = ((DateTime)val).ToUnixTime();
                         }
 
                         l.Add(val != null ? val : "");

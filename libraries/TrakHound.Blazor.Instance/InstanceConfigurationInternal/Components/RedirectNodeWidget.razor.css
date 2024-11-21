@@ -12,13 +12,13 @@
 .diagram-node .redirect-node:hover {
     background: var(--accentVeryLight);
     background: var(--panelItemBackgroundHover);
-    border: 1px solid var(--accentLight);
+    border: 2px solid var(--accentLight);
 }
 
 .diagram-node.selected .redirect-node {
     background: var(--accentVeryLight);
     background: var(--panelItemBackgroundHover);
-    border: 1px solid var(--accent);
+    border: 2px solid var(--accent);
 }
 
 .redirect-node .node-type {

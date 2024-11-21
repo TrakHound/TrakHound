@@ -58,7 +58,6 @@ namespace TrakHound
         private readonly object _lock = new object();
         private readonly int _itemLimit;
         private readonly TValue[] _items;
-        private int _itemIndex;
         private int _itemCount = 0;
 
 
@@ -80,7 +79,6 @@ namespace TrakHound
         {
             _itemLimit = limit;
             _items = new TValue[limit];
-            _itemIndex = 0;
         }
 
 
@@ -104,6 +102,17 @@ namespace TrakHound
                 {
                     Array.Copy(_items, 0, _items, 1, _itemLimit - 1);
                     _items[0] = item;
+                }
+            }
+        }
+
+        public void Clear()
+        {
+            lock (_lock)
+            {
+                for (var i = 0; i < _items.Length; i++)
+                {
+                    _items[i] = default;
                 }
             }
         }

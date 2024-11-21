@@ -15,9 +15,7 @@
 .footer-panel {
     grid-row: 2;
     padding: 20px;
-    background: #fafafa;
     background: var(--panelBackgroundMedium);
-    border-top: 1px solid #ddd;
     border-top: 1px solid var(--borderColor);
 }
 
@@ -39,11 +37,16 @@
         grid-column-gap: 20px;
     }
 
-    .configuration-panel ::deep .text-box.small.required input {
-        font-size: 13px !important;
-        background: var(--accentVeryVeryLight) !important;
-        border: 1px solid var(--accentLight) !important;
+    .configuration-panel ::deep .text-box.small {
+        margin-bottom: 20px;
     }
+
+        .configuration-panel ::deep .text-box.small.required input {
+            font-size: 13px !important;
+            background: var(--inputPrimaryBackground) !important;
+            border: 1px solid var(--inputPrimaryBorder) !important;
+            color: var(--inputPrimaryText) !important;
+        }
 
     .configuration-panel ::deep .spin-edit.small input {
         font-size: 13px !important;
@@ -55,19 +58,6 @@
     width: auto;
     max-width: 1000px;
 }
-
-    .configuration-container .container-label {
-        margin-bottom: 10px;
-        font-size: 13px;
-        font-weight: bold;
-        color: #555;
-    }
-
-    .configuration-container .container-content {
-        padding: 15px;
-        border: 1px solid #eee;
-        border: 1px solid var(--borderColorLight);
-    }
 
 .confirm-panel {
     padding: 20px 40px;
@@ -82,7 +72,7 @@
 .confirm-panel label {
     font-size: 12px;
     margin-bottom: 5px;
-    color: #555;
+    color: var(--textMild);
 }
 
 .confirm-panel .table td {
@@ -109,6 +99,7 @@
 .parameters-title {
     font-size: 14px;
     font-weight: bold;
+    color: var(--textMild);
 }
 
     .parameters-title .icon {
@@ -119,14 +110,12 @@
 
 .parameters-panel .parameters-table {
     margin: 0;
+    border: 1px solid var(--tableBorderColor);
 }
 
     .parameters-panel .parameters-table th {
-        border-bottom: 1px solid #ddd;
-        border-bottom: 1px solid var(--borderColor);
         font-size: 13px;
         font-weight: bold;
-        background: #f8f8f8;
         padding: 2px 15px;
     }
 
@@ -160,22 +149,25 @@
 
         .parameters-panel .parameters-table .parameter-cell-value ::deep .text-box input,
         .parameters-panel .parameters-table .parameter-cell-value ::deep .password-box input {
-            border: 1px solid var(--accentLight) !important;
+            border: 1px solid var(--inputPrimaryBorder) !important;
             border-radius: 0;
             margin: 0 !important;
             padding: 0 15px !important;
             line-height: 12px !important;
             height: 26px !important;
             font-size: 13px !important;
-            background: var(--accentVeryVeryLight) !important;
+            background: var(--inputPrimaryBackground) !important;
+            color: var(--inputPrimaryText) !important;
         }
 
             .parameters-panel .parameters-table .parameter-cell-value ::deep .text-box input:focus,
             .parameters-panel .parameters-table .parameter-cell-value ::deep .password-box input:focus {
                 outline: none;
                 box-shadow: inset 0px 0px 1px 1px var(--accent);
-                border: 1px solid var(--accentLight) !important;
+                background: var(--inputPrimaryBackgroundHighlight) !important;
+                border: 1px solid var(--inputPrimaryBorderHighlight) !important;
                 border-radius: 0;
+                color: var(--inputPrimaryTextHighlight) !important;
             }
 
     .parameters-panel .parameters-table .parameter-cell-buttons {
@@ -192,8 +184,7 @@
         }
 
 .parameters-panel .parameter-add-container {
-    border: 1px solid #ddd;
-    border: 1px solid var(--borderColor);
+    border: 1px solid var(--tableBorderColor);
     border-top: none;
     padding: 10px;
 }
@@ -204,6 +195,7 @@
         font-weight: bold;
         margin-left: 10px;
         margin-bottom: 5px;
+        color: var(--textMild);
     }
 
     .parameters-panel .parameter-add-container .parameter-add-input {
@@ -217,6 +209,7 @@
         padding: 0;
         height: 26px;
         line-height: 26px;
+        margin-bottom: 10px;
     }
 
         .parameters-panel .parameter-add-container ::deep .text-box input {

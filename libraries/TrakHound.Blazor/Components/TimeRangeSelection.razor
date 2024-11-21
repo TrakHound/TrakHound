@@ -6,11 +6,11 @@
 <div class="time-range-selection">
     <div class="date-selection-container">
         <div class="select-container from-selection">
-            <RadzenDatePicker TValue="DateTime" Value="@From" Change="FromSelected" ShowTime="@ShowTime" ShowSeconds="true" HoursStep="1" MinutesStep="1" SecondsStep="1" Kind="DateTimeKind.Local" HourFormat="12" />
+            <RadzenDatePicker TValue="DateTime" Value="@From" Change="FromSelected" ShowTime="@ShowTime" ShowSeconds="true" HoursStep="1" MinutesStep="1" SecondsStep="1" Kind="DateTimeKind" HourFormat="12" />
         </div>
         <div class="select-container to-selection">
             <label>To</label>
-            <RadzenDatePicker TValue="DateTime" Value="@To" Change="ToSelected" ShowTime="@ShowTime" ShowSeconds="true" HoursStep="1" MinutesStep="1" SecondsStep="1" Kind="DateTimeKind.Local" HourFormat="12" />
+            <RadzenDatePicker TValue="DateTime" Value="@To" Change="ToSelected" ShowTime="@ShowTime" ShowSeconds="true" HoursStep="1" MinutesStep="1" SecondsStep="1" Kind="DateTimeKind" HourFormat="12" />
         </div>
 
         @if (ShowMonths)
@@ -64,6 +64,9 @@
 
     [Parameter]
     public DateTime? Min { get; set; }
+
+    [Parameter]
+    public DateTimeKind DateTimeKind { get; set; }
 
     [Parameter]
     public bool ShowYears { get; set; }
@@ -236,8 +239,10 @@
     {
         if (value != null)
         {
-            From = value.Value;
-            await FromChanged.InvokeAsync(value.Value);
+            var timestamp = DateTime.SpecifyKind(value.Value, DateTimeKind);
+
+            From = timestamp;
+            await FromChanged.InvokeAsync(timestamp);
 
             selectedWeek = null;
             selectedMonth = null;
@@ -249,8 +254,10 @@
     {
         if (value != null)
         {
-            To = value.Value;
-            await ToChanged.InvokeAsync(value.Value);
+            var timestamp = DateTime.SpecifyKind(value.Value, DateTimeKind);
+
+            To = timestamp;
+            await ToChanged.InvokeAsync(timestamp);
 
             selectedWeek = null;
             selectedMonth = null;

@@ -11,12 +11,12 @@
     font-size: 11px;
     margin-left: 10px;
     margin-right: 10px;
-    color: var(--borderColorLight);
+    color: var(--textLight);
 }
 
 .breadcrumb-links ::deep .divider-icon {
     font-size: 11px;
     margin-left: 10px;
     margin-right: 10px;
-    color: var(--borderColorLight);
+    color: var(--textLight);
 }
