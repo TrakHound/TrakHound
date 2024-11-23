@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\libraries\TrakHound.Drivers\TrakHound.Drivers.csproj" />
+		<ProjectReference Include="..\..\libraries\TrakHound.Utilities.Sqlite\TrakHound.Utilities.Sqlite.csproj" />
+	</ItemGroup>
+
+</Project>

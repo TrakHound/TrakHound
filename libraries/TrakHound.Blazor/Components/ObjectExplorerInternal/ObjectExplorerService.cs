@@ -12,7 +12,8 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
 {
     public class ObjectExplorerService : IDisposable
     {
-        private const int _recentLimit = 2000 * 1000000;
+        public const int RecentMilliseconds = 2000;
+        private const int _recentLimit = RecentMilliseconds * 1000000;
 
 
         private readonly string _baseUrl;

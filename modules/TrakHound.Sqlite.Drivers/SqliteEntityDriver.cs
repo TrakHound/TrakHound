@@ -44,6 +44,17 @@ namespace TrakHound.Sqlite.Drivers
         public SqliteEntityDriver(ITrakHoundDriverConfiguration configuration) : base(configuration) { }
 
 
+        protected string GetReadConnectionString()
+        {
+            return $"Data Source={GetDataSource<TEntity>()};Mode=ReadOnly";
+        }
+
+        protected string GetWriteConnectionString()
+        {
+            return $"Data Source={GetDataSource<TEntity>()};Mode=ReadWriteCreate";
+        }
+
+
         #region "Internal"
 
         public static async Task<TrakHoundResponse<TEntity>> ProcessResponse(
@@ -330,7 +341,7 @@ namespace TrakHound.Sqlite.Drivers
             sql += $"select [b].[target] as [requested_id], {TableColumns} from {TableName} as [a]";
             sql += " inner join _uuids as [b] on [a].[uuid] = [b].[target];";
 
-            return _client.ReadList<TDatabaseEntity>(sql);
+            return _client.ReadList<TDatabaseEntity>(GetReadConnectionString(), sql);
         }
 
 
@@ -356,7 +367,7 @@ namespace TrakHound.Sqlite.Drivers
 
         protected virtual async Task<bool> OnPublish(IEnumerable<TEntity> entities)
         {
-            _client.Insert(entities, TableName);
+            _client.Insert(GetWriteConnectionString(), entities, TableName);
 
             return true;
         }
@@ -409,7 +420,7 @@ namespace TrakHound.Sqlite.Drivers
             var condition = string.Join(" or ", conditions);
 
             var query = $"delete from {TableName} where {condition};";
-            return _client.ExecuteNonQuery(query);
+            return _client.ExecuteNonQuery(GetWriteConnectionString(), query);
         }
 
         protected virtual async Task<bool> OnDeleteAfter(IEnumerable<EntityDeleteRequest> requests)

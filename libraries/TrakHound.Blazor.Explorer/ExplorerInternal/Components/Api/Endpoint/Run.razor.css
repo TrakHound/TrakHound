@@ -106,7 +106,6 @@ td {
             padding: 0px 10px !important;
             line-height: 10px !important;
             height: 24px !important;
-            background: var(--accentVeryLight) !important;
             background: var(--inputPrimaryBackground) !important;
             color: var(--inputPrimaryText) !important;
         }
@@ -126,15 +125,12 @@ td {
         width: 100%;
         font-size: 13px !important;
         border-radius: 0;
-        border: 1px solid transparent;
-        border: 1px solid var(--accentKindaLight);
         border: 1px solid var(--inputPrimaryBorder) !important;
         min-height: 100px;
-        background: var(--accentVeryVeryLight) !important;
-        background: var(--accentVeryLight) !important;
         background: var(--inputPrimaryBackground) !important;
         margin-top: 2px;
         margin-bottom: 0;
+
     }
 
         .value-cell ::deep .rz-textarea:focus {
@@ -155,8 +151,6 @@ td {
         }
 
     .value-cell .body-upload-toolbar {
-        background: var(--accentVeryVeryLight);
-        background: var(--accentVeryLight);
         background: var(--inputPrimaryBackground) !important;
         padding: 0;
     }
@@ -164,12 +158,9 @@ td {
         .value-cell .body-upload-toolbar ::deep .rz-dropdown {
             width: 100px;
             border: none;
-            background: var(--accentVeryVeryLight);
-            background: var(--accentVeryLight);
             background: var(--inputPrimaryBackground) !important;
             color: var(--accent);
             color: var(--inputPrimaryText) !important;
-            border-right: 1px solid var(--accentVeryLight);
             border-right: 1px solid var(--inputPrimaryBorder) !important;
             border-radius: 0 !important;
             margin: 0;
@@ -180,7 +171,6 @@ td {
 
             .value-cell .body-upload-toolbar ::deep .rz-dropdown:focus {
                 border: none !important;
-                border-right: 1px solid var(--accentVeryLight) !important;
                 border-right: 1px solid var(--inputPrimaryBorder) !important;
                 outline: none !important;
                 box-shadow: none !important;
@@ -192,7 +182,6 @@ td {
         }
 
     .value-cell .body-upload-content {
-        border-top: 1px solid var(--accentVeryLight);
         border-top: 1px solid var(--inputPrimaryBorder);
     }
 
@@ -200,17 +189,19 @@ td {
             height: 100%;
             margin: 0 !important;
             border: none;
-            color: var(--inputPrimaryText);
+            color: var(--inputPrimaryText) !important;
         }
 
             .value-cell .body-upload-content ::deep textarea:hover {
                 border: none !important;
+                color: var(--inputPrimaryTextHover) !important;
             }
 
             .value-cell .body-upload-content ::deep textarea:focus {
                 border: none !important;
                 outline: none !important;
                 box-shadow: none !important;
+                color: var(--inputPrimaryTextHover) !important;
             }
 
         .value-cell .body-upload-content .body-upload-file {

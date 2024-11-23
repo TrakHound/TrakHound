@@ -7,7 +7,9 @@
     padding-top: 30px;
     padding-bottom: 10px;
     border-top: 1px solid rgba(0, 0, 0, 0.5);
+    border-top: 1px solid var(--borderColor);
     background: rgba(0, 0, 0, 0.5);
+    background: var(--panelBackgroundDark);
 }
 
 .company-panel {
@@ -50,6 +52,7 @@
     color: #4d6580;
     color: #bbb;
     color: rgba(255, 255, 255, 0.15);
+    color: var(--textVeryLight);
 }
 
 .footer-container:hover .footer-label {
@@ -57,12 +60,14 @@
     color: #888;
     color: rgba(255, 255, 255, 0.5);
     color: var(--accentVeryLight);
+    color: var(--textMild);
 }
 
 .footer-container .footer-label a {
     color: #4d6580;
     color: #bbb;
     color: rgba(255, 255, 255, 0.15);
+    color: var(--textVeryLight);
 }
 
 .footer-container:hover .footer-label a {
@@ -70,6 +75,7 @@
     color: #888;
     color: rgba(255, 255, 255, 0.5);
     color: var(--accentVeryLight);
+    color: var(--textMild);
 }
 
 .footer-container .footer-label a:hover {

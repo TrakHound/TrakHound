@@ -124,57 +124,60 @@
 
     protected async override Task OnInitializedAsync()
     {
-        await Load();
+        Load();
     }
 
     protected async override Task OnParametersSetAsync()
     {
-        await Load();
+        Load();
     }
 
-    private async Task Load(bool forceReload = false)
+    private void Load(bool forceReload = false)
     {
         if (forceReload || (ObjectExplorerService != null && Object != null && Object.Uuid != previousObjectUuid))
         {
-            tableItems = null;
-            loading = true;
-            await InvokeAsync(StateHasChanged);
-
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _= Task.Run(async () =>
             {
-                previousObjectUuid = Object.Uuid;
+                tableItems = null;
+                loading = true;
+                await InvokeAsync(StateHasChanged);
 
-                // Get Observations
-                entities = await client.System.Entities.Objects.Observation.QueryByObjectUuid(Object.Uuid, 0, long.MaxValue, 0, 100, TrakHound.SortOrder.Descending);
-
-                if (!entities.IsNullOrEmpty())
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    var items = new List<TableItem>();
+                    previousObjectUuid = Object.Uuid;
 
-                    foreach (var entity in entities.OrderByDescending(o => o.Timestamp))
+                    // Get Observations
+                    entities = await client.System.Entities.Objects.Observation.QueryByObjectUuid(Object.Uuid, 0, long.MaxValue, 0, 100, TrakHound.SortOrder.Descending);
+
+                    if (!entities.IsNullOrEmpty())
                     {
-                        var item = new TableItem();
-                        item.Uuid = entity.Uuid;
-                        item.DataType = (TrakHoundObservationDataType)entity.DataType;
-                        item.BatchId = entity.BatchId;
-                        item.Sequence = entity.Sequence;
-                        item.SourceUuid = entity.SourceUuid;
-                        item.Timestamp = entity.Timestamp.ToLocalDateTime();
+                        var items = new List<TableItem>();
 
-                        item.Value = entity.Value;
-                        item.ValueDisplay = entity.Value;
+                        foreach (var entity in entities.OrderByDescending(o => o.Timestamp))
+                        {
+                            var item = new TableItem();
+                            item.Uuid = entity.Uuid;
+                            item.DataType = (TrakHoundObservationDataType)entity.DataType;
+                            item.BatchId = entity.BatchId;
+                            item.Sequence = entity.Sequence;
+                            item.SourceUuid = entity.SourceUuid;
+                            item.Timestamp = entity.Timestamp.ToLocalDateTime();
 
-                        items.Add(item);
+                            item.Value = entity.Value;
+                            item.ValueDisplay = entity.Value;
+
+                            items.Add(item);
+                        }
+
+                        tableItems = items;
                     }
-
-                    tableItems = items;
                 }
-            }
-        }
 
-        loading = false;
-        await InvokeAsync(StateHasChanged);
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
     private async void Save()
@@ -192,7 +195,7 @@
                 if (await client.Entities.PublishObservation(Object.GetAbsolutePath(), value, dataType, timestamp, batchId, sequence, false))
                 {
                     previousObjectUuid = null;
-                    await Load();
+                    Load();
 
                     ObjectExplorerService.LoadContent(Object);
                     ObjectExplorerService.UpdateValue(Object.Uuid);
@@ -225,7 +228,7 @@
             if (await client.System.Entities.Objects.Observation.Delete(uuid, TrakHoundOperationMode.Sync))
             {
                 previousObjectUuid = null;
-                await Load();
+                Load();
 
                 ObjectExplorerService.AddNotification(NotificationType.Information, "Observation Deleted Successfully", uuid);
             }

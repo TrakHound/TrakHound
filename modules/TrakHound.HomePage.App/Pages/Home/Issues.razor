@@ -2,7 +2,7 @@
 
 <div class="issues-panel">
     <div class="issues-toolbar">
-        <a href="https://github.com/TrakHound/MTConnect.NET/issues/new" target="_blank" class="btn btn-link"><span class="icon fa-regular fa-sharp fa-plus"></span>Create Issue</a>
+        <a href="https://github.com/TrakHound/TrakHound/issues/new" target="_blank" class="btn btn-link"><span class="icon fa-regular fa-sharp fa-plus"></span>Create Issue</a>
     </div>
     <div class="issues-list">
 
@@ -51,10 +51,8 @@
 
     protected async override Task OnInitializedAsync()
     {
-        var url = "https://www.trakhound.com/management/github/api/issues/TrakHound/MTConnect.NET";
+        var url = "https://www.trakhound.com/management/github/api/issues/TrakHound/TrakHound";
         issues = await TrakHound.Http.RestRequest.Get<IEnumerable<Issue>>(url);
-
-        // issues = await Client.Api.QueryJson<IEnumerable<Issue>>("github/api/issues/TrakHound/MTConnect.NET");
 
         await InvokeAsync(StateHasChanged);
     }

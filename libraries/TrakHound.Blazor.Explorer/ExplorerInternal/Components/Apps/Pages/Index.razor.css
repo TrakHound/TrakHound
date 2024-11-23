@@ -109,6 +109,10 @@
     padding-top: 10px;
 }
 
+    .information-panel .table {
+        border: 1px solid var(--tableBorderColor);
+    }
+
         .information-panel .table td {
             font-size: 12px;
             padding: 5px 15px;

@@ -8,7 +8,7 @@
 
     protected async override Task OnInitializedAsync()
     {
-        readme = await TrakHound.Http.RestRequest.Get("https://raw.githubusercontent.com/TrakHound/MTConnect.NET/refs/heads/master/README.md");
+        readme = await TrakHound.Http.RestRequest.Get("https://raw.githubusercontent.com/TrakHound/TrakHound/refs/heads/main/README.md");
 
         await InvokeAsync(StateHasChanged);
     }

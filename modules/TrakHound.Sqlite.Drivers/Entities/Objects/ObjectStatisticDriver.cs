@@ -65,7 +65,7 @@ namespace TrakHound.Sqlite.Drivers
                 items.Add(item);
             }
 
-            _client.Insert(items, TableName, new string[] { "object_uuid", "time_range_start", "time_range_span" });
+            _client.Insert(GetWriteConnectionString(), items, TableName, new string[] { "object_uuid", "time_range_start", "time_range_span" });
 
             return true;
         }
@@ -87,7 +87,7 @@ namespace TrakHound.Sqlite.Drivers
 
                 sqlQuery += $"select {TableColumns} from {TableName} inner join _queries on [object_uuid] = [target] and [time_range_start] >= [from] and ([time_range_start] + [time_range_span]) <= [to]";
 
-                var dbEntities = _client.ReadList<DatabaseObjectStatistic>(sqlQuery);
+                var dbEntities = _client.ReadList<DatabaseObjectStatistic>(GetReadConnectionString(), sqlQuery);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)
@@ -118,7 +118,7 @@ namespace TrakHound.Sqlite.Drivers
 
                 sqlQuery += $"select [object_uuid] as [requested_id], [time_range_span] as [span] from {TableName} inner join _queries on [object_uuid] = [target] and [time_range_start] >= [from] and ([time_range_start] + [time_range_span]) <= [to] group by [object_uuid], [span]";
 
-                return _client.ReadList<DatabaseTimeRangeSpan>(sqlQuery);
+                return _client.ReadList<DatabaseTimeRangeSpan>(GetReadConnectionString(), sqlQuery);
             };
 
             return await ProcessResponse(this, queries.Select(o => o.Target).Distinct(), readFunction);

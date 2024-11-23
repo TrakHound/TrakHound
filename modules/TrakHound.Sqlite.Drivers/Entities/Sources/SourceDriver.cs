@@ -56,7 +56,7 @@ namespace TrakHound.Sqlite.Drivers
                 items.Add(item);
             }
 
-            _client.Insert(items, TableName, new string[] { "uuid" });
+            _client.Insert(GetWriteConnectionString(), items, TableName, new string[] { "uuid" });
 
             return true;
         }
@@ -124,7 +124,7 @@ namespace TrakHound.Sqlite.Drivers
 
                 sqlQuery += GetScript("GetSourceChain");
 
-                return _client.ReadList<DatabaseStructureHierarchy>(sqlQuery);
+                return _client.ReadList<DatabaseStructureHierarchy>(GetReadConnectionString(), sqlQuery);
             }
 
             return null;

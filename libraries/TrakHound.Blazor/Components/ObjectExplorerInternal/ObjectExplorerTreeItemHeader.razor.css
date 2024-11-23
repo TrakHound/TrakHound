@@ -95,9 +95,13 @@
             overflow: hidden;
             text-overflow: ellipsis;
             text-align: right;
-            background: #f8f8f8;
             background: rgba(0, 0, 0, 0.025);
+            border-right: 5px solid rgba(0, 0, 0, 0.05);
         }
+
+    .tree-item-header-container .value-container ::deep .tree-item-value.recent {
+        border-right: 5px solid var(--accentLight);
+    }
 
             .tree-item-header-container .value-container ::deep .tree-item-value .value {
                 font-size: 11px;
@@ -112,8 +116,11 @@
 
 
     .tree-item-header-container:hover .value-container ::deep .tree-item-value {
-        background: var(--accentVeryVeryLight);
         background: rgba(0, 0, 0, 0.05);
+    }
+
+    .tree-item-header-container:hover .value-container ::deep .tree-item-value.recent {
+        border-right: 5px solid var(--accent);
     }
 
         .tree-item-header-container:hover .value-container ::deep .tree-item-value .value {
@@ -123,6 +130,10 @@
     .tree-item-header-container.selected .value-container ::deep .tree-item-value {
         background: none !important;
     }
+
+        .tree-item-header-container.selected .value-container ::deep .tree-item-value.recent {
+            border-right: 5px solid var(--accentDark);
+        }
 
         .tree-item-header-container.selected .value-container ::deep .tree-item-value .value {
             color: white !important;

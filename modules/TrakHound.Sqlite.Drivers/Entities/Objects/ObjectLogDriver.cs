@@ -61,7 +61,7 @@ namespace TrakHound.Sqlite.Drivers
                 items.Add(item);
             }
 
-            _client.Insert(items, TableName, new string[] { "uuid" });
+            _client.Insert(GetWriteConnectionString(), items, TableName, new string[] { "uuid" });
 
             return true;
         }
@@ -81,7 +81,7 @@ namespace TrakHound.Sqlite.Drivers
                 var order = sortOrder == SortOrder.Ascending ? "asc" : "desc";
 
                 var dbQuery = $"select {TableColumns} from {TableName} where ({condition}) and [log_level] <= {(int)logLevel} order by [timestamp] {order} limit {take} offset {skip};";
-                var dbEntities = _client.ReadList<DatabaseObjectLog>(dbQuery);
+                var dbEntities = _client.ReadList<DatabaseObjectLog>(GetReadConnectionString(), dbQuery);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)
@@ -110,7 +110,7 @@ namespace TrakHound.Sqlite.Drivers
                 var order = sortOrder == SortOrder.Ascending ? "asc" : "desc";
 
                 var dbQuery = $"select {TableColumns} from {TableName} where ({condition}) and [log_level] <= {(int)logLevel} order by [timestamp] {order} limit {take} offset {skip};";
-                var dbEntities = _client.ReadList<DatabaseObjectLog>(dbQuery);
+                var dbEntities = _client.ReadList<DatabaseObjectLog>(GetReadConnectionString(), dbQuery);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)

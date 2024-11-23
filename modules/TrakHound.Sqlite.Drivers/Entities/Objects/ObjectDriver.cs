@@ -22,7 +22,7 @@ namespace TrakHound.Sqlite.Drivers
         IEntityIndexQueryDriver<ITrakHoundObjectEntity>,
         IEntityIndexUpdateDriver<ITrakHoundObjectEntity>
     {
-        public static readonly Dictionary<string, ObjectDriver> Instances = new Dictionary<string, ObjectDriver>();
+        //public static readonly Dictionary<string, ObjectDriver> Instances = new Dictionary<string, ObjectDriver>();
         private static readonly object _instanceLock = new object();
 
         private readonly Dictionary<string, ITrakHoundObjectEntity> _uuidIndex = new Dictionary<string, ITrakHoundObjectEntity>();
@@ -36,7 +36,7 @@ namespace TrakHound.Sqlite.Drivers
 
         public ObjectDriver(ITrakHoundDriverConfiguration configuration) : base(configuration) 
         {
-            AddInstance(configuration.Id, this);
+            //AddInstance(configuration.Id, this);
 
             EntityName = "trakhound_objects";
             TableColumnList = new List<string> {
@@ -52,30 +52,30 @@ namespace TrakHound.Sqlite.Drivers
             };
         }
 
-        private static void AddInstance(string configurationId, ObjectDriver instance)
-        {
-            if (configurationId != null && instance != null)
-            {
-                lock (_instanceLock)
-                {
-                    Instances.Remove(configurationId);
-                    Instances.Add(configurationId, instance);
-                }
-            }
-        }
+        //private static void AddInstance(string configurationId, ObjectDriver instance)
+        //{
+        //    if (configurationId != null && instance != null)
+        //    {
+        //        lock (_instanceLock)
+        //        {
+        //            Instances.Remove(configurationId);
+        //            Instances.Add(configurationId, instance);
+        //        }
+        //    }
+        //}
 
-        public static ObjectDriver GetInstance(string configurationId)
-        {
-            if (configurationId != null)
-            {
-                lock (_instanceLock)
-                {
-                    return Instances.GetValueOrDefault(configurationId);
-                }
-            }
+        //public static ObjectDriver GetInstance(string configurationId)
+        //{
+        //    if (configurationId != null)
+        //    {
+        //        lock (_instanceLock)
+        //        {
+        //            return Instances.GetValueOrDefault(configurationId);
+        //        }
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         class PublishItem
         {
@@ -146,7 +146,7 @@ namespace TrakHound.Sqlite.Drivers
                         break;
 
                     case TrakHoundObjectQueryRequestType.Name:
-                        sqlQuery += $" inner join (select [id] from _queries) as [queries] on (instr('~', [queries].[id]) = 1 and [objects].[name] like replace(substring([queries].[id], 2, 1000), '*', '%')) or [queries].[id] = [objects].[name]";
+                        sqlQuery += $" inner join (select [id] from _queries) as [queries] on (instr('~', [queries].[id]) = 1 and [objects].[name] like replace(substring([queries].[id], 2, 1000), '*', '%')) or lower([queries].[id]) = lower([objects].[name])";
                         break;
 
                     case TrakHoundObjectQueryRequestType.DefinitionUuid:
@@ -166,7 +166,7 @@ namespace TrakHound.Sqlite.Drivers
                     }
                     else
                     {
-                        sqlQuery += $" inner join ((select [requested_id], [uuid] as [id] from ({GetScript("GetObjectQueryChildren")})) union (select [id] as [requested_id], [id] from _parentUuids)) as [parent_uuids] on [parent_uuids].[id] = [objects].[parent_uuid] or ([parent_uuids].[id] is null and [objects].[parent_uuid] is null)";
+                        sqlQuery += $" inner join (select [requested_id], [uuid] as [id] from ({GetScript("GetObjectQueryChildren")}) union select [id] as [requested_id], [id] from _parentUuids) as [parent_uuids] on [parent_uuids].[id] = [objects].[parent_uuid] or ([parent_uuids].[id] is null and [objects].[parent_uuid] is null)";
                     }
                 }
 
@@ -175,7 +175,7 @@ namespace TrakHound.Sqlite.Drivers
                     sqlQuery += $" where lower([objects].[namespace]) = '{queryRequest.Namespace.ToLower()}'";
                 }
 
-                var responses = _client.ReadList<DatabaseQueryResult>(sqlQuery);
+                var responses = _client.ReadList<DatabaseQueryResult>(GetReadConnectionString(), sqlQuery);
 
                 // Set Results
                 if (!responses.IsNullOrEmpty())
@@ -252,7 +252,7 @@ namespace TrakHound.Sqlite.Drivers
             {
                 var sql = "select [uuid] as [query], [uuid] from [trakhound_objects] where [parent_uuid] is null;";
 
-                var responses = _client.ReadList<DatabaseIdQuery>(sql);
+                var responses = _client.ReadList<DatabaseIdQuery>(GetReadConnectionString(), sql);
 
                 // Set Results
                 if (!responses.IsNullOrEmpty())
@@ -301,7 +301,7 @@ namespace TrakHound.Sqlite.Drivers
                     sql += " inner join _namespaces as [b] on lower([a].[namespace]) = lower([b].[id])";
                     sql += " where [a].[parent_uuid] is null;";
 
-                    var responses = _client.ReadList<DatabaseIdQuery>(sql);
+                    var responses = _client.ReadList<DatabaseIdQuery>(GetReadConnectionString(), sql);
 
                     // Set Results
                     if (!responses.IsNullOrEmpty())
@@ -368,7 +368,7 @@ namespace TrakHound.Sqlite.Drivers
                     sql += "select [b].[id] as [query], [a].[uuid] as [uuid] from [trakhound_objects] as [a]";
                     sql += " inner join _uuids as [b] on [a].[parent_uuid] = [b].[id] or ([b].[id] is null and [a].[parent_uuid] is null);";
 
-                    var responses = _client.ReadList<DatabaseIdQuery>(sql);
+                    var responses = _client.ReadList<DatabaseIdQuery>(GetReadConnectionString(), sql);
 
                     // Set Results
                     if (!responses.IsNullOrEmpty())
@@ -435,7 +435,7 @@ namespace TrakHound.Sqlite.Drivers
                     sql += "select [b].[id] as [query], [a].[parent_uuid] from [trakhound_objects] as [a]";
                     sql += " inner join _uuids as [b] on [a].[uuid] = [b].[id];";
 
-                    var responses = _client.ReadList<DatabaseIdQuery>(sql);
+                    var responses = _client.ReadList<DatabaseIdQuery>(GetReadConnectionString(), sql);
 
                     // Set Results
                     if (!responses.IsNullOrEmpty())
@@ -600,7 +600,7 @@ namespace TrakHound.Sqlite.Drivers
             {
                 var sql = "select distinct [namespace] from [trakhound_objects];";
 
-                var responses = _client.ReadStringList(sql);
+                var responses = _client.ReadStringList(GetReadConnectionString(), sql);
                 if (!responses.IsNullOrEmpty())
                 {
                     foreach (var response in responses)
@@ -646,7 +646,7 @@ namespace TrakHound.Sqlite.Drivers
                     sql += " inner join _uuids as [b] on [a].[parent_uuid] = [b].[id]";
                     sql += " group by [a].[parent_uuid];";
 
-                    var responses = _client.ReadList<DatabaseEntityCount>(sql);
+                    var responses = _client.ReadList<DatabaseEntityCount>(GetReadConnectionString(), sql);
                     if (!responses.IsNullOrEmpty())
                     {
                         foreach (var rootUuid in uuids)
@@ -714,53 +714,8 @@ namespace TrakHound.Sqlite.Drivers
             var query = builder.ToString();
             query = SqliteClient.CreateTableQuery<PublishItem>(TableName, new string[] { "uuid" }) + query;
 
-            return _client.ExecuteNonQuery(query);
-
-            //var items = new List<PublishItem>();
-            //foreach (var entity in entities)
-            //{
-            //    var item = new PublishItem();
-            //    item.Uuid = entity.Uuid;
-            //    item.ParentUuid = entity.ParentUuid;
-            //    item.Path = entity.Path;
-            //    item.Name = entity.Name;
-            //    item.Namespace = entity.Namespace;
-            //    item.ContentType = entity.ContentType;
-            //    item.Priority = entity.Priority;
-            //    item.DefinitionUuid = entity.DefinitionUuid;
-            //    item.SourceUuid = entity.SourceUuid;
-            //    item.Created = entity.Created;
-            //    items.Add(item);
-            //}
-
-            //_client.Insert(items, TableName, new string[] { "uuid" });
-
-            //return true;
+            return _client.ExecuteNonQuery(GetWriteConnectionString(), query);
         }
-
-        //protected async override Task<bool> OnPublish(IEnumerable<ITrakHoundObjectEntity> entities)
-        //{
-        //    var items = new List<PublishItem>();
-        //    foreach (var entity in entities)
-        //    {
-        //        var item = new PublishItem();
-        //        item.Uuid = entity.Uuid;
-        //        item.ParentUuid = entity.ParentUuid;
-        //        item.Path = entity.Path;
-        //        item.Name = entity.Name;
-        //        item.Namespace = entity.Namespace;
-        //        item.ContentType = entity.ContentType;
-        //        item.Priority = entity.Priority;
-        //        item.DefinitionUuid = entity.DefinitionUuid;
-        //        item.SourceUuid = entity.SourceUuid;
-        //        item.Created = entity.Created;
-        //        items.Add(item);
-        //    }
-
-        //    _client.Insert(items, TableName, new string[] { "uuid" });
-
-        //    return true;
-        //}
 
 
         class IndexQueryResponse
@@ -812,7 +767,7 @@ namespace TrakHound.Sqlite.Drivers
                                 break;
                         }
 
-                        var responses = _client.ReadList<IndexQueryResponse>(sql);
+                        var responses = _client.ReadList<IndexQueryResponse>(GetReadConnectionString(), sql);
 
                         // Set Results
                         if (!responses.IsNullOrEmpty())
@@ -859,7 +814,7 @@ namespace TrakHound.Sqlite.Drivers
                 items.Add(item);
             }
 
-            _client.Insert(items, "[trakhound_entity_index]", new string[] { "uuid" });
+            _client.Insert(GetWriteConnectionString(), items, "[trakhound_entity_index]", new string[] { "uuid" });
 
             foreach (var request in requests)
             {
@@ -893,7 +848,7 @@ namespace TrakHound.Sqlite.Drivers
                     sql += $"delete from [trakhound_objects] where [uuid] in";
                     sql += $" (select [a].[uuid] from [trakhound_objects] as [a] inner join (select [path] from [trakhound_objects] as [a] inner join _uuids as [b] on [b].[id] = [a].[uuid]) as [b] on [a].[path] like trim([b].[path]) || '/%');";
 
-                    if (_client.ExecuteNonQuery(sql))
+                    if (_client.ExecuteNonQuery(GetWriteConnectionString(), sql))
                     {
                         foreach (var rootUuid in rootUuids)
                         {
@@ -938,7 +893,7 @@ namespace TrakHound.Sqlite.Drivers
 
                 sqlQuery += GetScript("GetObjectRoots");
 
-                return _client.ReadList<DatabaseStructureHierarchy>(sqlQuery);
+                return _client.ReadList<DatabaseStructureHierarchy>(GetReadConnectionString(), sqlQuery);
             }
 
             return null;
@@ -959,7 +914,7 @@ namespace TrakHound.Sqlite.Drivers
 
                 sqlQuery += GetScript("GetObjectChildren");
 
-                return _client.ReadList<DatabaseStructureHierarchy>(sqlQuery);
+                return _client.ReadList<DatabaseStructureHierarchy>(GetReadConnectionString(), sqlQuery);
             }
 
             return null;

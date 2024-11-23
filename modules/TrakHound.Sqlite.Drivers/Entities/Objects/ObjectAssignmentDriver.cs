@@ -93,7 +93,7 @@ namespace TrakHound.Sqlite.Drivers
                     item.Created = entity.Created;
                     currentItems.Add(item);
                 }
-                _client.Insert(currentItems, CurrentTableName, new string[] { "uuid" });
+                _client.Insert(GetWriteConnectionString(), currentItems, CurrentTableName, new string[] { "uuid" });
             }
 
             // Remove Current
@@ -107,7 +107,7 @@ namespace TrakHound.Sqlite.Drivers
                 var condition = string.Join(" or ", conditions);
 
                 var query = $"delete from {CurrentTableName} where {condition};";
-                _client.ExecuteNonQuery(query);
+                _client.ExecuteNonQuery(GetWriteConnectionString(), query);
             }
 
             var items = new List<PublishItem>();
@@ -124,7 +124,7 @@ namespace TrakHound.Sqlite.Drivers
                 item.Created = entity.Created;
                 items.Add(item);
             }
-            _client.Insert(items, TableName, new string[] { "uuid" });
+            _client.Insert(GetWriteConnectionString(), items, TableName, new string[] { "uuid" });
 
             return true;
         }
@@ -142,7 +142,7 @@ namespace TrakHound.Sqlite.Drivers
                 var condition = string.Join(" or ", conditions);
 
                 var query = $"select {CurrentTableColumns} from {CurrentTableName} where {condition};";
-                var dbEntities = _client.ReadList<DatabaseObjectAssignment>(query);
+                var dbEntities = _client.ReadList<DatabaseObjectAssignment>(GetReadConnectionString(), query);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)
@@ -169,7 +169,7 @@ namespace TrakHound.Sqlite.Drivers
                 var condition = string.Join(" or ", conditions);
 
                 var query = $"select {CurrentTableColumns} from {CurrentTableName} where {condition};";
-                var dbEntities = _client.ReadList<DatabaseObjectAssignment>(query);
+                var dbEntities = _client.ReadList<DatabaseObjectAssignment>(GetReadConnectionString(), query);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)
@@ -211,7 +211,7 @@ namespace TrakHound.Sqlite.Drivers
 
                 sqlQuery = $"{sqlQuery} order by [add_timestamp] {order} limit {take} offset {skip};";
 
-                var dbEntities = _client.ReadList<DatabaseObjectAssignment>(sqlQuery);
+                var dbEntities = _client.ReadList<DatabaseObjectAssignment>(GetReadConnectionString(), sqlQuery);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)
@@ -252,7 +252,7 @@ namespace TrakHound.Sqlite.Drivers
 
                 sqlQuery = $"{sqlQuery} order by [add_timestamp] {order} limit {take} offset {skip};";
 
-                var dbEntities = _client.ReadList<DatabaseObjectAssignment>(sqlQuery);
+                var dbEntities = _client.ReadList<DatabaseObjectAssignment>(GetReadConnectionString(), sqlQuery);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)

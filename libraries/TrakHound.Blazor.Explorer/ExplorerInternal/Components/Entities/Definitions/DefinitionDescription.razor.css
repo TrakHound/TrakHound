@@ -1,27 +1,20 @@
 .definition-description {
-    border-top: 1px solid var(--tableBorderColor) !important;
-    border-left: 1px solid var(--tableBorderColor) !important;
-    border-bottom: 1px solid var(--tableBorderColor) !important;
+
 }
 
-.definition-description table {
-    width: 100%;
-}
+    .definition-description table {
+        width: 100%;
+        border: 1px solid var(--tableBorderColor);
+    }
 
     .definition-description th {
         font-size: 12px;
-        color: #555;
-        color: var(--textMild);
-        border-right: 1px solid var(--tableBorderColor) !important;
-        border-bottom: 1px solid var(--tableBorderColor) !important;
         padding: 5px 10px;
     }
 
     .definition-description td {
         font-size: 13px;
-        color: var(--textDark);
         padding: 5px 10px;
-        border-right: 1px solid var(--tableBorderColor) !important;
     }
 
         .definition-description td a {

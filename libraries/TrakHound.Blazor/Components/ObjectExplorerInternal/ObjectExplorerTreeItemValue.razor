@@ -17,7 +17,7 @@
 
     private string value;
     private bool recent;
-    //private bool hasRendered;
+    private DelayEvent recentDelay = new DelayEvent(ObjectExplorerService.RecentMilliseconds);
 
 
     [CascadingParameter(Name = "ObjectExplorerService")]
@@ -35,13 +35,21 @@
 
             value = ObjectExplorerService.GetValue(Object.Uuid);
             value = FormatValue(value);
+
+            recent = ObjectExplorerService.IsRecentValue(Object.Uuid);
+
+            recentDelay.Set();
         }
+
+        recentDelay.Elapsed += RecentDelayElapsed;
     }
 
     void IDisposable.Dispose()
     {
         try
         {
+            if (recentDelay != null) recentDelay.Dispose();
+
             if (ObjectExplorerService != null)
             {
                 ObjectExplorerService.ValueUpdated -= ValueUpdated;
@@ -78,10 +86,17 @@
 
                 if (previousValue != value || previousRecent != recent)
                 {
+                    recentDelay.Set();
                     await InvokeAsync(StateHasChanged);
                 }
             }
         }
+    }
+
+    private async void RecentDelayElapsed(object sender, EventArgs args)
+    {
+        recent = ObjectExplorerService.IsRecentValue(Object.Uuid);
+        await InvokeAsync(StateHasChanged);
     }
 
     private string FormatValue(string value)

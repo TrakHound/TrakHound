@@ -12,7 +12,9 @@
 .packages-toolbar {
     padding: 5px 20px;
     background: rgba(0, 0, 0, 0.5);
+    background: var(--panelBackgroundDark);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--borderColor);
     text-align: left;
 }
 
@@ -36,14 +38,17 @@
     grid-template-columns: max-content 1fr;
     grid-row-gap: 5px;
     grid-column-gap: 30px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+/*    background: rgba(255, 255, 255, 0.05);*/
+    background: var(--panelItemBackground);
+/*    border: 2px solid rgba(255, 255, 255, 0.1);*/
+    border: 2px solid var(--borderColorLight);
 }
 
     .package-panel:hover {
-        background: var(--accentDark);
-        background: rgba(255, 255, 255, 0.15);
-        border: 2px solid var(--accent);
+/*        background: var(--accentDark);
+        background: rgba(255, 255, 255, 0.15);*/
+        background: var(--panelItemBackgroundHover);
+        border: 2px solid var(--accentLight);
         cursor: pointer;
     }
 
@@ -75,12 +80,14 @@
         font-size: 13px;
         font-weight: bold;
         color: var(--accentVeryLight);
+        color: var(--textMild);
     }
 
     .package-panel .package-publisher {
         font-size: 11px;
         margin-left: 10px;
         color: var(--accentLight);
+        color: var(--textLight);
     }
 
     .package-panel .package-information {
@@ -89,4 +96,5 @@
         text-align: left;
         font-size: 11px;
         color: var(--accentVeryVeryLight);
+        color: var(--textDark);
     }

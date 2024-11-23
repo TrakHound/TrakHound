@@ -58,7 +58,7 @@ namespace TrakHound.Sqlite.Drivers
                 // Run SQL Query
                 var sqlQuery = $"select [uuid] from [trakhound_definitions] where lower([id]) like '{like}'";
 
-                var responses = _client.ReadList(sqlQuery);
+                var responses = _client.ReadList(GetReadConnectionString(), sqlQuery);
                 if (!responses.IsNullOrEmpty())
                 {
                     foreach (var response in responses)
@@ -101,7 +101,7 @@ namespace TrakHound.Sqlite.Drivers
                 sqlQuery += $"select [types].[id] as [query], [uuid] from [trakhound_definitions] as [definitions]";
                 sqlQuery += $" inner join (select [id] from _types) as [types] on lower([definitions].[type]) = lower([types].[id]);";
 
-                var responses = _client.ReadList<DatabaseQueryResult>(sqlQuery);
+                var responses = _client.ReadList<DatabaseQueryResult>(GetReadConnectionString(), sqlQuery);
                 if (!responses.IsNullOrEmpty())
                 {
                     foreach (var type in types)
@@ -404,7 +404,7 @@ namespace TrakHound.Sqlite.Drivers
                 items.Add(item);
             }
 
-            _client.Insert(items, TableName, new string[] { "uuid" });
+            _client.Insert(GetWriteConnectionString(), items, TableName, new string[] { "uuid" });
 
             return true;
         }
@@ -452,7 +452,7 @@ namespace TrakHound.Sqlite.Drivers
 
                 sqlQuery += GetScript("GetDefinitionRoots");
 
-                return _client.ReadList<DatabaseStructureHierarchy>(sqlQuery);
+                return _client.ReadList<DatabaseStructureHierarchy>(GetReadConnectionString(), sqlQuery);
             }
 
             return null;
@@ -473,7 +473,7 @@ namespace TrakHound.Sqlite.Drivers
 
                 sqlQuery += GetScript("GetDefinitionChildren");
 
-                return _client.ReadList<DatabaseStructureHierarchy>(sqlQuery);
+                return _client.ReadList<DatabaseStructureHierarchy>(GetReadConnectionString(), sqlQuery);
             }
 
             return null;

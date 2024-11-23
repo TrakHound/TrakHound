@@ -1,6 +1,7 @@
 ﻿.header-panel {
     display: grid;
     grid-template-rows: max-content max-content;
+/*    background: var(--accentVeryDark);*/
 }
 
 .title-container {
@@ -9,7 +10,8 @@
     grid-column-end: 3;
     text-align: center;
     padding: 25px 20px 12px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+/*    border-bottom: 1px solid rgba(0, 0, 0, 0.5);*/
+    border-bottom: 1px solid var(--borderColor);
 }
 
     .title-container .title-logo {
@@ -28,7 +30,8 @@
     grid-column-start: 1;
     grid-column-end: 3;
     text-align: center;
-    background: rgba(0, 0, 0, 0.35);
+/*    background: rgba(0, 0, 0, 0.35);*/
+    background: var(--panelBackgroundDark);
     padding: 8px 0;
 }
 
@@ -36,15 +39,16 @@
         padding: 5px 15px;
         font-size: 14px;
         font-weight: bold;
-        background: rgba(0, 0, 0, 0.5);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+/*        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.15);*/
         border-radius: 0;
         width: 200px;
-        color: var(--accentVeryLight);
+/*        color: var(--accentVeryLight);*/
     }
 
-        .navigation-container .btn:hover {
+/*        .navigation-container .btn:hover {
             background: rgba(255, 255, 255, 0.15);
             border: 1px solid var(--accentLight);
             color: var(--accentVeryLight);
         }
+*/

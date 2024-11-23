@@ -6,8 +6,13 @@
     overflow: hidden;
 }
 
+    .definition-information table {
+        border: 1px solid var(--tableBorderColor);
+    }
+
     .definition-information td {
         line-height: 22px;
+        padding: 1px 10px;
     }
 
     .definition-information .label {
@@ -17,8 +22,9 @@
         padding-right: 10px;
         min-width: 120px;
         vertical-align: top;
-        border-right: 1px solid var(--tableBorderColor);
-        border-bottom: 1px solid var(--tableBorderColor);
+        background: var(--tableHeaderBackground);
+        border-right: 1px solid var(--tableHeaderBorderColor);
+        border-bottom: 1px solid var(--tableHeaderBorderColor);
     }
 
     .definition-information tr:hover .label {

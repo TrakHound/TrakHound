@@ -4,10 +4,8 @@
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace TrakHound.Utilities
 {
@@ -20,10 +18,23 @@ namespace TrakHound.Utilities
         public EventHandler<Exception> Error { get; set; }
 
 
+        public SqliteClient() { }
+
         public SqliteClient(string filePath)
         {
             _filePath = filePath;
             _dataSource = $"Data Source={GetDatabaseName(filePath)};Mode=ReadWriteCreate";
+        }
+
+
+        public string GetReadConnectionString(string databaseSource)
+        {
+            return $"Data Source={databaseSource};Mode=ReadOnly";
+        }
+
+        public string GetWriteConnectionString(string databaseSource)
+        {
+            return $"Data Source={databaseSource};Mode=ReadWriteCreate";
         }
 
 
@@ -42,6 +53,24 @@ namespace TrakHound.Utilities
 
                 // Execute Queries
                 ExecuteNonQuery(queries);
+            }
+        }
+
+        public void Insert<T>(string dataSource, IEnumerable<T> items, string tableName = null, string[] keys = null)
+        {
+            if (!string.IsNullOrEmpty(dataSource) && !items.IsNullOrEmpty())
+            {
+                var table = !string.IsNullOrEmpty(tableName) ? tableName : GetTableName<T>();
+                var queries = new List<string>();
+
+                // Create Table (if not exists)
+                queries.Add(CreateTableQuery<T>(table, keys));
+
+                // Create Inserts
+                queries.AddRange(CreateInsertQueries<T>(table, items));
+
+                // Execute Queries
+                ExecuteNonQuery(dataSource, queries);
             }
         }
 
@@ -144,34 +173,37 @@ namespace TrakHound.Utilities
 
         public bool ExecuteNonQuery(string query)
         {
-            try
-            {
-                var indexDir = Path.GetDirectoryName(GetDatabaseName(_filePath));
-                if (!Directory.Exists(indexDir)) Directory.CreateDirectory(indexDir);
+            return ExecuteNonQuery(_dataSource, query);
+        }
 
-                using (var connection = new SqliteConnection(_dataSource))
+        public bool ExecuteNonQuery(string dataSource, string query)
+        {
+            if (!string.IsNullOrEmpty(dataSource) && !string.IsNullOrEmpty(query))
+            {
+                try
                 {
-                    // Open the connection
-                    connection.Open();
+                    using (var connection = new SqliteConnection(dataSource))
+                    {
+                        // Open the connection
+                        connection.Open();
 
-                    var command = connection.CreateCommand();
-                    command.CommandText = query;
-                    command.ExecuteNonQuery();
+                        var command = connection.CreateCommand();
+                        command.CommandText = query;
+                        command.ExecuteNonQuery();
 
-                    connection.Close();
+                        connection.Close();
+                    }
+
+                    return true;
                 }
-
-                return true;
-            }
-            catch (SqliteException ex)
-            {
-                Console.WriteLine($"ERROR : {ex.Message} : {query}");
-
-                if (Error != null) Error.Invoke(this, ex);
-            }
-            catch (Exception ex)
-            {
-                if (Error != null) Error.Invoke(this, ex);
+                catch (SqliteException ex)
+                {
+                    if (Error != null) Error.Invoke(this, ex);
+                }
+                catch (Exception ex)
+                {
+                    if (Error != null) Error.Invoke(this, ex);
+                }
             }
 
             return false;
@@ -179,14 +211,16 @@ namespace TrakHound.Utilities
 
         public bool ExecuteNonQuery(IEnumerable<string> queries)
         {
-            if (queries != null && queries.Count() > 0)
+            return ExecuteNonQuery(_dataSource, queries);
+        }
+
+        public bool ExecuteNonQuery(string dataSource, IEnumerable<string> queries)
+        {
+            if (!string.IsNullOrEmpty(dataSource) && queries != null && queries.Count() > 0)
             {
                 try
                 {
-                    var indexDir = Path.GetDirectoryName(GetDatabaseName(_filePath));
-                    if (!Directory.Exists(indexDir)) Directory.CreateDirectory(indexDir);
-
-                    using (var connection = new SqliteConnection(_dataSource))
+                    using (var connection = new SqliteConnection(dataSource))
                     {
                         // Open the connection
                         connection.Open();
@@ -228,13 +262,18 @@ namespace TrakHound.Utilities
 
         public IEnumerable<string> ReadList(string query, int timeout = 0)
         {
-            if (!string.IsNullOrEmpty(query))
+            return ReadList(_dataSource, query, timeout);
+        }
+
+        public IEnumerable<string> ReadList(string dataSource, string query, int timeout = 0)
+        {
+            if (!string.IsNullOrEmpty(dataSource) && !string.IsNullOrEmpty(query))
             {
                 try
                 {
                     var list = new List<string>();
 
-                    using (var connection = new SqliteConnection(_dataSource))
+                    using (var connection = new SqliteConnection(dataSource))
                     {
                         // Open the connection
                         connection.Open();
@@ -277,15 +316,21 @@ namespace TrakHound.Utilities
             return null;
         }
 
+
         public IEnumerable<T> ReadList<T>(string query, int timeout = 0)
         {
-            if (!string.IsNullOrEmpty(query))
+            return ReadList<T>(_dataSource, query, timeout);
+        }
+
+        public IEnumerable<T> ReadList<T>(string dataSource, string query, int timeout = 0)
+        {
+            if (!string.IsNullOrEmpty(dataSource) && !string.IsNullOrEmpty(query))
             {
                 try
                 {
                     var list = new List<T>();
 
-                    using (var connection = new SqliteConnection(_dataSource))
+                    using (var connection = new SqliteConnection(dataSource))
                     {
                         // Open the connection
                         connection.Open();
@@ -328,13 +373,19 @@ namespace TrakHound.Utilities
             return null;
         }
 
+
         public string ReadString(string query, int timeout = 0)
         {
-            if (!string.IsNullOrEmpty(query))
+            return ReadString(_dataSource, query, timeout);
+        }
+
+        public string ReadString(string dataSource, string query, int timeout = 0)
+        {
+            if (!string.IsNullOrEmpty(dataSource) && !string.IsNullOrEmpty(query))
             {
                 try
                 {
-                    using (var connection = new SqliteConnection(_dataSource))
+                    using (var connection = new SqliteConnection(dataSource))
                     {
                         // Open the connection
                         connection.Open();
@@ -380,13 +431,18 @@ namespace TrakHound.Utilities
 
         public IEnumerable<string> ReadStringList(string query, int timeout = 0)
         {
-            if (!string.IsNullOrEmpty(query))
+            return ReadStringList(_dataSource, query, timeout);
+        }
+
+        public IEnumerable<string> ReadStringList(string dataSource, string query, int timeout = 0)
+        {
+            if (!string.IsNullOrEmpty(dataSource) && !string.IsNullOrEmpty(query))
             {
                 try
                 {
                     var list = new List<string>();
 
-                    using (var connection = new SqliteConnection(_dataSource))
+                    using (var connection = new SqliteConnection(dataSource))
                     {
                         // Open the connection
                         connection.Open();
@@ -506,6 +562,27 @@ namespace TrakHound.Utilities
 
                     return $"create table if not exists {tableName} ({columnsList}, {primaryKeys});";
                 }
+            }
+
+            return null;
+        }
+
+        public static string CreateTableQuery(string tableName, Dictionary<string, Type> columns, params string[] keys)
+        {
+            if (!string.IsNullOrEmpty(tableName) && !columns.IsNullOrEmpty() && !keys.IsNullOrEmpty())
+            {
+                var columnDeclarations = new List<string>();
+
+                foreach (var column in columns)
+                {
+                    columnDeclarations.Add($"[{PropertyToColumn(column.Key)}] {GetDataType(column.Value)}");
+                }
+
+                var columnsList = string.Join(',', columnDeclarations);
+
+                var primaryKeys = $"PRIMARY KEY({string.Join(',', keys.Select(o => PropertyToColumn(o)))})";
+
+                return $"create table if not exists {tableName} ({columnsList}, {primaryKeys});";
             }
 
             return null;

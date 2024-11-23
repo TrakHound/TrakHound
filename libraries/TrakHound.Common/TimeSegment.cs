@@ -19,8 +19,19 @@ namespace TrakHound
             To = to;
         }
 
+        public TimeSegment(long fromNanoseconds, long toNanoseconds)
+        {
+            From = fromNanoseconds.ToDateTime();
+            To = toNanoseconds.ToDateTime();
+        }
 
-        public static List<TimeSegment> GetSegments(DateTime from, DateTime to, int increment)
+
+        public static IEnumerable<TimeSegment> GetSegments(long fromNanoseconds, long toNanoseconds, int increment)
+        {
+            return GetSegments(fromNanoseconds.ToDateTime(), toNanoseconds.ToDateTime(), increment);
+        }
+
+        public static IEnumerable<TimeSegment> GetSegments(DateTime from, DateTime to, int increment)
         {
             var objs = new List<TimeSegment>();
 
@@ -46,6 +57,11 @@ namespace TrakHound
             return objs;
         }
 
+        public static DateTime GetSegmentBottom(long unixNanoseconds, int increment)
+        {
+            return GetSegmentBottom(unixNanoseconds.ToDateTime(), increment);
+        }
+
         public static DateTime GetSegmentBottom(DateTime ts, int increment)
         {
             var y = ts.Year;
@@ -66,6 +82,11 @@ namespace TrakHound
             seg = seg.AddSeconds(increment * -1);
 
             return seg;
+        }
+
+        public static DateTime GetSegmentTop(long unixNanoseconds, int increment)
+        {
+            return GetSegmentTop(unixNanoseconds.ToDateTime(), increment);
         }
 
         public static DateTime GetSegmentTop(DateTime ts, int increment)

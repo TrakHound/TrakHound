@@ -47,10 +47,8 @@
 
     protected async override Task OnInitializedAsync()
     {
-        var url = "https://www.trakhound.com/management/github/api/releases/TrakHound/MTConnect.NET";
+        var url = "https://www.trakhound.com/management/github/api/releases/TrakHound/TrakHound";
         releases = await TrakHound.Http.RestRequest.Get<IEnumerable<Release>>(url);
-
-        // releases = await Client.Api.QueryJson<IEnumerable<Release>>("github/api/releases/TrakHound/MTConnect.NET");
 
         await InvokeAsync(StateHasChanged);
     }

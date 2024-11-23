@@ -20,6 +20,13 @@
         width: 50px;
     }
 
+    .source-table .uuid {
+        max-width: 40px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--textMild);
+    }
+
     .source-table ::deep .type {
         font-weight: bold;
     }

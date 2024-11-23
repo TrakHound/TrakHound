@@ -3,6 +3,7 @@
 }
 
     .information-panel .table {
+        border: 1px solid var(--tableBorderColor);
         width: auto;
         min-width: 600px;
     }

@@ -51,7 +51,7 @@ namespace TrakHound.Sqlite.Drivers
                 items.Add(item);
             }
 
-            _client.Insert(items, TableName, new string[] { "uuid" });
+            _client.Insert(GetWriteConnectionString(), items, TableName, new string[] { "uuid" });
 
             return true;
         }
@@ -69,7 +69,7 @@ namespace TrakHound.Sqlite.Drivers
                 var condition = string.Join(" or ", conditions);
 
                 var query = $"select {TableColumns} from {TableName} where {condition};";
-                var dbEntities = _client.ReadList<DatabaseObjectSet>(query);
+                var dbEntities = _client.ReadList<DatabaseObjectSet>(GetReadConnectionString(), query);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)

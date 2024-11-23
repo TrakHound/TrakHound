@@ -60,7 +60,7 @@ namespace TrakHound.Sqlite.Drivers
                 items.Add(item);
             }
 
-            _client.Insert(items, TableName, new string[] { "uuid" });
+            _client.Insert(GetWriteConnectionString(), items, TableName, new string[] { "uuid" });
 
             return true;
         }
@@ -78,7 +78,7 @@ namespace TrakHound.Sqlite.Drivers
                 var condition = string.Join(" or ", conditions);
 
                 var sqlQuery = $"select {TableColumns} from {TableName} where {condition};";
-                var dbEntities = _client.ReadList<DatabaseObjectMetadata>(sqlQuery);
+                var dbEntities = _client.ReadList<DatabaseObjectMetadata>(GetReadConnectionString(), sqlQuery);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)
@@ -112,7 +112,7 @@ namespace TrakHound.Sqlite.Drivers
                 }
 
                 var sqlQuery = $"select {TableColumns} from {TableName} where ({condition}) and lower([name]) = '{name?.ToLower()}' and {valueCondition};";
-                var dbEntities = _client.ReadList<DatabaseObjectMetadata>(sqlQuery);
+                var dbEntities = _client.ReadList<DatabaseObjectMetadata>(GetReadConnectionString(), sqlQuery);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)
@@ -139,7 +139,7 @@ namespace TrakHound.Sqlite.Drivers
                 }
 
                 var sqlQuery = $"select {TableColumns} from {TableName} where lower([name]) = '{name?.ToLower()}' and {valueCondition};";
-                var dbEntities = _client.ReadList<DatabaseObjectMetadata>(sqlQuery);
+                var dbEntities = _client.ReadList<DatabaseObjectMetadata>(GetReadConnectionString(), sqlQuery);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)

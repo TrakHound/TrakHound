@@ -58,8 +58,8 @@ namespace TrakHound.Sqlite.Drivers
                 items.Add(item);
             }
 
-            _client.Insert(items, $"[{EntityName}_latest]", new string[] { "object_uuid" });
-            _client.Insert(items, TableName, new string[] { "object_uuid", "timestamp" });
+            _client.Insert(GetWriteConnectionString(), items, $"[{EntityName}_latest]", new string[] { "object_uuid" });
+            _client.Insert(GetWriteConnectionString(), items, TableName, new string[] { "object_uuid", "timestamp" });
 
             return true;
         }
@@ -77,7 +77,7 @@ namespace TrakHound.Sqlite.Drivers
                 var condition = string.Join(" or ", conditions);
 
                 var query = $"select {TableColumns} from [{EntityName}_latest] where {condition};";
-                var dbEntities = _client.ReadList<DatabaseObjectState>(query);
+                var dbEntities = _client.ReadList<DatabaseObjectState>(GetReadConnectionString(), query);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)
@@ -106,7 +106,7 @@ namespace TrakHound.Sqlite.Drivers
                 var order = sortOrder == SortOrder.Ascending ? "asc" : "desc";
 
                 var dbQuery = $"select {TableColumns} from {TableName} where {condition} order by [timestamp] {order} limit {take} offset {skip};";
-                var dbEntities = _client.ReadList<DatabaseObjectState>(dbQuery);
+                var dbEntities = _client.ReadList<DatabaseObjectState>(GetReadConnectionString(), dbQuery);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)

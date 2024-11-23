@@ -6,6 +6,7 @@
     grid-auto-rows: max-content;
     grid-auto-flow: row;
     grid-row-gap: 20px;
+/*    background: var(--panelBackgroundMedium);*/
 }
 
 .download-group-panel {
@@ -15,6 +16,8 @@
 
 .download-group-header {
     background: rgba(255, 255, 255, 0.075);
+    background: var(--panelBackgroundDark);
+    background: var(--borderColorLight);
     padding: 1px 20px;
     display: grid;
     grid-template-columns: 1fr max-content;
@@ -24,12 +27,12 @@
         font-size: 13px;
         line-height: 30px;
         color: var(--accentVeryLight);
+        color: var(--textMild);
     }
 
     .download-group-header .download-group-link {
         font-size: 13px;
         line-height: 28px;
-        color: var(--accentVeryLight);
         padding: 0;
     }
 
@@ -40,28 +43,34 @@
     grid-auto-columns: max-content;
     grid-auto-flow: column;
     grid-column-gap: 20px;
-    border: 2px solid rgba(0, 0, 0, 0.25);
+/*    border: 2px solid rgba(0, 0, 0, 0.25);*/
+    border: 2px solid var(--borderColorLight);
     border-top: none;
 }
 
 .download-group-table {
-    border: 2px solid rgba(0, 0, 0, 0.25);
+/*    border: 2px solid rgba(0, 0, 0, 0.25);*/
+    border: 2px solid var(--borderColorLight);
     border-top: none;
 }
 
 
 .download-panel {
-    background: rgba(255, 255, 255, 0.025);
+/*    background: rgba(255, 255, 255, 0.025);*/
+    background: var(--panelItemBackground);
     border: 2px solid var(--accentVeryVeryDark);
+    border: 2px solid var(--borderColorLight);
     border-radius: 2px;
     display: grid;
     grid-template-rows: max-content max-content 1fr;
     padding: 10px;
     width: 140px;
+    text-decoration: none;
 }
 
     .download-panel:hover {
-        background: rgba(255, 255, 255, 0.1);
+/*        background: rgba(255, 255, 255, 0.1);*/
+        background: var(--panelItemBackgroundHover);
         border: 2px solid var(--accentLight);
         cursor: pointer;
     }
@@ -87,12 +96,15 @@
     font-size: 14px !important;
     font-weight: bold;
     color: var(--accentLight);
+    color: var(--textDark);
+    margin-bottom: 5px;
 }
 
 .download-subtitle {
     text-align: center;
     font-size: 11px;
     color: var(--accentVeryLight);
+    color: var(--textMild);
 }
 
 .download-group-table table {
@@ -102,15 +114,17 @@
     margin: 0;
 }
 
-.download-group-table table th {
-    background: none;
-    border: none;
-    background: rgba(0, 0, 0, 0.5);
-    color: var(--accentVeryLight);
-    font-size: 12px;
-    font-weight: bold;
-    padding: 3px 15px;
-}
+    .download-group-table table th {
+        background: none;
+        border: none;
+/*        background: rgba(0, 0, 0, 0.5);*/
+        background: var(--panelBackgroundDark) !important;
+/*        color: var(--accentVeryLight);*/
+        color: var(--textMild);
+        font-size: 12px;
+        font-weight: bold;
+        padding: 3px 15px;
+    }
 
     .download-group-table table th.package-column {
         width: 300px;
@@ -125,8 +139,10 @@
         font-size: 14px;
         padding: 5px 15px;
         background: rgba(0, 0, 0, 0.25);
-        border-right: 2px solid var(--accentVeryVeryDark);
-        border-bottom: 2px solid var(--accentVeryVeryDark);
+/*        border-right: 2px solid var(--accentVeryVeryDark);*/
+        border-right: 2px solid var(--tableBorderColor);
+/*        border-bottom: 2px solid var(--accentVeryVeryDark);*/
+        border-bottom: 2px solid var(--tableBorderColor);
     }
 
     .download-group-table table tr:last-child td {

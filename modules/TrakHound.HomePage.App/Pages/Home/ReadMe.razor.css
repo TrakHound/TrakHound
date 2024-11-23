@@ -3,7 +3,12 @@
     overflow: auto;
     padding: 50px;
     color: var(--accentVeryLight);
+    color: var(--textDark);
 }
+
+    .readme-panel ::deep .markdown-content {
+        max-width: 1200px;
+    }
 
     .readme-panel ::deep a {
         color: var(--accentKindaLight);
@@ -33,12 +38,17 @@
         font-size: 13px;
     }
 
+    .readme-panel ::deep img {
+        max-width: 100%;
+    }
+
     .readme-panel ::deep table {
-        background: rgba(255, 255, 255, 0.05);
+/*        background: rgba(255, 255, 255, 0.05);*/
+border: 1px solid var(--tableBorderColor);
     }
 
     .readme-panel ::deep table th {
-        background: rgba(255, 255, 255, 0.05);
+/*        background: rgba(255, 255, 255, 0.05);*/
         padding: 4px 15px;
         font-size: 13px;
     }
@@ -46,6 +56,6 @@
         .readme-panel ::deep table td {
             padding: 2px 15px;
             font-size: 13px;
-            border-right: 1px solid rgba(0, 0, 0, 0.5);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+/*            border-right: 1px solid rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.5);*/
         }

@@ -61,7 +61,7 @@ namespace TrakHound.Sqlite.Drivers
                 items.Add(item);
             }
 
-            _client.Insert(items, TableName, new string[] { "object_uuid" });
+            _client.Insert(GetWriteConnectionString(), items, TableName, new string[] { "object_uuid" });
 
             return true;
         }
@@ -106,7 +106,7 @@ namespace TrakHound.Sqlite.Drivers
                     var condition = string.Join(" or ", conditions);
 
                     var query = $"{baseQuery} {condition};";
-                    var queryResults = _client.ReadList<T>(query);
+                    var queryResults = _client.ReadList<T>(GetReadConnectionString(), query);
                     if (!queryResults.IsNullOrEmpty())
                     {
                         results.AddRange(queryResults);

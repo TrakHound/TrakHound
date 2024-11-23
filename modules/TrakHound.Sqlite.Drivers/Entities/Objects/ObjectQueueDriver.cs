@@ -51,7 +51,7 @@ namespace TrakHound.Sqlite.Drivers
 
                 // Read Existing Entities
                 var query = $"select {TableColumns} from {TableName} where [queue_uuid] = '{queueUuid}';";
-                var existingEntities = _client.ReadList<DatabaseObjectQueue>(query);
+                var existingEntities = _client.ReadList<DatabaseObjectQueue>(GetWriteConnectionString(), query);
                 if (!existingEntities.IsNullOrEmpty())
                 {
                     foreach (var entity in existingEntities)
@@ -104,7 +104,7 @@ namespace TrakHound.Sqlite.Drivers
                     items.Add(item);
                 }
 
-                _client.Insert(items, TableName, new string[] { "queue_uuid", "member_uuid" });
+                _client.Insert(GetWriteConnectionString(), items, TableName, new string[] { "queue_uuid", "member_uuid" });
             }
 
             return true;
@@ -116,14 +116,14 @@ namespace TrakHound.Sqlite.Drivers
             Func<IEnumerable<string>, Task<IEnumerable<DatabaseObjectQueue>>> readFunction = async (ids) =>
             {
                 var query = $"select {TableColumns} from {TableName} where [queue_uuid] = '{queueUuid}' limit {count};";
-                var pulledEntities = _client.ReadList<DatabaseObjectQueue>(query);
+                var pulledEntities = _client.ReadList<DatabaseObjectQueue>(GetWriteConnectionString(), query);
                 if (!pulledEntities.IsNullOrEmpty())
                 {
                     var lastPulledIndex = pulledEntities.Max(o => o.Index);
 
                     // Remove Pulled Entities
                     query = $"delete from {TableName} where [queue_uuid] = '{queueUuid}' and [index] <= {lastPulledIndex};";
-                    _client.ExecuteNonQuery(query);
+                    _client.ExecuteNonQuery(GetWriteConnectionString(), query);
 
                     foreach (var entity in pulledEntities) entity.RequestedId = entity.QueueUuid;
 
@@ -155,7 +155,7 @@ namespace TrakHound.Sqlite.Drivers
                             items.Add(item);
                         }
 
-                        _client.Insert(items, TableName, new string[] { "queue_uuid", "member_uuid" });
+                        _client.Insert(GetWriteConnectionString(), items, TableName, new string[] { "queue_uuid", "member_uuid" });
                     }
                 }
 
@@ -178,7 +178,7 @@ namespace TrakHound.Sqlite.Drivers
                 var condition = string.Join(" or ", conditions);
 
                 var query = $"select {TableColumns} from {TableName} where {condition};";
-                var dbEntities = _client.ReadList<DatabaseObjectQueue>(query);
+                var dbEntities = _client.ReadList<DatabaseObjectQueue>(GetReadConnectionString(), query);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)
@@ -205,7 +205,7 @@ namespace TrakHound.Sqlite.Drivers
                 var condition = string.Join(" or ", conditions);
 
                 var query = $"select {TableColumns} from {TableName} where {condition};";
-                var dbEntities = _client.ReadList<DatabaseObjectQueue>(query);
+                var dbEntities = _client.ReadList<DatabaseObjectQueue>(GetReadConnectionString(), query);
                 if (!dbEntities.IsNullOrEmpty())
                 {
                     foreach (var dbEntity in dbEntities)

@@ -14,7 +14,8 @@
 }
 
 .developer-group-header {
-    background: rgba(255, 255, 255, 0.075);
+/*    background: rgba(255, 255, 255, 0.075);*/
+    background: var(--panelBackgroundMedium);
     padding: 1px 20px;
     display: grid;
     grid-template-columns: 1fr max-content;
@@ -24,12 +25,13 @@
         font-size: 13px;
         line-height: 30px;
         color: var(--accentVeryLight);
+        color: var(--textMild);
     }
 
     .developer-group-header .developer-group-link {
         font-size: 13px;
         line-height: 28px;
-        color: var(--accentVeryLight);
+/*        color: var(--accentVeryLight);*/
         padding: 0;
     }
 
@@ -41,17 +43,21 @@
     grid-auto-flow: column;
     grid-column-gap: 20px;
     border: 2px solid rgba(0, 0, 0, 0.25);
+    border: 2px solid rgba(0, 0, 0, 0.25);
+    border: 2px solid var(--borderColorVeryLight);
     border-top: none;
 }
 
 .developer-group-table {
     border: 2px solid rgba(0, 0, 0, 0.25);
+    border: 2px solid var(--borderColorLight);
     border-top: none;
 }
 
 
 .developer-panel {
     background: rgba(255, 255, 255, 0.025);
+    background: var(--panelItemBackground);
     border: 2px solid var(--accentVeryVeryDark);
     border-radius: 2px;
     display: grid;
@@ -62,6 +68,7 @@
 
     .developer-panel:hover {
         background: rgba(255, 255, 255, 0.1);
+        background: var(--panelItemBackgroundHover);
         border: 2px solid var(--accentLight);
         cursor: pointer;
     }
@@ -102,15 +109,17 @@
     margin: 0;
 }
 
-.developer-group-table table th {
-    background: none;
-    border: none;
-    background: rgba(0, 0, 0, 0.5);
-    color: var(--accentVeryLight);
-    font-size: 12px;
-    font-weight: bold;
-    padding: 3px 15px;
-}
+    .developer-group-table table th {
+        background: none;
+        border: none;
+/*        background: rgba(0, 0, 0, 0.5);*/
+        background: var(--panelBackgroundDark) !important;
+/*        color: var(--accentVeryLight);*/
+        color: var(--textMild);
+        font-size: 12px;
+        font-weight: bold;
+        padding: 3px 15px;
+    }
 
     .developer-group-table table th.package-column {
         width: 300px;
@@ -125,8 +134,10 @@
         font-size: 14px;
         padding: 5px 15px;
         background: rgba(0, 0, 0, 0.25);
-        border-right: 2px solid var(--accentVeryVeryDark);
-        border-bottom: 2px solid var(--accentVeryVeryDark);
+/*        border-right: 2px solid var(--accentVeryVeryDark);*/
+        border-right: 2px solid var(--tableBorderColor);
+/*        border-bottom: 2px solid var(--accentVeryVeryDark);*/
+        border-bottom: 2px solid var(--tableBorderColor);
     }
 
     .developer-group-table table tr:last-child td {

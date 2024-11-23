@@ -8,9 +8,9 @@
             <a href="#" class="btn btn-link download-group-link"><span class="icon fa-brands fa-github"></span>View on GitHub</a>
         </div>
         <div class="download-group-grid">
-            <a href="#" target="_blank" class="download-panel">
+            <a href="@GetInstanceDownloadLink()" target="_blank" class="download-panel">
                 <div class="download-icon">
-                    <img src="http://www.trakhound.com/static/trakhound-logo-v5-02-background-100px.png" />
+                    <img src="http://www.trakhound.com/static/trakhound-logo-background-sm.png" />
                 </div>
                 <div class="download-title">
                     <span>Instance</span>
@@ -20,9 +20,9 @@
                 </div>
             </a>
 
-            <a href="#" target="_blank" class="download-panel">
+            <a href="@GetCliDownloadLink()" target="_blank" class="download-panel">
                 <div class="download-icon">
-                    <img src="http://www.trakhound.com/static/trakhound-logo-v5-02-background-100px.png" />
+                    <img src="http://www.trakhound.com/static/trakhound-logo-background-sm.png" />
                 </div>
                 <div class="download-title">
                     <span>CLI</span>
@@ -81,3 +81,54 @@
     </div>
 
 </div>
+
+
+@code{
+
+    private Release release;
+
+    class Release
+    {
+        public long Id { get; set; }
+        public string Url { get; set; }
+        public string HtmlUrl { get; set; }
+        public int Number { get; set; }
+        public string Name { get; set; }
+        public string TagName { get; set; }
+        public int Comments { get; set; }
+        public DateTime PublishedAt { get; set; }
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var url = "https://www.trakhound.com/management/github/api/releases/TrakHound/TrakHound";
+        release = (await TrakHound.Http.RestRequest.Get<IEnumerable<Release>>(url))?.FirstOrDefault();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string GetInstanceDownloadLink()
+    {
+        if (release != null)
+        {
+            var version = release.TagName?.TrimStart('v');
+
+            return $"https://github.com/TrakHound/TrakHound/releases/download/v{version}/trakhound-instance-{version}-install.exe";
+        }
+
+        return "#";
+    }
+
+    private string GetCliDownloadLink()
+    {
+        if (release != null)
+        {
+            var version = release.TagName?.TrimStart('v');
+
+            return $"https://github.com/TrakHound/TrakHound/releases/download/v{version}/trakhound-cli-{version}-install.exe";
+        }
+
+        return "#";
+    }
+
+}

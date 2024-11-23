@@ -4,6 +4,7 @@
     display: grid;
     grid-template-rows: 1fr max-content;
     background: var(--accentVeryVeryDark);
+    background: var(--panelBackground);
 }
 
 .content-container {
@@ -26,15 +27,15 @@
     overflow: auto;
     grid-row: 3;
     grid-column: 1;
-    background: rgba(0, 0, 0, 0.35);
-    background: rgba(0, 0, 0, 0.2);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    /*    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.2);*/
+    border-top: 1px solid var(--borderColorLight);
 }
 
     .body-container .readme-container {
         padding: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: var(--accentVeryVeryLight);
+        border: 1px solid var(--borderColor);
+        color: var(--textDark);
     }
 
 .sidebar-container {
@@ -45,6 +46,7 @@
     overflow: hidden;
     text-align: center;
     border-left: 1px solid var(--accentVeryDark);
+    border-left: 1px solid var(--borderColor);
 }
 
 .footer-container {

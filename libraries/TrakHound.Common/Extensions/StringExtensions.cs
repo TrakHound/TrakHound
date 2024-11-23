@@ -882,16 +882,25 @@ namespace TrakHound
 
         public static byte[] ConvertHexidecimalToBytes(string hex)
         {
-            if (hex.Length % 2 == 1) throw new Exception("The binary key cannot have an odd number of digits");
-
-            byte[] arr = new byte[hex.Length >> 1];
-
-            for (int i = 0; i < hex.Length >> 1; ++i)
+            if (hex != null)
             {
-                arr[i] = (byte)((GetHexVal(hex[i << 1]) << 4) + (GetHexVal(hex[(i << 1) + 1])));
+                try
+                {
+                    if (hex.Length % 2 == 1) throw new Exception("The binary key cannot have an odd number of digits");
+
+                    byte[] arr = new byte[hex.Length >> 1];
+
+                    for (int i = 0; i < hex.Length >> 1; ++i)
+                    {
+                        arr[i] = (byte)((GetHexVal(hex[i << 1]) << 4) + (GetHexVal(hex[(i << 1) + 1])));
+                    }
+
+                    return arr;
+                }
+                catch { }
             }
 
-            return arr;
+            return null;
         }
 
         private static int GetHexVal(char hex)
