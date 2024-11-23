@@ -198,7 +198,15 @@ namespace TrakHound
                         {
                             var querySegment = normalizeResult.Segments[i];
 
-                            if (querySegment == Wildcard)
+                            if (querySegment == PathSeparator)
+                            {
+                                targetUuids = new string[] { null }; // No Parent (Root)
+                                //var uuids = await client.Objects.QueryRootUuids(skip, take, sortOrder);
+                                //if (i == m - 1) results.AddRange(targetUuids);
+
+                                parentLevel = 0;
+                            }
+                            else if (querySegment == Wildcard)
                             {
                                 var uuids = await client.Objects.QueryUuidsByParentUuid(targetUuids, skip, take);
                                 targetUuids = uuids?.Select(o => o.Uuid);
@@ -1246,7 +1254,8 @@ namespace TrakHound
 
             if (!string.IsNullOrEmpty(expression))
             {
-                if (expression.StartsWith(PathSeparator))
+                //if (expression.StartsWith(PathSeparator))
+                if (!string.IsNullOrEmpty(ns) && expression.StartsWith(PathSeparator))
                 {
                     string absolutePath = null;
                     int expressionStartIndex = 0;
@@ -1279,7 +1288,19 @@ namespace TrakHound
                 }
                 else
                 {
-                    result.Segments = expression.Split(PathSeparator);
+                    result.Segments = expression.Split(PathSeparator, System.StringSplitOptions.RemoveEmptyEntries);
+
+                    // Add Root PathSeparater (if exists)
+                    if (!result.Segments.IsNullOrEmpty() && expression.StartsWith(PathSeparator))
+                    {
+                        var segments = new string[result.Segments.Length + 1];
+                        segments[0] = PathSeparator;
+                        for (var i = 0; i < result.Segments.Length; i++)
+                        {
+                            segments[1 + i] = result.Segments[i];
+                        }
+                        result.Segments = segments;
+                    }
                 }               
             }
 

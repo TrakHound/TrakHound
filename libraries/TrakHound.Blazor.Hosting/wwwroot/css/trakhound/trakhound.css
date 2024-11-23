@@ -159,11 +159,6 @@ a, .btn-link {
     background: var(--inputBackground);
 }
 
-.rz-dropdown .rz-placeholder {
-    font-size: 14px;
-    color: var(--inputPlaceholder) !important;
-}
-
     .rz-dropdown:hover {
         border: 1px solid var(--inputBorderHover) !important;
         background: var(--inputBackgroundHover) !important;
@@ -176,6 +171,19 @@ a, .btn-link {
         color: var(--inputTextHighlight) !important;
         box-shadow: inset 0px 0px 1px 1px var(--accentLight) !important;
         outline: none;
+    }
+
+    .rz-dropdown .rz-placeholder {
+        font-size: 14px;
+        color: var(--inputPlaceholder) !important;
+    }
+
+    .rz-dropdown:hover .rz-placeholder {
+        color: var(--inputPlaceholderHover) !important;
+    }
+
+    .rz-dropdown:focus .rz-placeholder {
+        color: var(--inputPlaceholderHighlight) !important;
     }
 
 .rz-dropdown-trigger {
@@ -237,7 +245,7 @@ a, .btn-link {
 
 
 table tbody {
-    background: var(--tableBackground);
+/*    background: var(--tableBackground);*/
     border-color: var(--tableBorderColor);
 }
 
@@ -255,11 +263,16 @@ table tbody {
 
 table td {
     background: none;
+    background: var(--tableBackground);
     border: none;
     border-color: var(--tableBorderColor);
     border-right: 1px solid var(--tableBorderColor);
     border-bottom: 1px solid var(--tableBorderColor);
     color: var(--tableText);
+}
+
+table tr:hover td {
+    background: var(--tableBackgroundHover);
 }
 
 table td:last-child {
@@ -311,6 +324,7 @@ table td:last-child {
     }
 
     .rz-data-grid td {
+        background: var(--tableBackground);
         border-bottom: 1px solid var(--tableBorderColor) !important;
         border-right: 1px solid var(--tableBorderColor) !important;
     }
@@ -329,6 +343,7 @@ table td:last-child {
 .rz-data-row:hover td {
     background: #f4f4f4 !important;
     background: rgba(255, 255, 255, 0.05) !important;
+    background: var(--tableBackgroundHover) !important;
     transition: none !important;
 }
 

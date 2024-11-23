@@ -4,7 +4,6 @@
     grid-template-rows: max-content max-content 1fr;
     height: 100%;
     overflow: hidden;
-    background: #fff;
     background: var(--panelBackground);
 }
 
@@ -17,7 +16,6 @@
     padding-left: 0px;
     padding-bottom: 10px;
     margin-bottom: 10px;
-    border-bottom: 1px solid #eee;
     border-bottom: 1px solid var(--borderColorLight);
 }
 
@@ -35,7 +33,6 @@
 .header-panel .header-description-container {
     grid-column: 2;
     padding-right: 80px;
-    border-right: 1px solid #eee;
     border-right: 1px solid var(--borderColorLight);
     min-width: 470px;
 }
@@ -44,7 +41,6 @@
         display: block;
         font-size: 12px;
         font-weight: bold;
-        color: #555;
         color: var(--textDark);
     }
 
@@ -59,7 +55,6 @@
     .header-panel .header-description-container .header-description {
         display: block;
         font-size: 12px;
-        color: #888;
         color: var(--textMild);
     }
 
@@ -71,7 +66,6 @@
 .header-panel span.header-package-icon {
     font-size: 30px;
     line-height: 30px;
-    color: #ccc;
     color: var(--textLight);
 }
 
@@ -81,7 +75,6 @@
 
 .header-panel .header-package-container {
     grid-column: 4;
-    border-left: 1px solid #eee;
     border-left: 1px solid var(--borderColorLight);
     padding: 0 20px;
 }
@@ -90,7 +83,6 @@
         display: block;
         font-size: 12px;
         font-weight: bold;
-        color: #555;
         color: var(--textMild);
     }
 
@@ -98,7 +90,6 @@
         display: block;
         font-size: 14px;
         line-height: 20px;
-        color: #333;
         color: var(--textDark);
     }
 
@@ -106,7 +97,6 @@
         display: block;
         font-size: 12px;
         line-height: 14px;
-        color: #555;
         color: var(--textMild);
     }
 
@@ -119,20 +109,24 @@
     padding-top: 5px;
 }
 
-        .information-panel .table td {
-            font-size: 12px;
-            padding: 3px 15px;
+    .information-panel .table {
+        border: 1px solid var(--tableBorderColor);
+    }
+
+    .information-panel .table td {
+        font-size: 12px;
+        padding: 3px 15px;
+    }
+
+        .information-panel .table td.label {
+            background: var(--tableHeaderBackground);
+            width: 200px;
+            font-weight: bold;
         }
 
-            .information-panel .table td.label {
-                background: var(--tableHeaderBackground);
-                width: 200px;
-                font-weight: bold;
-            }
-
-            .information-panel .table td.value {
-                padding-right: 50px;
-            }
+        .information-panel .table td.value {
+            padding-right: 50px;
+        }
 
 
 .tabs-panel {
@@ -162,13 +156,12 @@
         .endpoints-panel ::deep .rz-data-grid td {
             padding: 3px 15px;
             border-right: 1px solid var(--tableBorderColor);
-            /*border-bottom: 1px solid #ddd;*/
         }
 
-        .endpoints-panel ::deep .rz-data-grid td.buttons {
-            padding: 0;
-            text-align: center;
-        }
+            .endpoints-panel ::deep .rz-data-grid td.buttons {
+                padding: 0;
+                text-align: center;
+            }
 
             .endpoints-panel ::deep .rz-data-grid td .rz-cell-data {
                 padding: 0;

@@ -5,290 +5,305 @@
 @using TrakHound.Instances
 
 <div class="buffers-page">
-    <div class="drivers-list">
 
-        @if (!driverBufferMetrics.IsNullOrEmpty())
-        {
-            var timestamp = DateTime.Now;
+    @if (!loading)
+    {
+        <div class="drivers-list">
 
-            foreach (var driverBufferMetric in driverBufferMetrics)
+            @if (!driverBufferMetrics.IsNullOrEmpty())
             {
-                var driverQueuedItems = _queuedItems.Get(driverBufferMetric.Name)?.Reverse().ToArray();
-                var driverBufferSize = _bufferSize.Get(driverBufferMetric.Name)?.Reverse().ToArray();
+                var timestamp = DateTime.Now;
 
-                var queueChartData = new ChartData[10];
-                if (driverQueuedItems != null)
+                foreach (var driverBufferMetric in driverBufferMetrics)
                 {
-                    for (var i = 0; i < 10; i++)
+                    var driverQueuedItems = _queuedItems.Get(driverBufferMetric.Name)?.Reverse().ToArray();
+                    var driverBufferSize = _bufferSize.Get(driverBufferMetric.Name)?.Reverse().ToArray();
+
+                    var queueChartData = new ChartData[10];
+                    if (driverQueuedItems != null)
                     {
-                        var chartData = new ChartData();
-                        chartData.Value = driverQueuedItems[i];
-                        chartData.Timestamp = i + 1;
-                        queueChartData[i] = chartData;
-                    }
-                }
-
-                ChartData[] fileBufferData = null;
-                if (driverBufferMetric.TotalFileBufferSize > 0)
-                {
-                    fileBufferData = new ChartData[2];
-                    fileBufferData[0] = new ChartData() { Value = driverBufferMetric.TotalFileBufferSize, Timestamp = 1 };
-                    fileBufferData[1] = new ChartData() { Value = driverBufferMetric.TotalFileBufferSize, Timestamp = 10 };
-                }
-
-                var queueAxisValues = GetQueueItemAxis(driverQueuedItems);
-                var bufferAxisValues = GetBufferSizeAxis(driverBufferSize);
-
-                var timeAxisValues = new string[6];
-                timeAxisValues[0] = timestamp.AddSeconds(-1 * (10 - 0)).ToString("h:mm:ss");
-                timeAxisValues[1] = timestamp.AddSeconds(-1 * (10 - 1)).ToString("h:mm:ss");
-                timeAxisValues[2] = timestamp.AddSeconds(-1 * (10 - 2)).ToString("h:mm:ss");
-                timeAxisValues[3] = timestamp.AddSeconds(-1 * (10 - 3)).ToString("h:mm:ss");
-                timeAxisValues[4] = timestamp.AddSeconds(-1 * (10 - 4)).ToString("h:mm:ss");
-                timeAxisValues[5] = timestamp.AddSeconds(-1 * (10 - 5)).ToString("h:mm:ss");
-
-                <div class="driver-panel">
-                    <div class="driver-description">
-                        <span class="driver-name">@driverBufferMetric.Name</span>
-                    </div>
-                    <div class="driver-status">
-                        <div class="driver-status-indicator">
-                        </div>
-                    </div>
-                    <div class="driver-chart">
-                        <div class="driver-queue">
-                            <RadzenChart>
-                                <RadzenAreaSeries Data="@queueChartData" CategoryProperty="Timestamp" ValueProperty="Value" Stroke="var(--accent)" StrokeWidth="1" Fill="var(--accentVeryLight)" />
-                                <RadzenLegend Visible="false" />
-                                <RadzenValueAxis Visible="false" />
-                                <RadzenCategoryAxis Visible="false" />
-                            </RadzenChart>
-                        </div>
-
-                        @if (fileBufferData != null)
+                        for (var i = 0; i < 10; i++)
                         {
-                            <div class="driver-filebuffer">
+                            var chartData = new ChartData();
+                            chartData.Value = driverQueuedItems[i];
+                            chartData.Timestamp = i + 1;
+                            queueChartData[i] = chartData;
+                        }
+                    }
+
+                    ChartData[] fileBufferData = null;
+                    if (driverBufferMetric.TotalFileBufferSize > 0)
+                    {
+                        fileBufferData = new ChartData[2];
+                        fileBufferData[0] = new ChartData() { Value = driverBufferMetric.TotalFileBufferSize, Timestamp = 1 };
+                        fileBufferData[1] = new ChartData() { Value = driverBufferMetric.TotalFileBufferSize, Timestamp = 10 };
+                    }
+
+                    var queueAxisValues = GetQueueItemAxis(driverQueuedItems);
+                    var bufferAxisValues = GetBufferSizeAxis(driverBufferSize);
+
+                    var timeAxisValues = new string[6];
+                    timeAxisValues[0] = timestamp.AddSeconds(-1 * (10 - (interval * 0))).ToString("h:mm:ss");
+                    timeAxisValues[1] = timestamp.AddSeconds(-1 * (10 - (interval * 1))).ToString("h:mm:ss");
+                    timeAxisValues[2] = timestamp.AddSeconds(-1 * (10 - (interval * 2))).ToString("h:mm:ss");
+                    timeAxisValues[3] = timestamp.AddSeconds(-1 * (10 - (interval * 3))).ToString("h:mm:ss");
+                    timeAxisValues[4] = timestamp.AddSeconds(-1 * (10 - (interval * 4))).ToString("h:mm:ss");
+                    timeAxisValues[5] = timestamp.AddSeconds(-1 * (10 - (interval * 5))).ToString("h:mm:ss");
+
+                    <div class="driver-panel">
+                        <div class="driver-description">
+                            <span class="driver-name">@driverBufferMetric.Name</span>
+                        </div>
+                        <div class="driver-status">
+                            <div class="driver-status-indicator">
+                            </div>
+                        </div>
+                        <div class="driver-chart">
+                            <div class="driver-queue">
                                 <RadzenChart>
-                                    <RadzenLineSeries Data="@fileBufferData" CategoryProperty="Timestamp" ValueProperty="Value" Stroke="var(--colorPurple)" StrokeWidth="1" LineType="LineType.Dashed" />
+                                    <RadzenAreaSeries Data="@queueChartData" CategoryProperty="Timestamp" ValueProperty="Value" Stroke="var(--chartPrimaryStroke)" StrokeWidth="1" Fill="var(--chartPrimaryFill)" />
                                     <RadzenLegend Visible="false" />
                                     <RadzenValueAxis Visible="false" />
                                     <RadzenCategoryAxis Visible="false" />
                                 </RadzenChart>
                             </div>
+
+                            @if (fileBufferData != null)
+                            {
+                                <div class="driver-filebuffer">
+                                    <RadzenChart>
+                                        <RadzenLineSeries Data="@fileBufferData" CategoryProperty="Timestamp" ValueProperty="Value" Stroke="var(--chartSecondaryStroke)" StrokeWidth="1" LineType="LineType.Dashed" />
+                                        <RadzenLegend Visible="false" />
+                                        <RadzenValueAxis Visible="false" />
+                                        <RadzenCategoryAxis Visible="false" />
+                                    </RadzenChart>
+                                </div>
+                            }
+
+                            <div class="driver-chart-time-axis">
+                                <div class="driver-chart-time-axis-container">
+                                    <div class="chart-tick-marks">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div class="chart-tick-mark"></div>
+                                        <div></div>
+                                        <div class="chart-tick-mark"></div>
+                                        <div></div>
+                                        <div class="chart-tick-mark"></div>
+                                        <div></div>
+                                        <div class="chart-tick-mark"></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                    <div class="chart-tick-values">
+                                        <span class="chart-tick-value">@timeAxisValues[0]</span>
+                                        <span class="chart-tick-value">@timeAxisValues[1]</span>
+                                        <span class="chart-tick-value">@timeAxisValues[2]</span>
+                                        <span class="chart-tick-value">@timeAxisValues[3]</span>
+                                        <span class="chart-tick-value">@timeAxisValues[4]</span>
+                                        <span class="chart-tick-value">@timeAxisValues[5]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="driver-chart-queue-axis">
+                            <div class="driver-chart-queue-axis-container">
+                                <div class="chart-tick-values">
+                                    <span class="chart-tick-value">@queueAxisValues[3]</span>
+                                    <span class="chart-tick-value">@queueAxisValues[2]</span>
+                                    <span class="chart-tick-value">@queueAxisValues[1]</span>
+                                    <span class="chart-tick-value">@queueAxisValues[0]</span>
+                                </div>
+                                <div class="chart-tick-marks">
+                                    <div></div>
+                                    <div class="chart-tick-mark"></div>
+                                    <div></div>
+                                    <div class="chart-tick-mark"></div>
+                                    <div></div>
+                                    <div class="chart-tick-mark"></div>
+                                    <div></div>
+                                    <div class="chart-tick-mark"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (fileBufferData != null)
+                        {
+                            <div class="driver-chart-buffer-axis">
+                                <div class="driver-chart-buffer-axis-container">
+                                    <div class="chart-tick-marks">
+                                        <div></div>
+                                        <div class="chart-tick-mark"></div>
+                                        <div></div>
+                                        <div class="chart-tick-mark"></div>
+                                        <div></div>
+                                        <div class="chart-tick-mark"></div>
+                                        <div></div>
+                                        <div class="chart-tick-mark"></div>
+                                    </div>
+                                    <div class="chart-tick-values">
+                                        <span class="chart-tick-value">@bufferAxisValues[3]</span>
+                                        <span class="chart-tick-value">@bufferAxisValues[2]</span>
+                                        <span class="chart-tick-value">@bufferAxisValues[1]</span>
+                                        <span class="chart-tick-value">@bufferAxisValues[0]</span>
+                                    </div>
+                                </div>
+                            </div>
                         }
 
-                        <div class="driver-chart-time-axis">
-                            <div class="driver-chart-time-axis-container">
-                                <div class="chart-tick-marks">
-                                    <div></div>
-                                    <div></div>
-                                    <div></div>
-                                    <div class="chart-tick-mark"></div>
-                                    <div></div>
-                                    <div class="chart-tick-mark"></div>
-                                    <div></div>
-                                    <div class="chart-tick-mark"></div>
-                                    <div></div>
-                                    <div class="chart-tick-mark"></div>
-                                    <div></div>
-                                    <div></div>
-                                </div>
-                                <div class="chart-tick-values">
-                                    <span class="chart-tick-value">@timeAxisValues[0]</span>
-                                    <span class="chart-tick-value">@timeAxisValues[1]</span>
-                                    <span class="chart-tick-value">@timeAxisValues[2]</span>
-                                    <span class="chart-tick-value">@timeAxisValues[3]</span>
-                                    <span class="chart-tick-value">@timeAxisValues[4]</span>
-                                    <span class="chart-tick-value">@timeAxisValues[5]</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>               
-                    <div class="driver-chart-queue-axis">
-                        <div class="driver-chart-queue-axis-container">
-                            <div class="chart-tick-values">
-                                <span class="chart-tick-value">@queueAxisValues[3]</span>
-                                <span class="chart-tick-value">@queueAxisValues[2]</span>
-                                <span class="chart-tick-value">@queueAxisValues[1]</span>
-                                <span class="chart-tick-value">@queueAxisValues[0]</span>
-                            </div>
-                            <div class="chart-tick-marks">
-                                <div></div>
-                                <div class="chart-tick-mark"></div>
-                                <div></div>
-                                <div class="chart-tick-mark"></div>
-                                <div></div>
-                                <div class="chart-tick-mark"></div>
-                                <div></div>
-                                <div class="chart-tick-mark"></div>
-                            </div>
-                        </div>
                     </div>
-
-                    @if (fileBufferData != null)
-                    {
-                        <div class="driver-chart-buffer-axis">
-                            <div class="driver-chart-buffer-axis-container">
-                                <div class="chart-tick-marks">
-                                    <div></div>
-                                    <div class="chart-tick-mark"></div>
-                                    <div></div>
-                                    <div class="chart-tick-mark"></div>
-                                    <div></div>
-                                    <div class="chart-tick-mark"></div>
-                                    <div></div>
-                                    <div class="chart-tick-mark"></div>
-                                </div>
-                                <div class="chart-tick-values">
-                                    <span class="chart-tick-value">@bufferAxisValues[3]</span>
-                                    <span class="chart-tick-value">@bufferAxisValues[2]</span>
-                                    <span class="chart-tick-value">@bufferAxisValues[1]</span>
-                                    <span class="chart-tick-value">@bufferAxisValues[0]</span>
-                                </div>
-                            </div>
-                        </div>
-                    }
-
-                </div>
+                }
             }
-        }
 
-    </div>
-    <div class="buffers-list">
-        <div class="buffers-list-toolbar">
         </div>
-        <div class="buffers-list-table">
+        <div class="buffers-list">
+            <div class="buffers-list-toolbar">
+            </div>
+            <div class="buffers-list-table">
 
-            @if (!metrics.IsNullOrEmpty())
-            {
-                <RadzenDataGrid Data="@metrics" TItem="TrakHoundBufferMetrics" Density="Density.Compact" AllowSorting="true" AllowColumnResize="true">
-                    <Columns>
-                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Title="Driver">
-                            <Template Context="context">
-                                <span class="@GetRecentClass(context)">@GetDriverName(context.DriverId)</span>
-                            </Template>
-                        </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="Name" Title="Name">
+                @if (!metrics.IsNullOrEmpty())
+                {
+                    <RadzenDataGrid Data="@metrics" TItem="TrakHoundBufferMetrics" Density="Density.Compact" AllowSorting="true" AllowColumnResize="true" AllowVirtualization="true">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Title="Driver">
                                 <Template Context="context">
-                                <span class="@GetRecentClass(context)">@context.Name</span>
+                                    <span class="@GetRecentClass(context)">@GetDriverName(context.DriverId)</span>
                                 </Template>
                             </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="OperationType" Title="Operation" Width="70px" TextAlign="TextAlign.Center">
+                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="Name" Title="Name">
+                                <Template Context="context">
+                                    <span class="@GetRecentClass(context)">@context.Name</span>
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="OperationType" Title="Operation" Width="70px" TextAlign="TextAlign.Center">
                                 <Template Context="context">
                                     <span class="@GetRecentClass(context)">@context.OperationType</span>
                                 </Template>
                             </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Title="Queue" Width="300px" Resizable="false" TextAlign="TextAlign.Center">
-                            <Columns>
-                                <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="Queue.IsActive" Title="Active" MinWidth="60px" TextAlign="TextAlign.Center">
-                                    <Template Context="context">
-                                        <span class="@GetRecentClass(context)">@context.Queue.IsActive</span>
-                                    </Template>
-                                </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="Queue.ItemCount" Title="%" MinWidth="100px" TextAlign="TextAlign.Right">
-                                    <Template Context="context">
-                                        <span class="@GetRecentClass(context)">@GetQueueItemCount(context)</span>
-                                    </Template>
-                                </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="Queue.TotalItemCount" Title="#" TextAlign="TextAlign.Right">
-                                    <Template Context="context">
-                                        <span class="@GetRecentClass(context)">@context.Queue.TotalItemCount</span>
-                                    </Template>
-                                </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="Queue.ItemRate" Title="/s" TextAlign="TextAlign.Right">
-                                    <Template Context="context">
-                                        <span class="@GetRecentClass(context)">@context.Queue.ItemRate</span>
-                                    </Template>
-                                </RadzenDataGridColumn>
-                            </Columns>
-                        </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Title="File Buffer" Width="680px" Resizable="false" TextAlign="TextAlign.Center">
-                            <Columns>
-                                <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.RemainingSize" Title="Size" Width="80px" TextAlign="TextAlign.Right">
-                                    <Template Context="context">
-                                        <span class="@GetRecentClass(context)">@GetFileSize(context.FileBuffer.RemainingSize)</span>
-                                    </Template>
-                                </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Title="Read" Width="200px" Resizable="false" TextAlign="TextAlign.Center">
-                                    <Columns>
-                                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.IsReadActive" Title="Active" MinWidth="60px" TextAlign="TextAlign.Center">
-                                            <Template Context="context">
-                                                <span class="@GetRecentClass(context)">@context.FileBuffer.IsReadActive</span>
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.ReadPageSequence" Title="Page #" TextAlign="TextAlign.Right">
-                                            <Template Context="context">
-                                                <span class="@GetRecentClass(context)">@context.FileBuffer.ReadPageSequence</span>
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.TotalReadCount" Title="#" TextAlign="TextAlign.Right">
-                                            <Template Context="context">
-                                                <span class="@GetRecentClass(context)">@context.FileBuffer.TotalReadCount</span>
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.TotalBytesRead" Title="MB" TextAlign="TextAlign.Right">
-                                            <Template Context="context">
-                                                <span class="@GetRecentClass(context)">@GetMB(context.FileBuffer.TotalBytesRead)</span>
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.ByteReadRate" Title="/s" TextAlign="TextAlign.Right">
-                                            <Template Context="context">
-                                                <span class="@GetRecentClass(context)">@context.FileBuffer.ByteReadRate</span>
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                    </Columns>
-                                </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Title="Write" Width="200px" Resizable="false" TextAlign="TextAlign.Center">
-                                    <Columns>
-                                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.IsWriteActive" Title="Active" MinWidth="60px" TextAlign="TextAlign.Center">
-                                            <Template Context="context">
-                                                <span class="@GetRecentClass(context)">@context.FileBuffer.IsWriteActive</span>
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.WritePageSequence" Title="Page" TextAlign="TextAlign.Right">
-                                            <Template Context="context">
-                                                <span class="@GetRecentClass(context)">@context.FileBuffer.WritePageSequence</span>
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.TotalWriteCount" Title="#" TextAlign="TextAlign.Right">
-                                            <Template Context="context">
-                                                <span class="@GetRecentClass(context)">@context.FileBuffer.TotalWriteCount</span>
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.TotalBytesWritten" Title="MB" TextAlign="TextAlign.Right">
-                                            <Template Context="context">
-                                                <span class="@GetRecentClass(context)">@GetMB(context.FileBuffer.TotalBytesWritten)</span>
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                        <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.ByteWriteRate" Title="/s" TextAlign="TextAlign.Right">
-                                            <Template Context="context">
-                                                <span class="@GetRecentClass(context)">@context.FileBuffer.ByteWriteRate</span>
-                                            </Template>
-                                        </RadzenDataGridColumn>
-                                    </Columns>
-                                </RadzenDataGridColumn>
-                            </Columns>
-                        </RadzenDataGridColumn>
-                    </Columns>
-                </RadzenDataGrid>
-            }
+                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Title="Queue" Width="300px" Resizable="false" TextAlign="TextAlign.Center">
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="Queue.IsActive" Title="Active" MinWidth="60px" TextAlign="TextAlign.Center">
+                                        <Template Context="context">
+                                            <span class="@GetRecentClass(context)">@context.Queue.IsActive</span>
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                    <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="Queue.ItemCount" Title="%" MinWidth="100px" TextAlign="TextAlign.Right">
+                                        <Template Context="context">
+                                            <span class="@GetRecentClass(context)">@GetQueueItemCount(context)</span>
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                    <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="Queue.TotalItemCount" Title="#" TextAlign="TextAlign.Right">
+                                        <Template Context="context">
+                                            <span class="@GetRecentClass(context)">@context.Queue.TotalItemCount</span>
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                    <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="Queue.ItemRate" Title="/s" TextAlign="TextAlign.Right">
+                                        <Template Context="context">
+                                            <span class="@GetRecentClass(context)">@context.Queue.ItemRate</span>
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                </Columns>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Title="File Buffer" Width="680px" Resizable="false" TextAlign="TextAlign.Center">
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.RemainingSize" Title="Size" Width="80px" TextAlign="TextAlign.Right">
+                                        <Template Context="context">
+                                            <span class="@GetRecentClass(context)">@GetFileSize(context.FileBuffer.RemainingSize)</span>
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                    <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Title="Read" Width="200px" Resizable="false" TextAlign="TextAlign.Center">
+                                        <Columns>
+                                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.IsReadActive" Title="Active" MinWidth="60px" TextAlign="TextAlign.Center">
+                                                <Template Context="context">
+                                                    <span class="@GetRecentClass(context)">@context.FileBuffer.IsReadActive</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.ReadPageSequence" Title="Page #" TextAlign="TextAlign.Right">
+                                                <Template Context="context">
+                                                    <span class="@GetRecentClass(context)">@context.FileBuffer.ReadPageSequence</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.TotalReadCount" Title="#" TextAlign="TextAlign.Right">
+                                                <Template Context="context">
+                                                    <span class="@GetRecentClass(context)">@context.FileBuffer.TotalReadCount</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.TotalBytesRead" Title="MB" TextAlign="TextAlign.Right">
+                                                <Template Context="context">
+                                                    <span class="@GetRecentClass(context)">@GetMB(context.FileBuffer.TotalBytesRead)</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.ByteReadRate" Title="/s" TextAlign="TextAlign.Right">
+                                                <Template Context="context">
+                                                    <span class="@GetRecentClass(context)">@context.FileBuffer.ByteReadRate</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                        </Columns>
+                                    </RadzenDataGridColumn>
+                                    <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Title="Write" Width="200px" Resizable="false" TextAlign="TextAlign.Center">
+                                        <Columns>
+                                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.IsWriteActive" Title="Active" MinWidth="60px" TextAlign="TextAlign.Center">
+                                                <Template Context="context">
+                                                    <span class="@GetRecentClass(context)">@context.FileBuffer.IsWriteActive</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.WritePageSequence" Title="Page" TextAlign="TextAlign.Right">
+                                                <Template Context="context">
+                                                    <span class="@GetRecentClass(context)">@context.FileBuffer.WritePageSequence</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.TotalWriteCount" Title="#" TextAlign="TextAlign.Right">
+                                                <Template Context="context">
+                                                    <span class="@GetRecentClass(context)">@context.FileBuffer.TotalWriteCount</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.TotalBytesWritten" Title="MB" TextAlign="TextAlign.Right">
+                                                <Template Context="context">
+                                                    <span class="@GetRecentClass(context)">@GetMB(context.FileBuffer.TotalBytesWritten)</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="TrakHoundBufferMetrics" Property="FileBuffer.ByteWriteRate" Title="/s" TextAlign="TextAlign.Right">
+                                                <Template Context="context">
+                                                    <span class="@GetRecentClass(context)">@context.FileBuffer.ByteWriteRate</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                        </Columns>
+                                    </RadzenDataGridColumn>
+                                </Columns>
+                            </RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
+                }
 
+            </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="loading-panel">
+            <Loading Message="Loading Buffers.." />
+        </div>
+    }
+
 </div>
 
 @code {
 
-    private const int updateInterval = 1000;
+    private const int interval = 1;
+    private const int updateInterval = interval * 1000;
     private static readonly TimeSpan recentDuration = TimeSpan.FromSeconds(10);
 
     private readonly Dictionary<string, TrakHoundDriverInformation> _drivers = new Dictionary<string, TrakHoundDriverInformation>();
     private readonly CircularBuffer<string, int> _queuedItems = new CircularBuffer<string, int>(10);
     private readonly CircularBuffer<string, long> _bufferSize = new CircularBuffer<string, long>(10);
+    private readonly object _lock = new object();
+
     private System.Timers.Timer updateTimer;
     private IEnumerable<TrakHoundBufferMetrics> metrics;
     private IEnumerable<TrakHoundBufferMetrics> activeMetrics;
     private IEnumerable<DriverBufferMetrics> driverBufferMetrics;
+    private bool loading = true;
 
 
     class DriverBufferMetrics
@@ -325,80 +340,100 @@
     public TrakHoundInstanceInformation InstanceInformation { get; set; }
 
 
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
+        await Load();
+
         updateTimer = new System.Timers.Timer();
         updateTimer.Interval = updateInterval;
         updateTimer.Elapsed += UpdateTimerElapsed;
         updateTimer.Start();
     }
 
-    private async void UpdateTimerElapsed(object sender, System.Timers.ElapsedEventArgs args)
+    private void UpdateTimerElapsed(object sender, System.Timers.ElapsedEventArgs args)
     {
-        await Load();
+        Update();
     }
 
     private async Task Load()
     {
-        var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
-        if (client != null)
+        loading = true;
+        await InvokeAsync(StateHasChanged);
+
+        Update();
+    }
+
+    private void Update()
+    {
+        _ = Task.Run(async () =>
         {
-            metrics = await client.System.Instances.GetBufferMetrics();
-            metrics = metrics?.OrderByDescending(o => o.Queue.IsActive).ThenByDescending(o => o.Queue.ItemRate).ThenByDescending(o => o.LastUpdated);
-            activeMetrics = metrics?.Where(o => o.Queue.IsActive || o.FileBuffer.IsReadActive || o.FileBuffer.IsWriteActive);
-
-            var driverMetrics = new List<DriverBufferMetrics>();
-
-            var driverIds = metrics?.Select(o => o.DriverId).Distinct();
-            if (!driverIds.IsNullOrEmpty())
+            var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+            if (client != null)
             {
-                foreach (var driverId in driverIds)
+                metrics = await client.System.Instances.GetBufferMetrics();
+                metrics = metrics?.OrderByDescending(o => o.Queue.IsActive).ThenByDescending(o => o.Queue.ItemRate).ThenByDescending(o => o.LastUpdated);
+                activeMetrics = metrics?.Where(o => o.Queue.IsActive || o.FileBuffer.IsReadActive || o.FileBuffer.IsWriteActive);
+
+                var driverMetrics = new List<DriverBufferMetrics>();
+
+                var driverIds = metrics?.Select(o => o.DriverId).Distinct();
+                if (!driverIds.IsNullOrEmpty())
                 {
-                    var driver = _drivers.GetValueOrDefault(driverId);
-                    if (driver == null)
+                    foreach (var driverId in driverIds)
                     {
-                        driver = await client.System.Drivers.GetDriver(driverId);
-                        if (driver != null)
+                        var driver = _drivers.GetValueOrDefault(driverId);
+                        if (driver == null)
                         {
-                            _drivers.Remove(driverId);
-                            _drivers.Add(driverId, driver);
+                            driver = await client.System.Drivers.GetDriver(driverId);
+                            if (driver != null)
+                            {
+                                lock (_lock)
+                                {
+                                    _drivers.Remove(driverId);
+                                    _drivers.Add(driverId, driver);
+                                }
+                            }
+                        }
+
+                        var driverIdMetrics = GetDriverMetrics(driverId);
+                        if (driverIdMetrics != null)
+                        {
+                            _queuedItems.Add(driverIdMetrics.Name, driverIdMetrics.TotalQueueCount);
+                            _bufferSize.Add(driverIdMetrics.Name, driverIdMetrics.TotalFileBufferSize);
+
+                            driverMetrics.Add(driverIdMetrics);
                         }
                     }
-
-                    var driverIdMetrics = GetDriverMetrics(driverId);
-                    if (driverIdMetrics != null)
-                    {
-                        _queuedItems.Add(driverIdMetrics.Name, driverIdMetrics.TotalQueueCount);
-                        _bufferSize.Add(driverIdMetrics.Name, driverIdMetrics.TotalFileBufferSize);
-
-                        driverMetrics.Add(driverIdMetrics);
-                    }
                 }
+
+                driverBufferMetrics = driverMetrics.OrderBy(o => o.Name);
             }
 
-            driverBufferMetrics = driverMetrics.OrderBy(o => o.Name);
-
+            loading = false;
             await InvokeAsync(StateHasChanged);
-        }
+        });
     }
 
     private DriverBufferMetrics GetDriverMetrics(string driverId)
     {
         if (!string.IsNullOrEmpty(driverId))
         {
-            var driver = _drivers.GetValueOrDefault(driverId);
-            if (driver != null)
+            lock (_lock)
             {
-                var driverMetrics = metrics?.Where(o => o.DriverId == driverId);
-                if (!driverMetrics.IsNullOrEmpty())
+                var driver = _drivers.GetValueOrDefault(driverId);
+                if (driver != null)
                 {
-                    var result = new DriverBufferMetrics();
-                    result.Name = driver.Name;
-                    result.IsActive = driverMetrics.Any(o => o.Queue.IsActive);
-                    result.TotalQueueCount = driverMetrics.Sum(o => o.Queue.ItemCount);
-                    result.TotalQueueLimit = driverMetrics.Sum(o => o.Queue.ItemLimit);
-                    result.TotalFileBufferSize = driverMetrics.Sum(o => o.FileBuffer.RemainingSize);
-                    return result;
+                    var driverMetrics = metrics?.Where(o => o.DriverId == driverId);
+                    if (!driverMetrics.IsNullOrEmpty())
+                    {
+                        var result = new DriverBufferMetrics();
+                        result.Name = driver.Name;
+                        result.IsActive = driverMetrics.Any(o => o.Queue.IsActive);
+                        result.TotalQueueCount = driverMetrics.Sum(o => o.Queue.ItemCount);
+                        result.TotalQueueLimit = driverMetrics.Sum(o => o.Queue.ItemLimit);
+                        result.TotalFileBufferSize = driverMetrics.Sum(o => o.FileBuffer.RemainingSize);
+                        return result;
+                    }
                 }
             }
         }
@@ -410,10 +445,13 @@
     {
         if (!string.IsNullOrEmpty(driverId))
         {
-            var driver = _drivers.GetValueOrDefault(driverId);
-            if (driver != null)
+            lock (_lock)
             {
-                return driver.Name;
+                var driver = _drivers.GetValueOrDefault(driverId);
+                if (driver != null)
+                {
+                    return driver.Name;
+                }
             }
         }
 

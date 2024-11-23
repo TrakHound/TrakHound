@@ -52,20 +52,18 @@
     /* Modal Colors */
     --modalBackground: #121821;
     /* Table Colors */
-    --tableBackground: #1c2431;
     --tableBackground: #121821;
-    --tableHeaderBackground: #213a5f;
-    --tableHeaderBackground: #121821;
-    --tableHeaderBackground: #0d1726;
+    --tableBackgroundHover: #1b2431;
     --tableHeaderBackground: #1b2431;
-/*    --tableHeaderBackground: #213a5f;*/
-    --tableHeaderBorderColor: #2e5185;
     --tableHeaderBorderColor: #2d3d52;
     --tableHeaderText: var(--textMild);
-    --tableBorderColor: #384861;
-    --tableBorderColor: #2e3c52;
     --tableBorderColor: #253041;
     --tableText: var(--textDark);
+    /* Chart Colors */
+    --chartPrimaryStroke: var(--accentLight);
+    --chartPrimaryFill: #1b4b7e;
+    --chartSecondaryStroke: var(--colorPurple);
+    --chartSecondaryFill: var(--colorPurpleLight);
     /* Button Colors */
     --buttonPrimaryBackground: linear-gradient(to bottom, #2d7dd2 0%,#2870bd 100%);
     --buttonPrimaryBackgroundHover: #5797db;

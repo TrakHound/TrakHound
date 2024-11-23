@@ -40,11 +40,17 @@
     --tableHeaderBackground: #f8f8f8;
     /* Table Colors */
     --tableBackground: #fff;
+    --tableBackgroundHover: #f4f4f4;
     --tableHeaderBackground: #f8f8f8;
     --tableHeaderBorderColor: #ddd;
     --tableHeaderText: var(--textMild);
     --tableBorderColor: #ddd;
     --tableText: var(--textDark);
+    /* Chart Colors */
+    --chartPrimaryStroke: var(--accentLight);
+    --chartPrimaryFill: var(--accentVeryLight);
+    --chartSecondaryStroke: var(--colorPurple);
+    --chartSecondaryFill: var(--colorPurpleLight);
     /* Button Colors */
     --buttonPrimaryBackground: linear-gradient(to bottom, #2d7dd2 0%,#2870bd 100%);
     --buttonPrimaryBackgroundHover: #5797db;
