@@ -43,7 +43,14 @@
                     }
                     else
                     {
-                        <button class="btn btn-primary btn-subscribe" @onclick="Subscribe"><span class="icon fa-solid fa-play"></span>Subscribe</button>
+                        @if (!subscribeLoading)
+                        {
+                            <button class="btn btn-primary btn-subscribe" @onclick="Subscribe"><span class="icon fa-solid fa-play"></span>Subscribe</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary btn-subscribe disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Subscribing..</button>
+                        }
                     }
 
                 </div>
@@ -226,6 +233,7 @@
     private bool retain;
     private int qos;
     private bool loading;
+    private bool subscribeLoading;
     private bool publishMappingLoading;
     private bool publishMessageLoading;
     private string previousObjectUuid;
@@ -265,26 +273,29 @@
             loading = true;
             await InvokeAsync(StateHasChanged);
 
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                // Get List of Brokers
-                brokers = await client.System.Messages.QueryBrokers();
-
-                // Get Mapping Entity
-                entity = await client.System.Entities.Objects.Message.QueryByObjectUuid(Object.Uuid);
-                if (entity != null)
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    brokerId = entity.BrokerId;
-                    topic = entity.Topic;
-                    contentType = entity.ContentType;
-                    retain = entity.Retain;
-                    qos = entity.Qos;
-                }
-            }
+                    // Get List of Brokers
+                    brokers = await client.System.Messages.QueryBrokers();
 
-            loading = false;
-            await InvokeAsync(StateHasChanged);
+                    // Get Mapping Entity
+                    entity = await client.System.Entities.Objects.Message.QueryByObjectUuid(Object.Uuid);
+                    if (entity != null)
+                    {
+                        brokerId = entity.BrokerId;
+                        topic = entity.Topic;
+                        contentType = entity.ContentType;
+                        retain = entity.Retain;
+                        qos = entity.Qos;
+                    }
+                }
+
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
     }
 
@@ -298,17 +309,26 @@
 
         if (entity != null)
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            subscribeLoading = true;
+            await InvokeAsync(StateHasChanged);
+
+            _ = Task.Run(async () =>
             {
-                var topics = new string[] { entity.Topic };
-                messageConsumer = await client.System.Messages.Subscribe(entity.BrokerId, null, topics, entity.Qos);
-                if (messageConsumer != null)
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    await MessageReceived(messageConsumer.InitialValue);
-                    messageConsumer.Received += MessageReceived;
+                    var topics = new string[] { entity.Topic };
+                    messageConsumer = await client.System.Messages.Subscribe(entity.BrokerId, null, topics, entity.Qos);
+                    if (messageConsumer != null)
+                    {
+                        await MessageReceived(messageConsumer.InitialValue);
+                        messageConsumer.Received += MessageReceived;
+                    }
                 }
-            }
+
+                subscribeLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
     }
 

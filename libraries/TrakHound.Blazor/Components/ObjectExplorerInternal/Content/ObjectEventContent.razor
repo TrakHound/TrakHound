@@ -118,32 +118,35 @@
             loading = true;
             await InvokeAsync(StateHasChanged);
 
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                previousObjectUuid = Object.Uuid;
-                entities = await client.Entities.GetEvents(Object.GetAbsolutePath(), 0, 100, TrakHound.SortOrder.Descending);
-
-                if (!entities.IsNullOrEmpty())
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    var items = new List<TableItem>();
+                    previousObjectUuid = Object.Uuid;
+                    entities = await client.Entities.GetEvents(Object.GetAbsolutePath(), 0, 100, TrakHound.SortOrder.Descending);
 
-                    foreach (var entity in entities.OrderByDescending(o => o.Timestamp))
+                    if (!entities.IsNullOrEmpty())
                     {
-                        var item = new TableItem();
-                        item.Uuid = entity.Uuid;
-                        item.Target = entity.Target;
-                        item.Timestamp = entity.Timestamp.ToLocalTime();
-                        items.Add(item);
+                        var items = new List<TableItem>();
+
+                        foreach (var entity in entities.OrderByDescending(o => o.Timestamp))
+                        {
+                            var item = new TableItem();
+                            item.Uuid = entity.Uuid;
+                            item.Target = entity.Target;
+                            item.Timestamp = entity.Timestamp.ToLocalTime();
+                            items.Add(item);
+                        }
+
+                        tableItems = items;
                     }
-
-                    tableItems = items;
                 }
-            }
-        }
 
-        loading = false;
-        await InvokeAsync(StateHasChanged);
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
     private async void Save()

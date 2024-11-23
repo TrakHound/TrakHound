@@ -67,9 +67,12 @@
         if (InstancesService != null) InstancesService.QueryUpdated += async (s, a) => await InvokeAsync(StateHasChanged);
     }
 
-    private async void Query()
+    private void Query()
     {
-        await InstancesService.LoadByQuery(true);
+        _ = Task.Run(async () =>
+        {
+            await InstancesService.LoadByQuery(true);
+        });
     }
 
     private async void Subscribe()
@@ -86,10 +89,14 @@
     {
         var homeQuery = await InstancesService.GetHomeQuery();
         var queryLink = $"{Explorer.BasePath}/{explorerService.SelectedInstanceId}/entities/objects?query={homeQuery}";
-        navigationManager.NavigateTo(queryLink);
 
-        // queryType = QueryType.Query;
-        // await InstancesService.LoadHomeQuery(true);
+        InstancesService.SetQuery(homeQuery);
+
+        _ = Task.Run(async () =>
+        {
+            await InstancesService.LoadByQuery(true);
+            navigationManager.NavigateTo(queryLink);
+        });
     }
 
     private async void OnQueryChanged(string query)

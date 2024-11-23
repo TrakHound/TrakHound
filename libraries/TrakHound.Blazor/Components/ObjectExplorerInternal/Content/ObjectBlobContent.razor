@@ -113,32 +113,35 @@
     {
         if (forceReload || (ObjectExplorerService != null && Object != null && Object.Uuid != previousObjectUuid))
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                previousObjectUuid = Object.Uuid;
-                downloadLink = null;
-                loading = true;
-                await InvokeAsync(StateHasChanged);
-
-                var blob = await client.Entities.GetBlob(Object.GetAbsolutePath());
-                if (blob != null)
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    filename = blob.Filename;
-                    contentType = blob.ContentType;
+                    previousObjectUuid = Object.Uuid;
+                    downloadLink = null;
+                    loading = true;
+                    await InvokeAsync(StateHasChanged);
 
-                    if (blob.Size < 10000000)
+                    var blob = await client.Entities.GetBlob(Object.GetAbsolutePath());
+                    if (blob != null)
                     {
-                        contentBytes = await client.Entities.GetBlobBytes(blob.Object);
+                        filename = blob.Filename;
+                        contentType = blob.ContentType;
+
+                        if (blob.Size < 10000000)
+                        {
+                            contentBytes = await client.Entities.GetBlobBytes(blob.Object);
+                        }
+
+                        downloadLink = GetDownloadLink(blob.Object);
                     }
-
-                    downloadLink = GetDownloadLink(blob.Object);
                 }
-            }
-        }
 
-        loading = false;
-        await InvokeAsync(StateHasChanged);
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
     private async void BrowseClicked()

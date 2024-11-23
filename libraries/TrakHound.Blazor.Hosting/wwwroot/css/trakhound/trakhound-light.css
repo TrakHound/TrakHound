@@ -19,7 +19,7 @@
     --panelItemBackground: #f8f8f8;
     --panelItemBackgroundHover: var(--accentVeryLight);
     /* Border Colors */
-    --borderColor: #ddd;
+    --borderColor: #ccc;
     --borderColorLight: #eee;
     --borderColorVeryLight: #f4f4f4;
     --borderColorVeryVeryLight: #f8f8f8;
@@ -62,7 +62,7 @@
     --buttonPrimaryTextHover: #fff;
     --buttonLightBackground: var(--panelBackground);
     --buttonLightBackgroundHover: var(--panelBackgroundMedium);
-    --buttonLightBorder: var(--borderColor);
+    --buttonLightBorder: #ddd;
     --buttonLightBorderHover: var(--accentLight);
     --buttonLightIcon: var(--accent);
     --buttonLightIconHover: var(--accentLight);
@@ -70,7 +70,7 @@
     --buttonLightTextHover: var(--accentLight);
     --buttonSecondaryBackground: none;
     --buttonSecondaryBackgroundHover: var(--panelBackgroundMedium);
-    --buttonSecondaryBorder: var(--borderColor);
+    --buttonSecondaryBorder: #ddd;
     --buttonSecondaryBorderHover: var(--accentLight);
     --buttonSecondaryIcon: #888;
     --buttonSecondaryIconHover: var(--accentLight);
@@ -79,14 +79,14 @@
     --buttonCommandBackground: none;
     --buttonCommandBackgroundHover: var(--panelBackgroundMedium);
     --buttonCommandBorder: transparent;
-    --buttonCommandBorderHover: var(--borderColor);
+    --buttonCommandBorderHover: #ddd;
     --buttonCommandIcon: var(--accent);
     --buttonCommandIconHover: var(--accentLight);
     --buttonCommandText: var(--accent);
     --buttonCommandTextHover: var(--accentLight);
     --buttonToolbarBackground: none;
     --buttonToolbarBackgroundHover: var(--panelBackgroundMedium);
-    --buttonToolbarBorder: var(--borderColor);
+    --buttonToolbarBorder: #ddd;
     --buttonToolbarBorderHover: var(--accentLight);
     --buttonToolbarIcon: var(--accent);
     --buttonToolbarIconHover: var(--accentLight);

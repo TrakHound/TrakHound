@@ -43,4 +43,18 @@
     [CascadingParameter(Name = "ObjectExplorerService")]
     public ObjectExplorerService ObjectExplorerService { get; set; }
 
+
+    protected override void OnInitialized()
+    {
+        if (ObjectExplorerService != null)
+        {
+            ObjectExplorerService.DeleteService.DeleteClicked += DeleteClicked;
+        }
+    }
+
+    private async void DeleteClicked(object sender, EventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
 }

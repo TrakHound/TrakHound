@@ -118,6 +118,14 @@
     public ObjectExplorerService ObjectExplorerService { get; set; }
 
 
+    protected override void OnInitialized()
+    {
+        if (ObjectExplorerService != null)
+        {
+            ObjectExplorerService.AddService.AddClicked += AddClicked;
+        }
+    }
+
     protected override void OnParametersSet()
     {
         if (ObjectExplorerService != null && ObjectExplorerService.AddService != null)
@@ -136,12 +144,6 @@
                 if (addFirstRender)
                 {
                     addFirstRender = false;
-
-                    //Console.WriteLine("ObjectExplorerAddModal.OnAfterRenderAsync()");
-
-                    // pathInput = ObjectExplorerService.AddService.Data.Path;
-                    // pathOutput = ObjectExplorerService.AddService.Data.Path;
-
                     await javascript.FocusElement(addInputId);
                 }
             }
@@ -150,6 +152,11 @@
                 addFirstRender = true;
             }
         }
+    }
+
+    private async void AddClicked(object sender, EventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
     }
 
     private void TabChanged(int tabIndex)

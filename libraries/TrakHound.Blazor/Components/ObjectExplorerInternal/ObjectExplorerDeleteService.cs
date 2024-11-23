@@ -20,7 +20,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         public bool DeleteModalLoading => _deleteModalLoading;
 
 
-        public event EventHandler<ITrakHoundObjectEntity> DeleteClicked;
+        public event EventHandler DeleteClicked;
 
 
         public ObjectExplorerDeleteService(ObjectExplorerService explorerService)
@@ -57,6 +57,8 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         public async void ModalConfirm()
         {
             _deleteModalLoading = true;
+
+            if (DeleteClicked != null) DeleteClicked.Invoke(this, EventArgs.Empty);
 
             if (!_deleteModalPaths.IsNullOrEmpty())
             {

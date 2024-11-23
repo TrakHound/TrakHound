@@ -201,20 +201,23 @@
             loading = true;
             await InvokeAsync(StateHasChanged);
 
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                // Get Mapping Entity
-                entity = await client.System.Entities.Objects.MessageQueue.QueryByObjectUuid(Object.Uuid);
-                if (entity != null)
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    queueId = entity.QueueId;
-                    contentType = entity.ContentType;
+                    // Get Mapping Entity
+                    entity = await client.System.Entities.Objects.MessageQueue.QueryByObjectUuid(Object.Uuid);
+                    if (entity != null)
+                    {
+                        queueId = entity.QueueId;
+                        contentType = entity.ContentType;
+                    }
                 }
-            }
 
-            loading = false;
-            await InvokeAsync(StateHasChanged);
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
     }
 
@@ -253,19 +256,22 @@
         pullLoading = true;
         await InvokeAsync(StateHasChanged);
 
-        if (ObjectExplorerService != null && Object != null && entity != null)
+        _ = Task.Run(async () =>
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            if (ObjectExplorerService != null && Object != null && entity != null)
             {
-                messageResponse = await client.System.MessageQueues.Pull(entity.QueueId, false);
-                messageContent = messageResponse.GetContentBytes();
-                messageStatus = MessageStatus.Received;
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
+                {
+                    messageResponse = await client.System.MessageQueues.Pull(entity.QueueId, false);
+                    messageContent = messageResponse.GetContentBytes();
+                    messageStatus = MessageStatus.Received;
+                }
             }
-        }
 
-        pullLoading = false;
-        await InvokeAsync(StateHasChanged);
+            pullLoading = false;
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
     private async void Acknowledge()
@@ -273,24 +279,27 @@
         acknowledgeLoading = true;
         await InvokeAsync(StateHasChanged);
 
-        if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(messageResponse.DeliveryId))
+        _ = Task.Run(async () =>
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(messageResponse.DeliveryId))
             {
-                if (await client.System.MessageQueues.Acknowledge(entity.QueueId, messageResponse.DeliveryId))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    messageStatus = MessageStatus.Acknowledged;
-                }
-                else
-                {
-                    
+                    if (await client.System.MessageQueues.Acknowledge(entity.QueueId, messageResponse.DeliveryId))
+                    {
+                        messageStatus = MessageStatus.Acknowledged;
+                    }
+                    else
+                    {
+
+                    }
                 }
             }
-        }
 
-        acknowledgeLoading = false;
-        await InvokeAsync(StateHasChanged);
+            acknowledgeLoading = false;
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
     private async void Reject()
@@ -298,24 +307,27 @@
         rejectLoading = true;
         await InvokeAsync(StateHasChanged);
 
-        if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(messageResponse.DeliveryId))
+        _ = Task.Run(async () =>
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(messageResponse.DeliveryId))
             {
-                if (await client.System.MessageQueues.Reject(entity.QueueId, messageResponse.DeliveryId))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    messageStatus = MessageStatus.Rejected;
-                }
-                else
-                {
+                    if (await client.System.MessageQueues.Reject(entity.QueueId, messageResponse.DeliveryId))
+                    {
+                        messageStatus = MessageStatus.Rejected;
+                    }
+                    else
+                    {
 
+                    }
                 }
             }
-        }
 
-        rejectLoading = false;
-        await InvokeAsync(StateHasChanged);
+            rejectLoading = false;
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
     private async void SaveMessage()

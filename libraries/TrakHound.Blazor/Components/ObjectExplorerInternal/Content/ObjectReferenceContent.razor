@@ -110,20 +110,23 @@
             loading = true;
             await InvokeAsync(StateHasChanged);
 
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                previousObjectUuid = Object.Uuid;
-                entity = await client.Entities.GetReference(Object.GetAbsolutePath());
-                if (entity != null && !string.IsNullOrEmpty(entity.TargetUuid))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    targetObject = await client.System.Entities.Objects.ReadByUuid(entity.TargetUuid);
+                    previousObjectUuid = Object.Uuid;
+                    entity = await client.Entities.GetReference(Object.GetAbsolutePath());
+                    if (entity != null && !string.IsNullOrEmpty(entity.TargetUuid))
+                    {
+                        targetObject = await client.System.Entities.Objects.ReadByUuid(entity.TargetUuid);
+                    }
                 }
-            }
-        }
 
-        loading = false;
-        await InvokeAsync(StateHasChanged);
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
     private async void Save()

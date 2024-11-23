@@ -244,60 +244,63 @@
             loading = true;
             await InvokeAsync(StateHasChanged);
 
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                switch (selectedTabIndex)
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    case currentTabIndex:
+                    switch (selectedTabIndex)
+                    {
+                        case currentTabIndex:
 
-                        entities = await client.Entities.GetCurrentAssignments(Object.GetAbsolutePath());
-                        if (!entities.IsNullOrEmpty())
-                        {
-                            var items = new List<CurrentTableItem>();
-
-                            foreach (var entity in entities.OrderByDescending(o => o.AddTimestamp))
+                            entities = await client.Entities.GetCurrentAssignments(Object.GetAbsolutePath());
+                            if (!entities.IsNullOrEmpty())
                             {
-                                var item = new CurrentTableItem();
-                                item.Uuid = entity.Uuid;
-                                item.MemberUuid = entity.MemberUuid;
-                                item.MemberPath = entity.Member;
-                                item.Timestamp = entity.AddTimestamp.ToLocalTime();
-                                items.Add(item);
+                                var items = new List<CurrentTableItem>();
+
+                                foreach (var entity in entities.OrderByDescending(o => o.AddTimestamp))
+                                {
+                                    var item = new CurrentTableItem();
+                                    item.Uuid = entity.Uuid;
+                                    item.MemberUuid = entity.MemberUuid;
+                                    item.MemberPath = entity.Member;
+                                    item.Timestamp = entity.AddTimestamp.ToLocalTime();
+                                    items.Add(item);
+                                }
+
+                                currentTableItems = items;
                             }
+                            break;
 
-                            currentTableItems = items;
-                        }
-                        break;
+                        case queryTabIndex:
 
-                    case queryTabIndex:
-
-                        entities = await client.Entities.GetAssignments(Object.GetAbsolutePath(), 0, 100, TrakHound.SortOrder.Descending);
-                        if (!entities.IsNullOrEmpty())
-                        {
-                            var items = new List<QueryTableItem>();
-
-                            foreach (var entity in entities.OrderByDescending(o => o.AddTimestamp))
+                            entities = await client.Entities.GetAssignments(Object.GetAbsolutePath(), 0, 100, TrakHound.SortOrder.Descending);
+                            if (!entities.IsNullOrEmpty())
                             {
-                                var item = new QueryTableItem();
-                                item.Uuid = entity.Uuid;
-                                item.MemberUuid = entity.MemberUuid;
-                                item.MemberPath = entity.Member;
-                                item.Duration = entity.Duration;
-                                item.AddTimestamp = entity.AddTimestamp.ToLocalTime();
-                                item.RemoveTimestamp = entity.RemoveTimestamp?.ToLocalTime();
-                                items.Add(item);
-                            }
+                                var items = new List<QueryTableItem>();
 
-                            queryTableItems = items;
-                        }
-                        break;
+                                foreach (var entity in entities.OrderByDescending(o => o.AddTimestamp))
+                                {
+                                    var item = new QueryTableItem();
+                                    item.Uuid = entity.Uuid;
+                                    item.MemberUuid = entity.MemberUuid;
+                                    item.MemberPath = entity.Member;
+                                    item.Duration = entity.Duration;
+                                    item.AddTimestamp = entity.AddTimestamp.ToLocalTime();
+                                    item.RemoveTimestamp = entity.RemoveTimestamp?.ToLocalTime();
+                                    items.Add(item);
+                                }
+
+                                queryTableItems = items;
+                            }
+                            break;
+                    }
                 }
-            }
-        }
 
-        loading = false;
-        await InvokeAsync(StateHasChanged);
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
     private async void Save()

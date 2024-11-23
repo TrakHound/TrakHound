@@ -99,14 +99,17 @@
                 loading = true;
                 await InvokeAsync(StateHasChanged);
 
-                var client = ObjectExplorerService.GetClient();
-                if (client != null)
+                _= Task.Run(async () =>
                 {
-                    json = await client.Entities.GetJson(Object.GetAbsolutePath());
-                }
+                    var client = ObjectExplorerService.GetClient();
+                    if (client != null)
+                    {
+                        json = await client.Entities.GetJson(Object.GetAbsolutePath());
+                    }
 
-                loading = false;
-                await InvokeAsync(StateHasChanged);
+                    loading = false;
+                    await InvokeAsync(StateHasChanged);
+                });
             }
         }
     }

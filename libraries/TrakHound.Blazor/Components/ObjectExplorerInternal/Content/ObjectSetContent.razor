@@ -114,34 +114,37 @@
             loading = true;
             await InvokeAsync(StateHasChanged);
 
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                previousObjectUuid = Object.Uuid;
-                entities = await client.System.Entities.Objects.Set.QueryByObjectUuid(Object.Uuid, 0, 100, TrakHound.SortOrder.Descending);
-
-                if (!entities.IsNullOrEmpty())
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    var items = new List<TableItem>();
+                    previousObjectUuid = Object.Uuid;
+                    entities = await client.System.Entities.Objects.Set.QueryByObjectUuid(Object.Uuid, 0, 100, TrakHound.SortOrder.Descending);
 
-                    foreach (var entity in entities.OrderByDescending(o => o.Created))
+                    if (!entities.IsNullOrEmpty())
                     {
-                        var item = new TableItem();
-                        item.Uuid = entity.Uuid;
-                        item.Value = entity.Value;
-                        item.SourceUuid = entity.SourceUuid;
-                        item.CreatedLocal = entity.Created.ToLocalDateTime();
-                        item.CreatedUnix = entity.Created;
-                        items.Add(item);
+                        var items = new List<TableItem>();
+
+                        foreach (var entity in entities.OrderByDescending(o => o.Created))
+                        {
+                            var item = new TableItem();
+                            item.Uuid = entity.Uuid;
+                            item.Value = entity.Value;
+                            item.SourceUuid = entity.SourceUuid;
+                            item.CreatedLocal = entity.Created.ToLocalDateTime();
+                            item.CreatedUnix = entity.Created;
+                            items.Add(item);
+                        }
+
+                        tableItems = items;
                     }
-
-                    tableItems = items;
                 }
-            }
-        }
 
-        loading = false;
-        await InvokeAsync(StateHasChanged);
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
     private async void Save()

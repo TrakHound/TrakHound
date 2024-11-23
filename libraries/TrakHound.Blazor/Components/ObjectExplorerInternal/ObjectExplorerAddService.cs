@@ -44,7 +44,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         public AddData Data => _data;
 
 
-        public event EventHandler<ITrakHoundObjectEntity> AddClicked;
+        public event EventHandler AddClicked;
 
 
         public ObjectExplorerAddService(ObjectExplorerService explorerService)
@@ -119,6 +119,8 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         public async void ModalConfirm()
         {
             _modalLoading = true;
+
+            if (AddClicked != null) AddClicked.Invoke(this, EventArgs.Empty);
 
             if (!IsEdit)
             {

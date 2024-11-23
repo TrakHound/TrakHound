@@ -133,26 +133,29 @@
             loading = true;
             await InvokeAsync(StateHasChanged);
 
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                var today = DateTime.Today;
-                start = today;
-                end = today.AddDays(1);
-
-                previousObjectUuid = Object.Uuid;
-
-                entity = await client.System.Entities.Objects.TimeRange.QueryByObjectUuid(Object.Uuid);
-                if (entity != null)
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    start = entity.Start.ToLocalDateTime();
-                    end = entity.End.ToLocalDateTime();
-                }
-            }
-        }
+                    var today = DateTime.Today;
+                    start = today;
+                    end = today.AddDays(1);
 
-        loading = false;
-        await InvokeAsync(StateHasChanged);
+                    previousObjectUuid = Object.Uuid;
+
+                    entity = await client.System.Entities.Objects.TimeRange.QueryByObjectUuid(Object.Uuid);
+                    if (entity != null)
+                    {
+                        start = entity.Start.ToLocalDateTime();
+                        end = entity.End.ToLocalDateTime();
+                    }
+                }
+
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
     private async void Save()

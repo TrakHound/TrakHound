@@ -122,33 +122,36 @@
             loading = true;
             await InvokeAsync(StateHasChanged);
 
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                previousObjectUuid = Object.Uuid;
-                entities = await client.Entities.GetVocabularySets(Object.Uuid);
-
-                if (!entities.IsNullOrEmpty())
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    var items = new List<TableItem>();
+                    previousObjectUuid = Object.Uuid;
+                    entities = await client.Entities.GetVocabularySets(Object.Uuid);
 
-                    foreach (var entity in entities.OrderByDescending(o => o.Created))
+                    if (!entities.IsNullOrEmpty())
                     {
-                        var item = new TableItem();
-                        item.Uuid = entity.Uuid;
-                        item.Type = entity.ValueType;
-                        item.Description = entity.ValueDescription;
-                        item.Created = entity.Created.ToLocalTime();
-                        items.Add(item);
+                        var items = new List<TableItem>();
+
+                        foreach (var entity in entities.OrderByDescending(o => o.Created))
+                        {
+                            var item = new TableItem();
+                            item.Uuid = entity.Uuid;
+                            item.Type = entity.ValueType;
+                            item.Description = entity.ValueDescription;
+                            item.Created = entity.Created.ToLocalTime();
+                            items.Add(item);
+                        }
+
+                        tableItems = items;
                     }
-
-                    tableItems = items;
                 }
-            }
-        }
 
-        loading = false;
-        await InvokeAsync(StateHasChanged);
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
     private async void Save()

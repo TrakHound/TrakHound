@@ -42,7 +42,7 @@
                                             IsInstalled="@installed"
                                             IsInstalling="@packateInstalling"
                                             IsUpdated="@updated"
-                                            Selected="() => InstallPackage(package)" 
+                                            Selected="async () => await InstallPackage(package)" 
                                             />
                     }
                 }
@@ -173,21 +173,24 @@
             loading = true;
             await InvokeAsync(StateHasChanged);
 
-            if (!string.IsNullOrEmpty(Category))
+            _ = Task.Run(async () =>
             {
-                packages = await ManagementClient.Packages.Query(Category, query);
-                packages = packages?.OrderByDescending(o => o.BuildDate);
-            }
-            else
-            {
-                packages = await ManagementClient.Packages.QueryLatestByOrganization();
-                packages = packages?.OrderByDescending(o => o.BuildDate);
-            }
+                if (!string.IsNullOrEmpty(Category))
+                {
+                    packages = await ManagementClient.Packages.Query(Category, query);
+                    packages = packages?.OrderByDescending(o => o.BuildDate);
+                }
+                else
+                {
+                    packages = await ManagementClient.Packages.QueryLatestByOrganization();
+                    packages = packages?.OrderByDescending(o => o.BuildDate);
+                }
 
-            queryTimer.Stop();
+                queryTimer.Stop();
 
-            loading = false;
-            await InvokeAsync(StateHasChanged);
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
     }
 
@@ -206,37 +209,46 @@
     }
 
 
-    private async void InstallPackage(TrakHoundPackage package)
+    private async Task InstallPackage(TrakHoundPackage package)
     {
         if (package != null)
         {
             packagesInstalling.Add(package.Id);
             await InvokeAsync(StateHasChanged);
 
-            // Download Package
-            var packageBytes = await ManagementClient.Packages.Download(package.Id, package.Version);
-            if (packageBytes != null)
+            _ = Task.Run(async () =>
             {
-                // Install using PackageManager
-                var results = await PackageManager.Install(packageBytes, managementClient: ManagementClient);
-                if (!results.IsNullOrEmpty())
+                // Download Package
+                var packageBytes = await ManagementClient.Packages.Download(package.Id, package.Version);
+                if (packageBytes != null)
                 {
-                    foreach (var result in results)
+                    // Install using PackageManager
+                    var results = await PackageManager.Install(packageBytes, managementClient: ManagementClient);
+                    if (!results.IsNullOrEmpty())
                     {
-                        if (result.Success)
+                        foreach (var result in results)
                         {
-                            var installedPackage = PackageManager.Get(result.PackageId, result.PackageVersion);
-                            if (installedPackage != null)
+                            if (result.Success)
                             {
-                                await PackageInstalled.InvokeAsync(installedPackage);
+                                var installedPackage = PackageManager.Get(result.PackageId, result.PackageVersion);
+                                if (installedPackage != null)
+                                {
+                                    await InvokeAsync(async () =>   
+                                    {
+                                        await PackageInstalled.InvokeAsync(installedPackage);
+                                    });
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            packagesInstalling.Remove(package.Id);
-            await InvokeAsync(StateHasChanged);
+                await InvokeAsync(() =>
+                {
+                    packagesInstalling.Remove(package.Id);
+                    StateHasChanged();
+                });
+            });
         }
     }
 

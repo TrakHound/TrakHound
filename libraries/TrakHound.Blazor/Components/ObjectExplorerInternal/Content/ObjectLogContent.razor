@@ -128,37 +128,39 @@
             loading = true;
             await InvokeAsync(StateHasChanged);
 
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                previousObjectUuid = Object.Uuid;
-                entities = await client.System.Entities.Objects.Log.QueryByObjectUuid(Object.Uuid, TrakHoundLogLevel.Trace, skip: 0, take: 100, sortOrder: TrakHound.SortOrder.Descending);
-                // entities = await client.System.Entities.Objects.Log.QueryByObjectUuid(Object.Uuid, TrakHoundLogLevel.Trace, 0, long.MaxValue, 0, 100, TrakHound.SortOrder.Descending);
-
-                if (!entities.IsNullOrEmpty())
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    var items = new List<TableItem>();
+                    previousObjectUuid = Object.Uuid;
+                    entities = await client.System.Entities.Objects.Log.QueryByObjectUuid(Object.Uuid, TrakHoundLogLevel.Trace, 0, long.MaxValue, 0, 100, TrakHound.SortOrder.Descending);
 
-                    foreach (var entity in entities.OrderByDescending(o => o.Timestamp))
+                    if (!entities.IsNullOrEmpty())
                     {
-                        var item = new TableItem();
-                        item.Uuid = entity.Uuid;
-                        item.Level = (TrakHoundLogLevel)entity.LogLevel;
-                        item.Code = entity.Code;
-                        item.Message = entity.Message;
-                        item.SourceUuid = entity.SourceUuid;
-                        item.TimestampLocal = entity.Timestamp.ToLocalDateTime();
-                        item.TimestampUnix = entity.Timestamp;
-                        items.Add(item);
+                        var items = new List<TableItem>();
+
+                        foreach (var entity in entities.OrderByDescending(o => o.Timestamp))
+                        {
+                            var item = new TableItem();
+                            item.Uuid = entity.Uuid;
+                            item.Level = (TrakHoundLogLevel)entity.LogLevel;
+                            item.Code = entity.Code;
+                            item.Message = entity.Message;
+                            item.SourceUuid = entity.SourceUuid;
+                            item.TimestampLocal = entity.Timestamp.ToLocalDateTime();
+                            item.TimestampUnix = entity.Timestamp;
+                            items.Add(item);
+                        }
+
+                        tableItems = items;
                     }
-
-                    tableItems = items;
                 }
-            }
-        }
 
-        loading = false;
-        await InvokeAsync(StateHasChanged);
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });           
+        }
     }
 
     private async void Save()

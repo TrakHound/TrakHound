@@ -141,32 +141,35 @@
             loading = true;
             await InvokeAsync(StateHasChanged);
 
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                entity = await client.System.Entities.Objects.Vocabulary.QueryByObjectUuid(Object.Uuid);
-                value = ObjectExplorerService.GetValue(Object.Uuid);
-
-                if (entity != null)
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    var definition = await client.System.Entities.Definitions.ReadByUuid(entity.DefinitionUuid);
-                    if (definition != null)
-                    {
-                        value = definition.Id;
-                        valueType = definition.Type;
+                    entity = await client.System.Entities.Objects.Vocabulary.QueryByObjectUuid(Object.Uuid);
+                    value = ObjectExplorerService.GetValue(Object.Uuid);
 
-                        var definitionDescription = (await client.System.Entities.Definitions.Description.QueryByDefinitionUuid(entity.DefinitionUuid))?.FirstOrDefault(o => o.LanguageCode == "en");
-                        if (definitionDescription != null)
+                    if (entity != null)
+                    {
+                        var definition = await client.System.Entities.Definitions.ReadByUuid(entity.DefinitionUuid);
+                        if (definition != null)
                         {
-                            valueDescription = definitionDescription.Text;
+                            value = definition.Id;
+                            valueType = definition.Type;
+
+                            var definitionDescription = (await client.System.Entities.Definitions.Description.QueryByDefinitionUuid(entity.DefinitionUuid))?.FirstOrDefault(o => o.LanguageCode == "en");
+                            if (definitionDescription != null)
+                            {
+                                valueDescription = definitionDescription.Text;
+                            }
                         }
                     }
                 }
-            }
-        }
 
-        loading = false;
-        await InvokeAsync(StateHasChanged);
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
     private async void Save()

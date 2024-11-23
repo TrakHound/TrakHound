@@ -194,58 +194,61 @@
             loading = true;
             await InvokeAsync(StateHasChanged);
 
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                previousObjectUuid = Object.Uuid;
-
-                // Get List of Spans
-                var timeRangeSpans = await client.System.Entities.Objects.Statistic.SpansByObjectUuid(Object.Uuid, 0, long.MaxValue);
-                if (!timeRangeSpans.IsNullOrEmpty())
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    var spanItems = new List<SpanItem>();
-                    foreach (var timeRangeSpan in timeRangeSpans)
+                    previousObjectUuid = Object.Uuid;
+
+                    // Get List of Spans
+                    var timeRangeSpans = await client.System.Entities.Objects.Statistic.SpansByObjectUuid(Object.Uuid, 0, long.MaxValue);
+                    if (!timeRangeSpans.IsNullOrEmpty())
                     {
-                        var spanItem = new SpanItem();
-                        spanItem.Display = TimeRange.GetTimeRangeType(timeRangeSpan.Span).ToString();
-                        spanItem.Span = timeRangeSpan.Span;
-                        spanItems.Add(spanItem);
-                    }
-                    spans = spanItems;
-                    if (selectedSpan < 1) selectedSpan = spans.FirstOrDefault().Span;
-                }
-                previousSelectedSpan = selectedSpan;
-
-                if (selectedSpan > 0)
-                {
-                     entities = await client.System.Entities.Objects.Statistic.QueryByObjectUuid(Object.Uuid, 0, long.MaxValue, selectedSpan, 0, 100, TrakHound.SortOrder.Descending);
-
-                    if (!entities.IsNullOrEmpty())
-                    {
-                        var items = new List<TableItem>();
-
-                        foreach (var entity in entities.OrderByDescending(o => o.Timestamp))
+                        var spanItems = new List<SpanItem>();
+                        foreach (var timeRangeSpan in timeRangeSpans)
                         {
-                            var item = new TableItem();
-                            item.Uuid = entity.Uuid;
-                            item.TimeRangeStart = entity.TimeRangeStart.ToLocalDateTime();
-                            item.TimeRangeEnd = entity.TimeRangeEnd.ToLocalDateTime();
-                            item.DataType = (TrakHoundStatisticDataType)entity.DataType;
-                            item.Value = entity.Value;
-                            item.SourceUuid = entity.SourceUuid;
-                            item.TimestampLocal = entity.Timestamp.ToLocalDateTime();
-                            item.TimestampUnix = entity.Timestamp;
-                            items.Add(item);
+                            var spanItem = new SpanItem();
+                            spanItem.Display = TimeRange.GetTimeRangeType(timeRangeSpan.Span).ToString();
+                            spanItem.Span = timeRangeSpan.Span;
+                            spanItems.Add(spanItem);
                         }
+                        spans = spanItems;
+                        if (selectedSpan < 1) selectedSpan = spans.FirstOrDefault().Span;
+                    }
+                    previousSelectedSpan = selectedSpan;
 
-                        tableItems = items;
+                    if (selectedSpan > 0)
+                    {
+                        entities = await client.System.Entities.Objects.Statistic.QueryByObjectUuid(Object.Uuid, 0, long.MaxValue, selectedSpan, 0, 100, TrakHound.SortOrder.Descending);
+
+                        if (!entities.IsNullOrEmpty())
+                        {
+                            var items = new List<TableItem>();
+
+                            foreach (var entity in entities.OrderByDescending(o => o.Timestamp))
+                            {
+                                var item = new TableItem();
+                                item.Uuid = entity.Uuid;
+                                item.TimeRangeStart = entity.TimeRangeStart.ToLocalDateTime();
+                                item.TimeRangeEnd = entity.TimeRangeEnd.ToLocalDateTime();
+                                item.DataType = (TrakHoundStatisticDataType)entity.DataType;
+                                item.Value = entity.Value;
+                                item.SourceUuid = entity.SourceUuid;
+                                item.TimestampLocal = entity.Timestamp.ToLocalDateTime();
+                                item.TimestampUnix = entity.Timestamp;
+                                items.Add(item);
+                            }
+
+                            tableItems = items;
+                        }
                     }
                 }
-            }
-        }
 
-        loading = false;
-        await InvokeAsync(StateHasChanged);
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
     private async void Save()

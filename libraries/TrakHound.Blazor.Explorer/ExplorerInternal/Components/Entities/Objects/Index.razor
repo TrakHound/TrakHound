@@ -172,7 +172,6 @@
             loading = true;
             queryResponse = null;
 
-
             // Setup InstancesService (for Objects)
             var client = Explorer.Instances.GetClient(_explorerService.SelectedInstanceId);
             instancesService = new ExplorerObjectsService(client);
@@ -188,20 +187,18 @@
             _explorerService.BreadcrumbItems = breadcrumbItems;
 
 
-
-            if (!string.IsNullOrEmpty(query))
-            {
-                instancesService.SetQuery(query);
-                await instancesService.LoadByQuery(forceReload);
-            }
-            else
-            {
-                instancesService.SetQuery("select >> from [/];");
-                await instancesService.LoadByQuery(forceReload);
-            }
-
-            loading = false;
             await InvokeAsync(StateHasChanged);
+
+            if (!string.IsNullOrEmpty(query)) instancesService.SetQuery(query);   
+            else instancesService.SetQuery("select >> from [/];");
+
+            _ = Task.Run(async () =>
+            {
+                await instancesService.LoadByQuery(forceReload);
+
+                loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
     }
 

@@ -223,11 +223,14 @@
         refreshLoading = true;
         await InvokeAsync(StateHasChanged);
 
-        await ObjectExplorerService.RefreshObject(Object);
-        await ObjectExplorerService.LoadAdditional(Object);
-        
-        refreshLoading = false;
-        await InvokeAsync(StateHasChanged);
+        _ = Task.Run(async () =>
+        {
+            await ObjectExplorerService.RefreshObject(Object);
+            await ObjectExplorerService.LoadAdditional(Object);
+
+            refreshLoading = false;
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
     public void EditClicked()

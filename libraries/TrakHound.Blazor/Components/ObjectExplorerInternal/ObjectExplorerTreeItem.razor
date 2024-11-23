@@ -207,10 +207,13 @@
         isLoading = true;
         await InvokeAsync(StateHasChanged);
 
-        await ObjectExplorerService.RefreshObject(Object);
+        _ = Task.Run(async () =>
+        {
+            await ObjectExplorerService.RefreshObject(Object);
 
-        isLoading = false;
-        await InvokeAsync(StateHasChanged);
+            isLoading = false;
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
     private void AddChild()
@@ -233,11 +236,15 @@
         isLoading = true;
         await InvokeAsync(StateHasChanged);
 
-        await ObjectExplorerService.LoadObjectAllChildren(Object?.Uuid);
+        _ = Task.Run(async () =>
+        {
+            await ObjectExplorerService.LoadObjectAllChildren(Object?.Uuid);
 
-        ExpandAll();
-        isLoading = false;
-        await InvokeAsync(StateHasChanged);
+            ExpandAll();
+
+            isLoading = false;
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
     private async void ExpandAll()
@@ -245,10 +252,13 @@
         isLoading = true;
         await InvokeAsync(StateHasChanged);
 
-        ExpandAll(Object?.Uuid);
+        _ = Task.Run(async () =>
+        {
+            ExpandAll(Object?.Uuid);
 
-        isLoading = false;
-        await InvokeAsync(StateHasChanged);
+            isLoading = false;
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
     private void ExpandAll(string objectUuid)
@@ -280,10 +290,13 @@
                 isLoading = true;
                 await InvokeAsync(StateHasChanged);
 
-                ObjectExplorerService.ExpandObject(objectUuid);
+                _ = Task.Run(async () =>
+                {
+                    ObjectExplorerService.ExpandObject(objectUuid);
 
-                isLoading = false;
-                await InvokeAsync(StateHasChanged);
+                    isLoading = false;
+                    await InvokeAsync(StateHasChanged);
+                });
             }
         }
     }
@@ -299,11 +312,14 @@
                 isLoading = true;
                 await InvokeAsync(StateHasChanged);
 
-                await ObjectExplorerService.LoadObject(objectUuid);
-                ObjectExplorerService.ExpandObject(objectUuid);
+                _ = Task.Run(async () =>
+                {
+                    await ObjectExplorerService.LoadObject(objectUuid);
+                    ObjectExplorerService.ExpandObject(objectUuid);
 
-                isLoading = false;
-                await InvokeAsync(StateHasChanged);
+                    isLoading = false;
+                    await InvokeAsync(StateHasChanged);
+                });
             }
         }
     }
