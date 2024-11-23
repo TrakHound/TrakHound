@@ -132,7 +132,8 @@
             if (client != null)
             {
                 previousObjectUuid = Object.Uuid;
-                entities = await client.System.Entities.Objects.Log.QueryByObjectUuid(Object.Uuid, TrakHoundLogLevel.Trace, 0, long.MaxValue, 0, 100, TrakHound.SortOrder.Descending);
+                entities = await client.System.Entities.Objects.Log.QueryByObjectUuid(Object.Uuid, TrakHoundLogLevel.Trace, skip: 0, take: 100, sortOrder: TrakHound.SortOrder.Descending);
+                // entities = await client.System.Entities.Objects.Log.QueryByObjectUuid(Object.Uuid, TrakHoundLogLevel.Trace, 0, long.MaxValue, 0, 100, TrakHound.SortOrder.Descending);
 
                 if (!entities.IsNullOrEmpty())
                 {

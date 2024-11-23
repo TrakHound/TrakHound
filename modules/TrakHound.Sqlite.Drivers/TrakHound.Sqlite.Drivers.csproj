@@ -11,6 +11,7 @@
 
 	<ItemGroup>
 	  <Compile Remove="Entities\Objects\ObjectLinkDriver.cs" />
+	  <Compile Remove="Entities\Objects\ObjectLogDriver.cs" />
 	  <Compile Remove="Entities\Objects\ObjectSequenceDriver.cs" />
 	  <Compile Remove="Entities\Objects\ObjectStateDriver-old.cs" />
 	  <Compile Remove="Entities\Objects\ObjectTimeGroupDriver.cs" />
@@ -25,6 +26,10 @@
 	  <Compile Remove="Models\Objects\DatabaseObjectTimeSequence.cs" />
 	  <Compile Remove="Models\Objects\DatabaseObjectTimeSet.cs" />
 	  <Compile Remove="Models\Objects\DatabaseObjectTimeWiki.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Entities\Objects\ObjectLogDriver.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -240,12 +240,8 @@ namespace TrakHound.Sqlite.Drivers
 
                             if (IsBetween(bottomTimestamp, topTimestamp, query.From, query.To))
                             {
-                                // Set Order
-                                //var order = sortOrder == SortOrder.Ascending ? "asc" : "desc";
-
                                 // Set Query
                                 var dbQuery = $"select {TableColumns} from {_dataTableName} where [timestamp] >= {query.From} and [timestamp] < {query.To};";
-                                //var dbQuery = $"select {TableColumns} from {_dataTableName} where [timestamp] >= {query.From} and [timestamp] < {query.To} order by [timestamp] {order} limit {take} offset {skip};";
 
                                 // Create Connection String
                                 var connectionString = _client.GetReadConnectionString(timestampFile);

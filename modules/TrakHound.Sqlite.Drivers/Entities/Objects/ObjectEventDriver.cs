@@ -14,8 +14,8 @@ namespace TrakHound.Sqlite.Drivers
 {
     public class ObjectEventDriver : 
         SqliteEntityDriver<ITrakHoundObjectEventEntity, DatabaseObjectEvent>, 
-        IObjectEventLatestDriver,
-        IObjectEventQueryDriver
+        IObjectEventLatestDriver
+        //IObjectEventQueryDriver
     {
         public ObjectEventDriver() { }
 
