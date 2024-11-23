@@ -54,7 +54,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             _explorerService.Update();
         }
 
-        public async void ModalConfirm()
+        public void ModalConfirm()
         {
             _deleteModalLoading = true;
 
@@ -62,40 +62,43 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
 
             if (!_deleteModalPaths.IsNullOrEmpty())
             {
-                if (await _explorerService.Client.Entities.DeleteObjects(_deleteModalPaths))
+                _ = Task.Run(async () =>
                 {
-                    var objectUuids = new List<string>();
-                    foreach (var path in _deleteModalPaths)
+                    if (await _explorerService.Client.Entities.DeleteObjects(_deleteModalPaths))
                     {
-                        objectUuids.Add(TrakHoundPath.GetUuid(path));
+                        var objectUuids = new List<string>();
+                        foreach (var path in _deleteModalPaths)
+                        {
+                            objectUuids.Add(TrakHoundPath.GetUuid(path));
+                        }
+
+                        foreach (var objectUuid in objectUuids)
+                        {
+                            _explorerService.RemoveObject(objectUuid);
+                        }
+
+                        string notificationMessage = "";
+                        string notificationDetails = "";
+
+                        if (objectUuids.Count > 1)
+                        {
+                            notificationMessage = $"{objectUuids.Count} Objects Deleted Successfully";
+                        }
+                        else
+                        {
+                            notificationMessage = "1 Object Deleted Successfully";
+                            notificationDetails = _deleteModalPaths.FirstOrDefault();
+                        }
+
+                        _explorerService.AddNotification(NotificationType.Information, notificationMessage, notificationDetails);
                     }
 
-                    foreach (var objectUuid in objectUuids)
-                    {
-                        _explorerService.RemoveObject(objectUuid);
-                    }
-
-                    string notificationMessage = "";
-                    string notificationDetails = "";
-
-                    if (objectUuids.Count > 1)
-                    {
-                        notificationMessage = $"{objectUuids.Count} Objects Deleted Successfully";
-                    }
-                    else
-                    {
-                        notificationMessage = "1 Object Deleted Successfully";
-                        notificationDetails = _deleteModalPaths.FirstOrDefault();
-                    }
-
-                    _explorerService.AddNotification(NotificationType.Information, notificationMessage, notificationDetails);
-                }
+                    _deleteModalPaths = null;
+                    _deleteModalLoading = false;
+                    _deleteModalVisible = false;
+                    _explorerService.Update();
+                });
             }
-
-            _deleteModalPaths = null;
-            _deleteModalLoading = false;
-            _deleteModalVisible = false;
-            _explorerService.Update();
         }
 
         public void ModalCancel()

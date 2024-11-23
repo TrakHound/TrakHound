@@ -84,3 +84,17 @@
     font-size: 12px;
     height: 12px;
 }
+
+.add-modal-panel ::deep .add-modal-body {
+    position: relative;
+}
+
+.add-modal-panel ::deep .add-modal-body .cover-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--modalBackground);
+    opacity: 0.5;
+}

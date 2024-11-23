@@ -1,41 +1,53 @@
 ﻿@if (ObjectExplorerService != null)
 {
-    <Modal Class="delete-modal" Visible="@ObjectExplorerService.DeleteService.DeleteModalVisible">
-        <HeaderContent>
-            <span class="modal-header-icon fa-solid fa-sharp fa-memo"><span class="icon fa-solid fa-sharp fa-delete-right"></span></span>
-            <span class="modal-header-title">Confirm Delete</span>
-        </HeaderContent>
-        <BodyContent>
+    <div class="delete-modal-panel">
 
-            <span class="delete-modal-message">Confirm Deletion of Object(s)?</span>
+        <Modal Class="delete-modal" Visible="@ObjectExplorerService.DeleteService.DeleteModalVisible">
+            <HeaderContent>
+                <span class="modal-header-icon fa-solid fa-sharp fa-memo"><span class="icon fa-solid fa-sharp fa-delete-right"></span></span>
+                <span class="modal-header-title">Confirm Delete</span>
+            </HeaderContent>
+            <BodyContent>
+                <div class="delete-modal-body">
 
-            <div class="delete-modal-items">
+                    <span class="delete-modal-message">Confirm Deletion of Object(s)?</span>
 
-                @if (!ObjectExplorerService.DeleteService.DeleteModalPaths.IsNullOrEmpty())
-                {
-                    foreach (var deletePath in ObjectExplorerService.DeleteService.DeleteModalPaths)
+                    <div class="delete-modal-items">
+
+                        @if (!ObjectExplorerService.DeleteService.DeleteModalPaths.IsNullOrEmpty())
+                        {
+                            foreach (var deletePath in ObjectExplorerService.DeleteService.DeleteModalPaths)
+                            {
+                                <p class="delete-modal-item">@deletePath</p>
+                            }
+                        }
+
+                    </div>
+
+                    @if (ObjectExplorerService.DeleteService.DeleteModalLoading)
                     {
-                        <p class="delete-modal-item">@deletePath</p>
+                        <div class="cover-panel"></div>
                     }
+
+                </div>
+
+            </BodyContent>
+            <FooterContent>
+
+                @if (!ObjectExplorerService.DeleteService.DeleteModalLoading)
+                {
+                    <button class="btn btn-secondary" @onclick="ObjectExplorerService.DeleteService.ModalCancel"><span class="icon fa-solid fa-sharp fa-xmark"></span>Cancel</button>
+                    <button class="btn btn-danger" @onclick="ObjectExplorerService.DeleteService.ModalConfirm"><span class="icon fa-solid fa-sharp fa-trash"></span>Delete</button>
+                }
+                else
+                {
+                    <button class="btn btn-danger disabled"><span class="icon fa-solid fa-sharp fa-loader"></span>Deleting..</button>
                 }
 
-            </div>
+            </FooterContent>
+        </Modal>
 
-        </BodyContent>
-        <FooterContent>
-
-            @if (!ObjectExplorerService.DeleteService.DeleteModalLoading)
-            {
-                <button class="btn btn-secondary" @onclick="ObjectExplorerService.DeleteService.ModalCancel"><span class="icon fa-solid fa-sharp fa-xmark"></span>Cancel</button>
-                <button class="btn btn-danger" @onclick="ObjectExplorerService.DeleteService.ModalConfirm"><span class="icon fa-solid fa-sharp fa-trash"></span>Delete</button>
-            }
-            else
-            {
-                <button class="btn btn-danger disabled"><span class="icon fa-solid fa-sharp fa-loader"></span>Deleting..</button>
-            }
-
-        </FooterContent>
-    </Modal>
+    </div>
 }
 
 @code {

@@ -16,10 +16,9 @@
                     <span class="modal-header-title">@label Object</span>
                 </HeaderContent>
                 <BodyContent>
+                    <div class="add-modal-body">
 
-                    @if (!ObjectExplorerService.AddService.ModalLoading)
-                    {
-                        if (!ObjectExplorerService.AddService.IsEdit)
+                        @if (!ObjectExplorerService.AddService.IsEdit)
                         {
                             <RadzenTabs RenderMode="TabRenderMode.Server" SelectedIndexChanged="TabChanged">
                                 <Tabs>
@@ -70,14 +69,13 @@
                                 </div>
                             </div>
                         }
-                    }
-                    else
-                    {
-                        <div class="loading-panel">
-                            <ArraySpinner />
-                        </div>
-                    }
 
+                        @if (ObjectExplorerService.AddService.ModalLoading)
+                        {
+                            <div class="cover-panel"></div>
+                        }
+
+                    </div>
                 </BodyContent>
                 <FooterContent>
 

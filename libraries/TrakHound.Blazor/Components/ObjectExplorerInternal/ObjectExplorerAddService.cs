@@ -116,24 +116,27 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             _explorerService.Update();
         }
 
-        public async void ModalConfirm()
+        public void ModalConfirm()
         {
             _modalLoading = true;
 
             if (AddClicked != null) AddClicked.Invoke(this, EventArgs.Empty);
 
-            if (!IsEdit)
+            _ = Task.Run(async () =>
             {
-                await Add();
-            }
-            else
-            {
-                await Edit();
-            }
+                if (!IsEdit)
+                {
+                    await Add();
+                }
+                else
+                {
+                    await Edit();
+                }
 
-            _modalLoading = false;
-            _modalVisible = false;
-            _explorerService.Update();
+                _modalLoading = false;
+                _modalVisible = false;
+                _explorerService.Update();
+            });
         }
 
         public void ModalCancel()
