@@ -69,6 +69,8 @@
 @code {
 
     private readonly string contextMenuId = Guid.NewGuid().ToString();
+    // private Services.IContextMenu contextMenu;
+    private bool contextMenuVisible = false;
 
 
     [Parameter]
@@ -117,10 +119,19 @@
     public EventCallback Expanded { get; set; }
 
 
-    private void ToggleContextMenu(MouseEventArgs args)
+    private async void ToggleContextMenu(MouseEventArgs args)
     {
         if (args != null)
         {
+            // Render Context Menu (Blazor)
+            contextMenuVisible = true;
+            await InvokeAsync(StateHasChanged);
+
+            // if (contextMenu == null) Console.WriteLine("CONTEXT MENU = NULL");
+
+            // Position Context Menu (Javascript)
+            // if (contextMenu != null) contextMenu.Show(args.PageX, args.PageY);
+            // contextMenuService.Add(contextMenu);
             contextMenuService.Show(contextMenuId, args.PageX, args.PageY);
         }
     }

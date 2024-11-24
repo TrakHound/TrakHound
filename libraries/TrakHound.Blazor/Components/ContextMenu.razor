@@ -2,16 +2,17 @@
 @implements IDisposable
 @inject Services.ContextMenuService contextMenuService
 
-@{
+@if (isShown)
+{
     var hidden = isShown ? "show" : "hide";
     var containerStyle = $"top:{yPosition}px;left:{xPosition}px;";
-}
 
-<div class="context-menu @hidden" @onclick="Hide" @oncontextmenu="Hide">
-    <div class="context-menu-container" style="@containerStyle">
-        @ChildContent
+    <div class="context-menu @hidden" @onclick="Hide" @oncontextmenu="Hide">
+        <div class="context-menu-container" style="@containerStyle">
+            @ChildContent
+        </div>
     </div>
-</div>
+}
 
 @code {
 
