@@ -1,7 +1,7 @@
 ﻿.calendar {
     background: #fafafa;
     background: var(--panelBackgroundMedium);
-    border: 1px solid var(--borderColorLight);
+    border: 1px solid var(--borderColor);
     font-family: Arial;
 }
 

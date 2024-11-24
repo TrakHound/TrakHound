@@ -142,29 +142,32 @@
 
         if (ObjectExplorerService != null && Object != null)
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                if (await client.Entities.PublishBoolean(Object.GetAbsolutePath(), value, false))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    entity = await client.System.Entities.Objects.Boolean.QueryByObjectUuid(Object.Uuid);
-                    value = entity.Value;
-                    savedValue = entity.Value;
+                    if (await client.Entities.PublishBoolean(Object.GetAbsolutePath(), value, false))
+                    {
+                        entity = await client.System.Entities.Objects.Boolean.QueryByObjectUuid(Object.Uuid);
+                        value = entity.Value;
+                        savedValue = entity.Value;
 
-                    ObjectExplorerService.LoadContent(Object);
-                    ObjectExplorerService.UpdateValue(Object.Uuid);
+                        ObjectExplorerService.LoadContent(Object);
+                        ObjectExplorerService.UpdateValue(Object.Uuid);
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "Boolean Published Successfully", Object.GetAbsolutePath());
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Boolean Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Boolean");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Boolean");
-                }
-            }
+
+                publishLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void CopyClicked(string value)

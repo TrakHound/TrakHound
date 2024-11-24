@@ -170,25 +170,28 @@
 
         if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(message))
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                if (await client.Entities.PublishLog(Object.GetAbsolutePath(), level, message, logCode, async: false))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    previousObjectUuid = null;
-                    await Load();
+                    if (await client.Entities.PublishLog(Object.GetAbsolutePath(), level, message, logCode, async: false))
+                    {
+                        previousObjectUuid = null;
+                        await Load();
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "Log Published Successfully", Object.GetAbsolutePath());
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Log Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Log");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Log");
-                }
-            }
+
+                publishLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void CopyClicked(string value)

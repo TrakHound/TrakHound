@@ -245,21 +245,20 @@ a, .btn-link {
 
 
 table tbody {
-/*    background: var(--tableBackground);*/
     border-color: var(--tableBorderColor);
 }
 
-    table th {
-        background: var(--tableHeaderBackground) !important;
-        border-color: var(--tableHeaderBorderColor);
-        border-right: 1px solid var(--tableHeaderBorderColor) !important;
-        border-bottom: 1px solid var(--tableHeaderBorderColor) !important;
-        color: var(--tableHeaderText) !important;
-    }
+table th {
+    background: var(--tableHeaderBackground) !important;
+    border-color: var(--tableHeaderBorderColor);
+    border-right: 1px solid var(--tableHeaderBorderColor) !important;
+    border-bottom: 1px solid var(--tableHeaderBorderColor) !important;
+    color: var(--tableHeaderText) !important;
+}
 
-        table th:last-child {
-            border-right: none !important;
-        }
+    table th:last-child {
+        border-right: none !important;
+    }
 
 table td {
     background: none;
@@ -294,9 +293,9 @@ table td:last-child {
         border-right: 1px solid var(--tableHeaderBorderColor) !important;
     }
 
-    .rz-data-grid table th:last-child {
-        border-right: none !important;
-    }
+        .rz-data-grid table th:last-child {
+            border-right: none !important;
+        }
 
         .rz-data-grid table th .rz-column-title {
             color: var(--tableHeaderText);
@@ -329,9 +328,9 @@ table td:last-child {
         border-right: 1px solid var(--tableBorderColor) !important;
     }
 
-    .rz-data-grid td:last-child {
-        border-right: none !important;
-    }
+        .rz-data-grid td:last-child {
+            border-right: none !important;
+        }
 
     .rz-data-grid td,
     .rz-data-grid .rz-cell-data {
@@ -369,6 +368,7 @@ table td:last-child {
 .text-area textarea,
 textarea,
 .spin-edit input,
+.rz-numeric,
 .rz-numeric input,
 .rz-datepicker input,
 .rz-textbox {
@@ -380,7 +380,8 @@ textarea,
     .text-box input:hover,
     .text-area textarea:hover,
     textarea:hover,
-    .rz-numeric input:hover,
+    .rz-numeric:hover,
+    .rz-numeric:hover input,
     .rz-datepicker input:hover,
     .spin-edit input:hover {
         background: var(--inputBackgroundHover) !important;
@@ -391,6 +392,7 @@ textarea,
     .text-box input:focus,
     .text-area textarea:focus,
     textarea:focus,
+    .rz-numeric:focus,
     .rz-numeric input:focus,
     .rz-datepicker input:focus,
     .spin-edit input:focus {
@@ -398,6 +400,16 @@ textarea,
         border-color: var(--inputBorderHighlight) !important;
         color: var(--inputTextHighlight) !important;
     }
+
+
+.rz-numeric-button .rz-numeric-button-icon {
+    color: var(--textDark) !important;
+}
+
+.rz-numeric-button:hover .rz-numeric-button-icon {
+    color: var(--accentLight) !important;
+}
+
 
 .rz-menu {
     background: #fff !important;
@@ -448,11 +460,100 @@ textarea,
 
 
 
-.rz-calendar input:focus {
-    border-color: var(--accentLight) !important;
-    box-shadow: inset 0px 0px 1px 1px var(--accentLight) !important;
-    outline: none;
+.rz-datepicker-popup-container {
+    background: var(--panelBackground) !important;
 }
+
+.rz-calendar {
+    background: none !important;
+}
+
+.rz-calendar-header {
+    background: var(--panelBackgroundMedium) !important;
+    margin-bottom: 10px;
+}
+
+    .rz-calendar-header .rz-button {
+        background: var(--accent) !important;
+        color: #fff !important;
+        border-radius: 0;
+    }
+
+        .rz-calendar-header .rz-button:hover {
+            background: var(--accentLight) !important;
+            color: #fff !important;
+        }
+
+    .rz-calendar-header .rz-button .rzi {
+        color: #fff !important;
+    }
+
+.rz-calendar-view {
+    border: 1px solid var(--borderColor);
+}
+
+    .rz-calendar-view td {
+        padding: 0 !important;
+    }
+
+        .rz-calendar-view td > span {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .rz-calendar-view td .rz-state-default {
+            color: var(--textDark) !important;
+            transition: none;
+        }
+
+            .rz-calendar-view td .rz-state-default:hover {
+                color: var(--accent) !important;
+                background: var(--panelBackgroundMedium) !important;
+                border-radius: 0 !important;
+            }
+
+            .rz-calendar-view td .rz-state-default.rz-calendar-today {
+                color: var(--textDark) !important;
+                background: none !important;
+                border-radius: 0 !important;
+                border: 1px solid var(--accent) !important;
+            }
+
+        .rz-calendar-view td .rz-state-active,
+        .rz-calendar-view td .rz-state-active.rz-calendar-today {
+            color: #fff !important;
+            background: var(--accent) !important;
+            border-radius: 0 !important;
+        }
+
+        .rz-calendar-view td .rz-state-active:hover {
+            color: #fff !important;
+            background: var(--accentLight) !important;
+            border-radius: 0 !important;
+        }
+
+        .rz-calendar-view td.rz-calendar-other-month {
+            background: var(--panelBackgroundDark) !important;
+        }
+
+        .rz-calendar-view td .rz-calendar-other-month {
+            color: var(--textMild) !important;
+        }
+
+        .rz-timepicker .rz-ampm-picker span {
+            color: var(--textDark) !important;
+        }
+
+.rz-timepicker > .rz-button {
+    background: var(--accent) !important;
+    color: #fff !important;
+    border-radius: 0;
+}
+
+    .rz-timepicker > .rz-button:hover {
+        background: var(--accentLight) !important;
+        color: #fff !important;
+    }
 
 
 /*.rz-datepicker input {
@@ -479,9 +580,9 @@ textarea,
     color: var(--textMild);
 }
 
-.rz-datepicker .rz-button-icon-left:hover {
-    color: var(--inputTextHighlight);
-}
+    .rz-datepicker .rz-button-icon-left:hover {
+        color: var(--inputTextHighlight);
+    }
 
 
 #reconnection-panel {

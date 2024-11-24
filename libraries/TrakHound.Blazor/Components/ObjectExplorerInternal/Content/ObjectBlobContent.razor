@@ -167,45 +167,51 @@
 
         if (Object != null && addFile != null)
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                try
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    var inputStream = addFile.OpenReadStream(addFile.Size);
-                    var outputStream = new MemoryStream();
-                    await inputStream.CopyToAsync(outputStream);
-                    outputStream.Seek(0, SeekOrigin.Begin);
-
-                    var path = Object.GetAbsolutePath();
-                    filename = addFile.Name;
-                    if (!MimeTypes.TryGetMimeType(filename, out var contentType))
+                    try
                     {
-                        contentType = "application/octet-stream";
+                        var inputStream = addFile.OpenReadStream(addFile.Size);
+                        var outputStream = new MemoryStream();
+                        await inputStream.CopyToAsync(outputStream);
+                        outputStream.Seek(0, SeekOrigin.Begin);
+
+                        var path = Object.GetAbsolutePath();
+                        filename = addFile.Name;
+                        if (!MimeTypes.TryGetMimeType(filename, out var contentType))
+                        {
+                            contentType = "application/octet-stream";
+                        }
+
+                        if (await client.Entities.PublishBlob(path, outputStream, contentType, filename))
+                        {
+                            previousObjectUuid = null;
+
+                            ObjectExplorerService.LoadContent(Object);
+                            ObjectExplorerService.UpdateValue(Object.Uuid);
+
+                            await Load();
+
+                            ObjectExplorerService.AddNotification(NotificationType.Information, "Blob Published Successfully", path);
+                        }
+                        else
+                        {
+                            ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Blob");
+                        }
                     }
-
-                    if (await client.Entities.PublishBlob(path, outputStream, contentType, filename))
+                    catch
                     {
-                        previousObjectUuid = null;
-
-                        ObjectExplorerService.LoadContent(Object);
-                        ObjectExplorerService.UpdateValue(Object.Uuid);
-
-                        await Load();
-
-                        ObjectExplorerService.AddNotification(NotificationType.Information, "Blob Published Successfully", path);
-                    }
-                    else
-                    {
-                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Blob");
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Blob");                  
                     }
                 }
-                catch { }
-            }
-        }
 
-        publishLoading = false;
-        await InvokeAsync(StateHasChanged);
+                publishLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 
     private static string GetDownloadLink(string path)

@@ -155,25 +155,28 @@
 
         if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(memberPath))
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                if (await client.Entities.PublishGroup(Object.GetAbsolutePath(), memberPath))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    previousObjectUuid = null;
-                    await Load();
+                    if (await client.Entities.PublishGroup(Object.GetAbsolutePath(), memberPath))
+                    {
+                        previousObjectUuid = null;
+                        await Load();
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "Group Published Successfully", Object.GetAbsolutePath());
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Group Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Group");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Group");
-                }
-            }
+
+                publishLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void CopyClicked(string value)

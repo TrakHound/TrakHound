@@ -13,8 +13,8 @@
     ".bufferRetryInterval": 10000,
     ".bufferMaxItemsPerInterval": 1000,
     ".bufferQueuedItemLimit": 100000,
-    ".fileBufferEnabled": false,
-    ".fileBufferReadInterval": 0,
+    ".fileBufferEnabled": true,
+    ".fileBufferReadInterval": 1000,
     ".bufferAcknowledgeSent": false
   }
 }

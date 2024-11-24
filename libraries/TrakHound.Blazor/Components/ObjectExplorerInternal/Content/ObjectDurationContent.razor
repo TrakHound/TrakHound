@@ -225,29 +225,33 @@
 
         if (ObjectExplorerService != null && Object != null)
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                var nanoseconds = ConvertValueToNanoseconds(value);
-                var duration = TimeSpan.FromTicks((long)nanoseconds / 100);
-
-                if (await client.Entities.PublishDuration(Object.GetAbsolutePath(), duration, false))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    ObjectExplorerService.LoadContent(Object);
-                    ObjectExplorerService.UpdateValue(Object.Uuid);
-                    savedValue = nanoseconds;
+                    var nanoseconds = ConvertValueToNanoseconds(value);
+                    var duration = TimeSpan.FromTicks((long)nanoseconds / 100);
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "Duration Published Successfully", Object.GetAbsolutePath());
+                    if (await client.Entities.PublishDuration(Object.GetAbsolutePath(), duration, false))
+                    {
+                        await Load(true);
+                        ObjectExplorerService.LoadContent(Object);
+                        ObjectExplorerService.UpdateValue(Object.Uuid);
+                        savedValue = nanoseconds;
+
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Duration Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Duration");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Duration");
-                }
-            }
+
+                publishLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void CopyClicked(string value)

@@ -153,25 +153,28 @@
 
         if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(memberPath))
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                if (await client.Entities.PublishQueue(Object.GetAbsolutePath(), memberPath, index))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    previousObjectUuid = null;
-                    await Load();
+                    if (await client.Entities.PublishQueue(Object.GetAbsolutePath(), memberPath, index))
+                    {
+                        previousObjectUuid = null;
+                        await Load();
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "Queue Published Successfully", Object.GetAbsolutePath());
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Queue Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Queue");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Queue");
-                }
-            }
+
+                publishLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void CopyClicked(string value)
@@ -183,21 +186,30 @@
 
     private async void DeleteClicked(string uuid)
     {
-        var client = ObjectExplorerService.GetClient();
-        if (client != null)
-        {
-            if (await client.System.Entities.Objects.Queue.Delete(uuid, TrakHoundOperationMode.Sync))
-            {
-                previousObjectUuid = null;
-                await Load();
+        publishLoading = true;
+        await InvokeAsync(StateHasChanged);
 
-                ObjectExplorerService.AddNotification(NotificationType.Information, "Queue Deleted Successfully", uuid);
-            }
-            else
+        _ = Task.Run(async () =>
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
             {
-                ObjectExplorerService.AddNotification(NotificationType.Error, "Error Deleting Queue");
+                if (await client.System.Entities.Objects.Queue.Delete(uuid, TrakHoundOperationMode.Sync))
+                {
+                    previousObjectUuid = null;
+                    await Load();
+
+                    ObjectExplorerService.AddNotification(NotificationType.Information, "Queue Deleted Successfully", uuid);
+                }
+                else
+                {
+                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Deleting Queue");
+                }
             }
-        }
+
+            publishLoading = false;
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
     private string GetObjectLink(string path)

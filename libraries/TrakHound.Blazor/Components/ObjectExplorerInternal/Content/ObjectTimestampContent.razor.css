@@ -139,11 +139,11 @@
 .information-panel {
     grid-row: 2;
     padding: 5px 10px 0;
+    border-top: 1px solid var(--borderColorLight);
 }
 
     .information-panel .table td {
         font-size: 12px;
-        border-color: var(--borderColor) !important;
     }
 
         .information-panel .table td.key {

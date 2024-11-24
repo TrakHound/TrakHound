@@ -160,25 +160,28 @@ namespace TrakHound
         {
             if (!string.IsNullOrEmpty(path))
             {
-                if (path.Contains("*")) return TrakHoundPathType.Expression;
-                if (path == "/") return TrakHoundPathType.Expression;
-                if (!path.StartsWith("/") && !path.StartsWith(_uuidPrefix)) return TrakHoundPathType.Expression;
-                if (path.Contains("..")) return TrakHoundPathType.Expression;
-                if (path.Contains("content-type=")) return TrakHoundPathType.Expression;
-                if (path.Contains("type=")) return TrakHoundPathType.Expression;
-                if (path.Contains("meta@")) return TrakHoundPathType.Expression;
+                //if (path.Contains("*")) return TrakHoundPathType.Expression;
+                //if (path == "/") return TrakHoundPathType.Expression;
+                //if (!path.StartsWith("/") && !path.StartsWith(_uuidPrefix)) return TrakHoundPathType.Expression;
+                //if (path.Contains("..")) return TrakHoundPathType.Expression;
+                //if (path.Contains("content-type=")) return TrakHoundPathType.Expression;
+                //if (path.Contains("type=")) return TrakHoundPathType.Expression;
+                //if (path.Contains("meta@")) return TrakHoundPathType.Expression;
 
-                //var partialPath = GetPartialPath(path);
-                //if (!string.IsNullOrEmpty(partialPath))
-                //{
-                //    if (partialPath.Contains("*")) return TrakHoundPathType.Expression;
-                //    if (partialPath == "/") return TrakHoundPathType.Expression;
-                //    if (!partialPath.StartsWith("/") && !partialPath.StartsWith(_uuidPrefix)) return TrakHoundPathType.Expression;
-                //    if (partialPath.Contains("..")) return TrakHoundPathType.Expression;
-                //    if (partialPath.Contains("content-type=")) return TrakHoundPathType.Expression;
-                //    if (partialPath.Contains("type=")) return TrakHoundPathType.Expression;
-                //    if (partialPath.Contains("meta@")) return TrakHoundPathType.Expression;
-                //}
+                var ns = GetNamespace(path);
+                var partialPath = GetPartialPath(path);
+
+                if (!string.IsNullOrEmpty(partialPath))
+                {
+                    if (string.IsNullOrEmpty(ns) && !partialPath.StartsWith(_uuidPrefix)) return TrakHoundPathType.Expression;
+                    if (partialPath.Contains("*")) return TrakHoundPathType.Expression;
+                    if (partialPath == "/") return TrakHoundPathType.Expression;
+                    if (!partialPath.StartsWith("/") && !partialPath.StartsWith(_uuidPrefix)) return TrakHoundPathType.Expression;
+                    if (partialPath.Contains("..")) return TrakHoundPathType.Expression;
+                    if (partialPath.Contains("content-type=")) return TrakHoundPathType.Expression;
+                    if (partialPath.Contains("type=")) return TrakHoundPathType.Expression;
+                    if (partialPath.Contains("meta@")) return TrakHoundPathType.Expression;
+                }
             }
 
             return TrakHoundPathType.Absolute;

@@ -161,26 +161,29 @@
 
         if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(definitionId))
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                previousObjectUuid = null;
-
-                if (await client.Entities.PublishVocabularySet(Object.GetAbsolutePath(), definitionId, false))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    await Load();
+                    previousObjectUuid = null;
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "Vocabulary Set Published Successfully", Object.GetAbsolutePath());
+                    if (await client.Entities.PublishVocabularySet(Object.GetAbsolutePath(), definitionId, false))
+                    {
+                        await Load();
+
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Vocabulary Set Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Vocabulary Set");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Vocabulary Set");
-                }
-            }
+
+                publishLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void CopyClicked(string value)

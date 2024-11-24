@@ -123,6 +123,7 @@
     grid-column-end: 3;
     font-size: 14px;
     font-weight: bold;
+    color: var(--textMild);
 }
 
 .calendar-panel-start {
@@ -141,6 +142,7 @@
     grid-column-end: 3;
     font-size: 14px;
     font-weight: bold;
+    color: var(--textMild);
 }
 
 .calendar-panel-end {

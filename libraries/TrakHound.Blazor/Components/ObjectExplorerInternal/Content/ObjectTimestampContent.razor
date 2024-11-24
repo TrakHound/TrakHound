@@ -166,28 +166,31 @@
 
         if (ObjectExplorerService != null && Object != null && timestamp.HasValue)
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                if (await client.Entities.PublishTimestamp(Object.GetAbsolutePath(), timestamp.Value, false))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    entity = await client.System.Entities.Objects.Timestamp.QueryByObjectUuid(Object.Uuid);
-                    savedTimestamp = timestamp.Value;
+                    if (await client.Entities.PublishTimestamp(Object.GetAbsolutePath(), timestamp.Value, false))
+                    {
+                        entity = await client.System.Entities.Objects.Timestamp.QueryByObjectUuid(Object.Uuid);
+                        savedTimestamp = timestamp.Value;
 
-                    ObjectExplorerService.LoadContent(Object);
-                    ObjectExplorerService.UpdateValue(Object.Uuid);
+                        ObjectExplorerService.LoadContent(Object);
+                        ObjectExplorerService.UpdateValue(Object.Uuid);
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "Timestamp Published Successfully", Object.GetAbsolutePath());
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Timestamp Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Timestamp");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Timestamp");
-                }
-            }
+
+                publishLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void CopyClicked(string value)

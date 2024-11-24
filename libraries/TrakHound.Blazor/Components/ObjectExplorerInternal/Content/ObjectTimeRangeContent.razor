@@ -165,25 +165,28 @@
 
         if (ObjectExplorerService != null && Object != null && start.HasValue && end.HasValue)
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                if (await client.Entities.PublishTimeRange(Object.GetAbsolutePath(), start.Value, end.Value, false))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    previousObjectUuid = null;
-                    await Load();
+                    if (await client.Entities.PublishTimeRange(Object.GetAbsolutePath(), start.Value, end.Value, false))
+                    {
+                        previousObjectUuid = null;
+                        await Load();
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "TimeRange Published Successfully", Object.GetAbsolutePath());
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "TimeRange Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing TimeRange");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing TimeRange");
-                }
-            }
+
+                publishLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void CopyClicked(string value)

@@ -124,24 +124,24 @@
 
     protected async override Task OnInitializedAsync()
     {
-        Load();
+        await Load();
     }
 
     protected async override Task OnParametersSetAsync()
     {
-        Load();
+        await Load();
     }
 
-    private void Load(bool forceReload = false)
+    private async Task Load(bool forceReload = false)
     {
         if (forceReload || (ObjectExplorerService != null && Object != null && Object.Uuid != previousObjectUuid))
         {
+            tableItems = null;
+            loading = true;
+            await InvokeAsync(StateHasChanged);
+
             _= Task.Run(async () =>
             {
-                tableItems = null;
-                loading = true;
-                await InvokeAsync(StateHasChanged);
-
                 var client = ObjectExplorerService.GetClient();
                 if (client != null)
                 {
@@ -187,30 +187,33 @@
 
         if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(value))
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                var ts = timestamp > DateTime.MinValue ? timestamp.ToUnixTime() : UnixDateTime.Now;
-
-                if (await client.Entities.PublishObservation(Object.GetAbsolutePath(), value, dataType, timestamp, batchId, sequence, false))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    previousObjectUuid = null;
-                    Load();
+                    var ts = timestamp > DateTime.MinValue ? timestamp.ToUnixTime() : UnixDateTime.Now;
 
-                    ObjectExplorerService.LoadContent(Object);
-                    ObjectExplorerService.UpdateValue(Object.Uuid);
+                    if (await client.Entities.PublishObservation(Object.GetAbsolutePath(), value, dataType, timestamp, batchId, sequence, false))
+                    {
+                        previousObjectUuid = null;
+                        await Load();
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "Observation Published Successfully", Object.GetAbsolutePath());
+                        ObjectExplorerService.LoadContent(Object);
+                        ObjectExplorerService.UpdateValue(Object.Uuid);
+
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Observation Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Observation");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Observation");
-                }
-            }
+
+                publishLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void CopyClicked(string value)
@@ -220,24 +223,24 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    private async void DeleteClicked(string uuid)
-    {
-        var client = ObjectExplorerService.GetClient();
-        if (client != null)
-        {
-            if (await client.System.Entities.Objects.Observation.Delete(uuid, TrakHoundOperationMode.Sync))
-            {
-                previousObjectUuid = null;
-                Load();
+    // private async void DeleteClicked(string uuid)
+    // {
+    //     var client = ObjectExplorerService.GetClient();
+    //     if (client != null)
+    //     {
+    //         if (await client.System.Entities.Objects.Observation.Delete(uuid, TrakHoundOperationMode.Sync))
+    //         {
+    //             previousObjectUuid = null;
+    //             Load();
 
-                ObjectExplorerService.AddNotification(NotificationType.Information, "Observation Deleted Successfully", uuid);
-            }
-            else
-            {
-                ObjectExplorerService.AddNotification(NotificationType.Error, "Error Deleting Observation");
-            }
-        }
-    }
+    //             ObjectExplorerService.AddNotification(NotificationType.Information, "Observation Deleted Successfully", uuid);
+    //         }
+    //         else
+    //         {
+    //             ObjectExplorerService.AddNotification(NotificationType.Error, "Error Deleting Observation");
+    //         }
+    //     }
+    // }
 
 
     private async void NowClicked()

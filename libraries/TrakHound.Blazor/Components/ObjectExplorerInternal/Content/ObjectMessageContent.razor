@@ -375,27 +375,30 @@
 
         if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(brokerId) && !string.IsNullOrEmpty(topic))
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                if (await client.Entities.PublishMessageMapping(Object.GetAbsolutePath(), brokerId, topic, contentType, retain, qos))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    ObjectExplorerService.LoadContent(Object);
-                    ObjectExplorerService.UpdateValue(Object.Uuid);
+                    if (await client.Entities.PublishMessageMapping(Object.GetAbsolutePath(), brokerId, topic, contentType, retain, qos))
+                    {
+                        ObjectExplorerService.LoadContent(Object);
+                        ObjectExplorerService.UpdateValue(Object.Uuid);
 
-                    await Load(true);
+                        await Load(true);
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "Message Mapping Published Successfully", Object.GetAbsolutePath());
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Message Mapping Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Message Mapping");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Message Mapping");
-                }
-            }
+
+                publishMappingLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishMappingLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void SaveMessage()
@@ -405,25 +408,28 @@
 
         if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(publishContent))
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                if (await client.Entities.PublishMessageContent(Object.GetAbsolutePath(), publishContent, retain, qos))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    ObjectExplorerService.LoadContent(Object);
-                    ObjectExplorerService.UpdateValue(Object.Uuid);
+                    if (await client.Entities.PublishMessageContent(Object.GetAbsolutePath(), publishContent, retain, qos))
+                    {
+                        ObjectExplorerService.LoadContent(Object);
+                        ObjectExplorerService.UpdateValue(Object.Uuid);
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "Message Published Successfully", Object.GetAbsolutePath());
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Message Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Message");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Message");
-                }
-            }
+
+                publishMessageLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishMessageLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void CopyClicked(string value)

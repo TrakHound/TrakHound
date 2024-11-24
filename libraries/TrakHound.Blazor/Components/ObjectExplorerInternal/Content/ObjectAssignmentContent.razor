@@ -310,25 +310,28 @@
 
         if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(memberPath))
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                if (await client.Entities.PublishAssignment(Object.GetAbsolutePath(), memberPath))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    previousObjectUuid = null;
-                    await Load();
+                    if (await client.Entities.PublishAssignment(Object.GetAbsolutePath(), memberPath))
+                    {
+                        previousObjectUuid = null;
+                        await Load();
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "Assignment Published Successfully", Object.GetAbsolutePath());
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Assignment Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Assignment");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Assignment");
-                }
-            }
+
+                publishLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void CopyClicked(string value)
@@ -340,43 +343,61 @@
 
     private async void RemoveClicked(string path)
     {
+        publishLoading = true;
+        await InvokeAsync(StateHasChanged);
+
         if (ObjectExplorerService != null && Object != null)
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                if (await client.Entities.RemoveAssignment(Object.GetAbsolutePath(), path))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    previousObjectUuid = null;
-                    await Load();
+                    if (await client.Entities.RemoveAssignment(Object.GetAbsolutePath(), path))
+                    {
+                        previousObjectUuid = null;
+                        await Load();
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "Assignment Removed Successfully", path);
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Assignment Removed Successfully", path);
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Removing Assignment");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Removing Assignment");
-                }
-            }
+
+                publishLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
     }
 
     private async void DeleteClicked(string uuid)
     {
-        var client = ObjectExplorerService.GetClient();
-        if (client != null)
-        {
-            if (await client.System.Entities.Objects.Assignment.Delete(uuid, TrakHoundOperationMode.Sync))
-            {
-                previousObjectUuid = null;
-                await Load();
+        publishLoading = true;
+        await InvokeAsync(StateHasChanged);
 
-                ObjectExplorerService.AddNotification(NotificationType.Information, "Assignment Deleted Successfully", uuid);
-            }
-            else
+        _ = Task.Run(async () =>
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
             {
-                ObjectExplorerService.AddNotification(NotificationType.Error, "Error Deleting Assignment");
+                if (await client.System.Entities.Objects.Assignment.Delete(uuid, TrakHoundOperationMode.Sync))
+                {
+                    previousObjectUuid = null;
+                    await Load();
+
+                    ObjectExplorerService.AddNotification(NotificationType.Information, "Assignment Deleted Successfully", uuid);
+                }
+                else
+                {
+                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Deleting Assignment");
+                }
             }
-        }
+
+            publishLoading = false;
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
     private string GetObjectLink(string path)

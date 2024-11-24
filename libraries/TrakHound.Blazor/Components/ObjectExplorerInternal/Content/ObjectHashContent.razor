@@ -159,26 +159,29 @@
 
         if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                previousObjectUuid = null;
-
-                if (await client.Entities.PublishHash(Object.GetAbsolutePath(), key, value, async: false))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    await Load();
+                    previousObjectUuid = null;
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "Hash Published Successfully", Object.GetAbsolutePath());
+                    if (await client.Entities.PublishHash(Object.GetAbsolutePath(), key, value, async: false))
+                    {
+                        await Load();
+
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Hash Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Hash");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Hash");
-                }
-            }
+
+                publishLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void CopyClicked(string value)
@@ -190,21 +193,30 @@
 
     private async void DeleteClicked(string uuid)
     {
-        var client = ObjectExplorerService.GetClient();
-        if (client != null)
-        {
-            if (await client.System.Entities.Objects.Hash.Delete(uuid, TrakHoundOperationMode.Sync))
-            {
-                previousObjectUuid = null;
-                await Load();
+        publishLoading = true;
+        await InvokeAsync(StateHasChanged);
 
-                ObjectExplorerService.AddNotification(NotificationType.Information, "Hash Deleted Successfully", uuid);
-            }
-            else
+        _ = Task.Run(async () =>
+        {
+            var client = ObjectExplorerService.GetClient();
+            if (client != null)
             {
-                ObjectExplorerService.AddNotification(NotificationType.Error, "Error Deleting Hash");
+                if (await client.System.Entities.Objects.Hash.Delete(uuid, TrakHoundOperationMode.Sync))
+                {
+                    previousObjectUuid = null;
+                    await Load();
+
+                    ObjectExplorerService.AddNotification(NotificationType.Information, "Hash Deleted Successfully", uuid);
+                }
+                else
+                {
+                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Deleting Hash");
+                }
             }
-        }
+
+            publishLoading = false;
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
 }

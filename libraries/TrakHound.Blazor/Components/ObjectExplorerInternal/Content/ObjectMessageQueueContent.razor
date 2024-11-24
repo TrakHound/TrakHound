@@ -20,7 +20,7 @@
                     }
                     else
                     {
-                        <button class="btn btn-sm btn-light btn-save btn-map-save disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Mapping..</button>
+                        <button class="btn btn-sm btn-light btn-save btn-map-save disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Map</button>
                     }
 
                     @if (!loading)
@@ -228,27 +228,30 @@
 
         if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(queueId))
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                if (await client.Entities.PublishMessageQueueMapping(Object.GetAbsolutePath(), queueId, contentType))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    ObjectExplorerService.LoadContent(Object);
-                    ObjectExplorerService.UpdateValue(Object.Uuid);
+                    if (await client.Entities.PublishMessageQueueMapping(Object.GetAbsolutePath(), queueId, contentType))
+                    {
+                        ObjectExplorerService.LoadContent(Object);
+                        ObjectExplorerService.UpdateValue(Object.Uuid);
 
-                    await Load(true);
+                        await Load(true);
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "MessageQueue Mapping Published Successfully", Object.GetAbsolutePath());
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "MessageQueue Mapping Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing MessageQueue Mapping");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing MessageQueue Mapping");
-                }
-            }
+
+                publishMappingLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishMappingLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void Pull()
@@ -337,25 +340,28 @@
 
         if (ObjectExplorerService != null && Object != null && !string.IsNullOrEmpty(publishContent))
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                if (await client.Entities.PublishMessageQueueContent(Object.GetAbsolutePath(), publishContent))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    ObjectExplorerService.LoadContent(Object);
-                    ObjectExplorerService.UpdateValue(Object.Uuid);
+                    if (await client.Entities.PublishMessageQueueContent(Object.GetAbsolutePath(), publishContent))
+                    {
+                        ObjectExplorerService.LoadContent(Object);
+                        ObjectExplorerService.UpdateValue(Object.Uuid);
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "MessageQueue Published Successfully", Object.GetAbsolutePath());
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "MessageQueue Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Message");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Message");
-                }
-            }
+
+                publishMessageLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishMessageLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void CopyClicked(string value)

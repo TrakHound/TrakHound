@@ -108,11 +108,11 @@
                         </RadzenDataGridColumn>
                         <RadzenDataGridColumn TItem="TableItem" Property="DataType" Title="DataType" Width="120px" CssClass="data-type" />
                         <RadzenDataGridColumn TItem="TableItem" Property="TimestampLocal" Title="Timestamp" Width="150px" CssClass="timestamp" />
-                        <RadzenDataGridColumn TItem="TableItem" CssClass="delete" Width="70px" Sortable="false">
+@*                         <RadzenDataGridColumn TItem="TableItem" CssClass="delete" Width="70px" Sortable="false">
                             <Template Context="context">
                                 <button class="btn-link btn btn-sm" @onclick="() => DeleteClicked(context.Uuid)">Delete</button>
                             </Template>
-                        </RadzenDataGridColumn>
+                        </RadzenDataGridColumn> *@
                     </Columns>
                 </RadzenDataGrid>
             }
@@ -258,33 +258,36 @@
 
         if (ObjectExplorerService != null && Object != null && timeRangeStart != null && timeRangeEnd != null && !string.IsNullOrEmpty(value))
         {
-            var client = ObjectExplorerService.GetClient();
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                var timestamp = DateTime.Now;
-                var timeRangeId = new TimeRange(timeRangeStart.Value, timeRangeEnd.Value).ToString();
-
-                var publishEntity = new TrakHoundObjectStatisticEntity(Object.Uuid, timeRangeStart.Value, timeRangeEnd.Value, value, dataType: dataType);
-
-                if (await client.Entities.PublishStatistic(Object.GetAbsolutePath(), timeRangeStart.Value, timeRangeEnd.Value, value, dataType, timestamp, async: false))
+                var client = ObjectExplorerService.GetClient();
+                if (client != null)
                 {
-                    previousObjectUuid = null;
-                    await Load();
+                    var timestamp = DateTime.Now;
+                    var timeRangeId = new TimeRange(timeRangeStart.Value, timeRangeEnd.Value).ToString();
 
-                    ObjectExplorerService.LoadContent(Object);
-                    ObjectExplorerService.UpdateValue(Object.Uuid);
+                    var publishEntity = new TrakHoundObjectStatisticEntity(Object.Uuid, timeRangeStart.Value, timeRangeEnd.Value, value, dataType: dataType);
 
-                    ObjectExplorerService.AddNotification(NotificationType.Information, "Statistic Published Successfully", Object.GetAbsolutePath());
+                    if (await client.Entities.PublishStatistic(Object.GetAbsolutePath(), timeRangeStart.Value, timeRangeEnd.Value, value, dataType, timestamp, async: false))
+                    {
+                        previousObjectUuid = null;
+                        await Load();
+
+                        ObjectExplorerService.LoadContent(Object);
+                        ObjectExplorerService.UpdateValue(Object.Uuid);
+
+                        ObjectExplorerService.AddNotification(NotificationType.Information, "Statistic Published Successfully", Object.GetAbsolutePath());
+                    }
+                    else
+                    {
+                        ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Statistic");
+                    }
                 }
-                else
-                {
-                    ObjectExplorerService.AddNotification(NotificationType.Error, "Error Publishing Statistic");
-                }
-            }
+
+                publishLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
-
-        publishLoading = false;
-        await InvokeAsync(StateHasChanged);
     }
 
     private async void CopyClicked(string value)
@@ -294,24 +297,24 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    private async void DeleteClicked(string uuid)
-    {
-        var client = ObjectExplorerService.GetClient();
-        if (client != null)
-        {
-            if (await client.System.Entities.Objects.Statistic.Delete(uuid, TrakHoundOperationMode.Sync))
-            {
-                previousObjectUuid = null;
-                await Load();
+    // private async void DeleteClicked(string uuid)
+    // {
+    //     var client = ObjectExplorerService.GetClient();
+    //     if (client != null)
+    //     {
+    //         if (await client.System.Entities.Objects.Statistic.Delete(uuid, TrakHoundOperationMode.Sync))
+    //         {
+    //             previousObjectUuid = null;
+    //             await Load();
 
-                ObjectExplorerService.AddNotification(NotificationType.Information, "Statistic Deleted Successfully", uuid);
-            }
-            else
-            {
-                ObjectExplorerService.AddNotification(NotificationType.Error, "Error Deleting Statistic");
-            }
-        }
-    }
+    //             ObjectExplorerService.AddNotification(NotificationType.Information, "Statistic Deleted Successfully", uuid);
+    //         }
+    //         else
+    //         {
+    //             ObjectExplorerService.AddNotification(NotificationType.Error, "Error Deleting Statistic");
+    //         }
+    //     }
+    // }
 
     private async void SelectedSpanChanged(long span)
     {

@@ -126,7 +126,6 @@
 
     .value-panel .table td {
         font-size: 12px;
-/*        border-color: #f8f8f8;*/
     }
 
         .value-panel .table td.key {
@@ -137,12 +136,11 @@
 .information-panel {
     grid-row: 2;
     padding: 5px 10px 0;
-/*    border-top: 1px solid #eee;*/
+    border-top: 1px solid var(--borderColorLight);
 }
 
     .information-panel .table td {
         font-size: 12px;
-/*        border-color: #eee;*/
     }
 
         .information-panel .table td.key {

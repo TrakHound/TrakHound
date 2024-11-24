@@ -20,7 +20,7 @@
         .tree-item .tree-item-content .expand-border-tab {
             grid-column: 1;
             width: 9px;
-            border-top: 1px dotted var(--borderColorVeryLight);
+            border-top: 1px dotted var(--borderColorLight);
             margin-left: -9.5px;
             margin-top: 9px;
         }
@@ -89,7 +89,6 @@
     vertical-align: top;
     line-height: 19px;
     font-size: 14px;
-    color: #888;
     color: var(--textLight);
     margin-left: 4px;
     margin-right: 4px;
@@ -123,18 +122,15 @@
 
 .tree-item .tree-item-children .children-container {
     grid-column: 2;
-/*    margin-left: 8px;*/
     margin-left: 2px;
 }
 
 .tree-view > .tree-item > .tree-item-children > .children-container {
-/*    margin-left: 6px;*/
     padding-left: 0;
 }
 
 .tree-view > .tree-item > .tree-item-children > .expand-border {
     width: 0;
-/*    margin-left: 6px;*/
 }
 
 
@@ -148,7 +144,7 @@
 }
 
     .tree-view > .tree-item > .tree-item-children .tree-item .expand-border > div {
-        border-left: 1px dotted var(--borderColorVeryLight);
+        border-left: 1px dotted var(--borderColorLight);
         height: 100%;
         width: 100%;
     }
