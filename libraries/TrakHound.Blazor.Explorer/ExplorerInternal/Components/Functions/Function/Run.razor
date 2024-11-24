@@ -419,16 +419,6 @@
 
             requestUrl = Url.Combine(baseUrl, "run", FunctionInformation.FunctionId);
 
-            // if (!requestParameters.IsNullOrEmpty())
-            // {
-            //     foreach (var parameter in requestParameters)
-            //     {
-            //         requestUrl = Url.AddQueryParameter(requestUrl, parameter.Key, parameter.Value);
-            //     }
-            // }
-
-            // if (RequestType.ToLower() == FunctionRequestTypes.Package) requestUrl = Url.AddQueryParameter(requestUrl, "packageVersion", Function.PackageVersion);
-
             await InvokeAsync(StateHasChanged);
         }
     }
@@ -452,61 +442,66 @@
             responseLogs.Clear();
             await InvokeAsync(StateHasChanged);
 
-            var stpw = System.Diagnostics.Stopwatch.StartNew();
-
-
             // Start JS Timer
             var timerId = Guid.NewGuid().ToString();
             await javascriptService.StartTimer(timerId, "request-duration");
 
-            var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
-            if (client != null)
+            _ = Task.Run(async () =>
             {
-                var route = FunctionInformation.FunctionId;
-                var parameters = requestParameters;
-                Stream stream = null;
-                byte[] requestBodyBytes = null;
-                string contentType = bodyParameterType;
+                var stpw = System.Diagnostics.Stopwatch.StartNew();
 
-                // Add Body (InputFile)
-                if (requestFile != null)
+                var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+                if (client != null)
                 {
-                    stream = requestFile.OpenReadStream(requestFile.Size);
+                    var route = FunctionInformation.FunctionId;
+                    var parameters = requestParameters;
+                    Stream stream = null;
+                    byte[] requestBodyBytes = null;
+                    string contentType = bodyParameterType;
+
+                    // Add Body (InputFile)
+                    if (requestFile != null)
+                    {
+                        stream = requestFile.OpenReadStream(requestFile.Size);
+                    }
+                    else if (!string.IsNullOrEmpty(bodyParameterValue))
+                    {
+                        requestBodyBytes = System.Text.Encoding.UTF8.GetBytes(bodyParameterValue);
+                        stream = new MemoryStream(requestBodyBytes);
+                    }
+
+                    // Subscribe to Status
+                    var statusSubscribeRoute = Url.Combine("functions", FunctionInformation.FunctionId, "runs", requestRunId, "status");
+                    responseStatusConsumer = await client.Api.SubscribeJson<IEnumerable<FunctionStatus>>(statusSubscribeRoute);
+                    if (responseStatusConsumer != null) responseStatusConsumer.Received += StatusReceived;
+
+                    // Subscribe to Logs
+                    var logSubscribeRoute = Url.Combine("functions", FunctionInformation.FunctionId, "runs", requestRunId, "log");
+                    responseLogConsumer = await client.Api.SubscribeJson<IEnumerable<FunctionLog>>(logSubscribeRoute);
+                    if (responseLogConsumer != null) responseLogConsumer.Received += LogReceived;
+
+                    // Run Function
+                    response = await client.Functions.Run(FunctionInformation.FunctionId, parameters, requestRunId, requestStarted);
+
+                    responseLogDisposeDelay.Set();
+
+                    requestStatus = "Completed";
+                    requestCompleted = response.Completed.ToLocalDateTime();
+                    requestDuration = TimeSpan.FromTicks(response.Completed - response.Started);
                 }
-                else if (!string.IsNullOrEmpty(bodyParameterValue))
-                {
-                    requestBodyBytes = System.Text.Encoding.UTF8.GetBytes(bodyParameterValue);
-                    stream = new MemoryStream(requestBodyBytes);
-                }
 
-                // Subscribe to Status
-                var statusSubscribeRoute = Url.Combine("functions", FunctionInformation.FunctionId, "runs", requestRunId, "status");
-                responseStatusConsumer = await client.Api.SubscribeJson<IEnumerable<FunctionStatus>>(statusSubscribeRoute);
-                if (responseStatusConsumer != null) responseStatusConsumer.Received += StatusReceived;
+                stpw.Stop();
 
-                // Subscribe to Logs
-                var logSubscribeRoute = Url.Combine("functions", FunctionInformation.FunctionId, "runs", requestRunId, "log");
-                responseLogConsumer = await client.Api.SubscribeJson<IEnumerable<FunctionLog>>(logSubscribeRoute);
-                if (responseLogConsumer != null) responseLogConsumer.Received += LogReceived;
+                await InvokeAsync(async () =>
+            {
+                await javascriptService.StopTimer(timerId);
 
-                // Run Function
-                response = await client.Functions.Run(FunctionInformation.FunctionId, parameters, requestRunId, requestStarted);
-
-                responseLogDisposeDelay.Set();
-
-                requestStatus = "Completed";
-                requestCompleted = response.Completed.ToLocalDateTime();
-                requestDuration = TimeSpan.FromTicks(response.Completed - response.Started);
-            }
-
-            await javascriptService.StopTimer(timerId);
-
-            stpw.Stop();
-
-            loading = false;
-            responseMessage = $"Response in {stpw.Elapsed.ToDetailedFormattedString()}";
-            responseDuration = stpw.Elapsed;
-            await InvokeAsync(StateHasChanged);
+                loading = false;
+                responseMessage = $"Response in {stpw.Elapsed.ToDetailedFormattedString()}";
+                responseDuration = stpw.Elapsed;
+                StateHasChanged();
+            });
+            });
         }
     }
 

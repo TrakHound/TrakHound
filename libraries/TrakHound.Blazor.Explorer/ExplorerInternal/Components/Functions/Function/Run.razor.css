@@ -75,23 +75,19 @@
 }
 
 
-/*.table {
-    background: #fafafa;
-    border: 1px solid #eee;
-}*/
+thead tr {
+    border: none;
+}
 
 th {
     font-size: 13px;
     font-weight: bold;
-    border: none !important;
-/*    border-right: 1px solid #eee !important;*/
     padding: 5px 10px;
 }
 
 td {
     font-size: 13px;
     padding: 5px 15px;
-/*    background: #fff;*/
     height: auto;
 }
 
@@ -138,36 +134,36 @@ td {
             width: 100%;
             font-size: 13px !important;
             border-radius: 0;
-            border: 1px solid transparent;
-            border: 1px solid var(--accentKindaLight);
+/*            border: 1px solid transparent;
+            border: 1px solid var(--accentKindaLight);*/
             padding: 0px 15px !important;
             line-height: 10px !important;
             height: 24px;
-            background: #fafafa;
-            background: var(--accentVeryLight) !important;
+/*            background: #fafafa;
+            background: var(--accentVeryLight) !important;*/
         }
 
             td ::deep .text-box input:focus {
                 outline: none;
                 box-shadow: none;
-                border: 1px solid var(--accentLight);
+/*                border: 1px solid var(--accentLight);*/
             }
 
     td ::deep .rz-textarea {
         width: 100%;
         font-size: 13px !important;
         border-radius: 0;
-        border: 1px solid transparent;
-        border: 1px solid var(--accentKindaLight);
+/*        border: 1px solid transparent;
+        border: 1px solid var(--accentKindaLight);*/
         min-height: 100px;
-        background: #fafafa;
-        background: var(--accentVeryVeryLight) !important;
+/*        background: #fafafa;
+        background: var(--accentVeryVeryLight) !important;*/
         margin: 0;
     }
 
-        td ::deep .rz-textarea:focus {
+/*        td ::deep .rz-textarea:focus {
             background: #fff;
-        }
+        }*/
 
 
 .response-message {
@@ -216,7 +212,6 @@ td {
 
 .request-status {
     font-weight: bold;
-    color: #333;
     color: var(--textDark);
 }
 
@@ -230,7 +225,6 @@ td {
 
 #request-duration {
     font-weight: bold;
-    color: #333;
     color: var(--textDark);
 }
 
@@ -243,7 +237,6 @@ td {
 }
 
 .request-started {
-    color: #333;
     color: var(--textDark);
 }
 
@@ -375,25 +368,25 @@ td {
 }
 
     .output-parameters .table {
-        background: #fafafa;
-        border: 1px solid #ddd;
+/*        background: #fafafa;*/
+/*        border: 1px solid red !important;*/
         width: 100%;
     }
 
         .output-parameters .table th {
             font-size: 14px;
             padding: 8px 20px;
-            background: #f4f4f4;
-            border-bottom: 1px solid #ddd !important;
+/*            background: #f4f4f4;
+            border-bottom: 1px solid #ddd !important;*/
         }
 
         .output-parameters .table td {
             font-size: 13px;
             padding: 8px 20px;
-            background: #fafafa;
+/*            background: #fafafa;*/
         }
 
             .output-parameters .table td.key {
                 font-weight: bold;
-                border-right: 1px solid #ddd;
+/*                border-right: 1px solid #ddd;*/
             }

@@ -504,61 +504,64 @@
         responseDuration = TimeSpan.Zero;
         await InvokeAsync(StateHasChanged);
 
-        var stpw = System.Diagnostics.Stopwatch.StartNew();
-
-        var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
-        if (client != null)
+        _ = Task.Run(async () =>
         {
-            var route = Endpoint.Route;
-            var parameters = queryParameterValues;
-            Stream stream = null;
-            byte[] requestBodyBytes = null;
-            string contentType = bodyParameterType;
+            var stpw = System.Diagnostics.Stopwatch.StartNew();
 
-            // Add Body (InputFile)
-            if (requestFile != null)
+            var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+            if (client != null)
             {
-                stream = requestFile.OpenReadStream(requestFile.Size);
+                var route = Endpoint.Route;
+                var parameters = queryParameterValues;
+                Stream stream = null;
+                byte[] requestBodyBytes = null;
+                string contentType = bodyParameterType;
+
+                // Add Body (InputFile)
+                if (requestFile != null)
+                {
+                    stream = requestFile.OpenReadStream(requestFile.Size);
+                }
+                else if (!string.IsNullOrEmpty(bodyParameterValue))
+                {
+                    requestBodyBytes = System.Text.Encoding.UTF8.GetBytes(bodyParameterValue);
+                    stream = new MemoryStream(requestBodyBytes);
+                }
+
+                switch (Endpoint.Type)
+                {
+                    case "Query":
+                        response = await client.Api.Query(requestRoute, requestBodyBytes, contentType, queryParameters: parameters);
+                        break;
+
+                    case "Subscribe":
+                        responseConsumer = await client.Api.Subscribe(requestRoute, requestBodyBytes, contentType, parameters);
+                        if (responseConsumer != null)
+                        {
+                            ResponseReceived(responseConsumer, responseConsumer.InitialValue);
+                            responseConsumer.Received += ResponseReceived;
+                        }
+                        break;
+
+                    case "Publish":
+                        response = await client.Api.Publish(requestRoute, stream, contentType, parameters);
+                        break;
+
+                    case "Delete":
+                        response = await client.Api.Delete(requestRoute, stream, contentType, parameters);
+                        break;
+                }
+
+                ProcessResponse(response);
             }
-            else if (!string.IsNullOrEmpty(bodyParameterValue))
-            {
-                requestBodyBytes = System.Text.Encoding.UTF8.GetBytes(bodyParameterValue);
-                stream = new MemoryStream(requestBodyBytes);
-            }
 
-            switch (Endpoint.Type)
-            {
-                case "Query":
-                    response = await client.Api.Query(requestRoute, requestBodyBytes, contentType, queryParameters: parameters);
-                    break;
+            stpw.Stop();
 
-                case "Subscribe":
-                    responseConsumer = await client.Api.Subscribe(requestRoute, requestBodyBytes, contentType, parameters);
-                    if (responseConsumer != null)
-                    {
-                        ResponseReceived(responseConsumer, responseConsumer.InitialValue);
-                        responseConsumer.Received += ResponseReceived;
-                    }
-                    break;
-
-                case "Publish":
-                    response = await client.Api.Publish(requestRoute, stream, contentType, parameters);
-                    break;
-
-                case "Delete":
-                    response = await client.Api.Delete(requestRoute, stream, contentType, parameters);
-                    break;
-            }
-
-            ProcessResponse(response);
-        }
-
-        stpw.Stop();
-
-        loading = false;
-        responseMessage = $"Response in {stpw.Elapsed.ToDetailedFormattedString()}";
-        responseDuration = stpw.Elapsed;
-        await InvokeAsync(StateHasChanged);
+            loading = false;
+            responseMessage = $"Response in {stpw.Elapsed.ToDetailedFormattedString()}";
+            responseDuration = stpw.Elapsed;
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
     private async void Unsubscribe()
