@@ -150,28 +150,54 @@ a, .btn-link {
     font-size: 14px;
     border-radius: 2px !important;
     height: 38px !important;
-    border-color: var(--borderColor);
     background: var(--inputBackground) !important;
+    border: 1px solid var(--inputBorder) !important;
     color: var(--inputText) !important;
 }
 
-.rz-dropdown {
-    background: var(--inputBackground);
-}
-
     .rz-dropdown:hover {
-        border: 1px solid var(--inputBorderHover) !important;
         background: var(--inputBackgroundHover) !important;
+        border: 1px solid var(--inputBorderHover) !important;
         color: var(--inputTextHover) !important;
     }
 
     .rz-dropdown:focus {
-        border-color: var(--inputBorderHighlight) !important;
         background: var(--inputBackgroundHighlight) !important;
+        border: 1px solid var(--inputBorderHighlight) !important;
         color: var(--inputTextHighlight) !important;
         box-shadow: inset 0px 0px 1px 1px var(--accentLight) !important;
         outline: none;
     }
+
+    .rz-dropdown.disabled {
+        background: var(--inputBackgroundDisabled) !important;
+        border: 1px solid var(--inputBorderDisabled) !important;
+        color: var(--inputTextDisabled) !important;
+        box-shadow: none !important;
+        outline: none;
+    }
+
+
+    .rz-dropdown .rz-dropdown-label {
+        background: var(--inputBackground) !important;
+        color: var(--inputText) !important;
+    }
+
+    .rz-dropdown:hover .rz-dropdown-label {
+        background: var(--inputBackgroundHover) !important;
+        color: var(--inputTextHover) !important;
+    }
+
+    .rz-dropdown:focus .rz-dropdown-label {
+        background: var(--inputBackgroundHighlight) !important;
+        color: var(--inputTextHighlight) !important;
+    }
+
+    .rz-dropdown.disabled .rz-dropdown-label {
+        background: var(--inputBackgroundDisabled) !important;
+        color: var(--inputTextDisabled) !important;
+    }
+
 
     .rz-dropdown .rz-placeholder {
         font-size: 14px;
@@ -184,6 +210,10 @@ a, .btn-link {
 
     .rz-dropdown:focus .rz-placeholder {
         color: var(--inputPlaceholderHighlight) !important;
+    }
+
+    .rz-dropdown.disabled .rz-placeholder {
+        color: var(--inputPlaceholderDisabled) !important;
     }
 
 .rz-dropdown-trigger {

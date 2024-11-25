@@ -231,11 +231,12 @@ namespace TrakHound.Routing
                     var defaultRouter = _routers.FirstOrDefault(o => o.Configuration.Name == TrakHoundRouter.Default);
                     if (defaultRouter != null)
                     {
-                        return defaultRouter;
+                        if (defaultRouter.Initialized) return defaultRouter;
                     }
                     else
                     {
-                        return _routers.FirstOrDefault();
+                        var router = _routers.FirstOrDefault();
+                        if (router.Initialized) return router;
                     }
                 }
             }
@@ -252,7 +253,8 @@ namespace TrakHound.Routing
                 {
                     if (!string.IsNullOrEmpty(routerKey))
                     {
-                        return _routers.FirstOrDefault(o => MatchRouterKey(o, routerKey));
+                        var router = _routers.FirstOrDefault(o => MatchRouterKey(o, routerKey));
+                        if (router.Initialized) return router;
                     }
                     else
                     {

@@ -5,15 +5,10 @@
     color: var(--buttonLinkText) !important;
     outline: none;
     box-shadow: none;
-    border: 1px solid var(--buttonLinkBorder);
+    border: none;
 }
 
-    .btn-link.disabled {
-        color: var(--textLight) !important;
-    }
-
     .btn-link:hover {
-        color: var(--accentLight) !important;
         color: var(--buttonLinkTextHover) !important;
         text-decoration: underline;
     }
@@ -21,17 +16,29 @@
     .btn-link:focus {
         box-shadow: none !important;
         outline: none;
-        border: 1px solid var(--buttonLinkBorder);
+    }
+
+    .btn-link.disabled {
+        color: var(--buttonLinkTextDisabled) !important;
     }
 
     .btn-link .icon {
         font-size: 14px;
-        color: var(--buttonLink) !important;
+        color: var(--buttonLinkIcon) !important;
     }
 
     .btn-link:hover .icon {
-        color: var(--buttonLinkTextHover) !important;
+        color: var(--buttonLinkIconHover) !important;
     }
+
+    .btn-link:focus .icon {
+        color: var(--buttonLinkIconHighlight) !important;
+    }
+
+    .btn-link.disabled .icon {
+        color: var(--buttonLinkIconDisabled) !important;
+    }
+
 
     .btn-link.btn-sm {
         font-size: 12px;

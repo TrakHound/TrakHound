@@ -66,18 +66,35 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             OpenAddModal();
         }
 
-        public void AddChildObject(ITrakHoundObjectEntity parentObject)
+        public void AddChildObject(string parentUuid)
         {
-            if (parentObject != null)
+            if (parentUuid != null)
             {
-                _data.Path = $"{parentObject.Namespace}:{parentObject.Path}/";
-                if (_data.ContentType == null) _data.ContentType = TrakHoundObjectContentTypes.Directory;
-                _data.DefinitionId = null;
+                var parentObject = _explorerService.GetObject(parentUuid);
+                if (parentObject != null)
+                {
+                    _data.Path = $"{parentObject.Namespace}:{parentObject.Path}/";
+                    if (_data.ContentType == null) _data.ContentType = TrakHoundObjectContentTypes.Directory;
+                    _data.DefinitionId = null;
 
-                _isEdit = false;
-                OpenAddModal();
+                    _isEdit = false;
+                    OpenAddModal();
+                }
             }
         }
+
+        //public void AddChildObject(ITrakHoundObjectEntity parentObject)
+        //{
+        //    if (parentObject != null)
+        //    {
+        //        _data.Path = $"{parentObject.Namespace}:{parentObject.Path}/";
+        //        if (_data.ContentType == null) _data.ContentType = TrakHoundObjectContentTypes.Directory;
+        //        _data.DefinitionId = null;
+
+        //        _isEdit = false;
+        //        OpenAddModal();
+        //    }
+        //}
 
         public void EditObject(string objectUuid)
         {
@@ -132,6 +149,8 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                 {
                     await Edit();
                 }
+
+                _explorerService.BuildTreeItems();
 
                 _modalLoading = false;
                 _modalVisible = false;

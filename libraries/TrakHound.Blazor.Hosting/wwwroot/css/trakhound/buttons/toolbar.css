@@ -2,7 +2,6 @@
     display: inline-block !important;
     text-align: center !important;
     background: var(--buttonToolbarBackground);
-    border: 1px solid var(--borderVeryLight);
     border: 1px solid var(--buttonToolbarBorder);
     border-left: none;
     border-radius: 0 !important;
@@ -13,27 +12,32 @@
     color: var(--buttonToolbarText);
 }
 
+    .btn-toolbar:hover {
+        background: var(--buttonToolbarBackgroundHover);
+        border: var(--buttonToolbarBorderHover);
+        color: var(--buttonToolbarTextHover);
+        transition: none;
+    }
+
     .btn-toolbar:focus {
         box-shadow: none !important;
         outline: none;
-        border: 1px solid var(--buttonToolbarBorder);
+        background: var(--buttonToolbarBackgroundHighlight);
+        border: var(--buttonToolbarBorderHighlight);
+        color: var(--buttonToolbarTextHighlight);
+    }
+
+    .btn-toolbar.disabled {
+        box-shadow: none !important;
+        outline: none;
+        background: var(--buttonToolbarBackgroundDisabled);
+        border: var(--buttonToolbarBorderDisabled);
+        color: var(--buttonToolbarTextDisabled);
     }
 
     .btn-toolbar:first-child {
         border-left: 1px solid var(--borderVeryLight);
         border-left: 1px solid var(--buttonToolbarBorder);
-    }
-
-    .btn-toolbar:hover {
-        background: #f4f4f4;
-        background: var(--buttonToolbarBackgroundHover);
-        color: var(--accentLight);
-        color: var(--buttonToolbarTextHover);
-        transition: none;
-    }
-
-    .btn-toolbar.disabled {
-        color: #888 !important;
     }
 
     .btn-toolbar .icon {
@@ -42,18 +46,21 @@
         margin-right: 10px !important;
         font-size: 10px !important;
         text-align: center;
-        color: var(--accent);
         color: var(--buttonToolbarIcon);
     }
 
     .btn-toolbar:hover .icon {
-        color: var(--accentLight);
         color: var(--buttonToolbarIconHover);
         transition: none;
     }
 
+    .btn-toolbar:focus .icon {
+        color: var(--buttonToolbarIconHighlight);
+        transition: none;
+    }
+
     .btn-toolbar.disabled .icon {
-        color: #ccc !important;
+        color: var(--buttonToolbarIconDisabled);
     }
 
     .btn-toolbar .icon:first-child {

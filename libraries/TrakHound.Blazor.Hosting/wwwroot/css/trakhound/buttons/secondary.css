@@ -1,37 +1,50 @@
 ﻿.btn-secondary {
-    background: none;
     background: var(--buttonSecondaryBackground);
     border: 1px solid var(--buttonSecondaryBorder);
-    color: #333;
     color: var(--buttonSecondaryText);
     font-size: 12px;
     transition: none;
 }
 
-    .btn-secondary:focus {
-        box-shadow: none !important;
-        outline: none;
-        border: 1px solid var(--buttonCommandBorder);
-    }
-
     .btn-secondary:hover {
-        background: #eee;
         background: var(--buttonSecondaryBackgroundHover);
-        border: 1px solid #ccc;
         border: 1px solid var(--buttonSecondaryBorderHover);
-        color: #000;
         color: var(--buttonSecondaryTextHover);
         transition: none;
     }
 
+    .btn-secondary:focus {
+        box-shadow: none !important;
+        outline: none;
+        background: var(--buttonSecondaryBackgroundHighlight);
+        border: 1px solid var(--buttonSecondaryBorderHighlight);
+        color: var(--buttonSecondaryTextHighlight);
+    }
+
+    .btn-secondary.disabled {
+        box-shadow: none !important;
+        outline: none;
+        background: var(--buttonSecondaryBackgroundDisabled);
+        border: 1px solid var(--buttonSecondaryBorderDisabled);
+        color: var(--buttonSecondaryTextDisabled);
+    }
+
     .btn-secondary .icon {
-        color: #888;
         color: var(--buttonSecondaryIcon);
         transition: none;
     }
 
     .btn-secondary:hover .icon {
-        color: #333;
         color: var(--buttonSecondaryIconHover);
+        transition: none;
+    }
+
+    .btn-secondary:focus .icon {
+        color: var(--buttonSecondaryIconHighlight);
+        transition: none;
+    }
+
+    .btn-secondary.disabled .icon {
+        color: var(--buttonSecondaryIconDisabled);
         transition: none;
     }

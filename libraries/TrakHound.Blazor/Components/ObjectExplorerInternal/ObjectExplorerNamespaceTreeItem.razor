@@ -1,0 +1,109 @@
+﻿@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+@inject TrakHound.Blazor.Services.ContextMenuService contextMenuService
+
+@if (TreeItem != null && ObjectExplorerService != null)
+{
+    var treeItemClasses = new List<string>();
+
+    var isExpanded = ObjectExplorerService.GetNamespaceExpanded(TreeItem.Id);
+    if (isExpanded) treeItemClasses.Add("expanded");
+
+    var treeItemClass = string.Join(' ', treeItemClasses);
+
+    <tr class="namespace-tree-item @treeItemClass" @oncontextmenu="ToggleContextMenu" @oncontextmenu:preventDefault="true">
+        <td class="header-cell">
+            <div class="header-container">
+                <div class="expand-container">
+
+                    @if (isExpanded)
+                    {
+                        <span class="btn-expand btn" @onclick="Collapse"><span class="icon far fa-minus-square"></span></span>
+                    }
+                    else
+                    {
+                        <span class="btn-expand btn" @onclick="Expand"><span class="icon far fa-plus-square"></span></span>
+                    }
+
+                </div>
+                <div class="icon-container">
+                    <span class="icon fa-solid fa-sharp fa-globe"></span>
+                </div>
+                <div class="title-container">@TreeItem.Title</div>
+            </div>
+        </td>
+        <td></td>
+    </tr>
+
+    <ContextMenu Id="@contextMenuId">
+        <ContextMenuItem Text="Query (Select >>)" Clicked="QueryClicked" />
+        <ContextMenuSeparator />
+        <ContextMenuItem Text="Add Child.." Clicked="AddChild" />
+        <ContextMenuSeparator />
+        @if (ObjectExplorerService.ClipboardId != null)
+        {
+            <ContextMenuItem Text="Paste" Clicked="Paste" />
+        }
+
+    </ContextMenu>
+}
+
+@code {
+
+    private readonly string contextMenuId = Guid.NewGuid().ToString();
+
+
+    [CascadingParameter(Name = "ObjectExplorerService")]
+    public ObjectExplorerService ObjectExplorerService { get; set; }
+
+    [CascadingParameter]
+    public ObjectExplorerTreeView ObjectTreeView { get; set; }
+
+    [Parameter]
+    public ObjectExplorerNamespaceTreeItemModel TreeItem { get; set; }
+
+
+    private void QueryClicked()
+    {
+        var resultQuery = $"select >> from [{TreeItem.Namespace}:/]";
+        var queryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultQuery}";
+
+        navigationManager.NavigateTo(queryLink);
+    }
+
+    private void AddChild()
+    {
+        ObjectExplorerService.AddService.AddObject($"{TreeItem.Namespace}:/");
+    }
+
+    private async void Expand()
+    {
+        ObjectExplorerService.ExpandNamespace(TreeItem.Id);
+        await ObjectTreeView.Render(true);
+    }
+
+    private async void Collapse()
+    {
+        ObjectExplorerService.CollapseNamespace(TreeItem.Id);
+        await ObjectTreeView.Render(true);
+    }
+
+    private async void Paste()
+    {
+        var path = $"{TreeItem.Namespace}:/";
+        if (await ObjectExplorerService.Paste(path))
+        {
+            ObjectExplorerService.AddNotification(NotificationType.Information, "Objects Pasted Successfuly", path);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void ToggleContextMenu(MouseEventArgs args)
+    {
+        if (args != null)
+        {
+            contextMenuService.Show(contextMenuId, args.PageX, args.PageY);
+        }
+    }
+
+}

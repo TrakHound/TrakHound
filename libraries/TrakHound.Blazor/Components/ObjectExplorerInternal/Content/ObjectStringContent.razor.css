@@ -7,7 +7,7 @@
 
 .toolbar-panel {
     grid-row: 1;
-    padding: 9px 10px 11px;
+    padding: 9px 10px 6px;
 }
 
     .toolbar-panel .btn-save {

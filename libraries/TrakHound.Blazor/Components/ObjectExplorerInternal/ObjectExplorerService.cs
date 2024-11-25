@@ -15,6 +15,8 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         public const int RecentMilliseconds = 2000;
         public const int RecentLimit = RecentMilliseconds * 1000000;
 
+        private static readonly ObjectExplorerObjectComparer _comparer = new ObjectExplorerObjectComparer();
+
 
         private readonly string _baseUrl;
         private readonly ITrakHoundClient _client;
@@ -269,6 +271,19 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             return 0;
         }
 
+        public ITrakHoundObjectEntity GetObject(string uuid)
+        {
+            if (!string.IsNullOrEmpty(uuid))
+            {
+                lock (_lock)
+                {
+                    return _objects.GetValueOrDefault(uuid);
+                }
+            }
+
+            return null;
+        }
+
         public IEnumerable<ITrakHoundObjectMetadataEntity> GetObjectMetadata(string objectUuid)
         {
             if (!string.IsNullOrEmpty(objectUuid))
@@ -468,7 +483,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                         {
                             foreach (var ns in namespaces)
                             {
-                                _expandedNamespaces.Add($"NAMESPACE:{ns}".ToLower());
+                                _expandedNamespaces.Add(ObjectExplorerNamespaceTreeItemModel.GetNamespaceId(ns));
                             }
                         }
                     }
@@ -479,8 +494,8 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                         _targetUuids.AddRange(objects.Select(o => o.Uuid));
                     }
 
-                    BuildTreeItems();
                     FilterTargetObjects();
+                    BuildTreeItems();
                 }
             }
         }
@@ -581,7 +596,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                                 {
                                     foreach (var ns in namespaces)
                                     {
-                                        _expandedNamespaces.Add($"NAMESPACE:{ns}".ToLower());
+                                        _expandedNamespaces.Add(ObjectExplorerNamespaceTreeItemModel.GetNamespaceId(ns));
                                     }
                                 }
                             }
@@ -592,8 +607,8 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                                 _targetUuids.AddRange(targetUuids);
                             }
 
-                            BuildTreeItems();
                             FilterTargetObjects();
+                            BuildTreeItems();
                         }
                     }
                 }
@@ -659,7 +674,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                         {
                             foreach (var ns in namespaces)
                             {
-                                _expandedNamespaces.Add($"NAMESPACE:{ns}".ToLower());
+                                _expandedNamespaces.Add(ObjectExplorerNamespaceTreeItemModel.GetNamespaceId(ns));
                             }
                         }
                     }
@@ -670,8 +685,8 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                         _targetUuids.AddRange(objects.Select(o => o.Uuid));
                     }
 
-                    BuildTreeItems();
                     FilterTargetObjects();
+                    BuildTreeItems();
                     SelectObject(_uuid);
                 }
             }
@@ -731,7 +746,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                         {
                             foreach (var ns in namespaces)
                             {
-                                _expandedNamespaces.Add($"NAMESPACE:{ns}".ToLower());
+                                _expandedNamespaces.Add(ObjectExplorerNamespaceTreeItemModel.GetNamespaceId(ns));
                             }
                         }
                     }
@@ -782,7 +797,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                     {
                         foreach (var ns in namespaces)
                         {
-                            _expandedNamespaces.Add($"NAMESPACE:{ns}".ToLower());
+                            _expandedNamespaces.Add(ObjectExplorerNamespaceTreeItemModel.GetNamespaceId(ns));
                         }
                     }
                 }
@@ -835,7 +850,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                     {
                         foreach (var ns in namespaces)
                         {
-                            _expandedNamespaces.Add($"NAMESPACE:{ns}".ToLower());
+                            _expandedNamespaces.Add(ObjectExplorerNamespaceTreeItemModel.GetNamespaceId(ns));
                         }
                     }
                 }
@@ -846,8 +861,8 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                     _targetUuids.AddRange(objects.Select(o => o.Uuid));
                 }
 
-                BuildTreeItems();
                 FilterTargetObjects();
+                BuildTreeItems();
             }
         }
 
@@ -897,7 +912,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                         {
                             foreach (var ns in namespaces)
                             {
-                                _expandedNamespaces.Add($"NAMESPACE:{ns}".ToLower());
+                                _expandedNamespaces.Add(ObjectExplorerNamespaceTreeItemModel.GetNamespaceId(ns));
                             }
                         }
                     }
@@ -1265,92 +1280,170 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             }
         }
 
-        //public ObjectExplorerTreeItemModel GetTreeItem(string uuid)
-        //{
-        //    if (!string.IsNullOrEmpty(uuid) && !_treeIndexes.IsNullOrEmpty())
-        //    {
-        //        lock (_lock)
-        //        {
-        //            var treeItemIndex = _treeIndexes.GetValueOrDefault(uuid);
-        //            if (treeItemIndex >= 0)
-        //            {
-        //                return _treeItems[treeItemIndex];
-        //            }
-        //        }
-        //    }
-
-        //    return null;
-        //}
-
-        //public void AddTreeItem(ITrakHoundObjectEntity entity)
-        //{
-        //    if (entity != null && !string.IsNullOrEmpty(entity.Uuid))
-        //    {
-        //        lock (_lock)
-        //        {
-        //            var treeItemIndex = _treeIndexes.GetValueOrDefault(entity.Uuid);
-        //            if (treeItemIndex >= 0)
-        //            {
-        //                return _treeItems[treeItemIndex];
-        //            }
-        //            else
-        //            {
-        //                treeItem
-        //            }
-        //        }
-        //    }
-
-        //    return null;
-        //}
-
         public void BuildTreeItems()
         {
-            ITrakHoundObjectEntity[] entities;
-            lock (_lock) entities = _objects.Values.ToArray();
-
-            if (!entities.IsNullOrEmpty())
+            lock (_lock)
             {
-                Array.Sort(entities, new ObjectExplorerObjectComparer());
-
-                var treeItems = new ObjectExplorerTreeItemModel[entities.Length];
-                var treeIndexes = new Dictionary<string, int>();
-
-                for (var i = 0; i < entities.Length; i++)
+                var targetUuids = _filteredTargetUuids?.ToArray();
+                if (!targetUuids.IsNullOrEmpty())
                 {
-                    treeItems[i] = new ObjectExplorerTreeItemModel(entities[i]);
-                    treeItems[i].Value = GetValue(entities[i].Uuid);
+                    var namespaces = new ListDictionary<string, ITrakHoundObjectEntity>();
 
-                    // Set Last Sibling (used for expanded border)
-                    if (i < entities.Length - 1)
+                    var targetObjects = new ITrakHoundObjectEntity[targetUuids.Length];
+                    for (var i = 0; i < targetUuids.Length; i++)
                     {
-                        if (TrakHoundPath.GetParentPath(entities[i].GetAbsolutePath()) != TrakHoundPath.GetParentPath(entities[i + 1].GetAbsolutePath()))
+                        var targetObject = _objects.GetValueOrDefault(targetUuids[i]);
+                        if (targetObject != null)
                         {
-                            treeItems[i].LastSibling = true;
+                            namespaces.Add(targetObject.Namespace, targetObject);
                         }
                     }
-                    else
+
+                    var treeIndexes = new Dictionary<string, int>();
+                    var x = 0;
+
+                    var treeItems = new ObjectExplorerTreeItemModel[namespaces.Keys.Count() + _objects.Count];
+                    foreach (var ns in namespaces.Keys.OrderBy(o => o))
                     {
-                        treeItems[i].LastSibling = true;
+                        var namespaceTargetObjects = namespaces.Get(ns);
+                        if (!namespaceTargetObjects.IsNullOrEmpty())
+                        {
+                            // Add Namespace Tree Item
+                            treeItems[x] = new ObjectExplorerNamespaceTreeItemModel(ns);
+                            x++;
+
+                            foreach (var targetObject in namespaceTargetObjects.OrderBy(o => o, _comparer))
+                            {
+                                var i = AddObjectTreeItems(ref treeItems, ref treeIndexes, targetObject, x, 1);
+                                x += i;
+                            }
+                        }
                     }
 
-                    treeIndexes.Add(entities[i].Uuid, i);
-                }
-
-                lock (_lock)
-                {
                     _treeItems = treeItems;
                     _treeIndexes = treeIndexes;
                 }
-            }
-            else
-            {
-                lock (_lock)
+                else
                 {
                     _treeItems = null;
                     _treeIndexes = null;
                 }
             }
         }
+
+        private int AddObjectTreeItems(
+            ref ObjectExplorerTreeItemModel[] treeItems, 
+            ref Dictionary<string, int> treeIndexes, 
+            ITrakHoundObjectEntity targetObject,
+            int index,
+            int depth
+            )
+        {
+            var count = 0;
+
+            if (treeItems != null && targetObject != null && targetObject.Uuid != null)
+            {
+                var treeItem = new ObjectExplorerObjectTreeItemModel(targetObject);
+                treeItem.Depth = depth;
+
+                if (treeItem.ContentType == TrakHoundObjectContentType.Directory)
+                {
+                    // Set Child Count
+                    treeItem.ChildCount = _objectChildCount.GetValueOrDefault(targetObject.Uuid);
+                }
+
+                if (treeItem.ContentType != TrakHoundObjectContentType.Directory)
+                {
+                    // Set Value
+                    if (_values.ContainsKey(targetObject.Uuid))
+                    {
+                        treeItem.Value = _values[targetObject.Uuid];
+                    }
+                }              
+
+                treeItems[index] = treeItem;
+                treeIndexes.Add(targetObject.Uuid, index);
+                index++;
+                count++;
+
+                var childObjects = GetChildObjects(targetObject.Uuid);
+                if (!childObjects.IsNullOrEmpty())
+                {
+                    foreach (var childObject in childObjects.OrderBy(o => o, _comparer))
+                    {
+                        var childCount = AddObjectTreeItems(ref treeItems, ref treeIndexes, childObject, index, depth + 1);
+                        index += childCount;
+                        count += childCount;
+                    }
+                }
+            }
+
+            return count;
+        }
+
+        //public void BuildTreeItems()
+        //{
+        //    ITrakHoundObjectEntity[] entities;
+        //    lock (_lock) entities = _objects.Values.ToArray();
+
+        //    if (!entities.IsNullOrEmpty())
+        //    {
+        //        Array.Sort(entities, new ObjectExplorerObjectComparer());
+
+        //        var namespaceCount = entities.Select(o => o.Namespace).Distinct().Count();
+
+        //        var treeItems = new ObjectExplorerTreeItemModel[entities.Length + namespaceCount];
+        //        var treeIndexes = new Dictionary<string, int>();
+
+        //        string previousNamespace = null;
+        //        var x = 0;
+
+        //        for (var i = 0; i < entities.Length; i++)
+        //        {
+        //            var ns = entities[i].Namespace;
+        //            if (ns != previousNamespace)
+        //            {
+        //                treeItems[x] = new ObjectExplorerTreeItemNamespaceModel(ns);
+        //                previousNamespace = ns;
+        //                x++;
+        //            }
+
+        //            var treeItem = new ObjectExplorerTreeItemObjectModel(entities[i]);
+        //            treeItem.Value = GetValue(entities[i].Uuid);
+
+        //            // Set Last Sibling (used for expanded border)
+        //            if (i < entities.Length - 1)
+        //            {
+        //                if (TrakHoundPath.GetParentPath(entities[i].GetAbsolutePath()) != TrakHoundPath.GetParentPath(entities[i + 1].GetAbsolutePath()))
+        //                {
+        //                    treeItem.LastSibling = true;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                treeItem.LastSibling = true;
+        //            }
+
+        //            treeIndexes.Add(entities[i].Uuid, x);
+        //            treeItems[x] = treeItem;
+        //            x++;
+        //        }
+
+        //        lock (_lock)
+        //        {
+        //            _treeItems = treeItems;
+        //            _treeIndexes = treeIndexes;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        lock (_lock)
+        //        {
+        //            _treeItems = null;
+        //            _treeIndexes = null;
+        //        }
+        //    }
+        //}
 
 
         public void ExpandAll()
@@ -1628,8 +1721,13 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                     var treeItemIndex = _treeIndexes?.GetValueOrDefault(objectUuid);
                     if (treeItemIndex.HasValue)
                     {
-                        _treeItems[treeItemIndex.Value].Value = value;
-                        _treeItems[treeItemIndex.Value].ValueLastUpdated = ts;
+                        var treeItem = _treeItems[treeItemIndex.Value];
+                        if (treeItem != null && treeItem.GetType() == typeof(ObjectExplorerObjectTreeItemModel))
+                        {
+                            var objectTreeItem = (ObjectExplorerObjectTreeItemModel)treeItem;
+                            objectTreeItem.Value = value;
+                            objectTreeItem.ValueLastUpdated = ts;
+                        }
                     }
                 }
 

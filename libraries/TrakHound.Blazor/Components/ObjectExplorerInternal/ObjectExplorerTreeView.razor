@@ -37,15 +37,22 @@
 
     protected override void OnInitialized()
     {
-        ObjectExplorerService.NamespaceExpanded += NamespaceExpanded;
-        ObjectExplorerService.NamespaceCollapsed += NamespaceCollapsed;
+        // ObjectExplorerService.NamespaceExpanded += NamespaceExpanded;
+        // ObjectExplorerService.NamespaceCollapsed += NamespaceCollapsed;
 
         renderThrottle.Elapsed += RenderThrottleElapsed;
     }
 
-    public void Render()
+    public async Task Render(bool force = false)
     {
-        renderThrottle.Set();
+        if (force)
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            renderThrottle.Set();
+        }
     }
 
     private async void RenderThrottleElapsed(object sender, EventArgs args)
@@ -77,34 +84,34 @@
         ObjectExplorerService.AddService.AddObject($"{ns}:/");
     }
 
-    private async void NamespaceExpanded(object sender, string ns)
-    {
-        await InvokeAsync(StateHasChanged);
-    }
+    // private async void NamespaceExpanded(object sender, string ns)
+    // {
+    //     await InvokeAsync(StateHasChanged);
+    // }
 
-    private async void ExpandNamespace(string ns)
-    {
-        var isExpanded = ObjectExplorerService.GetNamespaceExpanded(ns);
-        if (!isExpanded)
-        {
-            ObjectExplorerService.ExpandNamespace(ns);
-            await InvokeAsync(StateHasChanged);
-        }
-    }
+    // private async void ExpandNamespace(string ns)
+    // {
+    //     var isExpanded = ObjectExplorerService.GetNamespaceExpanded(ns);
+    //     if (!isExpanded)
+    //     {
+    //         ObjectExplorerService.ExpandNamespace(ns);
+    //         await InvokeAsync(StateHasChanged);
+    //     }
+    // }
 
-    private async void NamespaceCollapsed(object sender, string ns)
-    {
-        await InvokeAsync(StateHasChanged);
-    }
+    // private async void NamespaceCollapsed(object sender, string ns)
+    // {
+    //     await InvokeAsync(StateHasChanged);
+    // }
 
-    private async void CollapseNamespace(string ns)
-    {
-        var isExpanded = ObjectExplorerService.GetNamespaceExpanded(ns);
-        if (isExpanded)
-        {
-            ObjectExplorerService.CollapseNamespace(ns);
-            await InvokeAsync(StateHasChanged);
-        }
-    }
+    // private async void CollapseNamespace(string ns)
+    // {
+    //     var isExpanded = ObjectExplorerService.GetNamespaceExpanded(ns);
+    //     if (isExpanded)
+    //     {
+    //         ObjectExplorerService.CollapseNamespace(ns);
+    //         await InvokeAsync(StateHasChanged);
+    //     }
+    // }
 
 }

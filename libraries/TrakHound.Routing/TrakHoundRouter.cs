@@ -30,6 +30,7 @@ namespace TrakHound.Routing
         private readonly ITrakHoundClient _client;
         private readonly object _lock = new object();
 
+        private bool _initialized;
         private IEnumerable<IRouteTarget> _targets;
         private TrakHoundBlobRouter _blobs;
         private TrakHoundCommandRouter _commands;
@@ -39,6 +40,8 @@ namespace TrakHound.Routing
 
 
         public string Id => _id;
+
+        public bool Initialized => _initialized;
 
         public TrakHoundRouterConfiguration Configuration => _configuration;
 
@@ -82,6 +85,7 @@ namespace TrakHound.Routing
         public void Initialize(IEnumerable<TrakHoundRouter> routers, IEnumerable<ITrakHoundDriver> drivers)
         {
             _entities.Initialize(routers, drivers);
+            _initialized = true;
         }
 
 

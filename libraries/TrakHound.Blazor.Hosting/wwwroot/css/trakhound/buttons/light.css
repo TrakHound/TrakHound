@@ -5,23 +5,24 @@
     color: var(--buttonLightText);
 }
 
-    .btn-light:focus {
-        box-shadow: none !important;
-        outline: none;
-        background: var(--buttonLightBackgroundHover) !important;
-        border: 1px solid var(--buttonLightBorderHover) !important;
-    }
-
     .btn-light:hover {
         background: var(--buttonLightBackgroundHover);
         border: 1px solid var(--buttonLightBorderHover);
         color: var(--buttonLightTextHover);
     }
 
+    .btn-light:focus {
+        box-shadow: none !important;
+        outline: none;
+        background: var(--buttonLightBackgroundHighlight) !important;
+        border: 1px solid var(--buttonLightBorderHighlight) !important;
+        color: var(--buttonLightTextHighlight);
+    }
+
     .btn-light.disabled {
-        background: var(--buttonLightBackgroundHover) !important;
-        border-color: var(--buttonLightBorderHover) !important;
-        color: var(--textLight) !important;
+        background: var(--buttonLightBackgroundDisabled) !important;
+        border: 1px solid var(--buttonLightBorderDisabled) !important;
+        color: var(--buttonLightTextDisabled) !important;
     }
 
     .btn-light .icon {
@@ -31,6 +32,15 @@
     .btn-light:hover .icon {
         color: var(--buttonLightIconHover);
     }
+
+    .btn-light:focus .icon {
+        color: var(--buttonLightIconHighlight);
+    }
+
+    .btn-light.disabled .icon {
+        color: var(--buttonLightIconDisabled);
+    }
+
 
 .btn-light-success {
     background: white;

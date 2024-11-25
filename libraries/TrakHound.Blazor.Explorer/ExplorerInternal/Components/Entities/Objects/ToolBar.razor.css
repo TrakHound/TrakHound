@@ -38,7 +38,7 @@
         display: inline-block;
     }
 
-        .tool-bar-buttons-left .btn-query .icon ::deep .loader {
+/*        .tool-bar-buttons-left .btn-query .icon ::deep .loader {
             padding-top: 3px;
             height: 14px;
             width: 24px;
@@ -48,17 +48,23 @@
             background: white;
             width: 2.5px;
             margin-left: 1px;
-        }
+        }*/
 
         .tool-bar-buttons-left .btn-query.btn-secondary .icon-container {
             display: inline-block;
             margin-right: 8px;
         }
 
-        .tool-bar-buttons-left .btn-query.btn-secondary .icon {
-            animation: spin 1s linear infinite;
+        .tool-bar-buttons-left .btn-query.btn-secondary .icon-container .icon {
+            height: 11px;
+            width: 12px;
             margin-right: 0;
         }
+
+/*        .tool-bar-buttons-left .btn-query.btn-secondary .icon {
+            animation: spin 1s linear infinite;
+            margin-right: 0;
+        }*/
 
 
 .tool-bar-type {

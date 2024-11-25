@@ -1,6 +1,7 @@
 // Copyright (c) 2024 TrakHound Inc., All Rights Reserved.
 // TrakHound Inc. licenses this file to you under the MIT license.
 
+using Radzen;
 using TrakHound.Entities;
 
 namespace TrakHound.Blazor.Components.ObjectExplorerInternal
@@ -28,6 +29,16 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             _explorerService = explorerService;
         }
 
+
+        public void DeleteObject(string uuid)
+        {
+            var entity = _explorerService.GetObject(uuid);
+            if (entity != null)
+            {
+                _deleteModalPaths = new List<string>() { entity.GetAbsolutePath() };
+                OpenDeleteModal();
+            }
+        }
 
         public void DeleteObject(ITrakHoundObjectEntity entity)
         {

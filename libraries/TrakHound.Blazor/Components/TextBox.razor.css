@@ -40,10 +40,15 @@
     }
 
     .text-box input:focus {
-        border: 1px solid var(--accentLight);
         background: var(--inputBackgroundHighlight) !important;
         border: 1px solid var(--inputBorderHighlight) !important;
         color: var(--inputTextHighlight) !important;
+    }
+
+    .text-box input.disabled {
+        background: var(--inputBackgroundDisabled) !important;
+        border: 1px solid var(--inputBorderDisabled) !important;
+        color: var(--inputTextDisabled) !important;
     }
 
     .text-box input::placeholder {
@@ -58,6 +63,10 @@
 
     .text-box input:focus::placeholder {
         color: var(--inputPlaceholderHighlight) !important;
+    }
+
+    .text-box input.disabled::placeholder {
+        color: var(--inputPlaceholderDisabled) !important;
     }
 
     .text-box.small input::placeholder {

@@ -1,6 +1,4 @@
 ﻿.btn-command {
-    color: var(--textDark);
-    color: var(--accent);
     background: var(--buttonCommandBackground);
     border: 1px solid var(--buttonCommandBorder);
     color: var(--buttonCommandText);
@@ -8,20 +6,19 @@
     transition: none;
 }
 
+    .btn-command:hover {
+        background: var(--buttonCommandBackgroundHover);
+        border: 1px solid var(--buttonCommandBorderHover);
+        color: var(--buttonCommandTextHover);
+        transition: none;
+    }
+
     .btn-command:focus {
         box-shadow: none !important;
         outline: none;
-        border: 1px solid var(--buttonCommandBorder);
-    }
-
-    .btn-command:hover {
-        color: var(--accent);
-        color: var(--accentLight);
-        background: var(--buttonCommandBackgroundHover);
-        color: var(--buttonCommandTextHover);
-        border: 1px solid var(--borderLight);
-        border: 1px solid var(--buttonCommandBorderHover);
-        transition: none;
+        background: var(--buttonCommandBackgroundHighlight);
+        border: 1px solid var(--buttonCommandBorderHighlight);
+        color: var(--buttonCommandTextHighlight);
     }
 
     .btn-command.active {
@@ -32,33 +29,31 @@
     }
 
     .btn-command.disabled {
-        color: #888 !important;
         transition: none;
+        background: var(--buttonCommandBackgroundDisabled);
+        border: 1px solid var(--buttonCommandBorderDisabled);
+        color: var(--buttonCommandTextDisabled);
     }
 
     .btn-command .icon {
         margin-right: 10px;
-        color: var(--textMild);
-        color: var(--accent);
         color: var(--buttonCommandIcon);
         font-size: 14px;
         transition: none;
     }
 
     .btn-command:hover .icon {
-        color: var(--accent);
-        color: var(--accentLight);
         color: var(--buttonCommandIconHover);
         transition: none;
     }
 
-    .btn-command.active .icon {
-        color: #fff !important;
+    .btn-command:focus .icon {
+        color: var(--buttonCommandIconHighlight);
         transition: none;
     }
 
     .btn-command.disabled .icon {
-        color: #aaa !important;
+        color: var(--buttonCommandIconDisabled);
         transition: none;
     }
 

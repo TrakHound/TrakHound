@@ -1,0 +1,111 @@
+.namespace-tree-item {
+    cursor: pointer;
+}
+
+.namespace-tree-item td {
+    background: none;
+    border: none !important;
+    height: 16px;
+}
+
+.header-cell {
+    width: 100%;
+    border-bottom: 2px solid blue !important;
+}
+
+.header-container {
+    display: grid;
+    grid-template-columns: max-content 25px max-content 1fr;
+}
+
+.expand-container {
+    grid-column: 1;
+    width: 15px;
+    padding-top: 1px;
+}
+
+    .expand-container .btn-expand {
+        display: block;
+        vertical-align: top;
+        padding: 0;
+        padding-bottom: 2px;
+        padding-right: 2px;
+        margin-top: 0px;
+        font-size: 11px;
+        color: var(--textMild);
+        transition: none;
+        height: 13px;
+    }
+
+    .expand-container .btn-expand:hover {
+        color: var(--accentLight);
+    }
+
+    .expand-container .btn-expand .icon {
+        margin: 0;
+        vertical-align: top;
+    }
+
+.expand-container .loading-icon-container {
+    height: 13px;
+    width: 12px;
+    padding: 2px;
+}
+
+    .expand-container .loading-icon-container .loading-icon {
+        display: block;
+        height: 11px;
+        width: 11px;
+        font-size: 11px;
+        vertical-align: top;
+        color: var(--accentLight);
+    }
+
+.icon-container {
+    grid-column: 2;
+    color: #fff;
+    line-height: 12px;
+    padding-top: 1px;
+    padding-left: 5px;
+    border-radius: 2px 0 0 2px;
+}
+
+.icon-container .icon {
+    font-size: 11px;
+    vertical-align: middle;
+    color: var(--accent);
+}
+
+    .icon-container .icon.folder {
+        color: #9cb3c9;
+    }
+
+.title-container {
+    grid-column: 3;
+    font-size: 12px;
+    line-height: 12px;
+    padding: 2px 5px 2px 0;
+    color: var(--textDark);
+}
+
+
+.namespace-tree-item:hover .header-container .icon-container .icon,
+.namespace-tree-item:hover .header-container .title-container {
+    color: var(--accentLight);
+}
+
+.namespace-tree-item:hover .value-container {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.namespace-tree-item.selected .header-container .icon-container,
+.namespace-tree-item.selected .header-container .title-container,
+.namespace-tree-item.selected .value-container {
+    background: var(--accent);
+}
+
+    .namespace-tree-item.selected .header-container .icon-container .icon,
+    .namespace-tree-item.selected .header-container .title-container,
+    .namespace-tree-item.selected .value-container .value {
+        color: #fff;
+    }
