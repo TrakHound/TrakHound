@@ -1,0 +1,186 @@
+.object-tree-item {
+    cursor: pointer;
+}
+
+.object-tree-item td {
+    background: none;
+    border: none !important;
+    height: 16px;
+}
+
+.header-cell {
+    width: 100%;
+    border-bottom: 2px solid blue !important;
+}
+
+.header-container {
+    display: grid;
+    grid-template-columns: max-content max-content 25px 1fr;
+}
+
+.depth-container {
+    grid-column: 1;
+    display: grid;
+    grid-auto-columns: 15px;
+    grid-auto-flow: column;
+    padding: 0;
+}
+
+    .depth-container .depth-spacer {
+        position: relative;
+        display: block;
+        width: 100%;
+    }
+
+    .depth-container .depth-spacer:first-child {
+        border-left: none;
+    }
+
+        .depth-container .depth-spacer .depth-spacer-border-side {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            border-left: 1px dashed var(--borderColorLight);
+        }
+
+        .depth-container .depth-spacer:last-child > .depth-spacer-border-side.last-sibling {
+            height: 50%;
+        }
+
+        .object-tree-item.expanded > .header-cell > .header-container > .depth-container > .depth-spacer:last-child > .depth-spacer-border-side.last-sibling {
+            height: 100%;
+        }
+
+.depth-container .depth-spacer:last-child .depth-spacer-border-bottom {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 50%;
+    border-bottom: 1px dashed var(--borderColorLight);
+}
+
+
+.expand-container {
+    grid-column: 2;
+    width: 15px;
+    padding-top: 1px;
+}
+
+    .expand-container .btn-expand {
+        display: block;
+        vertical-align: top;
+        padding: 0;
+        padding-bottom: 2px;
+        padding-right: 2px;
+        margin-top: 0px;
+        font-size: 11px;
+        color: var(--textMild);
+        transition: none;
+        height: 13px;
+    }
+
+    .expand-container .btn-expand:hover {
+        color: var(--accentLight);
+    }
+
+    .expand-container .btn-expand .icon {
+        margin: 0;
+        vertical-align: top;
+    }
+
+.expand-container .loading-icon-container {
+    height: 13px;
+    width: 12px;
+    padding: 2px;
+}
+
+    .expand-container .loading-icon-container .loading-icon {
+        display: block;
+        height: 11px;
+        width: 11px;
+        font-size: 11px;
+        vertical-align: top;
+        color: var(--accentLight);
+    }
+
+.icon-container {
+    grid-column: 3;
+    color: #fff;
+    line-height: 12px;
+    padding-top: 1px;
+    padding-left: 5px;
+    border-radius: 2px 0 0 2px;
+}
+
+.icon-container .icon {
+    font-size: 11px;
+    vertical-align: middle;
+    color: var(--accent);
+}
+
+    .icon-container .icon.folder {
+        color: #9cb3c9;
+    }
+
+.title-container {
+    grid-column: 4;
+    font-size: 12px;
+    line-height: 12px;
+    padding: 2px 5px 2px 0;
+    color: var(--textDark);
+}
+
+.value-cell {
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 1px 0;
+}
+
+.value-container {
+    background: rgba(0, 0, 0, 0.025);
+    border-right: 5px solid rgba(0, 0, 0, 0.05);
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    padding: 0 10px;
+    height: 16px;
+}
+
+    .value-container.recent {
+        border-right: 5px solid var(--accentLight);
+    }
+
+.value-container .value {
+    display: block;
+    color: var(--textDark);
+    font-size: 11px;
+}
+
+
+.object-tree-item:hover .header-container .icon-container .icon,
+.object-tree-item:hover .header-container .title-container {
+    color: var(--accentLight);
+}
+
+.object-tree-item:hover .value-container {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.object-tree-item.selected .header-container .icon-container,
+.object-tree-item.selected .header-container .title-container,
+.object-tree-item.selected .value-container {
+    background: var(--accent);
+}
+
+    .object-tree-item.selected .header-container .icon-container .icon,
+    .object-tree-item.selected .header-container .title-container,
+    .object-tree-item.selected .value-container .value {
+        color: #fff;
+    }

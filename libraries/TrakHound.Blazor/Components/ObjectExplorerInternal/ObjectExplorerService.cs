@@ -13,7 +13,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
     public class ObjectExplorerService : IDisposable
     {
         public const int RecentMilliseconds = 2000;
-        private const int _recentLimit = RecentMilliseconds * 1000000;
+        public const int RecentLimit = RecentMilliseconds * 1000000;
 
 
         private readonly string _baseUrl;
@@ -43,7 +43,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         private readonly ConcurrentQueue<ContentUpdate> _contentUpdated = new ConcurrentQueue<ContentUpdate>();
         private readonly ThrottleEvent _contentUpdateThrottle;
         private readonly DelayEvent _selectedObjectLoadDelay;
-        private readonly System.Timers.Timer _recentTimer;
+        //private readonly System.Timers.Timer _recentTimer;
         private readonly object _lock = new object();
 
         private string _query;
@@ -54,6 +54,9 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         private ITrakHoundObjectEntity _selectedObject;
         private string _clipboardId;
         private bool _hiddenShown;
+
+        private ObjectExplorerTreeItemModel[] _treeItems;
+        private Dictionary<string, int> _treeIndexes; // Object.Uuid => _treeItems.Index
 
 
         class ContentUpdate
@@ -146,10 +149,10 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             _addService = new ObjectExplorerAddService(this);
             _deleteService = new ObjectExplorerDeleteService(this);
 
-            _recentTimer = new System.Timers.Timer();
-            _recentTimer.Interval = 500;
-            _recentTimer.Elapsed += ProcessRecentValues;
-            _recentTimer.Start();
+            //_recentTimer = new System.Timers.Timer();
+            //_recentTimer.Interval = 500;
+            //_recentTimer.Elapsed += ProcessRecentValues;
+            //_recentTimer.Start();
 
             //_contentUpdateThrottle = new ThrottleEvent(500);
             //_contentUpdateThrottle.Elapsed += ContentUpdateThrottleElapsed;
@@ -161,7 +164,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         public void Dispose()
         {
             if (_notificationService != null) _notificationService.Dispose();
-            if (_recentTimer != null) _recentTimer.Dispose();
+            //if (_recentTimer != null) _recentTimer.Dispose();
 
             lock (_lock)
             {
@@ -476,6 +479,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                         _targetUuids.AddRange(objects.Select(o => o.Uuid));
                     }
 
+                    BuildTreeItems();
                     FilterTargetObjects();
                 }
             }
@@ -588,6 +592,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                                 _targetUuids.AddRange(targetUuids);
                             }
 
+                            BuildTreeItems();
                             FilterTargetObjects();
                         }
                     }
@@ -665,6 +670,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                         _targetUuids.AddRange(objects.Select(o => o.Uuid));
                     }
 
+                    BuildTreeItems();
                     FilterTargetObjects();
                     SelectObject(_uuid);
                 }
@@ -840,6 +846,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                     _targetUuids.AddRange(objects.Select(o => o.Uuid));
                 }
 
+                BuildTreeItems();
                 FilterTargetObjects();
             }
         }
@@ -1041,7 +1048,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                 {
                     if (_recentValues.ContainsKey(objectUuid))
                     {
-                        return ts - _recentValues[objectUuid] < _recentLimit;
+                        return ts - _recentValues[objectUuid] < RecentLimit;
                     }
                 }
             }
@@ -1250,6 +1257,102 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         }
 
 
+        public ObjectExplorerTreeItemModel[] GetTreeItems()
+        {
+            lock (_lock)
+            {
+                return _treeItems;
+            }
+        }
+
+        //public ObjectExplorerTreeItemModel GetTreeItem(string uuid)
+        //{
+        //    if (!string.IsNullOrEmpty(uuid) && !_treeIndexes.IsNullOrEmpty())
+        //    {
+        //        lock (_lock)
+        //        {
+        //            var treeItemIndex = _treeIndexes.GetValueOrDefault(uuid);
+        //            if (treeItemIndex >= 0)
+        //            {
+        //                return _treeItems[treeItemIndex];
+        //            }
+        //        }
+        //    }
+
+        //    return null;
+        //}
+
+        //public void AddTreeItem(ITrakHoundObjectEntity entity)
+        //{
+        //    if (entity != null && !string.IsNullOrEmpty(entity.Uuid))
+        //    {
+        //        lock (_lock)
+        //        {
+        //            var treeItemIndex = _treeIndexes.GetValueOrDefault(entity.Uuid);
+        //            if (treeItemIndex >= 0)
+        //            {
+        //                return _treeItems[treeItemIndex];
+        //            }
+        //            else
+        //            {
+        //                treeItem
+        //            }
+        //        }
+        //    }
+
+        //    return null;
+        //}
+
+        public void BuildTreeItems()
+        {
+            ITrakHoundObjectEntity[] entities;
+            lock (_lock) entities = _objects.Values.ToArray();
+
+            if (!entities.IsNullOrEmpty())
+            {
+                Array.Sort(entities, new ObjectExplorerObjectComparer());
+
+                var treeItems = new ObjectExplorerTreeItemModel[entities.Length];
+                var treeIndexes = new Dictionary<string, int>();
+
+                for (var i = 0; i < entities.Length; i++)
+                {
+                    treeItems[i] = new ObjectExplorerTreeItemModel(entities[i]);
+                    treeItems[i].Value = GetValue(entities[i].Uuid);
+
+                    // Set Last Sibling (used for expanded border)
+                    if (i < entities.Length - 1)
+                    {
+                        if (TrakHoundPath.GetParentPath(entities[i].GetAbsolutePath()) != TrakHoundPath.GetParentPath(entities[i + 1].GetAbsolutePath()))
+                        {
+                            treeItems[i].LastSibling = true;
+                        }
+                    }
+                    else
+                    {
+                        treeItems[i].LastSibling = true;
+                    }
+
+                    treeIndexes.Add(entities[i].Uuid, i);
+                }
+
+                lock (_lock)
+                {
+                    _treeItems = treeItems;
+                    _treeIndexes = treeIndexes;
+                }
+            }
+            else
+            {
+                lock (_lock)
+                {
+                    _treeItems = null;
+                    _treeIndexes = null;
+                }
+            }
+        }
+
+
         public void ExpandAll()
         {
             var uuids = new List<string>();
@@ -1318,6 +1421,8 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                 _expandedNamespaces.Clear();
             }
 
+            BuildTreeItems();
+
             foreach (var uuid in uuids)
             {
                 if (ObjectCollapsed != null) ObjectCollapsed.Invoke(this, uuid);
@@ -1354,7 +1459,12 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                     }
                 }
 
-                lock (_lock) _expandedObjects.Remove(uuid);
+                lock (_lock)
+                {
+                    _expandedObjects.Remove(uuid);               
+                }
+
+                if (refresh) BuildTreeItems();
 
                 if (refresh && ObjectCollapsed != null) ObjectCollapsed.Invoke(this, uuid);
             }
@@ -1509,10 +1619,17 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                     _values.Remove(objectUuid);
                     _values.Add(objectUuid, value?.Trim());
 
-                    if (now - ts < _recentLimit)
+                    //if (now - ts < _recentLimit)
+                    //{
+                    //    _recentValues.Remove(objectUuid);
+                    //    _recentValues.Add(objectUuid, ts);
+                    //}
+
+                    var treeItemIndex = _treeIndexes?.GetValueOrDefault(objectUuid);
+                    if (treeItemIndex.HasValue)
                     {
-                        _recentValues.Remove(objectUuid);
-                        _recentValues.Add(objectUuid, ts);
+                        _treeItems[treeItemIndex.Value].Value = value;
+                        _treeItems[treeItemIndex.Value].ValueLastUpdated = ts;
                     }
                 }
 
@@ -1764,32 +1881,32 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         }
 
 
-        private void ProcessRecentValues(object sender, System.Timers.ElapsedEventArgs args)
-        {
-            var now = UnixDateTime.Now;
-            var updatedObjectUuids = new List<string>();
+        //private void ProcessRecentValues(object sender, System.Timers.ElapsedEventArgs args)
+        //{
+        //    var now = UnixDateTime.Now;
+        //    var updatedObjectUuids = new List<string>();
 
-            lock (_lock)
-            {
-                var keys = _recentValues.Keys.ToList();
-                foreach (var key in keys)
-                {
-                    var value = _recentValues[key];
-                    if (now - value > _recentLimit)
-                    {
-                        updatedObjectUuids.Add(key);
-                        _recentValues.Remove(key);
-                    }
-                }
-            }
+        //    lock (_lock)
+        //    {
+        //        var keys = _recentValues.Keys.ToList();
+        //        foreach (var key in keys)
+        //        {
+        //            var value = _recentValues[key];
+        //            if (now - value > _recentLimit)
+        //            {
+        //                updatedObjectUuids.Add(key);
+        //                _recentValues.Remove(key);
+        //            }
+        //        }
+        //    }
 
-            if (!updatedObjectUuids.IsNullOrEmpty())
-            {
-                foreach (var objectUuid in updatedObjectUuids)
-                {
-                    UpdateValue(objectUuid);
-                }
-            }
-        }
+        //    if (!updatedObjectUuids.IsNullOrEmpty())
+        //    {
+        //        foreach (var objectUuid in updatedObjectUuids)
+        //        {
+        //            UpdateValue(objectUuid);
+        //        }
+        //    }
+        //}
     }
 }

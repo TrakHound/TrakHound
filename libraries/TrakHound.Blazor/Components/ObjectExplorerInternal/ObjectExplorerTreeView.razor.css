@@ -1,18 +1,12 @@
-﻿.server-tree-view {
-    overflow: auto;
+﻿.object-treeview {
+    padding-top: 10px;
+    padding-bottom: 400px;
+    padding-left: 10px;
 }
 
-    .server-tree-view ::deep .folder > .tree-item-content > .tree-item-header > .tree-item-header-content > .btn-selection > .btn-selection-container > .icon-container > .icon {
-        color: #9cb3c9;
-    }
-
-    .server-tree-view ::deep .tree-item .tree-item-content > .tree-item-header {
-        border-right: 5px solid transparent;
-        transition: border-right 1.5s;
-    }
-
-    .server-tree-view ::deep .tree-item.recent .tree-item-content > .tree-item-header {
-        border-right: 5px solid var(--accentLight);
-        border-radius: 2px;
-        transition: border-right 0.35s;
-    }
+.object-treeview-table {
+    width: 100%;
+    border: none !important;
+    border-collapse: collapse;
+    border-spacing: 0 !important;
+}

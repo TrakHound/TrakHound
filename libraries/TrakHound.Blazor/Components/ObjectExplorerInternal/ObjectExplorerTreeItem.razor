@@ -3,121 +3,121 @@
 @inject NavigationManager navigationManager
 @inject TrakHound.Blazor.Services.JavascriptService javascriptService
 @inject TrakHound.Blazor.Services.EntityClipboardService entityClipboardService
+@inject TrakHound.Blazor.Services.ContextMenuService contextMenuService
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using TrakHound.Entities
 
-@if (Object != null && ObjectExplorerService != null)
+@if (TreeItem != null && ObjectExplorerService != null)
 {
-    //Console.WriteLine($"ObjectExplorerTreeItem.InvokeAsync(StateHasChanged) : Path = {Object.Path}");
-
     var treeItemClasses = new List<string>();
-    var contentType = Object.ContentType.ConvertEnum<TrakHoundObjectContentType>();
 
-    var isExpanded = ObjectExplorerService.GetObjectExpanded(Object.Uuid);
+    var isSelected = ObjectExplorerService.SelectedObjectUuid == TreeItem.Uuid;
+    if (isSelected) treeItemClasses.Add("selected");
 
-    var isExpandable = contentType == TrakHoundObjectContentType.Directory;
-    var isHidden = Object.Name.StartsWith('.');
+    var isExpanded = ObjectExplorerService.GetObjectExpanded(TreeItem.Uuid);
+    if (isExpanded && TreeItem.ContentType == TrakHoundObjectContentType.Directory) treeItemClasses.Add("expanded");
+
+    var isExpandable = TreeItem.ContentType == TrakHoundObjectContentType.Directory;
+    var isHidden = TreeItem.Title.StartsWith('.');
     if (isHidden) treeItemClasses.Add("hidden");
 
+    var spacerCount = TreeItem.Depth;
+    if (!isExpandable) spacerCount = spacerCount + 1;
+
     var treeItemClass = string.Join(' ', treeItemClasses);
+    var iconClass = TreeItem.ContentType == TrakHoundObjectContentType.Directory ? "folder" : "";
+    var icon = GetObjectIcon(TreeItem.ContentType, isExpanded);
+    var valueClass = TreeItem.RecentValue ? "recent" : "";
 
-    var childObjects = ObjectExplorerService.GetChildObjects(Object.Uuid);
+    <tr class="object-tree-item @treeItemClass" @oncontextmenu="ToggleContextMenu" @oncontextmenu:preventDefault="true">
+        <td class="header-cell">
+            <div class="header-container">
+                <div class="depth-container">
+                    @for (var i = 0; i < spacerCount; i++)
+                    {
+                        var lastSiblingClass = TreeItem.LastSibling ? "last-sibling" : "";
 
-    <TrakHound.Blazor.Components.TreeItem Id="@Object.Uuid" CssClass="@treeItemClass" IsLoading="@isLoading" IsExpanded="@isExpanded" Expanded="ExpandAndLoad" Collapsed="Collapse" IsExpandable="@isExpandable">
-        <ChildContent>
+                        <div class="depth-spacer">
+                            <div class="depth-spacer-border-side @lastSiblingClass"></div>
+                            <div class="depth-spacer-border-bottom @lastSiblingClass"></div>
+                        </div>
+                    }
+                </div>
 
-            @if (!childObjects.IsNullOrEmpty())
-            {
-                var comparer = new TrakHoundObjectComparer();
-
-                var directoryObjects = childObjects.Where(o => o.ContentType == TrakHoundObjectContentTypes.Directory)?.OrderBy(o => o.Name, comparer).ToList();
-                var contentObjects = childObjects.Where(o => o.ContentType != TrakHoundObjectContentTypes.Directory)?.OrderBy(o => o.Name, comparer).ToList();
-
-                if (!contentObjects.IsNullOrEmpty())
+                @if (isExpandable)
                 {
-                    foreach (var child in contentObjects)
-                    {
-                        <ObjectExplorerTreeItem Object="@child" Selected="ItemSelected" />
-                    }
+                    <div class="expand-container">
 
-@*                      if (childObjects.Count() > ObjectTreeView.OverscanCount)
-                     {
-                         <Virtualize TItem="ITrakHoundObjectEntity" Items="contentObjects" Context="child" OverscanCount="@ObjectTreeView.OverscanCount">
-                             <ObjectExplorerTreeItem Object="@child" Selected="ItemSelected" />
-                         </Virtualize>
-                     }
-                     else
-                     {
-                         foreach (var child in contentObjects)
-                         {
-                             <ObjectExplorerTreeItem Object="@child" Selected="ItemSelected" />
-                         }
-                     } *@
-                }
-
-                if (!directoryObjects.IsNullOrEmpty())
-                {
-                    foreach (var child in directoryObjects)
-                    {
-                        <ObjectExplorerTreeItem Object="@child" Selected="ItemSelected" Expanded="ItemExpanded" AllExpanded="ItemAllExpanded" />
-                    }
-
-@*                     if (childObjects.Count() > ObjectTreeView.OverscanCount)
-                    {
-                        <Virtualize TItem="ITrakHoundObjectEntity" Items="directoryObjects" Context="child" OverscanCount="@ObjectTreeView.OverscanCount">
-                            <ObjectExplorerTreeItem @ref="@ChildTreeItem" Object="@child" Selected="ItemSelected" Expanded="ItemExpanded" AllExpanded="ItemAllExpanded" />
-                        </Virtualize>
-                    }
-                    else
-                    {
-                        foreach (var child in directoryObjects)
+                        @if (isLoading)
                         {
-                            <ObjectExplorerTreeItem @ref="@ChildTreeItem" Object="@child" Selected="ItemSelected" Expanded="ItemExpanded" AllExpanded="ItemAllExpanded" />
+                            <div class="loading-icon-container">
+                                <span class="loading-icon fa-solid fa-sharp fa-loader spin"></span>
+                            </div>
                         }
-                    } *@
-                }
-            }
+                        else if (isExpanded)
+                        {
+                            <span class="btn-expand btn" @onclick="() => Collapse()"><span class="icon far fa-minus-square"></span></span>
+                        }
+                        else
+                        {
+                            <span class="btn-expand btn" @onclick="() => ExpandAndLoad()"><span class="icon far fa-plus-square"></span></span>
+                        }
 
-        </ChildContent>
-        <HeaderTemplate>
-            <ObjectExplorerTreeItemHeader Object="@Object" IsRoot="@IsRoot" />
-        </HeaderTemplate>
-        <ValueTemplate>
-            <ObjectExplorerTreeItemValue Object="@Object" />
-        </ValueTemplate>
-        <ContextMenu>
-            <ContextMenuItem Text="Refresh" Clicked="Refresh" />
-            <ContextMenuItem Text="Expand All" Clicked="ExpandAllClicked" />
-            <ContextMenuSeparator />
-            <ContextMenuItem Text="Query (Select >>)" Clicked="QueryTargetClicked" />
-            <ContextMenuItem Text="Query (Select >)" Clicked="QueryEntityClicked" />
-            <ContextMenuItem Text="Query (Select *)" Clicked="QueryContentClicked" />
-            <ContextMenuItem Text="Query (Select Children >>)" Clicked="QueryChildrenClicked" />
-            <ContextMenuItem Text="Query (Select Children *)" Clicked="QueryChildrenContentClicked" />
-            <ContextMenuSeparator />
-            <ContextMenuItem Text="Copy" Clicked="Copy" />
-            <ContextMenuItem Text="Copy Path" Clicked="CopyPath" />
-            @if (ObjectExplorerService.ClipboardId != null)
+                    </div>
+                }
+
+                <div class="icon-container" @onclick="Select">
+                    <span class="icon @icon @iconClass"></span>
+                </div>
+                <div class="title-container" @onclick="Select">@TreeItem.Title</div>
+            </div>
+        </td>
+
+        <td class="value-cell">
+            @if (TreeItem.ContentType != TrakHoundObjectContentType.Directory)
             {
-                <ContextMenuItem Text="Paste" Clicked="Paste" />
+                <div class="value-container @valueClass" @onclick="Select">
+                    <span class="value" title="@TreeItem.Value">@TreeItem.Value</span>
+                </div>
             }
-            <ContextMenuSeparator />
-            <ContextMenuItem Text="Add Child.." Clicked="AddChild" />
-            <ContextMenuItem Text="Edit" Clicked="EditClicked" />
-            <ContextMenuItem Text="Delete" Clicked="Delete" />
-        </ContextMenu>
-    </TrakHound.Blazor.Components.TreeItem>
+        </td>
+
+    </tr>
+
+    <ContextMenu Id="@contextMenuId">
+        <ContextMenuItem Text="Refresh" Clicked="Refresh" />
+        <ContextMenuItem Text="Expand All" Clicked="ExpandAllClicked" />
+        <ContextMenuSeparator />
+        <ContextMenuItem Text="Query (Select >>)" Clicked="QueryTargetClicked" />
+        <ContextMenuItem Text="Query (Select >)" Clicked="QueryEntityClicked" />
+        <ContextMenuItem Text="Query (Select *)" Clicked="QueryContentClicked" />
+        <ContextMenuItem Text="Query (Select Children >>)" Clicked="QueryChildrenClicked" />
+        <ContextMenuItem Text="Query (Select Children *)" Clicked="QueryChildrenContentClicked" />
+        <ContextMenuSeparator />
+        <ContextMenuItem Text="Copy" Clicked="Copy" />
+        <ContextMenuItem Text="Copy Path" Clicked="CopyPath" />
+        @if (ObjectExplorerService.ClipboardId != null)
+        {
+            <ContextMenuItem Text="Paste" Clicked="Paste" />
+        }
+        <ContextMenuSeparator />
+        <ContextMenuItem Text="Add Child.." Clicked="AddChild" />
+        <ContextMenuItem Text="Edit" Clicked="EditClicked" />
+        <ContextMenuItem Text="Delete" Clicked="Delete" />
+    </ContextMenu>
 }
 
 @code {
 
-    // Keep list of child Directory TreeItem references (to use for Expand/Collapse)
-    // private readonly List<ObjectExplorerTreeItem> childTreeItems = new List<ObjectExplorerTreeItem>();
-    // ObjectExplorerTreeItem ChildTreeItem
-    // {
-    //     set { childTreeItems.Add(value); }
-    // }
+    private readonly string contextMenuId = Guid.NewGuid().ToString();
+    private IEnumerable<ITrakHoundObjectEntity> childDirectoryObjects;
+    private IEnumerable<ITrakHoundObjectEntity> childContentObjects;
 
+    private string value;
+    private bool recent;
+    private DelayEvent recentDelay = new DelayEvent(ObjectExplorerService.RecentMilliseconds);
+
+    private bool render;
     private bool hasRendered;
     private bool isLoading;
     private object _lock = new object();
@@ -133,7 +133,10 @@
     public bool IsRoot { get; set; }
 
     [Parameter]
-    public ITrakHoundObjectEntity Object { get; set; }
+    public ObjectExplorerTreeItemModel TreeItem { get; set; }
+
+    // [Parameter]
+    // public ITrakHoundObjectEntity Object { get; set; }
 
     [Parameter]
     public EventCallback<string> Selected { get; set; }
@@ -148,12 +151,31 @@
     public EventCallback<string> DeleteClicked { get; set; }
 
 
+    // protected override bool ShouldRender()
+    // {
+    //     return render;
+    // }
+
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //     render = false;
+    // }
+
+
     protected override void OnInitialized()
     {
         if (ObjectExplorerService != null)
         {
             ObjectExplorerService.ObjectExpanded += Expand;
             ObjectExplorerService.ObjectCollapsed += Collapse;
+            ObjectExplorerService.ValueUpdated += ValueUpdated;
+
+            recentDelay.Elapsed += RecentDelayElapsed;
+
+            // value = ObjectExplorerService.GetValue(TreeItem.Uuid);
+            // value = FormatValue(value);
+
+            // Load();
         }
     }
 
@@ -169,6 +191,69 @@
         }
         catch { }
     }
+
+    private void ValueUpdated(object sender, string objectUuid)
+    {
+        if (TreeItem != null && TreeItem.Uuid == objectUuid)
+        {
+            recentDelay.Set();
+            ObjectTreeView.Render();
+        }
+    }
+
+    // private void ValueUpdated(object sender, string objectUuid)
+    // {
+    //     if (TreeItem != null && TreeItem.Uuid == objectUuid)
+    //     {
+    //         if (TreeItem.ContentType != TrakHoundObjectContentType.Directory)
+    //         {
+    //             // Get Value
+    //             var previousValue = value;
+    //             value = ObjectExplorerService.GetValue(TreeItem.Uuid);
+    //             value = FormatValue(value);
+
+    //             // Check if Recent Value
+    //             var previousRecent = recent;
+    //             recent = ObjectExplorerService.IsRecentValue(TreeItem.Uuid);
+
+    //             if (previousValue != value || previousRecent != recent)
+    //             {
+    //                 recentDelay.Set();
+    //                 ObjectTreeView.Render();
+    //                 // await InvokeAsync(StateHasChanged);
+    //             }
+    //         }
+    //     }
+    // }
+
+    private void RecentDelayElapsed(object sender, EventArgs args)
+    {
+        recent = ObjectExplorerService.IsRecentValue(TreeItem.Uuid);
+        ObjectTreeView.Render();
+        // await InvokeAsync(StateHasChanged);
+    }
+
+    private void Load()
+    {
+        // childDirectoryObjects = null;
+        // childContentObjects = null;
+
+        // if (Object != null)
+        // {
+        //     var childObjects = ObjectExplorerService.GetChildObjects(Object.Uuid);
+        //     if (!childObjects.IsNullOrEmpty())
+        //     {
+        //         var comparer = new TrakHoundObjectComparer();
+        //         childDirectoryObjects = childObjects.Where(o => o.ContentType == TrakHoundObjectContentTypes.Directory)?.OrderBy(o => o.Name, comparer);
+        //         childContentObjects = childObjects.Where(o => o.ContentType != TrakHoundObjectContentTypes.Directory)?.OrderBy(o => o.Name, comparer);
+        //     }
+        // }
+    }
+
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //     if (Object != null && !firstRender) hasRendered = true;
+    // }
 
     // protected override void OnAfterRender(bool firstRender)
     // {
@@ -186,9 +271,10 @@
     //     return false;
     // }
 
-    private void ItemSelected(string uuid)
+    private void Select()
     {
-        ObjectExplorerService.SelectObject(uuid);
+        ObjectExplorerService.SelectObject(TreeItem?.Uuid);
+        ObjectTreeView.Render();
     }
 
     private async void ItemExpanded(string uuid)
@@ -209,26 +295,31 @@
 
         _ = Task.Run(async () =>
         {
-            await ObjectExplorerService.RefreshObject(Object);
+            // await ObjectExplorerService.RefreshObject(TreeItem.Uuid);
+            Load();
 
             isLoading = false;
-            await InvokeAsync(StateHasChanged);
+            ObjectTreeView.Render();
+            // await InvokeAsync(StateHasChanged);
         });
     }
 
     private void AddChild()
     {
-        ObjectExplorerService.AddService.AddChildObject(Object);
+        // ObjectExplorerService.AddService.AddChildObject(TreeItem.Uuid);
+        // ObjectExplorerService.AddService.AddChildObject(Object);
     }
 
     private void EditClicked()
     {
-        ObjectExplorerService.AddService.EditObject(Object);
+        // ObjectExplorerService.AddService.EditObject(TreeItem.Uuid);
+        // ObjectExplorerService.AddService.EditObject(Object);
     }
 
     public void Delete()
     {
-        ObjectExplorerService.DeleteService.DeleteObject(Object);
+        // ObjectExplorerService.DeleteService.DeleteObject(TreeItem.Uuid);
+        // ObjectExplorerService.DeleteService.DeleteObject(Object);
     }
 
     private async void ExpandAllClicked()
@@ -238,12 +329,16 @@
 
         _ = Task.Run(async () =>
         {
-            await ObjectExplorerService.LoadObjectAllChildren(Object?.Uuid);
+            await ObjectExplorerService.LoadObjectAllChildren(TreeItem?.Uuid);
+            ObjectExplorerService.BuildTreeItems();
 
-            ExpandAll();
+            ExpandAll(TreeItem?.Uuid);
+            Load();
 
             isLoading = false;
-            await InvokeAsync(StateHasChanged);
+            render = true;
+            ObjectTreeView.Render();
+            // await InvokeAsync(StateHasChanged);
         });
     }
 
@@ -254,10 +349,12 @@
 
         _ = Task.Run(async () =>
         {
-            ExpandAll(Object?.Uuid);
+            ExpandAll(TreeItem?.Uuid);
 
             isLoading = false;
-            await InvokeAsync(StateHasChanged);
+            render = true;
+            ObjectTreeView.Render();
+            // await InvokeAsync(StateHasChanged);
         });
     }
 
@@ -279,31 +376,48 @@
         }
     }
 
-    private async void Expand(object sender, string uuid)
+    // private void Expand(object sender, string uuid)
+    private void Expand()
     {
-        var objectUuid = Object?.Uuid;
+        var objectUuid = TreeItem?.Uuid;
+        if (objectUuid != null)
+        {
+            var isExpanded = ObjectExplorerService.GetObjectExpanded(objectUuid);
+            if (!isExpanded)
+            {
+                ObjectExplorerService.ExpandObject(objectUuid);
+                ObjectExplorerService.BuildTreeItems();
+                Load();
+
+                render = true;
+                ObjectTreeView.Render();
+                // await InvokeAsync(StateHasChanged);
+            }
+        }
+    }
+
+    private void Expand(object sender, string uuid)
+    {
+        var objectUuid = TreeItem?.Uuid;
         if (objectUuid == uuid)
         {
             var isExpanded = ObjectExplorerService.GetObjectExpanded(objectUuid);
             if (!isExpanded)
             {
-                isLoading = true;
-                await InvokeAsync(StateHasChanged);
+                ObjectExplorerService.ExpandObject(objectUuid);
+                ObjectExplorerService.BuildTreeItems();
+                Load();
 
-                _ = Task.Run(async () =>
-                {
-                    ObjectExplorerService.ExpandObject(objectUuid);
-
-                    isLoading = false;
-                    await InvokeAsync(StateHasChanged);
-                });
+                render = true;
+                ObjectTreeView.Render();
+                // await InvokeAsync(StateHasChanged);
             }
         }
     }
 
     public async Task ExpandAndLoad()
     {
-        var objectUuid = Object?.Uuid;
+        var objectUuid = TreeItem?.Uuid;
         if (!string.IsNullOrEmpty(objectUuid))
         {
             var isExpanded = ObjectExplorerService.GetObjectExpanded(objectUuid);
@@ -316,9 +430,13 @@
                 {
                     await ObjectExplorerService.LoadObject(objectUuid);
                     ObjectExplorerService.ExpandObject(objectUuid);
+                    ObjectExplorerService.BuildTreeItems();
+                    Load();
 
                     isLoading = false;
-                    await InvokeAsync(StateHasChanged);
+                    render = true;
+                    ObjectTreeView.Render();
+                    // await InvokeAsync(StateHasChanged);
                 });
             }
         }
@@ -326,7 +444,7 @@
 
     private async void Collapse()
     {
-        var objectUuid = Object?.Uuid;
+        var objectUuid = TreeItem?.Uuid;
         if (!string.IsNullOrEmpty(objectUuid))
         {
             var isExpanded = ObjectExplorerService.GetObjectExpanded(objectUuid);
@@ -335,13 +453,15 @@
                 ObjectExplorerService.CollapseObject(objectUuid);
             }
 
-            await InvokeAsync(StateHasChanged);
+            render = true;
+            ObjectTreeView.Render();
+            // await InvokeAsync(StateHasChanged);
         }
     }
 
     private async void Collapse(object sender, string uuid)
     {
-        var objectUuid = Object?.Uuid;
+        var objectUuid = TreeItem?.Uuid;
         if (objectUuid == uuid)
         {
             var isExpanded = ObjectExplorerService.GetObjectExpanded(objectUuid);
@@ -350,117 +470,149 @@
                 ObjectExplorerService.CollapseObject(objectUuid);
             }
 
-            await InvokeAsync(StateHasChanged);
+            render = true;
+            ObjectTreeView.Render();
+            // await InvokeAsync(StateHasChanged);
         }
     }
 
 
     private async void Copy()
     {
-        if (Object != null && Object.Path != null)
+        if (TreeItem != null && TreeItem.Path != null)
         {
-            var path = Object.GetAbsolutePath();
-            if (await ObjectExplorerService.Copy(path))
-            {
-                ObjectExplorerService.AddNotification(NotificationType.Information, "Object Copied to Clipboard", path);
+            // var path = Object.GetAbsolutePath();
+            // if (await ObjectExplorerService.Copy(path))
+            // {
+            //     ObjectExplorerService.AddNotification(NotificationType.Information, "Object Copied to Clipboard", path);
 
-                await InvokeAsync(StateHasChanged);
-            }
+            //     await InvokeAsync(StateHasChanged);
+            // }
         }
     }
 
     private async void CopyPath()
     {
-        if (Object != null && Object.Path != null)
+        if (TreeItem != null && TreeItem.Path != null)
         {
-            try
-            {
-                var path = Object.GetAbsolutePath();
-                await javascriptService.CopyClipboard(path);
-                ObjectExplorerService.AddNotification(NotificationType.Information, "Object Path Copied to Clipboard", path, duration: 5000);
+            // try
+            // {
+            //     var path = Object.GetAbsolutePath();
+            //     await javascriptService.CopyClipboard(path);
+            //     ObjectExplorerService.AddNotification(NotificationType.Information, "Object Path Copied to Clipboard", path, duration: 5000);
 
-                await InvokeAsync(StateHasChanged);
-            }
-            catch
-            {
-                Console.WriteLine("Cannot write text to clipboard");
-            }
+            //     await InvokeAsync(StateHasChanged);
+            // }
+            // catch
+            // {
+            //     Console.WriteLine("Cannot write text to clipboard");
+            // }
         }
     }
 
     private void QueryTargetClicked()
     {
-        if (Object != null && Object.Path != null)
+        if (TreeItem != null && TreeItem.Path != null)
         {
-            var resultQuery = $"select >> from [{Object.GetAbsolutePath()}]";
-            var queryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultQuery}";
+            // var resultQuery = $"select >> from [{Object.GetAbsolutePath()}]";
+            // var queryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultQuery}";
 
-            navigationManager.NavigateTo(queryLink);
+            // navigationManager.NavigateTo(queryLink);
         }
     }
 
     private void QueryEntityClicked()
     {
-        if (Object != null && Object.Path != null)
+        if (TreeItem != null && TreeItem.Path != null)
         {
-            var resultQuery = $"select > from [{Object.GetAbsolutePath()}]";
-            var queryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultQuery}";
+            // var resultQuery = $"select > from [{Object.GetAbsolutePath()}]";
+            // var queryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultQuery}";
 
-            navigationManager.NavigateTo(queryLink);
+            // navigationManager.NavigateTo(queryLink);
         }
     }
 
     private void QueryContentClicked()
     {
-        if (Object != null && Object.Path != null)
+        if (TreeItem != null && TreeItem.Path != null)
         {
-            var resultQuery = $"select * from [{Object.GetAbsolutePath()}];";
-            var queryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultQuery}";
+            // var resultQuery = $"select * from [{Object.GetAbsolutePath()}];";
+            // var queryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultQuery}";
 
-            navigationManager.NavigateTo(queryLink);
+            // navigationManager.NavigateTo(queryLink);
         }
     }
 
     private void QueryChildrenClicked()
     {
-        if (Object != null && Object.Path != null)
+        if (TreeItem != null && TreeItem.Path != null)
         {
-            var resultQuery = $"select >> from [{TrakHoundPath.Combine(Object.GetAbsolutePath(), "*")}];";
-            var queryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultQuery}";
+            // var resultQuery = $"select >> from [{TrakHoundPath.Combine(Object.GetAbsolutePath(), "*")}];";
+            // var queryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultQuery}";
 
-            navigationManager.NavigateTo(queryLink);
+            // navigationManager.NavigateTo(queryLink);
         }
     }
 
     private void QueryChildrenContentClicked()
     {
-        if (Object != null && Object.Path != null)
+        if (TreeItem != null && TreeItem.Path != null)
         {
-            var resultQuery = $"select * from [{TrakHoundPath.Combine(Object.GetAbsolutePath(), "*")}];";
-            var queryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultQuery}";
+            // var resultQuery = $"select * from [{TrakHoundPath.Combine(Object.GetAbsolutePath(), "*")}];";
+            // var queryLink = $"{ObjectExplorerService.BaseUrl}/entities/objects?query={resultQuery}";
 
-            navigationManager.NavigateTo(queryLink);
+            // navigationManager.NavigateTo(queryLink);
         }
     }
 
     private async void Paste()
     {
-        if (Object != null)
+        if (TreeItem != null)
         {
-            var path = Object.GetAbsolutePath();
-            if (await ObjectExplorerService.Paste(path))
-            {
-                ObjectExplorerService.AddNotification(NotificationType.Information, "Objects Pasted Successfuly", path);
-                await InvokeAsync(StateHasChanged);
-            }
+            // var path = Object.GetAbsolutePath();
+            // if (await ObjectExplorerService.Paste(path))
+            // {
+            //     ObjectExplorerService.AddNotification(NotificationType.Information, "Objects Pasted Successfuly", path);
+            //     await InvokeAsync(StateHasChanged);
+            // }
+        }
+    }
+
+    private void ToggleContextMenu(MouseEventArgs args)
+    {
+        if (args != null)
+        {
+            // Render Context Menu (Blazor)
+            // contextMenuVisible = true;
+            // await InvokeAsync(StateHasChanged);
+
+            // if (contextMenu == null) Console.WriteLine("CONTEXT MENU = NULL");
+
+            // Position Context Menu (Javascript)
+            // if (contextMenu != null) contextMenu.Show(args.PageX, args.PageY);
+            // contextMenuService.Add(contextMenu);
+            contextMenuService.Show(contextMenuId, args.PageX, args.PageY);
+        }
+    }
+
+    private static string GetObjectIcon(TrakHoundObjectContentType contentType, bool isExpanded)
+    {
+        switch (contentType)
+        {
+            case TrakHoundObjectContentType.Directory:
+                if (isExpanded) return "fa-duotone fa-folder-open";
+                else return "fa-sharp fa-solid fa-folder";
+
+            default:
+                return TrakHoundObjectIcon.Get(contentType);
         }
     }
 
     private string FormatValue(string value)
     {
-        if (Object != null && value != null)
+        if (TreeItem != null && value != null)
         {
-            switch (Object.ContentType.ConvertEnum<TrakHoundObjectContentType>())
+            switch (TreeItem.ContentType)
             {
                 case TrakHoundObjectContentType.Duration: return TimeSpan.FromTicks(value.ToLong() / 100).ToFormattedString(true);
                 case TrakHoundObjectContentType.Timestamp: return value.ToLong().ToLocalDateTime().ToString() ;

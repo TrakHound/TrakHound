@@ -1,0 +1,17 @@
+.tree-item-value {
+    background: purple;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: right;
+    padding: 0px 5px;
+    height: 12px;
+    table-layout: fixed;
+}
+
+.tree-item-value .value {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 12px;
+}
