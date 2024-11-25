@@ -40,6 +40,7 @@
 
         .instance-sidebar ::deep .btn-navigation.active {
             background: #2870bd;
+            color: #fff;
         }
 
         .instance-sidebar ::deep .btn-navigation:focus {
@@ -51,6 +52,10 @@
             font-size: 18px;
             margin: 0;
             margin-bottom: 6px;
+        }
+
+        .instance-sidebar ::deep .btn-navigation.active .icon {
+            color: #fff;
         }
 
         .instance-sidebar ::deep .btn-navigation .text {

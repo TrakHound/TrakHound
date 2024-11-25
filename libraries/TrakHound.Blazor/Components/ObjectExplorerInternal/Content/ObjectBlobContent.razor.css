@@ -1,6 +1,6 @@
 ﻿.blob-content {
     display: grid;
-    grid-template-rows: max-content max-content max-content 1fr;
+    grid-template-rows: max-content max-content max-content max-content 1fr;
     height: 100%;
     overflow: hidden;
 }
@@ -96,15 +96,63 @@
     padding-top: 8px;
 }
 
+.entity-panel {
+    grid-row: 2;
+    padding: 2px 10px 6px;
+}
+
+.entity-panel table {
+    border: 1px solid var(--tableBorderColor);
+    width: 100%;
+}
+
+    .entity-panel table th {
+        font-size: 12px;
+        padding: 2px 10px;
+    }
+
+    .entity-panel table td {
+        font-size: 12px;
+        padding: 3px 10px;
+    }
+
+.id-panel {
+    grid-row: 3;
+    padding: 0 10px 6px;
+}
+
+.id-panel-container {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    border: 1px solid var(--borderColor);
+}
+
+.id-panel .id-label {
+    grid-column: 1;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-right: 1px solid var(--borderColor);
+    border-radius: 2px;
+    color: var(--textMild);
+}
+
+.id-panel .id-value {
+    grid-column: 2;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 2px;
+    color: var(--textDark);
+}
 
 .download-panel {
-    grid-row: 3;
+    grid-row: 4;
     padding: 0 10px 10px;
 }
 
 .download-panel-container {
     display: grid;
-    grid-template-columns: max-content 1fr;
+    grid-template-columns: 80px 1fr;
     border: 1px solid var(--borderColor);
 }
 
@@ -127,7 +175,7 @@
 
 
 .preview-panel {
-    grid-row: 4;
+    grid-row: 5;
     height: 100%;
     overflow: hidden;
     width: 100%;

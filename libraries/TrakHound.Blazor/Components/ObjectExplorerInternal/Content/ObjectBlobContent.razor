@@ -48,18 +48,51 @@
                 </div>
             </div>
         </div>
-        <div class="query-panel">
+@*         <div class="query-panel">
             <div class="query-panel-container">
                 <span class="query-label">Query</span>
                 <a href="@queryLink" class="btn btn-link btn-query">@resultQuery</a>
             </div>
-        </div>
-        <div class="download-panel">
-            <div class="download-panel-container">
-                <span class="download-label">Download</span>
-                <a href="@downloadLink" target="_blank" class="btn btn-link btn-download">@downloadLink</a>
+        </div> *@
+
+        @if (blob != null)
+        {
+            <div class="entity-panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Filename</th>
+                            <th>ContentType</th>
+                            <th>Size</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@blob.Filename</td>
+                            <td>@blob.ContentType</td>
+                            <td>@blob.Size.ToFileSize()</td>
+                            <td>@blob.Created</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </div>
+
+            <div class="id-panel">
+                <div class="id-panel-container">
+                    <span class="id-label">Blob ID</span>
+                    <span class="id-value">@blob.BlobId</span>
+                </div>
+            </div>
+
+            <div class="download-panel">
+                <div class="download-panel-container">
+                    <span class="download-label">Download</span>
+                    <a href="@downloadLink" target="_blank" class="btn btn-link btn-download">@downloadLink</a>
+                </div>
+            </div>
+        }
+
         <div class="preview-panel">
 
             @if (!loading)
@@ -86,6 +119,7 @@
     private bool publishLoading;
     private IBrowserFile addFile;
 
+    TrakHoundBlob blob;
     private string filename;
     private string contentType;
     private byte[] contentBytes;
@@ -113,17 +147,21 @@
     {
         if (forceReload || (ObjectExplorerService != null && Object != null && Object.Uuid != previousObjectUuid))
         {
+            previousObjectUuid = Object.Uuid;
+            blob = null;
+            filename = null;
+            contentType = null;
+            contentBytes = null;
+            downloadLink = null;
+            loading = true;
+            await InvokeAsync(StateHasChanged);
+
             _ = Task.Run(async () =>
             {
                 var client = ObjectExplorerService.GetClient();
                 if (client != null)
                 {
-                    previousObjectUuid = Object.Uuid;
-                    downloadLink = null;
-                    loading = true;
-                    await InvokeAsync(StateHasChanged);
-
-                    var blob = await client.Entities.GetBlob(Object.GetAbsolutePath());
+                    blob = await client.Entities.GetBlob(Object.GetAbsolutePath());
                     if (blob != null)
                     {
                         filename = blob.Filename;

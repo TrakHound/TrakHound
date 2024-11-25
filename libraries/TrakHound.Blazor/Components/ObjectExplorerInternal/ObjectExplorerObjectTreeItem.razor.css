@@ -94,7 +94,7 @@
 .expand-container .loading-icon-container {
     height: 13px;
     width: 12px;
-    margin-top: 2px;
+    margin-top: 1px;
     padding-left: 2px;
 }
 
@@ -132,13 +132,15 @@
     padding: 2px 5px 2px 0;
 }
 
-.title-container .title {
-    color: var(--textDark);
-}
+    .title-container .title {
+        color: var(--textDark);
+        user-select: none;
+    }
 
     .title-container .child-count {
         color: var(--textMild);
         margin-left: 5px;
+        user-select: none;
     }
 
 .value-cell {
