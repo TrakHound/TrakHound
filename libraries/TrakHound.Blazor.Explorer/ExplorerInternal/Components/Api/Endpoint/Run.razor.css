@@ -46,9 +46,9 @@ thead {
     border-bottom: 1px solid var(--tableHeaderBorderColor) !important;
 }
 
-thead tr {
-    border: none !important;
-}
+    thead tr {
+        border: none !important;
+    }
 
 th {
     font-size: 13px;
@@ -130,7 +130,6 @@ td {
         background: var(--inputPrimaryBackground) !important;
         margin-top: 2px;
         margin-bottom: 0;
-
     }
 
         .value-cell ::deep .rz-textarea:focus {
@@ -159,8 +158,8 @@ td {
             width: 100px;
             border: none;
             background: var(--inputPrimaryBackground) !important;
-            color: var(--accent);
             color: var(--inputPrimaryText) !important;
+            border: none !important;
             border-right: 1px solid var(--inputPrimaryBorder) !important;
             border-radius: 0 !important;
             margin: 0;
@@ -176,29 +175,37 @@ td {
                 box-shadow: none !important;
             }
 
-        .value-cell .body-upload-toolbar ::deep .rz-dropdown-trigger {
-            height: 30px !important;
-            color: var(--inputPrimaryText) !important;
-        }
+            .value-cell .body-upload-toolbar ::deep .rz-dropdown .rz-dropdown-label {
+                background: var(--inputPrimaryBackground) !important;
+                color: var(--inputPrimaryText) !important;
+            }
+
+            .value-cell .body-upload-toolbar ::deep .rz-dropdown .rz-dropdown-trigger {
+                height: 30px !important;
+                color: var(--inputPrimaryText) !important;
+            }
 
     .value-cell .body-upload-content {
-        border-top: 1px solid var(--inputPrimaryBorder);
+        border: none !important;
     }
 
         .value-cell .body-upload-content ::deep textarea {
             height: 100%;
             margin: 0 !important;
-            border: none;
+            border: none !important;
+            border-top: 1px solid var(--inputPrimaryBorder) !important;
             color: var(--inputPrimaryText) !important;
         }
 
             .value-cell .body-upload-content ::deep textarea:hover {
                 border: none !important;
+                border-top: 1px solid var(--inputPrimaryBorderHover) !important;
                 color: var(--inputPrimaryTextHover) !important;
             }
 
             .value-cell .body-upload-content ::deep textarea:focus {
                 border: none !important;
+                border-top: 1px solid var(--inputPrimaryBorderHighlight) !important;
                 outline: none !important;
                 box-shadow: none !important;
                 color: var(--inputPrimaryTextHover) !important;
@@ -207,26 +214,21 @@ td {
         .value-cell .body-upload-content .body-upload-file {
             display: grid;
             grid-template-columns: max-content max-content 1fr;
+            border: none !important;
         }
 
             .value-cell .body-upload-content .body-upload-file .body-upload-file-button {
-                border-left: 1px solid var(--accentLight);
-                border-right: 1px solid var(--accentLight);
-                border-left: 1px solid var(--inputPrimaryBorder);
                 border-right: 1px solid var(--inputPrimaryBorder);
             }
 
                 .value-cell .body-upload-content .body-upload-file .body-upload-file-button .btn {
-                    height: 31px;
+                    height: 30px;
                     font-size: 12px !important;
-                    background: var(--accentVeryLight);
                     background: var(--inputPrimaryBackground);
-                    color: var(--accentDark);
                     color: var(--inputPrimaryText);
                     border: none !important;
                     border-radius: 0 !important;
                     margin: 0 !important;
-                    margin-top: -1px !important;
                 }
 
                     .value-cell .body-upload-content .body-upload-file .body-upload-file-button .btn:hover {
@@ -259,17 +261,19 @@ td {
                     }
 
             .value-cell .body-upload-content .body-upload-file .body-upload-file-size {
-                background: var(--accentVeryVeryLight);
-                background: var(--accentVeryLight);
                 background: var(--inputPrimaryBackground);
-                border-right: 1px solid var(--accentVeryLight);
                 border-right: 1px solid var(--inputPrimaryBorder);
                 padding: 0 15px;
                 line-height: 30px;
-                color: var(--accent);
                 color: var(--inputPrimaryText);
                 font-size: 12px;
                 font-weight: bold;
+            }
+
+            .value-cell .body-upload-content .body-upload-file .body-upload-placeholder {
+                grid-column-start: 3;
+                grid-column-end: 5;
+                background: var(--inputPrimaryBackground);
             }
 
 
@@ -340,22 +344,12 @@ td {
     border-left: 1px solid var(--tableBorderColor);
 }
 
-/*    .request-parameters .table {
+    .request-parameters table th {
+        position: sticky;
+        top: 0;
         border-top: none !important;
-        border-color: red !important;
-        border-top: 1px solid blue !important;
-    }*/
-
-/*    .request-parameters table thead {
-        border-top: none !important;
-    }*/
-
-        .request-parameters table th {
-            position: sticky;
-            top: 0;
-            border-top: none !important;
-            border-bottom: 1px solid var(--tableHeaderBorderColor) !important;
-        }
+        border-bottom: 1px solid var(--tableHeaderBorderColor) !important;
+    }
 
 .response-information {
     grid-row: 3;

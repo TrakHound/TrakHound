@@ -20,6 +20,7 @@
     .text-box input {
         background: var(--inputBackground) !important;
         border: 1px solid var(--inputBorder) !important;
+        border-radius: 0;
         color: var(--inputText);
         height: auto !important;
         padding: 15px 25px;

@@ -27,7 +27,7 @@
             }
             else
             {
-                <input id="@InputElementId" class="form-control" type="text" value="@Value" placeholder="@NullText" disabled />
+                <input id="@InputElementId" class="form-control disabled" type="text" value="@Value" placeholder="@NullText" disabled />
             }
 
         </div>
@@ -40,8 +40,8 @@
             }
             else
             {
-                <button class="spin-edit-btn-top btn btn-command" tabindex="-1" @onclick="IncrementValue" disabled><span class="icon fas fa-angle-up"></span></button>
-                <button class="spin-edit-btn-bottom btn btn-command" tabindex="-1" @onclick="DecrementValue" disabled><span class="icon fas fa-angle-down"></span></button>
+                <button class="spin-edit-btn-top btn btn-command disabled" tabindex="-1" @onclick="IncrementValue"><span class="icon fas fa-angle-up"></span></button>
+                <button class="spin-edit-btn-bottom btn btn-command disabled" tabindex="-1" @onclick="DecrementValue"><span class="icon fas fa-angle-down"></span></button>
             }
 
         </div>

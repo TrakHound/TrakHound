@@ -152,6 +152,7 @@ a, .btn-link {
     height: 38px !important;
     background: var(--inputBackground) !important;
     border: 1px solid var(--inputBorder) !important;
+    border-radius: 0;
     color: var(--inputText) !important;
 }
 
@@ -169,7 +170,7 @@ a, .btn-link {
         outline: none;
     }
 
-    .rz-dropdown.disabled {
+    .rz-dropdown.rz-state-disabled {
         background: var(--inputBackgroundDisabled) !important;
         border: 1px solid var(--inputBorderDisabled) !important;
         color: var(--inputTextDisabled) !important;
@@ -193,7 +194,7 @@ a, .btn-link {
         color: var(--inputTextHighlight) !important;
     }
 
-    .rz-dropdown.disabled .rz-dropdown-label {
+    .rz-dropdown.rz-state-disabled .rz-dropdown-label {
         background: var(--inputBackgroundDisabled) !important;
         color: var(--inputTextDisabled) !important;
     }
@@ -212,7 +213,7 @@ a, .btn-link {
         color: var(--inputPlaceholderHighlight) !important;
     }
 
-    .rz-dropdown.disabled .rz-placeholder {
+    .rz-dropdown.rz-state-disabled .rz-placeholder {
         color: var(--inputPlaceholderDisabled) !important;
     }
 
@@ -429,8 +430,26 @@ textarea,
         background: var(--inputBackgroundHighlight) !important;
         border-color: var(--inputBorderHighlight) !important;
         color: var(--inputTextHighlight) !important;
+        box-shadow: inset 0px 0px 1px 1px var(--accentLight) !important;
+        outline: none;
     }
 
+    .text-box input.disabled,
+    .text-area textarea.disabled,
+    textarea.disabled,
+    .rz-numeric.rz-state-disabled,
+    .rz-numeric.rz-state-disabled input,
+    .rz-datepicker.rz-state-disabled input,
+    .spin-edit input.disabled {
+        background: var(--inputBackgroundDisabled) !important;
+        border-color: var(--inputBorderDisabled) !important;
+        color: var(--inputTextDisabled) !important;
+    }
+
+
+.rz-numeric {
+    border-radius: 0;
+}
 
 .rz-numeric-button .rz-numeric-button-icon {
     color: var(--textDark) !important;
@@ -478,7 +497,7 @@ textarea,
 }
 
 
-.text-box input:hover {
+/*.text-box input:hover {
     border-color: #555 !important;
 }
 
@@ -486,7 +505,7 @@ textarea,
     border-color: var(--accentLight) !important;
     box-shadow: inset 0px 0px 1px 1px var(--accentLight) !important;
     outline: none;
-}
+}*/
 
 
 
@@ -574,6 +593,7 @@ textarea,
             color: var(--textDark) !important;
         }
 
+
 .rz-timepicker > .rz-button {
     background: var(--accent) !important;
     color: #fff !important;
@@ -602,9 +622,14 @@ textarea,
     background: var(--accent) !important;
 }*/
 
-.rz-datepicker input {
-    font-size: 14px !important;
+.rz-datepicker {
+    border-radius: 0 !important;
 }
+
+    .rz-datepicker input {
+        font-size: 14px !important;
+        border-radius: 0 !important;
+    }
 
 .rz-datepicker .rz-button-icon-left {
     color: var(--textMild);
@@ -613,6 +638,14 @@ textarea,
     .rz-datepicker .rz-button-icon-left:hover {
         color: var(--inputTextHighlight);
     }
+
+.rz-datepicker.rz-state-disabled .rz-button-icon-left {
+    color: var(--textLight);
+}
+
+.rz-datepicker.rz-state-disabled .rz-button-icon-left:hover {
+    color: var(--textLight);
+}
 
 
 #reconnection-panel {

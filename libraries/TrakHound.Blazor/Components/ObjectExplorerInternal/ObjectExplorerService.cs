@@ -1462,10 +1462,10 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                 ExpandObject(uuid);
             }
 
-            foreach (var ns in namespaces)
-            {
-                if (NamespaceExpanded != null) NamespaceExpanded.Invoke(this, ns);
-            }
+            //foreach (var ns in namespaces)
+            //{
+            //    if (NamespaceExpanded != null) NamespaceExpanded.Invoke(this, ns);
+            //}
         }
 
         public void ExpandNamespace(string ns)
@@ -1474,7 +1474,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             {
                 lock (_lock) _expandedNamespaces.Add(ns.ToLower());
 
-                if (NamespaceExpanded != null) NamespaceExpanded.Invoke(this, ns);
+                //if (NamespaceExpanded != null) NamespaceExpanded.Invoke(this, ns);
             }
         }
 
@@ -1484,7 +1484,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             {
                 lock (_lock) _expandedObjects.Add(uuid);
 
-                if (ObjectExpanded != null) ObjectExpanded.Invoke(this, uuid);
+                //if (ObjectExpanded != null) ObjectExpanded.Invoke(this, uuid);
             }
         }
 
@@ -1516,15 +1516,15 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
 
             BuildTreeItems();
 
-            foreach (var uuid in uuids)
-            {
-                if (ObjectCollapsed != null) ObjectCollapsed.Invoke(this, uuid);
-            }
+            //foreach (var uuid in uuids)
+            //{
+            //    if (ObjectCollapsed != null) ObjectCollapsed.Invoke(this, uuid);
+            //}
 
-            foreach (var ns in namespaces)
-            {
-                if (NamespaceCollapsed != null) NamespaceCollapsed.Invoke(this, ns);
-            }
+            //foreach (var ns in namespaces)
+            //{
+            //    if (NamespaceCollapsed != null) NamespaceCollapsed.Invoke(this, ns);
+            //}
         }
 
         public void CollapseNamespace(string ns)
@@ -1559,7 +1559,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
 
                 if (refresh) BuildTreeItems();
 
-                if (refresh && ObjectCollapsed != null) ObjectCollapsed.Invoke(this, uuid);
+                //if (refresh && ObjectCollapsed != null) ObjectCollapsed.Invoke(this, uuid);
             }
         }
 

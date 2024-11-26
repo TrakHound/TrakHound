@@ -136,7 +136,7 @@
     --buttonToolbarBorder: var(--borderColorLight);
     --buttonToolbarBorderHover: var(--accentLight);
     --buttonToolbarBorderHighlight: var(--accentLight);
-    --buttonToolbarBorderDisabled: var(--accentLight);
+    --buttonToolbarBorderDisabled: var(--borderColorLight);
     --buttonToolbarIcon: var(--accent);
     --buttonToolbarIconHover: var(--accentLight);
     --buttonToolbarIconHighlight: var(--accentLight);
@@ -156,19 +156,19 @@
     --buttonRemoveBackground: none;
     --buttonRemoveBackgroundHover: red;
     --buttonRemoveBackgroundHighlight: red;
-    --buttonRemoveBackgroundDisabled: red;
+    --buttonRemoveBackgroundDisabled: none;
     --buttonRemoveBorder: red;
     --buttonRemoveBorderHover: red;
     --buttonRemoveBorderHighlight: red;
-    --buttonRemoveBorderDisabled: red;
+    --buttonRemoveBorderDisabled: var(--borderColorLight);
     --buttonRemoveIcon: red;
     --buttonRemoveIconHover: white;
     --buttonRemoveIconHighlight: white;
-    --buttonRemoveIconDisabled: white;
+    --buttonRemoveIconDisabled: var(--textLight);
     --buttonRemoveText: red;
     --buttonRemoveTextHover: white;
     --buttonRemoveTextHighlight: white;
-    --buttonRemoveTextDisabled: white;
+    --buttonRemoveTextDisabled: var(--textLight);
     /* Input Colors */
     --inputBackground: #1c2431;
     --inputBackgroundHover: #253041;

@@ -8,8 +8,8 @@
             <button class="btn btn-sm btn-light btn-add" title="Add" @onclick="AddClicked"><span class="icon fa-solid fa-sharp fa-plus"></span>Add</button>
             <button class="btn btn-sm btn-toolbar" title="Copy" @onclick="CopyClicked"><span class="icon fa-solid fa-sharp fa-copy"></span></button>
             <button class="btn btn-sm btn-toolbar" title="Paste" @onclick="PasteClicked"><span class="icon fa-solid fa-sharp fa-paste"></span></button>
-            <button class="btn btn-sm btn-toolbar" title="Collapse All" @onclick="ObjectExplorerService.CollapseAll"><span class="icon fa-solid fa-sharp fa-layer-minus"></span></button>
-            <button class="btn btn-sm btn-toolbar" title="Toggle Hidden" @onclick="ObjectExplorerService.ToggleHidden"><span class="icon @hiddenIcon"></span></button>
+            <button class="btn btn-sm btn-toolbar" title="Collapse All" @onclick="CollapseAll"><span class="icon fa-solid fa-sharp fa-layer-minus"></span></button>
+            <button class="btn btn-sm btn-toolbar" title="Toggle Hidden" @onclick="ToggleHidden"><span class="icon @hiddenIcon"></span></button>
         </div>
     </div>
 </div>
@@ -45,6 +45,19 @@
 
             await InvokeAsync(StateHasChanged);
         }
+    }
+
+    private void CollapseAll()
+    {
+        ObjectExplorerService.CollapseAll();
+        ObjectExplorerService.Update();
+    }
+
+    private void ToggleHidden()
+    {
+        ObjectExplorerService.ToggleHidden();
+        ObjectExplorerService.BuildTreeItems();
+        ObjectExplorerService.Update();
     }
 
 }

@@ -34,15 +34,30 @@
             font-size: 20px;
             border-radius: 0 !important;
             border-right: none !important;
-            background: var(--textBackground);
-            border: 1px solid var(--borderColor);
-            color: var(--textPrimary);
+            background: var(--inputBackground);
+            border: 1px solid var(--inputBorder);
+            color: var(--inputText);
         }
 
-    .spin-edit .spin-edit-input input:disabled {
-        background: #e4e4e4;
-        color: #888;
-    }
+            .spin-edit .spin-edit-input input:hover {
+                background: var(--inputBackgroundHover);
+                border: 1px solid var(--inputBorderHover);
+                color: var(--inputTextHover);
+            }
+
+            .spin-edit .spin-edit-input input:focus {
+                background: var(--inputBackgroundHighlight);
+                border: 2px solid var(--inputBorderHighlight);
+                color: var(--inputTextHighlight);
+                outline: none !important;
+                box-shadow: none !important;
+            }
+
+            .spin-edit .spin-edit-input input:disabled {
+                background: var(--inputBackgroundDisabled);
+                border: 1px solid var(--inputBorderDisabled);
+                color: var(--inputTextDisabled);
+            }
 
         .spin-edit.small .spin-edit-input input {
             height: 36px;

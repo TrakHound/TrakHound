@@ -129,12 +129,21 @@
                                                                         <div class="body-upload-file-button">
                                                                             <button class="btn btn-browse" @onclick="BrowseClicked"><span class="icon fa-solid fa-sharp fa-magnifying-glass"></span>Browse..</button>
                                                                         </div>
-                                                                        <div class="body-upload-file-size">
-                                                                            <span>@uploadFilesize</span>
-                                                                        </div>
-                                                                        <div class="body-upload-file-path">
-                                                                            <TextBox Value="@uploadFilename" />
-                                                                        </div>
+
+                                                                        @if (uploadFilename != null)
+                                                                        {
+                                                                            <div class="body-upload-file-size">
+                                                                                <span>@uploadFilesize</span>
+                                                                            </div>
+                                                                            <div class="body-upload-file-path">
+                                                                                <TextBox Value="@uploadFilename" Enabled="false" />
+                                                                            </div>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <div class="body-upload-placeholder"></div>
+                                                                        }
+
                                                                     </div>
                                                                     break;
                                                             }

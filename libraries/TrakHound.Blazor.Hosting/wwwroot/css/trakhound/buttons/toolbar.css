@@ -14,7 +14,7 @@
 
     .btn-toolbar:hover {
         background: var(--buttonToolbarBackgroundHover);
-        border: var(--buttonToolbarBorderHover);
+        border: 1px solid var(--buttonToolbarBorderHover);
         color: var(--buttonToolbarTextHover);
         transition: none;
     }
@@ -23,7 +23,7 @@
         box-shadow: none !important;
         outline: none;
         background: var(--buttonToolbarBackgroundHighlight);
-        border: var(--buttonToolbarBorderHighlight);
+        border: 1px solid var(--buttonToolbarBorderHighlight);
         color: var(--buttonToolbarTextHighlight);
     }
 
@@ -31,13 +31,24 @@
         box-shadow: none !important;
         outline: none;
         background: var(--buttonToolbarBackgroundDisabled);
-        border: var(--buttonToolbarBorderDisabled);
+        border: 1px solid var(--buttonToolbarBorderDisabled);
         color: var(--buttonToolbarTextDisabled);
     }
 
     .btn-toolbar:first-child {
-        border-left: 1px solid var(--borderVeryLight);
         border-left: 1px solid var(--buttonToolbarBorder);
+    }
+
+    .btn-toolbar:hover:first-child {
+        border-left: 1px solid var(--buttonToolbarBorderHover);
+    }
+
+    .btn-toolbar:focus:first-child {
+        border-left: 1px solid var(--buttonToolbarBorderHighlight);
+    }
+
+    .btn-toolbar.disabled:first-child {
+        border-left: 1px solid var(--buttonToolbarBorderDisabled);
     }
 
     .btn-toolbar .icon {
