@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TrakHound.Drivers;
@@ -45,6 +46,18 @@ namespace TrakHound.Sqlite.Drivers
         public SqliteEntityDriver() { }
 
         public SqliteEntityDriver(ITrakHoundDriverConfiguration configuration) : base(configuration) { }
+
+
+
+        public string GetReadConnectionString(string databaseSource)
+        {
+            return $"Data Source={databaseSource};Mode=ReadOnly";
+        }
+
+        public string GetWriteConnectionString(string databaseSource)
+        {
+            return $"Data Source={databaseSource};Mode=ReadWriteCreate";
+        }
 
 
         #region "Internal"

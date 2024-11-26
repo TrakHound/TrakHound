@@ -187,10 +187,22 @@ namespace TrakHound.Utilities
                         // Open the connection
                         connection.Open();
 
-                        var command = connection.CreateCommand();
-                        command.CommandText = query;
-                        command.ExecuteNonQuery();
+                        // Create Jounal Mode Command
+                        using (var journalModeCommand = connection.CreateCommand())
+                        {
+                            journalModeCommand.CommandType = System.Data.CommandType.Text;
+                            journalModeCommand.CommandText = "PRAGMA journal_mode = WAL";
+                            journalModeCommand.ExecuteNonQuery();
+                        }
 
+                        // Create Query Command
+                        using (var command = connection.CreateCommand())
+                        {
+                            command.CommandText = query;
+                            command.ExecuteNonQuery();
+                        }
+
+                        // Close the connection
                         connection.Close();
                     }
 
@@ -225,6 +237,15 @@ namespace TrakHound.Utilities
                         // Open the connection
                         connection.Open();
 
+                        // Create Jounal Mode Command
+                        using (var journalModeCommand = connection.CreateCommand())
+                        {
+                            journalModeCommand.CommandType = System.Data.CommandType.Text;
+                            journalModeCommand.CommandText = "PRAGMA journal_mode = WAL";
+                            journalModeCommand.ExecuteNonQuery();
+                        }
+
+                        // Create Query Command
                         using (var transaction = connection.BeginTransaction())
                         {
                             foreach (var query in queries)
@@ -241,6 +262,7 @@ namespace TrakHound.Utilities
                             transaction.Commit();
                         }
 
+                        // Close the connection
                         connection.Close();
                     }
 
@@ -278,27 +300,41 @@ namespace TrakHound.Utilities
                         // Open the connection
                         connection.Open();
 
-                        using var command = new SqliteCommand(query, connection);
-                        command.CommandTimeout = timeout > 0 ? timeout : 60;
+                        //// Create Jounal Mode Command
+                        //using (var journalModeCommand = connection.CreateCommand())
+                        //{
+                        //    journalModeCommand.CommandType = System.Data.CommandType.Text;
+                        //    journalModeCommand.CommandText = "PRAGMA journal_mode = WAL";
+                        //    journalModeCommand.ExecuteNonQuery();
+                        //}
 
-                        using (SqliteDataReader reader = command.ExecuteReader())
+                        // Create Query Command
+                        using (var command = new SqliteCommand(query, connection))
                         {
-                            bool first = true;
+                            command.CommandTimeout = timeout > 0 ? timeout : 60;
 
-                            while (first || reader.NextResult())
+                            using (var reader = command.ExecuteReader())
                             {
-                                if (reader.HasRows)
-                                {
-                                    while (reader.Read())
-                                    {
-                                        var item = reader.GetValue(0);
-                                        if (item != null) list.Add(item.ToString());
-                                    }
-                                }
+                                bool first = true;
 
-                                first = false;
+                                while (first || reader.NextResult())
+                                {
+                                    if (reader.HasRows)
+                                    {
+                                        while (reader.Read())
+                                        {
+                                            var item = reader.GetValue(0);
+                                            if (item != null) list.Add(item.ToString());
+                                        }
+                                    }
+
+                                    first = false;
+                                }
                             }
                         }
+
+                        // Close the connection
+                        connection.Close();
                     }
 
                     return list;
@@ -335,27 +371,41 @@ namespace TrakHound.Utilities
                         // Open the connection
                         connection.Open();
 
-                        using var command = new SqliteCommand(query, connection);
-                        command.CommandTimeout = timeout > 0 ? timeout : 60;
+                        //// Create Jounal Mode Command
+                        //using (var journalModeCommand = connection.CreateCommand())
+                        //{
+                        //    journalModeCommand.CommandType = System.Data.CommandType.Text;
+                        //    journalModeCommand.CommandText = "PRAGMA journal_mode = WAL";
+                        //    journalModeCommand.ExecuteNonQuery();
+                        //}
 
-                        using (SqliteDataReader reader = command.ExecuteReader())
+                        // Create Query Command
+                        using (var command = new SqliteCommand(query, connection))
                         {
-                            bool first = true;
+                            command.CommandTimeout = timeout > 0 ? timeout : 60;
 
-                            while (first || reader.NextResult())
+                            using (var reader = command.ExecuteReader())
                             {
-                                if (reader.HasRows)
-                                {
-                                    while (reader.Read())
-                                    {
-                                        var item = Read<T>(reader);
-                                        if (item != null) list.Add(item);
-                                    }
-                                }
+                                bool first = true;
 
-                                first = false;
+                                while (first || reader.NextResult())
+                                {
+                                    if (reader.HasRows)
+                                    {
+                                        while (reader.Read())
+                                        {
+                                            var item = Read<T>(reader);
+                                            if (item != null) list.Add(item);
+                                        }
+                                    }
+
+                                    first = false;
+                                }
                             }
                         }
+
+                        // Close the connection
+                        connection.Close();
                     }
 
                     return list;
@@ -390,30 +440,44 @@ namespace TrakHound.Utilities
                         // Open the connection
                         connection.Open();
 
-                        using var command = new SqliteCommand(query, connection);
-                        command.CommandTimeout = timeout > 0 ? timeout : 60;
+                        //// Create Jounal Mode Command
+                        //using (var journalModeCommand = connection.CreateCommand())
+                        //{
+                        //    journalModeCommand.CommandType = System.Data.CommandType.Text;
+                        //    journalModeCommand.CommandText = "PRAGMA journal_mode = WAL";
+                        //    journalModeCommand.ExecuteNonQuery();
+                        //}
 
-                        using (SqliteDataReader reader = command.ExecuteReader())
+                        // Create Query Command
+                        using (var queryCommand = new SqliteCommand(query, connection))
                         {
-                            bool first = true;
+                            queryCommand.CommandTimeout = timeout > 0 ? timeout : 60;
 
-                            while (first || reader.NextResult())
+                            using (var reader = queryCommand.ExecuteReader())
                             {
-                                if (reader.HasRows)
+                                bool first = true;
+
+                                while (first || reader.NextResult())
                                 {
-                                    while (reader.Read())
+                                    if (reader.HasRows)
                                     {
-                                        var obj = reader.GetValue(0);
-                                        if (obj != null)
+                                        while (reader.Read())
                                         {
-                                            return obj.ToString();
+                                            var obj = reader.GetValue(0);
+                                            if (obj != null)
+                                            {
+                                                return obj.ToString();
+                                            }
                                         }
                                     }
-                                }
 
-                                first = false;
+                                    first = false;
+                                }
                             }
                         }
+
+                        // Close the connection
+                        connection.Close();
                     }
                 }
                 catch (SqliteException ex)
@@ -447,27 +511,40 @@ namespace TrakHound.Utilities
                         // Open the connection
                         connection.Open();
 
-                        using var command = new SqliteCommand(query, connection);
-                        command.CommandTimeout = timeout > 0 ? timeout : 60;
+                        //// Create Jounal Mode Command
+                        //using (var journalModeCommand = connection.CreateCommand())
+                        //{
+                        //    journalModeCommand.CommandType = System.Data.CommandType.Text;
+                        //    journalModeCommand.CommandText = "PRAGMA journal_mode = WAL";
+                        //    journalModeCommand.ExecuteNonQuery();
+                        //}
 
-                        using (SqliteDataReader reader = command.ExecuteReader())
+                        using (var command = new SqliteCommand(query, connection))
                         {
-                            bool first = true;
+                            command.CommandTimeout = timeout > 0 ? timeout : 60;
 
-                            while (first || reader.NextResult())
+                            using (SqliteDataReader reader = command.ExecuteReader())
                             {
-                                if (reader.HasRows)
-                                {
-                                    while (reader.Read())
-                                    {
-                                        var obj = reader.GetValue(0);
-                                        if (obj != null) list.Add(obj.ToString());
-                                    }
-                                }
+                                bool first = true;
 
-                                first = false;
+                                while (first || reader.NextResult())
+                                {
+                                    if (reader.HasRows)
+                                    {
+                                        while (reader.Read())
+                                        {
+                                            var obj = reader.GetValue(0);
+                                            if (obj != null) list.Add(obj.ToString());
+                                        }
+                                    }
+
+                                    first = false;
+                                }
                             }
                         }
+
+                        // Close the connection
+                        connection.Close();
                     }
 
                     return list;

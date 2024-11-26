@@ -46,8 +46,7 @@
     margin-top: 0px;
     font-size: 12px;
     line-height: 16px;
-    color: #555;
-    color: var(--textLight);
+    color: var(--textMild);
     transition: none;
 }
 

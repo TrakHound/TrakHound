@@ -191,9 +191,14 @@
         }
 
 .tool-bar-query-input {
-    border-top: 1px solid var(--borderColor);
+    border: none !important;
+    border-top: 1px solid var(--borderColor) !important;
     height: 100%;
 }
+
+    .tool-bar-query-input ::deep textarea {
+        border: 1px solid transparent !important;
+    }
 
 .tool-bar-expression-input {
     height: 100%;

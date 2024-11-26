@@ -229,12 +229,18 @@ a, .btn-link {
 
 .rz-dropdown-panel {
     background: var(--panelItemBackground);
+    border-radius: 0 !important;
+}
+
+.rz-dropdown-items {
+    padding: 0;
 }
 
 .rz-dropdown-item {
     padding: 2px 8px !important;
     color: var(--textDark);
-    font-size: 14px;
+    border-bottom: 1px solid var(--panelItemBorder);
+    font-size: 14px !important;
 }
 
     .rz-dropdown-item:hover {

@@ -56,7 +56,6 @@
     }
 
     .table-panel ::deep .rz-switch-circle {
-        background: #ddd;
         background: var(--panelBackgroundLight);
     }
 
@@ -65,7 +64,6 @@
     }
 
     .table-panel ::deep .rz-switch-circle::before {
-        background: #888;
         background: var(--panelBackgroundMedium);
     }
 
@@ -99,6 +97,7 @@
         font-size: 12px;
         font-weight: bold;
         margin-bottom: 5px;
+        color: var(--textMild);
     }
 
     .information-panel ::deep .form-field .rz-textbox {

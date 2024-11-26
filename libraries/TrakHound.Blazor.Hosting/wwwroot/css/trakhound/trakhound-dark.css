@@ -12,33 +12,19 @@
     --accentBackground: linear-gradient(0deg, #007bf7 0%, #0073e6 25%, #0073e6 50%, #0073e6 75%, #007bf7 100%);
     /* Panel Colors */
     --panelBackground: #121821;
-    --panelBackgroundMedium: #222;
-    --panelBackgroundMedium: #1c2431;
-    --panelBackgroundMedium: #253041;
     --panelBackgroundMedium: #1b2431;
-    --panelBackgroundDark: #333;
-    --panelBackgroundDark: #1c2431;
-    --panelBackgroundDark: #121821;
     --panelBackgroundDark: #090c10;
-    --panelSidebarBackground: #222;
-    --panelSidebarBackground: #090c10;
     --panelSidebarBackground: #0d1726;
     --panelItemBackground: #1b2431;
     --panelItemBackgroundHover: var(--accentVeryVeryLight);
     --panelItemBackgroundHover: #364863;
     --panelItemBackgroundLight: #203960;
     --panelItemBackgroundLightHover: var(--accentVeryLight);
+    --panelItemBorder: #253041;
     /* Border Colors */
-    --borderColor: #555;
-    --borderColor: #1c2431;
     --borderColor: #374862;
-    --borderColorLight: #444;
-    --borderColorLight: #2e3c52;
     --borderColorLight: #253041;
-    --borderColorVeryLight: #253041;
     --borderColorVeryLight: #1c2431;
-    --borderColorVeryVeryLight: #222;
-    --borderColorVeryVeryLight: #1c2431;
     --borderColorVeryVeryLight: #090c10;
     --borderColorMedium: #405472;
     --borderColorDark: #496083;

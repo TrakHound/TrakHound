@@ -116,9 +116,14 @@ td {
                 font-style: normal;
             }
 
+        .value-cell ::deep .text-box input:hover::placeholder {
+            color: var(--accentLight) !important;
+        }
+
         .value-cell ::deep .text-box input:focus {
             outline: none;
             box-shadow: inset 0px 0px 1px 1px var(--accent);
+            color: var(--accentLight);
         }
 
     .value-cell ::deep .rz-textarea {
