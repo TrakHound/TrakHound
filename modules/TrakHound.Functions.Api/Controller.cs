@@ -56,7 +56,7 @@ namespace TrakHound.Functions
 		{
 			if (!string.IsNullOrEmpty(InstanceId) && !string.IsNullOrEmpty(functionId))
 			{
-                var taskConfigurationIds = (await Client.Entities.GetSets($"/.Instances/{InstanceId}/Functions/{functionId}/ScheduledTasks"))?.Select(o => o.Value);
+                var taskConfigurationIds = (await Client.Entities.GetSets($"TrakHound:/.Instances/{InstanceId}/Functions/{functionId}/ScheduledTasks"))?.Select(o => o.Value);
                 if (!taskConfigurationIds.IsNullOrEmpty())
                 {
                     var taskConfigurations = new List<FunctionTask>();
@@ -95,7 +95,7 @@ namespace TrakHound.Functions
         {
             if (!string.IsNullOrEmpty(InstanceId) && !string.IsNullOrEmpty(functionId))
             {
-                var events = await Client.Entities.GetEvents($"/.Instances/{InstanceId}/Functions/{functionId}/Runs", start, stop, skip, take, (SortOrder)sortOrder);
+                var events = await Client.Entities.GetEvents($"TrakHound:/.Instances/{InstanceId}/Functions/{functionId}/Runs", start, stop, skip, take, (SortOrder)sortOrder);
                 if (!events.IsNullOrEmpty())
                 {
                     var runPaths = events.Select(o => o.Target);
@@ -132,7 +132,7 @@ namespace TrakHound.Functions
         {
             if (!string.IsNullOrEmpty(InstanceId) && !string.IsNullOrEmpty(functionId) && !string.IsNullOrEmpty(runId))
             {
-                var path = TrakHoundPath.Combine($"/.Instances/{InstanceId}/Functions", functionId, "Run", runId);
+                var path = TrakHoundPath.Combine($"TrakHound:/.Instances/{InstanceId}/Functions", functionId, "Run", runId);
 
                 var runModel = await Client.Entities.GetSingle<FunctionRunModel>(path);
                 if (runModel != null)
@@ -155,7 +155,7 @@ namespace TrakHound.Functions
         {
             if (!string.IsNullOrEmpty(InstanceId) && !string.IsNullOrEmpty(functionId) && !string.IsNullOrEmpty(runId))
             {
-                var path = TrakHoundPath.Combine($"/.Instances/{InstanceId}/Functions", functionId, "Run", runId, "Output");
+                var path = TrakHoundPath.Combine($"TrakHound:/.Instances/{InstanceId}/Functions", functionId, "Run", runId, "Output");
 
                 var entries = await Client.Entities.GetHashValues(path);
                 if (!entries.IsNullOrEmpty())
@@ -186,7 +186,7 @@ namespace TrakHound.Functions
         {
             if (!string.IsNullOrEmpty(InstanceId) && !string.IsNullOrEmpty(functionId) && !string.IsNullOrEmpty(runId))
             {
-                var path = TrakHoundPath.Combine($"/.Instances/{InstanceId}/Functions", functionId, "Run", runId, "Status");
+                var path = TrakHoundPath.Combine($"TrakHound:/.Instances/{InstanceId}/Functions", functionId, "Run", runId, "Status");
 
                 var statuses = await Client.Entities.GetStates(path, DateTime.MinValue, DateTime.MaxValue, 0, int.MaxValue);
                 if (!statuses.IsNullOrEmpty())
@@ -218,7 +218,7 @@ namespace TrakHound.Functions
         {
             if (!string.IsNullOrEmpty(InstanceId) && !string.IsNullOrEmpty(functionId) && !string.IsNullOrEmpty(runId))
             {
-                var path = TrakHoundPath.Combine($"/.Instances/{InstanceId}/Functions", functionId, "Run", runId, "Status");
+                var path = TrakHoundPath.Combine($"TrakHound:/.Instances/{InstanceId}/Functions", functionId, "Run", runId, "Status");
 
                 await Client.Entities.PublishObject(path, TrakHoundObjectContentType.State); // Create Object first. Probably needs to be fixed in the entity subscribe?
 
@@ -257,7 +257,7 @@ namespace TrakHound.Functions
 		{
 			if (!string.IsNullOrEmpty(InstanceId) && !string.IsNullOrEmpty(functionId) && !string.IsNullOrEmpty(runId))
 			{
-				var path = TrakHoundPath.Combine($"/.Instances/{InstanceId}/Functions", functionId, "Run", runId, "Log");
+				var path = TrakHoundPath.Combine($"TrakHound:/.Instances/{InstanceId}/Functions", functionId, "Run", runId, "Log");
                 var level = minimumLevel.ConvertEnum<TrakHoundLogLevel>();
 
                 var logs = await Client.Entities.GetLogs(path, level, 0, int.MaxValue);
@@ -295,7 +295,7 @@ namespace TrakHound.Functions
 		{
 			if (!string.IsNullOrEmpty(InstanceId) && !string.IsNullOrEmpty(functionId) && !string.IsNullOrEmpty(runId))
 			{
-				var path = TrakHoundPath.Combine($"/.Instances/{InstanceId}/Functions", functionId, "Run", runId, "Log");
+				var path = TrakHoundPath.Combine($"TrakHound:/.Instances/{InstanceId}/Functions", functionId, "Run", runId, "Log");
 				var level = minimumLevel.ConvertEnum<TrakHoundLogLevel>();
 
                 await Client.Entities.PublishObject(path, TrakHoundObjectContentType.Log); // Create Object first. Probably needs to be fixed in the entity subscribe?
@@ -343,8 +343,8 @@ namespace TrakHound.Functions
                 var runResponse = await Client.System.Functions.Run(functionId, inputParameters, runId, started);
                 var publishTransaction = new TrakHoundEntityTransaction();
 
-                var functionPath = TrakHoundPath.Combine($"/.Instances/{InstanceId}/Functions", runResponse.PackageId);
-                var enginePath = TrakHoundPath.Combine($"/.Instances/{InstanceId}/Functions", runResponse.PackageId, "Engines", runResponse.EngineId);
+                var functionPath = TrakHoundPath.Combine($"TrakHound:/.Instances/{InstanceId}/Functions", runResponse.PackageId);
+                var enginePath = TrakHoundPath.Combine($"TrakHound:/.Instances/{InstanceId}/Functions", runResponse.PackageId, "Engines", runResponse.EngineId);
 
                 var runPath = TrakHoundPath.Combine(functionPath, $"Run/{runResponse.Id}");
                 publishTransaction.Add(new TrakHoundObjectEntry(runPath));
@@ -419,7 +419,7 @@ namespace TrakHound.Functions
                 var response = await Client.Api.Publish(_defaultScheduledTasksRoute, taskConfiguration);
                 if (response.Success)
 				{
-                    var tasksPath = $"/.Instances/{InstanceId}/Functions/{functionId}/ScheduledTasks";
+                    var tasksPath = $"TrakHound:/.Instances/{InstanceId}/Functions/{functionId}/ScheduledTasks";
                     if (await Client.Entities.PublishSet(tasksPath, taskConfiguration.Id))
                     {
                         return Ok(taskConfiguration);
@@ -510,7 +510,7 @@ namespace TrakHound.Functions
                 var response = await Client.Api.Delete(Url.Combine(_defaultScheduledTasksRoute, taskConfigurationId));
                 if (response.Success)
 				{
-                    var tasksPath = $"/.Instances/{InstanceId}/Functions/{functionId}/ScheduledTasks";
+                    var tasksPath = $"TrakHound:/.Instances/{InstanceId}/Functions/{functionId}/ScheduledTasks";
                     if (await Client.Entities.DeleteSet(tasksPath, taskConfigurationId))
                     {
                         return Ok();

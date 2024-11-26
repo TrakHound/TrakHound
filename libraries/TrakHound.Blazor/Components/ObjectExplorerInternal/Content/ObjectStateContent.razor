@@ -56,6 +56,7 @@
                     <Columns>
                         <RadzenDataGridColumn TItem="TableItem" Property="Type" Title="Type" />
                         <RadzenDataGridColumn TItem="TableItem" Property="Description" Title="Description" />
+                        <RadzenDataGridColumn TItem="TableItem" Property="TTL" Title="TTL" Width="100px" />
                         <RadzenDataGridColumn TItem="TableItem" Property="Timestamp" Title="Timestamp" Width="170px" />
                         <RadzenDataGridColumn TItem="TableItem" CssClass="delete" Width="70px" Sortable="false">
                             <Template Context="context">
@@ -91,6 +92,7 @@
         public string Uuid { get; set; }
         public string Type { get; set; }
         public string Description { get; set; }
+        public int TTL { get; set; }
         public DateTime Timestamp { get; set; }
     }
 
@@ -138,6 +140,7 @@
                             item.Uuid = entity.Uuid;
                             item.Type = entity.Type;
                             item.Description = entity.Description;
+                            item.TTL = entity.TTL;
                             item.Timestamp = entity.Timestamp.ToLocalTime();
                             items.Add(item);
                         }

@@ -21,7 +21,16 @@
                     <span class="header-description">@pageInformation.Id</span>
                 </div>
                 <div class="header-package-icon-container">
-                    <span class="header-package-icon fa-solid fa-sharp fa-box"></span>
+
+                    @if (!string.IsNullOrEmpty(appInformation.PackageIcon))
+                    {
+                        <img class="header-package-icon" src="@appInformation.PackageIcon" />
+                    }
+                    else
+                    {
+                        <span class="header-package-icon fa-solid fa-sharp fa-box"></span>
+                    }
+
                 </div>
                 <div class="header-package-container">
                     <span class="header-title">Package</span>

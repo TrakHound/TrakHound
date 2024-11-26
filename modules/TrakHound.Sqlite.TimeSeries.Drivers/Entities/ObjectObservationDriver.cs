@@ -174,6 +174,8 @@ namespace TrakHound.Sqlite.Drivers
 
         protected async override Task<bool> OnPublish(IEnumerable<ITrakHoundObjectObservationEntity> entities)
         {
+            var success = false;
+
             var objectUuids = entities.Select(o => o.ObjectUuid).Distinct();
             foreach (var objectUuid in objectUuids)
             {
@@ -211,11 +213,12 @@ namespace TrakHound.Sqlite.Drivers
                     if (!Directory.Exists(dataSourceDirectory)) Directory.CreateDirectory(dataSourceDirectory);
 
                     // Execute Queries
-                    return _client.ExecuteNonQuery(connectionString, queries);
+                    success = _client.ExecuteNonQuery(connectionString, queries);
+                    if (!success) return false;
                 }
             }
 
-            return false;
+            return success;
         }
 
 

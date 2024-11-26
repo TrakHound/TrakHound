@@ -63,14 +63,17 @@
 
     .header-panel .header-package-icon-container {
         grid-column: 3;
-        padding: 15px;
+        padding: 5px 10px;
     }
 
-    .header-panel .header-package-icon {
+    .header-panel span.header-package-icon {
         font-size: 30px;
         line-height: 30px;
-        color: #ccc;
         color: var(--textLight);
+    }
+
+    .header-panel img.header-package-icon {
+        height: 50px;
     }
 
     .header-panel .header-package-container {

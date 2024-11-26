@@ -140,6 +140,8 @@ namespace TrakHound.Sqlite.Drivers
 
         protected async override Task<bool> OnPublish(IEnumerable<ITrakHoundObjectLogEntity> entities)
         {
+            var success = false;
+
             var objectUuids = entities.Select(o => o.ObjectUuid).Distinct();
             foreach (var objectUuid in objectUuids)
             {
@@ -174,11 +176,12 @@ namespace TrakHound.Sqlite.Drivers
                     if (!Directory.Exists(dataSourceDirectory)) Directory.CreateDirectory(dataSourceDirectory);
 
                     // Execute Queries
-                    return _client.ExecuteNonQuery(connectionString, queries);
+                    success = _client.ExecuteNonQuery(connectionString, queries);
+                    if (!success) return false;
                 }
             }
 
-            return false;
+            return success;
         }
 
 
@@ -197,7 +200,7 @@ namespace TrakHound.Sqlite.Drivers
                         foreach (var timestampFile in timestampFiles.OrderBy(o => o))
                         {
                             // Set Query
-                            var dbQuery = $"select {TableColumns} from {_dataTableName} where [log_level] <= {minimumLogLevel};";
+                            var dbQuery = $"select {TableColumns} from {_dataTableName} where [log_level] <= {(int)minimumLogLevel};";
 
                             // Create Connection String
                             var connectionString = _client.GetReadConnectionString(timestampFile);
@@ -251,7 +254,7 @@ namespace TrakHound.Sqlite.Drivers
                             if (IsBetween(bottomTimestamp, topTimestamp, query.From, query.To))
                             {
                                 // Set Query
-                                var dbQuery = $"select {TableColumns} from {_dataTableName} where [log_level] <= {minimumLogLevel} and [timestamp] >= {query.From} and [timestamp] < {query.To};";
+                                var dbQuery = $"select {TableColumns} from {_dataTableName} where [log_level] <= {(int)minimumLogLevel} and [timestamp] >= {query.From} and [timestamp] < {query.To};";
 
                                 // Create Connection String
                                 var connectionString = _client.GetReadConnectionString(timestampFile);
@@ -357,7 +360,7 @@ namespace TrakHound.Sqlite.Drivers
                             if (IsBetween(bottomTimestamp, topTimestamp, query.From, query.To))
                             {
                                 // Set Query
-                                var dbQuery = $"select count(*) from {_dataTableName} where [log_level] <= {minimumLogLevel} and [timestamp] >= {query.From} and [timestamp] < {query.To};";
+                                var dbQuery = $"select count(*) from {_dataTableName} where [log_level] <= {(int)minimumLogLevel} and [timestamp] >= {query.From} and [timestamp] < {query.To};";
 
                                 // Create Connection String
                                 var connectionString = _client.GetReadConnectionString(timestampFile);

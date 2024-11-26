@@ -134,11 +134,11 @@
     --buttonLinkIcon: var(--accent);
     --buttonLinkIconHover: var(--accentLight);
     --buttonLinkIconHighlight: var(--accentLight);
-    --buttonLinkIconDisabled: var(--accentLight);
+    --buttonLinkIconDisabled: var(--textMild);
     --buttonLinkText: var(--accentLight);
     --buttonLinkTextHover: var(--accentVeryLight);
     --buttonLinkTextHighlight: var(--accentVeryLight);
-    --buttonLinkTextDisabled: var(--accentVeryLight);
+    --buttonLinkTextDisabled: var(--textMild);
     --buttonRemoveBackground: none;
     --buttonRemoveBackgroundHover: red;
     --buttonRemoveBackgroundHighlight: red;

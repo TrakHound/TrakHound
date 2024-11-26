@@ -9,7 +9,8 @@ namespace TrakHound.Drivers.FileSystem
         IBlobDeleteDriver
     {
         private const string TypeId = "FileSystem";
-        private const string DefaultDirectory = "files";
+        private const string DefaultDirectory = "data";
+        private const string DefaultSubDirectory = "blobs";
 
         private readonly ITrakHoundDriverConfiguration _configuration;
         private readonly string _directory;
@@ -32,8 +33,7 @@ namespace TrakHound.Drivers.FileSystem
                     if (!Path.IsPathRooted(path)) path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
                 }
 
-                _directory = Path.Combine(path, configuration.Id);
-
+                _directory = Path.Combine(path, DefaultSubDirectory);
 
                 if (!Directory.Exists(_directory))
                 {

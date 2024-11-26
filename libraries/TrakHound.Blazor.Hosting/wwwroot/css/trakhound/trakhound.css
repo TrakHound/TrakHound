@@ -254,6 +254,33 @@ a, .btn-link {
     }
 
 
+.rz-autocomplete-panel {
+    background: var(--panelItemBackground);
+    border-radius: 0 !important;
+}
+
+.rz-autocomplete-items {
+    padding: 0;
+}
+
+.rz-autocomplete-list-item {
+    padding: 2px 8px !important;
+    color: var(--textDark);
+    border-bottom: 1px solid var(--panelItemBorder);
+    font-size: 14px !important;
+}
+
+    .rz-autocomplete-list-item:hover {
+        background: var(--panelItemBackgroundHover) !important;
+        color: var(--textDark) !important;
+    }
+
+    .rz-autocomplete-list-item.rz-state-highlight {
+        background: var(--panelItemBackgroundHover) !important;
+        color: var(--textDark) !important;
+    }
+
+
 .rz-selectbutton .rz-button-text {
     font-size: 12px;
     text-decoration: none;
@@ -408,6 +435,7 @@ textarea,
 .rz-numeric,
 .rz-numeric input,
 .rz-datepicker input,
+.rz-autocomplete input,
 .rz-textbox {
     background: var(--inputBackground) !important;
     border-color: var(--inputBorder) !important;
@@ -420,6 +448,7 @@ textarea,
     .rz-numeric:hover,
     .rz-numeric:hover input,
     .rz-datepicker input:hover,
+    .rz-autocomplete input:hover,
     .spin-edit input:hover {
         background: var(--inputBackgroundHover) !important;
         border-color: var(--inputBorderHover) !important;
@@ -432,6 +461,7 @@ textarea,
     .rz-numeric:focus,
     .rz-numeric input:focus,
     .rz-datepicker input:focus,
+    .rz-autocomplete input:focus,
     .spin-edit input:focus {
         background: var(--inputBackgroundHighlight) !important;
         border-color: var(--inputBorderHighlight) !important;

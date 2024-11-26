@@ -11,7 +11,7 @@ namespace TrakHound.Sqlite.Drivers
 {
     public abstract class SqliteDriver : TrakHoundDriver, IDisposable
     {
-        private const string _defaultBaseDirectory = "sqlite";
+        private const string _defaultBaseDirectory = "data";
 
         protected readonly string _baseDirectory;
         protected readonly SqliteClient _client;
@@ -30,7 +30,7 @@ namespace TrakHound.Sqlite.Drivers
         {
             // Set Base Directory for Sqlite DataSource
             _baseDirectory = configuration.GetParameter("directory");
-            if (!string.IsNullOrEmpty(_baseDirectory)) _baseDirectory = _defaultBaseDirectory;
+            if (string.IsNullOrEmpty(_baseDirectory)) _baseDirectory = _defaultBaseDirectory;
             if (!string.IsNullOrEmpty(_baseDirectory))
             {
                 if (!Path.IsPathRooted(_baseDirectory)) _baseDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _baseDirectory);

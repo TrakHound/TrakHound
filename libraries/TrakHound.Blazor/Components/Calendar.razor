@@ -89,8 +89,10 @@
             var dateTime = DateTime.Value;
             if (dateTime > System.DateTime.MinValue)
             {
+                var monthDayCount = System.DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
+
                 var firstDay = new DateTime(dateTime.Year, dateTime.Month, 1);
-                var lastDay = new DateTime(dateTime.Year, dateTime.Month, System.DateTime.DaysInMonth(dateTime.Year, dateTime.Month));
+                var lastDay = new DateTime(dateTime.Year, dateTime.Month, monthDayCount);
 
                 var nextDay = 0;
                 var nextDayIndex = 0;
@@ -123,16 +125,19 @@
                     }
                 }
 
-                var nextMonthDay = 1;
-                // Add Next Month Days
-                for (var i = (int)lastDay.DayOfWeek; i < 6; i++)
+                if ((int)lastDay.DayOfWeek < 6)
                 {
-                    week[nextDayIndex] = new Day(DayType.NextMonth, lastDay.AddDays(nextMonthDay));
-                    nextDayIndex++;
-                    nextMonthDay++;
-                }
+                    var nextMonthDay = 1;
+                    // Add Next Month Days
+                    for (var i = (int)lastDay.DayOfWeek; i < 6; i++)
+                    {
+                        week[nextDayIndex] = new Day(DayType.NextMonth, lastDay.AddDays(nextMonthDay));
+                        nextDayIndex++;
+                        nextMonthDay++;
+                    }
 
-                weeks.Add(week);
+                    weeks.Add(week);
+                }
             }
         }
 

@@ -5,7 +5,7 @@
     padding: 10px 20px 0;
     height: 100%;
     overflow: hidden;
-    background: #fff;
+    background: var(--panelBackground);
 }
 
 .header-panel {
@@ -14,8 +14,8 @@
 
 .status-panel {
     grid-row: 2;
-    background: #fafafa;
-    border: 1px solid #ddd;
+    background: var(--panelBackgroundLight);
+    border: 1px solid var(--borderColor);
     border-radius: 3px;
     padding: 10px 40px;
 }
@@ -55,7 +55,7 @@
 
 .status-description-container {
     grid-column: 2;
-    border-right: 1px solid #eee;
+    border-right: 1px solid var(--borderColorLight);
     padding-right: 60px;
 }
 
@@ -63,12 +63,13 @@
     display: block;
     font-size: 18px;
     font-weight: bold;
+    color: var(--textDark);
 }
 
 .status-description {
     display: block;
     font-size: 12px;
-    color: #888;
+    color: var(--textMild);
 }
 
 .status-metrics-container {
@@ -79,25 +80,25 @@
     display: block;
     font-size: 14px;
     font-weight: bold;
-    color: #555;
+    color: var(--textMild);
     margin-bottom: 5px;
 }
 
     .status-ago .icon {
         font-size: 12px;
-        color: #aaa;
+        color: var(--textLight);
         margin-right: 12px;
     }
 
 .status-duration {
     display: block;
     font-size: 12px;
-    color: #333;
+    color: var(--textMild);
 }
 
     .status-duration .icon {
         font-size: 12px;
-        color: #aaa;
+        color: var(--textLight);
         margin-right: 12px;
     }
 
@@ -106,26 +107,17 @@
     grid-row: 3;
 }
 
-    .information-panel .table {
-        background: #fafafa;
-        border: 1px solid #ddd;
+    .information-panel .table td {
+        font-size: 12px;
+        padding: 5px 15px;
     }
 
-        .information-panel .table td {
-            font-size: 12px;
-            padding: 5px 15px;
+        .information-panel .table td.label {
+            background: var(--tableHeaderBackground);
+            color: var(--tableHeaderText);
+            width: 200px;
+            font-weight: bold;
         }
-
-            .information-panel .table td.label {
-                width: 175px;
-                font-weight: bold;
-                border-right: 1px solid #ddd;
-            }
-
-            .information-panel .table td.value {
-                background: #fff;
-                border-bottom-color: #ddd;
-            }
 
 
 .tab-panel {
@@ -194,25 +186,19 @@
 
 
 .output-parameters .table {
-    background: #fafafa;
-    border: 1px solid #ddd;
     width: 100%;
 }
 
     .output-parameters .table th {
         font-size: 14px;
         padding: 8px 20px;
-        background: #f4f4f4;
-        border-bottom: 1px solid #ddd !important;
     }
 
     .output-parameters .table td {
         font-size: 13px;
         padding: 8px 20px;
-        background: #fafafa;
     }
 
         .output-parameters .table td.key {
             font-weight: bold;
-            border-right: 1px solid #ddd;
         }

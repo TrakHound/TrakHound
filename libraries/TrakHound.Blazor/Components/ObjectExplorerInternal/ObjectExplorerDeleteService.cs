@@ -107,6 +107,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                     _deleteModalPaths = null;
                     _deleteModalLoading = false;
                     _deleteModalVisible = false;
+                    _explorerService.BuildTreeItems();
                     _explorerService.Update();
                 });
             }

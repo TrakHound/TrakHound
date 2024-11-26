@@ -10,7 +10,7 @@ namespace TrakHound.Sqlite.Drivers
 {
     public abstract class SqliteDriver : TrakHoundDriver, IDisposable
     {
-        private const string _defaultBaseDirectory = "sqlite";
+        private const string _defaultBaseDirectory = "data";
 
         protected readonly SqliteClient _client;
         protected readonly string _baseDirectory;
@@ -28,7 +28,7 @@ namespace TrakHound.Sqlite.Drivers
         public SqliteDriver(ITrakHoundDriverConfiguration configuration) : base(configuration)
         {
             _baseDirectory = configuration.GetParameter("directory");
-            if (!string.IsNullOrEmpty(_baseDirectory)) _baseDirectory = _defaultBaseDirectory;
+            if (string.IsNullOrEmpty(_baseDirectory)) _baseDirectory = _defaultBaseDirectory;
             if (!string.IsNullOrEmpty(_baseDirectory))
             {
                 if (!Path.IsPathRooted(_baseDirectory)) _baseDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _baseDirectory);
@@ -46,16 +46,16 @@ namespace TrakHound.Sqlite.Drivers
             base.OnDisposed();
         }
 
-        public string GetDatabasePath(string filename)
-        {
-            var path = filename;
+        //public string GetDatabasePath(string filename)
+        //{
+        //    var path = filename;
 
-            var dir = Configuration.GetParameter("directory");
-            if (!string.IsNullOrEmpty(dir)) path = Path.Combine(dir, path);
+        //    var dir = Configuration.GetParameter("directory");
+        //    if (!string.IsNullOrEmpty(dir)) path = Path.Combine(dir, path);
 
-            if (!Path.IsPathRooted(path)) path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+        //    if (!Path.IsPathRooted(path)) path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
 
-            return path;
-        }
+        //    return path;
+        //}
     }
 }

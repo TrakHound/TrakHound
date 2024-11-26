@@ -47,7 +47,6 @@ namespace TrakHound.Sqlite.Drivers
             TableColumnList = new List<string> {
                 "[timestamp]",
                 "[target_uuid]",
-                "[sequence]",
                 "[source_uuid]",
                 "[created]"
             };
@@ -119,7 +118,6 @@ namespace TrakHound.Sqlite.Drivers
                 builder.Append(" (");
                 builder.Append("\"timestamp\", ");
                 builder.Append("\"target_uuid\", ");
-                builder.Append("\"sequence\", ");
                 builder.Append("\"source_uuid\", ");
                 builder.Append("\"created\"");
                 builder.Append(") ");
@@ -136,6 +134,8 @@ namespace TrakHound.Sqlite.Drivers
 
         protected async override Task<bool> OnPublish(IEnumerable<ITrakHoundObjectEventEntity> entities)
         {
+            var success = false;
+
             var objectUuids = entities.Select(o => o.ObjectUuid).Distinct();
             foreach (var objectUuid in objectUuids)
             {
@@ -168,11 +168,12 @@ namespace TrakHound.Sqlite.Drivers
                     if (!Directory.Exists(dataSourceDirectory)) Directory.CreateDirectory(dataSourceDirectory);
 
                     // Execute Queries
-                    return _client.ExecuteNonQuery(connectionString, queries);
+                    success = _client.ExecuteNonQuery(connectionString, queries);
+                    if (!success) return false;
                 }
             }
 
-            return false;
+            return success;
         }
 
 
