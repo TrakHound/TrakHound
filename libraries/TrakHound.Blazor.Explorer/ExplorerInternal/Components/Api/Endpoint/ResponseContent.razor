@@ -44,9 +44,12 @@ else if (!string.IsNullOrEmpty(DownloadLink))
 
             @if (MimeTypes.IsImage(ContentType))
             {
-            <div class="preview-container">
-                <img src="@DownloadLink" class="preview-image">
-            </div>
+                // Add unique URL parameter to keep browser from caching
+                var imageLink = Url.AddQueryParameter(DownloadLink, StringFunctions.RandomString(10), UnixDateTime.Now);
+
+                <div class="preview-container">
+                        <img src="@imageLink" class="preview-image">
+                </div>
             }
             else if (!MimeTypes.IsAttachment(ContentType))
             {
