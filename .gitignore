@@ -7,7 +7,7 @@
 [Oo]bj/
 
 # Ignore Nuget Build files
-build/
+build/Nuget/
 
 # Ignore Properties files
 [Pp]roperties/
