@@ -221,7 +221,11 @@ namespace TrakHound.Serialization
 
                     // Update Object Path
                     objectRequest.Path = TrakHoundPath.Combine(objectBasePath, objectPath);
-                    objectRequest.Path = TrakHoundPath.ToRoot(objectRequest.Path);
+
+                    if (!TrakHoundPath.IsAbsolute(objectRequest.Path))
+                    {
+                        objectRequest.Path = TrakHoundPath.ToRoot(objectRequest.Path);
+                    }
 
                     foreach (var property in properties)
                     {
