@@ -78,11 +78,11 @@ namespace TrakHound.Entities
             }
         }
 
-        public TrakHoundDefinitionEntity(string id, string parentUuid = null, string transactionUuid = null, long created = 0)
+        public TrakHoundDefinitionEntity(string id, string parentUuid = null, string sourceUuid = null, long created = 0)
         {
             Id = id;
             ParentUuid = parentUuid;
-            SourceUuid = transactionUuid;
+            SourceUuid = sourceUuid;
             Created = created > 0 ? created : UnixDateTime.Now;
         }
 
