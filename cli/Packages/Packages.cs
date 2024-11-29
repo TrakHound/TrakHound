@@ -583,7 +583,7 @@ namespace TrakHound.CLI.Packages
                         Console.WriteLine("-----");
                         Console.Write("Downloading Package Contents : " + server + "...");
 
-                        var packageBytes = await managementClient.Packages.Download(serverPackage.Uuid);
+                        var packageBytes = await managementClient.Packages.Download(serverPackage.Id, serverPackage.Version);
                         if (packageBytes != null)
                         {
                             Console.WriteLine("DONE");
