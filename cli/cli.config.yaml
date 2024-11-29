@@ -1,2 +1,2 @@
-managementServer: http://localhost:8472
-organization: TrakHound
+managementServer: https://www.trakhound.com/management
+organization: Public
