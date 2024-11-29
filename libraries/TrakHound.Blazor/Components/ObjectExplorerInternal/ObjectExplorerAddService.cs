@@ -272,7 +272,9 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             var ns = TrakHoundPath.GetNamespace(Data.Path);
             var partialPath = TrakHoundPath.GetPartialPath(Data.Path);
 
-            var publishEntity = new TrakHoundObjectEntity(partialPath, Data.ContentType.ConvertEnum<TrakHoundObjectContentType>(), Data.DefinitionId, ns);
+            var definitionUuid = !string.IsNullOrEmpty(Data.DefinitionId) ? TrakHoundDefinitionEntity.GenerateUuid(Data.DefinitionId) : null;
+
+            var publishEntity = new TrakHoundObjectEntity(partialPath, Data.ContentType.ConvertEnum<TrakHoundObjectContentType>(), definitionUuid, ns);
 
             if (await _explorerService.Client.System.Entities.Objects.Publish(publishEntity, TrakHoundOperationMode.Sync))
             {
