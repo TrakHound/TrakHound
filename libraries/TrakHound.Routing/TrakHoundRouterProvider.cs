@@ -254,7 +254,7 @@ namespace TrakHound.Routing
                     if (!string.IsNullOrEmpty(routerKey))
                     {
                         var router = _routers.FirstOrDefault(o => MatchRouterKey(o, routerKey));
-                        if (router.Initialized) return router;
+                        if (router != null && router.Initialized) return router;
                     }
                     else
                     {
