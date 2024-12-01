@@ -54,27 +54,27 @@ dotnet new trakhound.api
         <tr>
             <td>publisher</td>
             <td></td>
-            <td>Sets the Publisher metadata in the **trakhound.package.json** file</td>
+            <td>Sets the Publisher metadata in the <b>trakhound.package.json</b> file</td>
         </tr>   
         <tr>
             <td>description</td>
             <td></td>
-            <td>Sets the Description metadata in the **trakhound.package.json** file</td>
+            <td>Sets the Description metadata in the <b>trakhound.package.json</b> file</td>
         </tr>   
         <tr>
             <td>defaultRoute</td>
             <td>[PROJECT_NAME]</td>
-            <td>Sets the .defaultRoute metadata in the **trakhound.package.json** file</td>
+            <td>Sets the .defaultRoute metadata in the <b>trakhound.package.json</b> file</td>
         </tr>    
         <tr>
             <td>managementServer</td>
             <td></td>
-            <td>Sets the TrakHound Management Server to publish to in the **trakhound.package.publish.json** file</td>
+            <td>Sets the TrakHound Management Server to publish to in the <b>trakhound.package.publish.json</b> file</td>
         </tr>       
         <tr>
             <td>organization</td>
             <td></td>
-            <td>Sets the Organization to publish to in the **trakhound.package.publish.json** file</td>
+            <td>Sets the Organization to publish to in the <b>trakhound.package.publish.json</b> file</td>
         </tr>   
     </tbody>
 </table>
