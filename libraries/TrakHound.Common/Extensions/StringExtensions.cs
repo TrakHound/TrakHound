@@ -191,7 +191,7 @@ namespace TrakHound
                     }
                     else
                     {
-                        var now = DateTime.UtcNow;
+                        var now = DateTime.Now;
                         var today = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0, DateTimeKind.Local);
                         var week = GetStartOfWeek(today, DayOfWeek.Sunday); // Monday?
                         var month = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Local);
