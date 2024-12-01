@@ -29,6 +29,12 @@ API modules are used to create custom endpoint interfaces for external applicati
 
 - HTTP Methods : Typical HTTP REST Methods of GET, PUT, POST, DELETE, etc. are replaced with Query, Subscribe, Publish, and Delete.
 
+## Get Started
+API modules can be created using a DotNet template using the commands below:
+```
+dotnet new install TrakHound.Api.Template
+dotnet new trakhound.api
+```
 
 ## Endpoints
 API Endpoints can have one of 4 types, Query, Subscribe, Publish, or Delete. These endpoint types were chosen instead of the standard HTTP REST methods of GET, PUT, POST, DELETE, etc. so that each endpont type may use a POST method and so that subscriptions can have specialized endpoints.
