@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace TrakHound.Entities
 {
@@ -17,7 +18,19 @@ namespace TrakHound.Entities
         public string Uuid => _uuid;
 
 
-        public string Namespace { get; set; }
+        //public string Namespace { get; set; }
+
+        private string _namespace;
+        public string Namespace
+        {
+            get => _namespace;
+            set
+            {
+                _namespace = value;
+                _uuid = TrakHoundPath.GetUuid(value, _path);
+                _parentUuid = TrakHoundPath.GetUuid(value, TrakHoundPath.GetParentPath(_path));
+            }
+        }
 
 
         private string _path;
@@ -98,7 +111,7 @@ namespace TrakHound.Entities
             long created = 0
             )
         {
-            Namespace = ns;
+            _namespace = ns;
             _path = TrakHoundPath.ToRoot(path);
             _uuid = TrakHoundPath.GetUuid(ns, _path);
             _parentUuid = TrakHoundPath.GetUuid(ns, TrakHoundPath.GetParentPath(_path));
@@ -113,12 +126,12 @@ namespace TrakHound.Entities
         public TrakHoundObjectEntity(ITrakHoundObjectEntity entity)
         {
             _uuid = null;
+            _namespace = DefaultNamespace;
             _path = null;
             _parentUuid = null;
             _name = null;
             ContentType = TrakHoundObjectContentTypes.Directory;
             DefinitionUuid = null;
-            Namespace = DefaultNamespace;
             Priority = DefaultPriority;
             SourceUuid = null;
             Created = UnixDateTime.Now;
@@ -126,12 +139,12 @@ namespace TrakHound.Entities
             if (entity != null)
             {
                 _uuid = entity.Uuid;
+                _namespace = entity.Namespace;
                 _path = entity.Path;
                 _parentUuid = entity.ParentUuid;
                 _name = entity.Name;
                 ContentType = entity.ContentType;
                 DefinitionUuid = entity.DefinitionUuid;
-                Namespace = entity.Namespace;
                 Priority = entity.Priority;
                 SourceUuid = entity.SourceUuid;
                 Created = entity.Created;
