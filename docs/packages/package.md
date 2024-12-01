@@ -1,5 +1,5 @@
 # TrakHound Package
-Packages are used to distribute Apps, APIs, Services, Drivers, etc. so that multiple TrakHound Instances can share packages. A TrakHound Management Server can be used to download/upload Packages and can act as a central repository for Packages.
+Packages are used to distribute App, API, Service, Driver, etc. modules so that multiple TrakHound Instances can share packages. A TrakHound Management Server can be used to download/upload Packages and can act as a central repository for Packages.
 
 Packages can add other packages as dependencies which can be used to bundle multiple packages together.
 
@@ -71,7 +71,16 @@ A <strong>package.json</strong> file is required to provide information about th
     ".fileBufferReadInterval": 0,
     ".bufferAcknowledgeSent": false
   },
-  "dependencies": null
+  "dependencies": [
+    {
+      "id": "TrakHound.Entities.Api",
+      "version": "*"
+    },
+    {
+      "id": "TrakHound.Entities.Clipboard.Api",
+      "version": "0.1.4"
+    }
+  ]
 }
 ```
 
@@ -87,7 +96,7 @@ A <strong>package.json</strong> file is required to provide information about th
         </tr>
         <tr>
             <td class="row-header">version</td>
-            <td>The Version of the package</td>
+            <td>The Version of the package. Note that this can be overidden using the trakhound.package.publish.json file.</td>
         </tr>
         <tr>
             <td class="row-header">category</td>

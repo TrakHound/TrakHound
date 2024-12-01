@@ -5,7 +5,15 @@ Publish profiles are used to define the Version to publish and Management Server
 ```json
 {
   "version": "1.0.5",
-  "managementServer": "https://www.trakhound.com/management",
-  "organization": "Public"
+  "destinations": [
+    {
+      "managementServer": "https://www.trakhound.com/management",
+      "organization": "Public"
+    },
+    {
+      "managementServer": "http://localhost:8472",
+      "organization": "Development"
+    }
+  ]
 }
 ```
