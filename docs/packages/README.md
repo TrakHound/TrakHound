@@ -4,11 +4,11 @@ TrakHound Packages are used to distribute Apps, APIs, Services, Drivers, etc. al
 ## Package Installation
 TrakHound Packages can be installed using the <a href="/docs/trakhound-cli/packages#top">TrakHound CLI</a> packages commands. This downloads the package from the TrakHound Management Server and installs it in the current directory's <strong>packages</strong> directory.
 ```
-trakhound-cli packages install demo.app
+th packages install demo.app
 ```
 
 ## Creating Packages
 TrakHound Packages can be created using the <a href="/docs/trakhound-cli/packages#top">TrakHound CLI</a> packages commands. This packages the current directory using the configuration set in a <strong>packages.json</strong> file.
 ```
-trakhound-cli packages pack
+th packages pack
 ```
