@@ -6,40 +6,42 @@
     "Api"
   ],
   "identity": "TrakHound.Api.Template",
-  "name": "Template to create a TrakHound API Project",
+  "name": "TrakHound API",
+  "description": "Template to create a TrakHound API Project",
+  "groupIdentity": "TrakHound.Modules",
   "shortName": "trakhound.api",
-  "sourceName": "UserPackageId",
-  "preferNameDirectory": true,
   "tags": {
     "language": "C#",
     "type": "project"
   },
+  "sourceName": "UserPackageId",
+  "preferNameDirectory": true,
   "symbols": {
     "HostIdentifier": {
       "type": "bind",
       "binding": "host:HostIdentifier"
     },
-    "trakhoundVersion": {
+    "TrakhoundVersion": {
       "type": "parameter",
       "replaces": "{trakhoundVersion}",
       "defaultValue": "*"
     },
-    "publisher": {
+    "Publisher": {
       "type": "parameter",
       "replaces": "{publisher}",
       "defaultValue": ""
     },
-    "description": {
+    "Description": {
       "type": "parameter",
       "replaces": "{description}",
       "defaultValue": ""
     },
-    "managementServer": {
+    "ManagementServer": {
       "type": "parameter",
       "replaces": "{managementServer}",
       "defaultValue": ""
     },
-    "organization": {
+    "Organization": {
       "type": "parameter",
       "replaces": "{organization}",
       "defaultValue": ""
