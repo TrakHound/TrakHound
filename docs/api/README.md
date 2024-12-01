@@ -1,5 +1,26 @@
 # API
 
+<table>
+    <thead>
+        <tr>
+            <td style="font-weight: bold;">Type</td>
+            <td style="font-weight: bold;">Host</td>
+            <td style="font-weight: bold;">Name</td>
+            <td style="font-weight: bold;">Downloads</td>
+            <td style="font-weight: bold;">Link</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>DotNet</td>
+            <td>Nuget</td>
+            <td>TrakHound.Api.Template</td>
+            <td><img src="https://img.shields.io/nuget/dt/TrakHound.Api.Template?style=for-the-badge&logo=nuget&label=%20&color=%23333"/></td>
+            <td><a href="https://www.nuget.org/packages/TrakHound.Api.Template">https://www.nuget.org/packages/TrakHound.Api.Template</a></td>
+        </tr>
+    </tbody>
+</table>
+
 API modules are used to create custom endpoint interfaces for external applications or other modules. APIs in TrakHound are meant to be similar to a typical HTTP REST API with a few key differences listed below:
 
 - Internal Communications : When an API calls another API running on the same TrakHound Instance, no external HTTP call is made and the API call is processed as any other method call. This allows APIs to freely call one another and be built in layers without any significant overhead.
