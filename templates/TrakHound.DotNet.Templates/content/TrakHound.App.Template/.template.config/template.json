@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "TrakHound Inc.",
+  "classifications": [
+    "Common",
+    "App",
+    "Blazor"
+  ],
+  "identity": "TrakHound.App.Template",
+  "name": "TrakHound App",
+  "description": "Template to create a TrakHound App Project",
+  "shortName": "trakhound.app",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "UserPackageId",
+  "preferNameDirectory": true,
+  "symbols": {
+    "HostIdentifier": {
+      "type": "bind",
+      "binding": "host:HostIdentifier"
+    },
+    "TrakhoundVersion": {
+      "type": "parameter",
+      "replaces": "{trakhoundVersion}",
+      "defaultValue": "*"
+    },
+    "Publisher": {
+      "type": "parameter",
+      "replaces": "{publisher}",
+      "defaultValue": ""
+    },
+    "Description": {
+      "type": "parameter",
+      "replaces": "{description}",
+      "defaultValue": ""
+    },
+    "ManagementServer": {
+      "type": "parameter",
+      "replaces": "{managementServer}",
+      "defaultValue": ""
+    },
+    "Organization": {
+      "type": "parameter",
+      "replaces": "{organization}",
+      "defaultValue": ""
+    },
+    "defaultRouteLower":{
+      "type": "generated",
+      "generator": "casing",
+      "parameters": {
+        "source":"name",
+        "toLower": true
+      }
+    },
+    "replaceRouteRegex": {
+      "type": "generated",
+      "generator": "regex",
+      "dataType": "string",
+      "replaces": "{defaultRoute}",
+      "parameters": {
+        "source": "defaultRouteLower",
+        "steps": [
+          {
+            "regex": "\\.",
+            "replacement": "/"
+          }
+        ]
+      }
+    }
+  },
+  "primaryOutputs": [
+    {
+      "path": "UserPackageId.csproj"
+    },
+    {
+      "path": "Controller.cs"
+    },
+    {
+      "path": "trakhound.package.json"
+    }
+  ],
+  "defaultName": "TrakHoundApp1",
+  "postActions": [
+    {
+      "id": "restore",
+      "condition": "(!skipRestore)",
+      "description": "Restore NuGet packages required by this project.",
+      "manualInstructions": [
+        {
+          "text": "Run 'dotnet restore'"
+        }
+      ],
+      "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
+      "continueOnError": true
+    },
+    {
+      "id": "open-file",
+      "condition": "(HostIdentifier != \"dotnetcli\" && HostIdentifier != \"dotnetcli-preview\")",
+      "description": "Opens Controller.cs in the editor",
+      "manualInstructions": [],
+      "actionId": "84C0DA21-51C8-4541-9940-6CA19AF04EE6",
+      "args": {
+        "files": "1"
+      },
+      "continueOnError": true
+    }
+  ]
+}

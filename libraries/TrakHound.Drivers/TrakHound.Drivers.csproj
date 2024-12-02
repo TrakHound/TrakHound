@@ -13,7 +13,6 @@
 		<RootNamespace>TrakHound.Drivers</RootNamespace>
 		<Configurations>Debug;Release;Package</Configurations>
 		<Description>Contains classes for implementing Drivers in the TrakHound Framework</Description>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
 	</PropertyGroup>
 
@@ -24,11 +23,7 @@
 	<ItemGroup>
 	  <Compile Remove="Entities\IObjectMatchDriver.cs" />
 	</ItemGroup>
-	
-	<ItemGroup>
-		<Compile Include="..\..\build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
-	</ItemGroup>
-	
+		
 	<ItemGroup>
 	  <None Include="Entities\IObjectMatchDriver.cs" />
 	</ItemGroup>

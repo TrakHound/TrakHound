@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -114,14 +115,14 @@ namespace TrakHound.Instances
 
         public TrakHoundInstance() 
         { 
-            _version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            _version = GetInstanceVersion();
 
             TrakHoundLogProvider.Get().LogEntryReceived += LogReceived;
         }
 
         public TrakHoundInstance(string configurationProfileId)
         {
-            _version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            _version = GetInstanceVersion();
             _configurationProfileId = configurationProfileId;
 
             TrakHoundLogProvider.Get().LogEntryReceived += LogReceived;
@@ -129,7 +130,7 @@ namespace TrakHound.Instances
 
         public TrakHoundInstance(TrakHoundInstanceConfiguration configuration)
         {
-            _version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            _version = GetInstanceVersion();
             _configuration = configuration;
 
             TrakHoundLogProvider.Get().LogEntryReceived += LogReceived;
@@ -137,11 +138,18 @@ namespace TrakHound.Instances
 
         public TrakHoundInstance(TrakHoundInstanceConfiguration configuration, string configurationProfileId)
         {
-            _version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            _version = GetInstanceVersion();
             _configuration = configuration;
             _configurationProfileId = configurationProfileId;
 
             TrakHoundLogProvider.Get().LogEntryReceived += LogReceived;
+        }
+
+
+        private string GetInstanceVersion()
+        {
+            //return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            return FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
         }
 
 

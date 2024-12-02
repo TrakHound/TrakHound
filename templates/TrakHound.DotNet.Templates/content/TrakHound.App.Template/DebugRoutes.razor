@@ -1,0 +1,14 @@
+﻿@inject ITrakHoundClient client
+@rendermode InteractiveServer
+@using TrakHound.Clients
+
+<Router AppAssembly="@typeof(Program).Assembly">
+    <Found Context="routeData">
+        <CascadingValue Name="AppId" Value="@("trakhound-debug-app")">
+            <CascadingValue Name="Client" Value="@client">
+                <RouteView RouteData="@routeData" DefaultLayout="typeof(Layout)" />
+                <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+            </CascadingValue>
+        </CascadingValue>
+    </Found>
+</Router>

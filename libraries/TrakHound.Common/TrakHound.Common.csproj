@@ -15,7 +15,6 @@
 		<RootNamespace>TrakHound</RootNamespace>
 		<Configurations>Debug;Release;Package</Configurations>
 		<Description>Contains classes for implementing the TrakHound Framework</Description>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
@@ -23,10 +22,6 @@
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<Compile Include="..\..\build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="YamlDotNet" Version="16.2.0" />

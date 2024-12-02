@@ -79,7 +79,7 @@
         border-right: 1px solid var(--accentDark);
     }
 
-        .instance-header .instance-header-information-container span {
+        .instance-header .instance-header-information-container div {
             display: block;
             font-size: 11px;
             line-height: 14px;
@@ -94,12 +94,20 @@
         padding-left: 20px;
         padding-right: 30px;
         border-right: 1px solid var(--accentDark);
+        max-width: 200px;
     }
 
-        .instance-header .instance-header-application-container span {
+        .instance-header .instance-header-application-container div {
             display: block;
             font-size: 11px;
             line-height: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .instance-header .instance-header-application-container span {
+            display: inline;
         }
 
     .instance-header .instance-header-status-container {
@@ -113,7 +121,7 @@
         border-right: 1px solid var(--accentDark);
     }
 
-        .instance-header .instance-header-status-container span {
+        .instance-header .instance-header-status-container div {
             display: block;
             font-size: 11px;
             line-height: 14px;

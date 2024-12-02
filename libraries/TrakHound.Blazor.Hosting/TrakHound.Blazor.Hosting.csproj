@@ -13,7 +13,6 @@
 		<RootNamespace>TrakHound.Blazor</RootNamespace>
 		<Configurations>Debug;Release;Package</Configurations>
 		<Description>Contains classes for implementing .NET Blazor Hosting in the TrakHound Framework</Description>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
@@ -21,10 +20,6 @@
 	<ItemGroup>
 	  <_ContentIncludedByDefault Remove="wwwroot\js\qrCodeScannerJsInterop.js" />
 	  <_ContentIncludedByDefault Remove="wwwroot\js\trakhound-blazor.js" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Include="..\..\build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">

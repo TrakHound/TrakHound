@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "TrakHound Inc.",
+  "classifications": [
+    "Common",
+    "Function"
+  ],
+  "identity": "TrakHound.Function.Template",
+  "name": "Template to create a TrakHound Function Project",
+  "shortName": "trakhound.function",
+  "sourceName": "UserPackageId",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "symbols": {
+    "HostIdentifier": {
+      "type": "bind",
+      "binding": "host:HostIdentifier"
+    },
+    "trakhoundVersion": {
+      "type": "parameter",
+      "replaces": "{trakhoundVersion}",
+      "defaultValue": "*"
+    },
+    "publisher": {
+      "type": "parameter",
+      "replaces": "{publisher}",
+      "defaultValue": ""
+    },
+    "description": {
+      "type": "parameter",
+      "replaces": "{description}",
+      "defaultValue": ""
+    },
+    "managementServer": {
+      "type": "parameter",
+      "replaces": "{managementServer}",
+      "defaultValue": ""
+    },
+    "organization": {
+      "type": "parameter",
+      "replaces": "{organization}",
+      "defaultValue": ""
+    }
+  },
+  "primaryOutputs": [
+    {
+      "path": "UserPackageId.csproj"
+    },
+    {
+      "path": "Function.cs"
+    },
+    {
+      "path": "trakhound.package.json"
+    }
+  ],
+  "defaultName": "TrakHoundApi1",
+  "postActions": [
+    {
+      "id": "restore",
+      "condition": "(!skipRestore)",
+      "description": "Restore NuGet packages required by this project.",
+      "manualInstructions": [
+        {
+          "text": "Run 'dotnet restore'"
+        }
+      ],
+      "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
+      "continueOnError": true
+    },
+    {
+      "id": "open-file",
+      "condition": "(HostIdentifier != \"dotnetcli\" && HostIdentifier != \"dotnetcli-preview\")",
+      "description": "Opens Function.cs in the editor",
+      "manualInstructions": [],
+      "actionId": "84C0DA21-51C8-4541-9940-6CA19AF04EE6",
+      "args": {
+        "files": "1"
+      },
+      "continueOnError": true
+    }
+  ]
+}
