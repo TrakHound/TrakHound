@@ -5,6 +5,8 @@ namespace TrakHound.Packages
 {
     public class TrakHoundDotNetPackageSettings
     {
+        public string DotnetSdkLocation { get; set; }
+
         public string Version { get; set; }
 
         public string Configuration { get; set; }

@@ -48,12 +48,17 @@ namespace TrakHound.Packages
                             if (information != null)
                             {
                                 var projectFile = Path.Combine(path, $"{information.Id}.csproj");
+                                projectFile = Path.GetRelativePath(Environment.CurrentDirectory, projectFile);
+
                                 return CreateFromProjectFile(projectFile, settings);
                             }
                         }
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("TrakHoundDotNetPackage.Create() : " + ex.Message);
+                }
             }
 
             return null;
@@ -121,7 +126,7 @@ namespace TrakHound.Packages
                         catch { }
 
                         // Restore New Project
-                        if (!RestoreProject(projectFilePath))
+                        if (!RestoreProject(settings, projectFilePath))
                         //if (!RestoreProject(newProjectTempPath))
                         {
                             Console.WriteLine("Restore Error");
@@ -208,8 +213,10 @@ namespace TrakHound.Packages
 
                         File.Move(tempProjectFilePath, projectFilePath);
 
+                        TrakHoundTemp.Clear();
+
                         // Restore original Project (helps with working in Visual Studio)
-                        if (!RestoreProject(projectFilePath))
+                        if (!RestoreProject(settings, projectFilePath))
                         {
                             Console.WriteLine("Restore Error");
                         }
@@ -217,7 +224,10 @@ namespace TrakHound.Packages
                         return packageBytes;
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("TrakHoundDotNetPackage.CreateFromProjectFile() : " + projectFilePath + " : " + ex.Message + " : " + ex.StackTrace);
+                }
             }
 
             return null;
@@ -263,13 +273,14 @@ namespace TrakHound.Packages
             return false;
         }
 
-        private static bool RestoreProject(string projectFilePath)
+        private static bool RestoreProject(TrakHoundDotNetPackageSettings settings, string projectFilePath)
         {
             if (!string.IsNullOrEmpty(projectFilePath))
             {
-                var cmd = "dotnet restore";
+                var cmd = $"dotnet restore";
+                if (settings != null && !string.IsNullOrEmpty(settings.DotnetSdkLocation)) cmd = Path.Combine(settings.DotnetSdkLocation, cmd);
 
-                return RunCommand(projectFilePath, cmd);
+                return RunCommand(cmd);
             }
 
             return false;
@@ -302,11 +313,10 @@ namespace TrakHound.Packages
             if (packageConfiguration != null && settings != null && !string.IsNullOrEmpty(settings.Configuration) && !string.IsNullOrEmpty(projectFilePath))
             {
                 var cmd = $"dotnet publish \"{projectFilePath}\" ";
+                if (settings != null && !string.IsNullOrEmpty(settings.DotnetSdkLocation)) cmd = Path.Combine(settings.DotnetSdkLocation, cmd);
+
                 var arguments = new List<string>();
                 arguments.Add($"-c:{settings.Configuration}");
-                //arguments.Add("--force");
-                //arguments.Add("--force");
-                //arguments.Add("-v:d");
 
                 if (!settings.IncludeDebugSymbols)
                 {
@@ -317,7 +327,7 @@ namespace TrakHound.Packages
                 arguments.Add($"-o:\"{outputPath}\"");
                 cmd += string.Join(' ', arguments);
 
-                return RunCommand(projectFilePath, cmd);
+                return RunCommand(cmd);
             }
 
             return false;
@@ -995,17 +1005,27 @@ namespace TrakHound.Packages
         }
 
 
+        private static bool RunCommand(string command)
+        {
+            return RunCommand(null, command);
+        }
+
         private static bool RunCommand(string workingDirectory, string command)
         {
-            if (!string.IsNullOrEmpty(workingDirectory) && !string.IsNullOrEmpty(command))
+            if (!string.IsNullOrEmpty(command))
             {
                 try
                 {
-                    var startInfo = new ProcessStartInfo("cmd", "/c " + command);
+                    var commandParts = command.Split(' ');
+                    var executable = commandParts[0];
+                    var arguments = string.Join(' ', commandParts.Skip(1));
+
+                    var startInfo = new ProcessStartInfo(executable, arguments);
+                    //var startInfo = new ProcessStartInfo("cmd", "/c " + command);
                     startInfo.UseShellExecute = false;
                     startInfo.RedirectStandardOutput = true;
                     startInfo.RedirectStandardError = true;
-                    startInfo.WorkingDirectory = Path.GetDirectoryName(workingDirectory);
+                    if (!string.IsNullOrEmpty(workingDirectory)) startInfo.WorkingDirectory = Path.GetDirectoryName(workingDirectory);
 
                     var outputBuilder = new StringBuilder();
 
@@ -1037,7 +1057,7 @@ namespace TrakHound.Packages
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("TrakHoundDotNetPackage.RunCommand() : Command = " + command + " : WorkingDirectory = " + workingDirectory + " : " + ex.Message);
                 }
             }
 
