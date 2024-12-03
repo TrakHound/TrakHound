@@ -88,25 +88,31 @@ After Docker container is running, browse to http://localhost:8472/_admin/packag
     </thead>
     <tbody>
         <tr>
-            <td><a href="https://github.com/TrakHound/TrakHound/tree/main/templates/DotNet/trakhound.api">Learn More</a></td>
+            <td><a href="https://github.com/TrakHound/TrakHound/tree/main/TrakHound.DotNet.Templates/TrakHound.Api.Template">Learn More</a></td>
             <td><a href="https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-new">DotNet</a></td>
             <td>TrakHound.Api.Template</td>
             <td>dotnet new trakhound.api</td>
         </tr>
         <tr>
-            <td><a href="https://github.com/TrakHound/TrakHound/tree/main/templates/DotNet/trakhound.app">Learn More</a></td>
+            <td><a href="https://github.com/TrakHound/TrakHound/tree/main/TrakHound.DotNet.Templates/TrakHound.App.Template">Learn More</a></td>
             <td><a href="https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-new">DotNet</a></td>
             <td>TrakHound.App.Template</td>
             <td>dotnet new trakhound.app</td>
         </tr>
         <tr>
-            <td><a href="https://github.com/TrakHound/TrakHound/tree/main/templates/DotNet/trakhound.function">Learn More</a></td>
+            <td><a href="https://github.com/TrakHound/TrakHound/tree/main/TrakHound.DotNet.Templates/TrakHound.Function.Template">Learn More</a></td>
             <td><a href="https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-new">DotNet</a></td>
             <td>TrakHound.Function.Template</td>
             <td>dotnet new trakhound.function</td>
         </tr>
         <tr>
-            <td><a href="https://github.com/TrakHound/TrakHound/tree/main/templates/DotNet/trakhound.service">Learn More</a></td>
+            <td><a href="https://github.com/TrakHound/TrakHound/tree/main/TrakHound.DotNet.Templates/TrakHound.Service.Template">Learn More</a></td>
+            <td><a href="https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-new">DotNet</a></td>
+            <td>TrakHound.Service.Template</td>
+            <td>dotnet new trakhound.service</td>
+        </tr>
+        <tr>
+            <td><a href="https://github.com/TrakHound/TrakHound/tree/main/templates/TrakHound.DotNet.Templates/TrakHound.Identity.Template">Learn More</a></td>
             <td><a href="https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-new">DotNet</a></td>
             <td>TrakHound.Service.Template</td>
             <td>dotnet new trakhound.service</td>
