@@ -57,7 +57,7 @@ We love talking about software and manufacturing so don't hesitate to reach out!
 
 ## Documentation
 Learn more using the link below:
-https://github.com/TrakHound/TrakHound/tree/dev/docs
+https://github.com/TrakHound/TrakHound/tree/main/docs
 
 > Note that Documentation is still a work in progress. This will be a focus during the initial beta.
 
