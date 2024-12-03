@@ -6,14 +6,16 @@ using System.IO;
 
 namespace TrakHound
 {
-    public class TrakHoundTemp
+    public static class TrakHoundTemp
     {
         private const string _directory = "_temp";
+
+        public static string BaseDirectory { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
 
 
         public static string GetDirectory()
         {
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _directory);
+            return Path.Combine(BaseDirectory, _directory);
         }
 
         public static string CreateDirectory()
