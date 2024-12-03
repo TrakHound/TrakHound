@@ -292,6 +292,7 @@ namespace TrakHound.CLI.Packages
                 outputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, outputPath);
             }
 
+            TrakHoundTemp.BaseDirectory = !string.IsNullOrEmpty(output) ? output : Environment.CurrentDirectory;
 
             string version = null;
             var informationPath = Path.Combine(rootPath, TrakHoundPackage.PackageConfigurationFilename);
@@ -320,7 +321,11 @@ namespace TrakHound.CLI.Packages
 
                 Console.Write($"Packing DotNet Project...");
 
+                // Read cli.config Configuration File
+                var cliConfiguration = TrakHoundCliConfiguration.Read();
+
                 var dotnetSettings = new TrakHoundDotNetPackageSettings();
+                dotnetSettings.DotnetSdkLocation = cliConfiguration?.DotnetSdkLocation;
                 dotnetSettings.Version = version;
                 dotnetSettings.Configuration = projectConfiguration;
                 dotnetSettings.IncludeDebugSymbols = projectConfiguration == "Debug";
@@ -331,10 +336,10 @@ namespace TrakHound.CLI.Packages
                 dotnetSettings.GitCommit = GitCommands.GetLatestCommit(rootPath);
 
                 var packageBytes = TrakHoundDotNetPackage.Create(rootPath, dotnetSettings);
-                Console.WriteLine("Done");
-
                 if (packageBytes != null && packageBytes.Length > 0)
                 {
+                    Console.WriteLine("Done");
+
                     information = TrakHoundPackage.ReadInformationFromPackage(packageBytes);
                     if (information != null)
                     {
@@ -385,6 +390,10 @@ namespace TrakHound.CLI.Packages
                             }
                         }
                     }
+                }
+                else
+                {
+                    Console.WriteLine($"Error : DotNet Package Build Failed");
                 }
             }
             else

@@ -12,6 +12,8 @@ namespace TrakHound.CLI
         public static TrakHoundCliConfiguration Instance { get; private set; }
 
 
+        public string DotnetSdkLocation { get; set; }
+
         public string ManagementServer { get; set; }
 
         public string Organization { get; set; }
