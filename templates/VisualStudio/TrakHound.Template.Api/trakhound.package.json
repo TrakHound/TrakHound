@@ -1,9 +1,0 @@
-﻿{
-  "id": "$projectname$",
-  "category": "api",
-  "metadata": {
-    "publisher": "",
-    "description": "",
-    ".defaultRoute": "$apiroute$"
-  }
-}

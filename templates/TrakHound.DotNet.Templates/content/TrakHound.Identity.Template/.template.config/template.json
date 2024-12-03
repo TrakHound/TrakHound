@@ -3,14 +3,12 @@
   "author": "TrakHound Inc.",
   "classifications": [
     "Common",
-    "App",
-    "Blazor"
+    "Identity"
   ],
-  "identity": "TrakHound.App.Template",
-  "name": "TrakHound App",
-  "description": "Template to create a TrakHound App Project",
-  "groupIdentity": "TrakHound.Modules",
-  "shortName": "trakhound.app",
+  "identity": "TrakHound.Identity.Template",
+  "name": "TrakHound Identity",
+  "description": "Template to create a TrakHound Identity Project",
+  "shortName": "trakhound.identity",
   "tags": {
     "language": "C#",
     "type": "project"
@@ -22,53 +20,30 @@
       "type": "bind",
       "binding": "host:HostIdentifier"
     },
-    "TrakhoundVersion": {
+    "trakhoundVersion": {
       "type": "parameter",
       "replaces": "{trakhoundVersion}",
       "defaultValue": "*"
     },
-    "Publisher": {
+    "publisher": {
       "type": "parameter",
       "replaces": "{publisher}",
       "defaultValue": ""
     },
-    "Description": {
+    "description": {
       "type": "parameter",
       "replaces": "{description}",
       "defaultValue": ""
     },
-    "ManagementServer": {
+    "managementServer": {
       "type": "parameter",
       "replaces": "{managementServer}",
       "defaultValue": ""
     },
-    "Organization": {
+    "organization": {
       "type": "parameter",
       "replaces": "{organization}",
       "defaultValue": ""
-    },
-    "defaultRouteLower":{
-      "type": "generated",
-      "generator": "casing",
-      "parameters": {
-        "source":"name",
-        "toLower": true
-      }
-    },
-    "replaceRouteRegex": {
-      "type": "generated",
-      "generator": "regex",
-      "dataType": "string",
-      "replaces": "{defaultRoute}",
-      "parameters": {
-        "source": "defaultRouteLower",
-        "steps": [
-          {
-            "regex": "\\.",
-            "replacement": "/"
-          }
-        ]
-      }
     }
   },
   "primaryOutputs": [
@@ -76,13 +51,13 @@
       "path": "UserPackageId.csproj"
     },
     {
-      "path": "Controller.cs"
+      "path": "Module.cs"
     },
     {
       "path": "trakhound.package.json"
     }
   ],
-  "defaultName": "TrakHoundApp1",
+  "defaultName": "TrakHoundIdentity1",
   "postActions": [
     {
       "id": "restore",
@@ -99,7 +74,7 @@
     {
       "id": "open-file",
       "condition": "(HostIdentifier != \"dotnetcli\" && HostIdentifier != \"dotnetcli-preview\")",
-      "description": "Opens Controller.cs in the editor",
+      "description": "Opens Module.cs in the editor",
       "manualInstructions": [],
       "actionId": "84C0DA21-51C8-4541-9940-6CA19AF04EE6",
       "args": {

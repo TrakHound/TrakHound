@@ -1,12 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<VersionPrefix>0.1.4</VersionPrefix>
-		<AssemblyVersion>0.1.4.*</AssemblyVersion>
 		<VersionSuffix>prerelease</VersionSuffix>
-		<!--<FileVersion>0.1.4.0</FileVersion>-->
-		<!--<InformationalVersion>0.1.4.0-prerelease</InformationalVersion>-->
-		<!--<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>-->
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-		<Deterministic>false</Deterministic>
 	</PropertyGroup>
 </Project>

@@ -8,7 +8,6 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using TrakHound.Clients;
-using TrakHound.Configurations;
 using TrakHound.Debug.AspNetCore;
 using TrakHound.Volumes;
 
@@ -19,9 +18,9 @@ namespace TrakHound.Scripts.Python.Api
         public static async Task Main(string[] args)
         {
             // Create new TrakHoundClient based on the Instance BaseUrl and Router
-            var clientConfiguration = new TrakHoundClientConfiguration("localhost", 8472);
+            var clientConfiguration = new TrakHoundHttpClientConfiguration("localhost", 8472);
 
-            var client = new TrakHoundClient(clientConfiguration, null);
+            var client = new TrakHoundHttpClient(clientConfiguration, null);
             client.AddMiddleware(new TrakHoundSourceMiddleware());
 
             var volumePath = Path.Combine(AppContext.BaseDirectory, "volume");

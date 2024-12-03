@@ -1,6 +1,6 @@
 ﻿{
   "id": "UserPackageId",
-  "category": "api",
+  "category": "app",
   "metadata": {
     "publisher": "{publisher}",
     "description": "{description}",

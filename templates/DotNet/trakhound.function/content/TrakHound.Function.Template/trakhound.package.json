@@ -1,9 +1,0 @@
-﻿{
-  "id": "UserPackageId",
-  "category": "api",
-  "metadata": {
-    "publisher": "{publisher}",
-    "description": "{description}",
-    ".defaultRoute": "{defaultRoute}"
-  }
-}

@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrakHound.Debug.AspNetCore"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{A7554CF0-8D26-4900-BF61-639BFDFD38BF}"
 	ProjectSection(SolutionItems) = preProject
-		build\AssemblyInfo.cs = build\AssemblyInfo.cs
+		Directory.Build.props = Directory.Build.props
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -88,6 +88,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrakHound.Templates.Liquid.Api", "modules\TrakHound.Templates.Liquid.Api\TrakHound.Templates.Liquid.Api.csproj", "{3F509018-ADC5-4423-9BED-9C17A734B6C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrakHound.Token.Identity", "modules\TrakHound.Token.Identity\TrakHound.Token.Identity.csproj", "{30926382-3EF5-4D97-81E2-D69F43575E24}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrakHound.Sqlite.TimeSeries.Drivers", "modules\TrakHound.Sqlite.TimeSeries.Drivers\TrakHound.Sqlite.TimeSeries.Drivers.csproj", "{F0747DEA-824E-413D-960B-AAF1F01127B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -312,6 +314,12 @@ Global
 		{30926382-3EF5-4D97-81E2-D69F43575E24}.Package|Any CPU.Build.0 = Debug|Any CPU
 		{30926382-3EF5-4D97-81E2-D69F43575E24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30926382-3EF5-4D97-81E2-D69F43575E24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0747DEA-824E-413D-960B-AAF1F01127B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0747DEA-824E-413D-960B-AAF1F01127B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0747DEA-824E-413D-960B-AAF1F01127B2}.Package|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0747DEA-824E-413D-960B-AAF1F01127B2}.Package|Any CPU.Build.0 = Debug|Any CPU
+		{F0747DEA-824E-413D-960B-AAF1F01127B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0747DEA-824E-413D-960B-AAF1F01127B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -353,6 +361,7 @@ Global
 		{226CBA22-4AFA-4F6B-BA44-28AA1E1411B1} = {117AD04C-A761-4DB7-A604-5D6026539385}
 		{3F509018-ADC5-4423-9BED-9C17A734B6C0} = {117AD04C-A761-4DB7-A604-5D6026539385}
 		{30926382-3EF5-4D97-81E2-D69F43575E24} = {117AD04C-A761-4DB7-A604-5D6026539385}
+		{F0747DEA-824E-413D-960B-AAF1F01127B2} = {117AD04C-A761-4DB7-A604-5D6026539385}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {73EC3407-6042-4AB1-ACE1-EA62FA3087B5}

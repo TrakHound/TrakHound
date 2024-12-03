@@ -7,7 +7,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="Octokit" Version="13.0.1" />
-		<PackageReference Include="TrakHound.Debug.AspNetCore" Version="0.1.4.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\libraries\TrakHound.Debug.AspNetCore\TrakHound.Debug.AspNetCore.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

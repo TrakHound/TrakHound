@@ -5,7 +5,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="TrakHound.Common" Version="0.1.4.1" />
+		<ProjectReference Include="..\..\libraries\TrakHound.Common\TrakHound.Common.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

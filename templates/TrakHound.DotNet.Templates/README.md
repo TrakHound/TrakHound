@@ -56,6 +56,12 @@ Create .NET Project templates for TrakHound API, App, Function, and Service modu
             <td>trakhound.service</td>
             <td>dotnet new trakhound.service</td>
         </tr>
+        <tr>
+            <td><a href="https://github.com/TrakHound/TrakHound/tree/main/templates/TrakHound.DotNet.Templates/TrakHound.Identity.Template">Learn More</a></td>
+            <td>TrakHound.Identity.Template</td>
+            <td>trakhound.identity</td>
+            <td>dotnet new trakhound.identity</td>
+        </tr>
     </tbody>
 </table>
 
