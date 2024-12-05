@@ -143,14 +143,6 @@
         user-select: none;
     }
 
-.value-cell {
-    width: 200px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 1px 0;
-}
-
 .value-container {
     background: rgba(0, 0, 0, 0.025);
     border-right: 5px solid rgba(0, 0, 0, 0.05);
@@ -158,13 +150,16 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 100%;
+    width: 200px;
     max-width: 200px;
     padding: 0 10px;
     height: 16px;
 }
 
     .value-container.recent {
+        background: rgba(255, 255, 255, 0.04);
+        background: rgba(40, 112, 189, 0.1);
+        background: rgba(0, 170, 255, 0.075);
         border-right: 5px solid var(--accentLight);
     }
 
@@ -184,6 +179,8 @@
 
 .object-tree-item:hover .value-container {
     background: rgba(255, 255, 255, 0.1);
+    background: rgba(40, 112, 189, 0.2);
+    background: rgba(0, 170, 255, 0.2);
 }
 
 .object-tree-item.selected .header-container .icon-container,
