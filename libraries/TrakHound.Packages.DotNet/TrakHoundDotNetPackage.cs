@@ -48,7 +48,7 @@ namespace TrakHound.Packages
                             if (information != null)
                             {
                                 var projectFile = Path.Combine(path, $"{information.Id}.csproj");
-                                projectFile = Path.GetRelativePath(Environment.CurrentDirectory, projectFile);
+                                //projectFile = Path.GetRelativePath(Environment.CurrentDirectory, projectFile);
 
                                 return CreateFromProjectFile(projectFile, settings);
                             }
@@ -68,6 +68,8 @@ namespace TrakHound.Packages
         {
             if (!string.IsNullOrEmpty(projectFilePath))
             {
+                Console.WriteLine($"Packing DotNet Project : ({projectFilePath})");
+
                 try
                 {
                     TrakHoundTemp.Clear();
@@ -86,7 +88,7 @@ namespace TrakHound.Packages
                     {
                         var packageBuilder = new TrakHoundPackageBuilder(packageConfiguration);
 
-                        // Override Asembly/Package Version
+                        // Override Assembly/Package Version
                         if (!string.IsNullOrEmpty(settings.Version)) packageBuilder.Version = settings.Version;
 
                         // Set TrakHound Version (read TrakHound.Common Assembly Version)
@@ -95,6 +97,8 @@ namespace TrakHound.Packages
                         {
                             packageBuilder.Metadata.Add(TrakHoundPackage.TrakHoundVersionName, trakHoundVersion);
                         }
+
+                        Console.WriteLine("trakHoundVersion = " + trakHoundVersion);
 
                         // Add Git Branch and Commit SHA
                         var repository = packageConfiguration.GetMetadata(TrakHoundPackage.RepositoryName);
@@ -280,7 +284,7 @@ namespace TrakHound.Packages
                 var cmd = $"dotnet restore";
                 if (settings != null && !string.IsNullOrEmpty(settings.DotnetSdkLocation)) cmd = Path.Combine(settings.DotnetSdkLocation, cmd);
 
-                return RunCommand(cmd);
+                return RunCommand(projectFilePath, cmd);
             }
 
             return false;
@@ -1075,9 +1079,6 @@ namespace TrakHound.Packages
         {
             [JsonPropertyName("type")]
             public string Type { get; set; }
-
-            [JsonPropertyName("path")]
-            public string Path { get; set; }
         }
 
 
@@ -1108,7 +1109,7 @@ namespace TrakHound.Packages
                                         {
                                             case "package": return packageVersion;
 
-                                            case "project": return "*";
+                                            case "project": return "*-*";
                                         }
                                     }
                                 }

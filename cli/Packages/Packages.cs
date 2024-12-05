@@ -292,7 +292,8 @@ namespace TrakHound.CLI.Packages
                 outputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, outputPath);
             }
 
-            TrakHoundTemp.BaseDirectory = !string.IsNullOrEmpty(output) ? output : Environment.CurrentDirectory;
+            //TrakHoundTemp.BaseDirectory = !string.IsNullOrEmpty(output) ? output : Environment.CurrentDirectory;
+            TrakHoundTemp.BaseDirectory = Path.Combine(Path.GetTempPath(), "TrakHound");
 
             string version = null;
             var informationPath = Path.Combine(rootPath, TrakHoundPackage.PackageConfigurationFilename);
@@ -319,7 +320,7 @@ namespace TrakHound.CLI.Packages
                     //if (string.IsNullOrEmpty(organization)) organization = publishProfile.Organization;
                 }
 
-                Console.Write($"Packing DotNet Project...");
+                Console.WriteLine($"Packing DotNet Project(s) : ({rootPath})");
 
                 // Read cli.config Configuration File
                 var cliConfiguration = TrakHoundCliConfiguration.Read();
@@ -338,7 +339,7 @@ namespace TrakHound.CLI.Packages
                 var packageBytes = TrakHoundDotNetPackage.Create(rootPath, dotnetSettings);
                 if (packageBytes != null && packageBytes.Length > 0)
                 {
-                    Console.WriteLine("Done");
+                    Console.WriteLine("DotNet Package Created Successfully");
 
                     information = TrakHoundPackage.ReadInformationFromPackage(packageBytes);
                     if (information != null)
