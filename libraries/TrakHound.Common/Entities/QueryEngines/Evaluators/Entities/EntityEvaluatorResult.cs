@@ -13,6 +13,8 @@ namespace TrakHound.Entities.QueryEngines.Evaluators.Entities
 
         public bool Success { get; set; }
 
+        public ConditionObjectQuery Query { get; set; }
+
         public EntityEvaluator Evaluator { get; set; }
 
         public ITrakHoundEntity Entity { get; set; }

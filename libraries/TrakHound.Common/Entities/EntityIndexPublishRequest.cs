@@ -19,119 +19,132 @@ namespace TrakHound.Entities
 
         public string Value { get; set; }
 
-        public long Order { get; set; }
+        public string SourceUuid { get; set; }
 
-        public bool IsValid => !string.IsNullOrEmpty(Uuid) && !string.IsNullOrEmpty(Target) && !string.IsNullOrEmpty(Subject);
+        public long Created { get; set; }
+
+        public bool IsValid => !string.IsNullOrEmpty(Uuid) && !string.IsNullOrEmpty(Target) && !string.IsNullOrEmpty(Subject) && !string.IsNullOrEmpty(SourceUuid) && Created > 0;
 
 
-        public EntityIndexPublishRequest(string target, string value, string subject, long order)
+        public EntityIndexPublishRequest(string target, string value, string subject, string sourceUuid = null, long created = 0)
         {
             Uuid = GenerateUuid(target, value, subject);
             Target = target != null ? target.ToLower() : null;
             DataType = (int)EntityIndexDataType.String;
             Subject = subject != null ? subject.ToLower() : null;
             Value = value;
-            Order = order;
+            SourceUuid = sourceUuid;
+            Created = created;
         }
 
-        public EntityIndexPublishRequest(string target, byte value, string subject, long order)
+        public EntityIndexPublishRequest(string target, byte value, string subject, string sourceUuid = null, long created = 0)
         {
             Uuid = GenerateUuid(target, value, subject);
             Target = target != null ? target.ToLower() : null;
             DataType = (int)EntityIndexDataType.Byte;
             Subject = subject != null ? subject.ToLower() : null;
             Value = value.ToString();
-            Order = order;
+            SourceUuid = sourceUuid;
+            Created = created;
         }
 
-        public EntityIndexPublishRequest(string target, short value, string subject, long order)
+        public EntityIndexPublishRequest(string target, short value, string subject, string sourceUuid = null, long created = 0)
         {
             Uuid = GenerateUuid(target, value, subject);
             Target = target != null ? target.ToLower() : null;
             DataType = (int)EntityIndexDataType.Int16;
             Subject = subject != null ? subject.ToLower() : null;
             Value = value.ToString();
-            Order = order;
+            SourceUuid = sourceUuid;
+            Created = created;
         }
 
-        public EntityIndexPublishRequest(string target, int value, string subject, long order)
+        public EntityIndexPublishRequest(string target, int value, string subject, string sourceUuid = null, long created = 0)
         {
             Uuid = GenerateUuid(target, value, subject);
             Target = target != null ? target.ToLower() : null;
             DataType = (int)EntityIndexDataType.Int32;
             Subject = subject != null ? subject.ToLower() : null;
             Value = value.ToString();
-            Order = order;
+            SourceUuid = sourceUuid;
+            Created = created;
         }
 
-        public EntityIndexPublishRequest(string target, long value, string subject, long order)
+        public EntityIndexPublishRequest(string target, long value, string subject, string sourceUuid = null, long created = 0)
         {
             Uuid = GenerateUuid(target, value, subject);
             Target = target != null ? target.ToLower() : null;
             DataType = (int)EntityIndexDataType.Int64;
             Subject = subject != null ? subject.ToLower() : null;
             Value = value.ToString();
-            Order = order;
+            SourceUuid = sourceUuid;
+            Created = created;
         }
 
-        public EntityIndexPublishRequest(string target, decimal value, string subject, long order)
+        public EntityIndexPublishRequest(string target, decimal value, string subject, string sourceUuid = null, long created = 0)
         {
             Uuid = GenerateUuid(target, value, subject);
             Target = target != null ? target.ToLower() : null;
             DataType = (int)EntityIndexDataType.Decimal;
             Subject = subject != null ? subject.ToLower() : null;
             Value = value.ToString();
-            Order = order;
+            SourceUuid = sourceUuid;
+            Created = created;
         }
 
-        public EntityIndexPublishRequest(string target, float value, string subject, long order)
+        public EntityIndexPublishRequest(string target, float value, string subject, string sourceUuid = null, long created = 0)
         {
             Uuid = GenerateUuid(target, value, subject);
             Target = target != null ? target.ToLower() : null;
             DataType = (int)EntityIndexDataType.Float;
             Subject = subject != null ? subject.ToLower() : null;
             Value = value.ToString();
-            Order = order;
+            SourceUuid = sourceUuid;
+            Created = created;
         }
 
-        public EntityIndexPublishRequest(string target, double value, string subject, long order)
+        public EntityIndexPublishRequest(string target, double value, string subject, string sourceUuid = null, long created = 0)
         {
             Uuid = GenerateUuid(target, value, subject);
             Target = target != null ? target.ToLower() : null;
             DataType = (int)EntityIndexDataType.Double;
             Subject = subject != null ? subject.ToLower() : null;
             Value = value.ToString();
-            Order = order;
+            SourceUuid = sourceUuid;
+            Created = created;
         }
 
-        public EntityIndexPublishRequest(string target, DateTime value, string subject, long order)
+        public EntityIndexPublishRequest(string target, DateTime value, string subject, string sourceUuid = null, long created = 0)
         {
             Uuid = GenerateUuid(target, value, subject);
             Target = target != null ? target.ToLower() : null;
             DataType = (int)EntityIndexDataType.Timestamp;
             Subject = subject != null ? subject.ToLower() : null;
             Value = value.ToUnixTime().ToString();
-            Order = order;
+            SourceUuid = sourceUuid;
+            Created = created;
         }
 
-        public EntityIndexPublishRequest(string target, TimeSpan value, string subject, long order)
+        public EntityIndexPublishRequest(string target, TimeSpan value, string subject, string sourceUuid = null, long created = 0)
         {
             Uuid = GenerateUuid(target, value, subject);
             Target = target != null ? target.ToLower() : null;
             DataType = (int)EntityIndexDataType.Duration;
             Subject = subject != null ? subject.ToLower() : null;
             Value = value.TotalNanoseconds.ToString();
-            Order = order;
+            SourceUuid = sourceUuid;
+            Created = created;
         }
 
-        public EntityIndexPublishRequest(string target, EntityIndexDataType dataType, object value, string subject, long order)
+        public EntityIndexPublishRequest(string target, EntityIndexDataType dataType, object value, string subject, string sourceUuid = null, long created = 0)
         {
             Uuid = GenerateUuid(target, value, subject);
             Target = target != null ? target.ToLower() : null;
             DataType = (int)dataType;
             Subject = subject != null ? subject.ToLower() : null;
             Value = value?.ToString();
-            Order = order;
+            SourceUuid = sourceUuid;
+            Created = created;
         }
 
 
@@ -157,7 +170,8 @@ namespace TrakHound.Entities
                     writer.WriteNumberValue(request.DataType);
                     writer.WriteStringValue(request.Subject);
                     writer.WriteStringValue(request.Value);
-                    writer.WriteNumberValue(request.Order);
+                    writer.WriteStringValue(request.SourceUuid);
+                    writer.WriteNumberValue(request.Created);
                     writer.WriteEndArray();
                     writer.Flush();
                     return (int)writer.BytesCommitted + writer.BytesPending;
@@ -182,9 +196,10 @@ namespace TrakHound.Entities
                         var dataType = reader.GetInt32(); reader.Read();
                         var subject = reader.GetString(); reader.Read();
                         var value = reader.GetString(); reader.Read();
-                        var order = reader.GetInt64();
+                        var sourceUuid = reader.GetString(); reader.Read();
+                        var created = reader.GetInt64();
 
-                        return new EntityIndexPublishRequest(target, (EntityIndexDataType)dataType, value, subject, order);
+                        return new EntityIndexPublishRequest(target, (EntityIndexDataType)dataType, value, subject, sourceUuid, created);
                     }
                 }
                 catch { }

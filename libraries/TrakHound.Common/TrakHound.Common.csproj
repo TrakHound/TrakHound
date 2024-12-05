@@ -33,8 +33,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Entities\QueryEngines\Evaluators\Entities\EntityEvaluator.cs" />
-	  <Compile Remove="Entities\QueryEngines\Evaluators\Entities\EntityEvaluatorResult.cs" />
 	  <Compile Remove="Entities\QueryEngines\Evaluators\Entities\ObjectAssignmentEvaluator.cs" />
 	  <Compile Remove="Entities\QueryEngines\Evaluators\Entities\ObjectBooleanEvaluator.cs" />
 	  <Compile Remove="Entities\QueryEngines\Evaluators\Entities\ObjectDurationEvaluator.cs" />
@@ -49,13 +47,10 @@
 	  <Compile Remove="Entities\QueryEngines\Evaluators\Entities\ObjectSetEvaluator.cs" />
 	  <Compile Remove="Entities\QueryEngines\Evaluators\Entities\ObjectStatisticEvaluator.cs" />
 	  <Compile Remove="Entities\QueryEngines\Evaluators\Entities\ObjectStatusEvaluator.cs" />
-	  <Compile Remove="Entities\QueryEngines\Evaluators\Entities\ObjectStringEvaluator.cs" />
 	  <Compile Remove="Entities\QueryEngines\Evaluators\Entities\ObjectTimestampEvaluator.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="Entities\QueryEngines\Evaluators\Entities\EntityEvaluator.cs" />
-	  <None Include="Entities\QueryEngines\Evaluators\Entities\EntityEvaluatorResult.cs" />
 	  <None Include="Entities\QueryEngines\Evaluators\Entities\ObjectAssignmentEvaluator.cs" />
 	  <None Include="Entities\QueryEngines\Evaluators\Entities\ObjectBooleanEvaluator.cs" />
 	  <None Include="Entities\QueryEngines\Evaluators\Entities\ObjectDurationEvaluator.cs" />
@@ -70,7 +65,6 @@
 	  <None Include="Entities\QueryEngines\Evaluators\Entities\ObjectSetEvaluator.cs" />
 	  <None Include="Entities\QueryEngines\Evaluators\Entities\ObjectStatisticEvaluator.cs" />
 	  <None Include="Entities\QueryEngines\Evaluators\Entities\ObjectStatusEvaluator.cs" />
-	  <None Include="Entities\QueryEngines\Evaluators\Entities\ObjectStringEvaluator.cs" />
 	  <None Include="Entities\QueryEngines\Evaluators\Entities\ObjectTimestampEvaluator.cs" />
 	</ItemGroup>
 

@@ -735,6 +735,15 @@ namespace TrakHound.Clients
 
         #region "Index"
 
+        public async Task<IReadOnlyDictionary<string, bool>> IndexExists(IEnumerable<string> targets, string routerId = null)
+        {
+            var url = Url.Combine(BaseUrl, TrakHoundHttp.GetEntityPath<ITrakHoundObjectEntity>());
+            url = Url.Combine(url, "index/exists");
+            url = Url.AddQueryParameter(url, "routerId", BaseClient.GetRouterId(routerId));
+
+            return await RestRequest.Post<Dictionary<string, bool>>(url, targets);
+        }
+
         public async Task<IEnumerable<string>> QueryIndex(IEnumerable<EntityIndexRequest> requests, long skip, long take, SortOrder sortOrder, string routerId = null)
         {
             var url = Url.Combine(BaseUrl, TrakHoundHttp.GetEntityPath<ITrakHoundObjectEntity>());

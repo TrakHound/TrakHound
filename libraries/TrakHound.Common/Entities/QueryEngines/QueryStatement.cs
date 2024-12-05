@@ -2,6 +2,7 @@
 // TrakHound Inc. licenses this file to you under the MIT license.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,6 +10,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TrakHound.Clients;
 using TrakHound.Entities.Collections;
+using TrakHound.Entities.QueryEngines.Evaluators;
+using TrakHound.Entities.QueryEngines.Evaluators.Entities;
 
 namespace TrakHound.Entities.QueryEngines
 {
@@ -71,11 +74,14 @@ namespace TrakHound.Entities.QueryEngines
                 if (!ConditionGroups.IsNullOrEmpty())
                 {
                     //var queries = new List<QueryCondition>();
+                    var queries = new List<ConditionObjectQuery>();
                     var indexQueries = new List<ConditionIndexQuery>();
 
                     var target = Scope.GetVariable(Target)?.Value;
                     //var query = "";
                     //var queryOperator = TrakHoundConditionOperator.EQUALS;
+
+                    IEnumerable<string> targetObjectUuids = null;
 
                     foreach (var conditionGroup in ConditionGroups)
                     {
@@ -92,17 +98,63 @@ namespace TrakHound.Entities.QueryEngines
                                         var conditionValue = Scope.GetVariable(condition.Value);
                                         if (conditionValue != null)
                                         {
-                                            var indexQuery = new ConditionIndexQuery();
-                                            indexQuery.ConditionGroup = conditionGroup;
-
                                             conditionTarget = conditionTarget.TrimStart('[').TrimEnd(']');
-                                            indexQuery.Target = TrakHoundPath.Combine(target, conditionTarget);
+                                            var indexTarget = TrakHoundPath.Combine(target, conditionTarget)?.ToLower().ToSHA256Hash();
 
-                                            indexQuery.Query = GetFunctionTarget(conditionValue.Value);
+                                            if (await IndexExists(client, indexTarget))
+                                            {
+                                                var indexRequest = new EntityIndexRequest();
+                                                indexRequest.Target = indexTarget;
+                                                indexRequest.Value = FormatValue(GetFunctionTarget(conditionValue.Value));
 
-                                            indexQuery.Operator = condition.Operator;
+                                                var queryType = TrakHoundIndexQueryType.Equal;
+                                                switch (condition.Operator)
+                                                {
+                                                    case TrakHoundConditionOperator.EQUALS: queryType = TrakHoundIndexQueryType.Equal; break;
+                                                    case TrakHoundConditionOperator.NOT_EQUALS: queryType = TrakHoundIndexQueryType.NotEqual; break;
+                                                    case TrakHoundConditionOperator.LIKE: queryType = TrakHoundIndexQueryType.Like; break;
+                                                    case TrakHoundConditionOperator.GREATER_THAN: queryType = TrakHoundIndexQueryType.GreaterThan; break;
+                                                    case TrakHoundConditionOperator.GREATER_THAN_OR_EQUAL: queryType = TrakHoundIndexQueryType.GreaterThanOrEqual; break;
+                                                    case TrakHoundConditionOperator.LESS_THAN: queryType = TrakHoundIndexQueryType.LessThan; break;
+                                                    case TrakHoundConditionOperator.LESS_THAN_OR_EQUAL: queryType = TrakHoundIndexQueryType.LessThanOrEqual; break;
+                                                }
+                                                indexRequest.QueryType = queryType;
+                                                var indexRequests = new EntityIndexRequest[] { indexRequest };
 
-                                            indexQueries.Add(indexQuery);
+                                                long skip = Skip != null ? Skip.Value : 0;
+                                                long take = Take != null ? Take.Value : 0;
+                                                SortOrder sortOrder = Order != null ? Order.Value : SortOrder.Ascending;
+
+                                                targetObjectUuids = await client.Objects.QueryIndex(indexRequests, skip, take, sortOrder);
+                                            }
+                                            else
+                                            {
+                                                var targetQuery = TrakHoundPath.Combine(target, conditionTarget);
+                                                var conditionTargetObjects = await client.Objects.Query(targetQuery);
+                                                if (!conditionTargetObjects.IsNullOrEmpty())
+                                                {
+                                                    var evaluators = new List<IEvaluator>();
+                                                    foreach (var conditionTargetObject in conditionTargetObjects)
+                                                    {
+                                                        var query = new ConditionObjectQuery();
+                                                        query.TargetObjectUuid = conditionTargetObject.ParentUuid;
+                                                        query.ConditionObject = conditionTargetObject;
+                                                        query.ConditionGroup = conditionGroup;
+                                                        query.Condition = condition;
+
+                                                        var evaluator = EntityEvaluator.Create(query, conditionTargetObject);
+                                                        if (evaluator != null) evaluators.Add(evaluator);
+                                                    }
+
+                                                    var evaluatorResults = new List<IEvaluatorResult>();
+
+                                                    var results = await EntityEvaluator.Evaluate(this, client, evaluators);
+                                                    if (!results.IsNullOrEmpty())
+                                                    {
+                                                        targetObjectUuids = results.Select(o => o.Query.TargetObjectUuid).Distinct();
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -138,46 +190,46 @@ namespace TrakHound.Entities.QueryEngines
                         }
                     }
 
-                    var stpw = Stopwatch.StartNew();
-                    var fstpw = Stopwatch.StartNew();
+                    //var stpw = Stopwatch.StartNew();
+                    //var fstpw = Stopwatch.StartNew();
 
-                    IEnumerable<string> targetObjectUuids = null;
+                    //IEnumerable<string> targetObjectUuids = null;
 
-                    var conditionGroupIds = indexQueries.Select(o => o.ConditionGroup.GroupId).Distinct();
-                    foreach (var conditionGroupId in conditionGroupIds)
-                    {
-                        var conditionGroupQueries = indexQueries.Where(o => o.ConditionGroup.GroupId == conditionGroupId);
+                    //var conditionGroupIds = indexQueries.Select(o => o.ConditionGroup.GroupId).Distinct();
+                    //foreach (var conditionGroupId in conditionGroupIds)
+                    //{
+                    //    var conditionGroupQueries = indexQueries.Where(o => o.ConditionGroup.GroupId == conditionGroupId);
 
-                        var indexRequests = new List<EntityIndexRequest>();
-                        foreach (var indexQuery in conditionGroupQueries)
-                        {
-                            var indexRequest = new EntityIndexRequest();
-                            indexRequest.Target = indexQuery.Target;
-                            indexRequest.Value = FormatValue(indexQuery.Query);
+                    //    var indexRequests = new List<EntityIndexRequest>();
+                    //    foreach (var indexQuery in conditionGroupQueries)
+                    //    {
+                    //        var indexRequest = new EntityIndexRequest();
+                    //        indexRequest.Target = indexQuery.Target;
+                    //        indexRequest.Value = FormatValue(indexQuery.Query);
 
-                            var queryType = TrakHoundIndexQueryType.Equal;
-                            switch (indexQuery.Operator)
-                            {
-                                case TrakHoundConditionOperator.EQUALS: queryType = TrakHoundIndexQueryType.Equal; break;
-                                case TrakHoundConditionOperator.NOT_EQUALS: queryType = TrakHoundIndexQueryType.NotEqual; break;
-                                case TrakHoundConditionOperator.LIKE: queryType = TrakHoundIndexQueryType.Like; break;
-                                case TrakHoundConditionOperator.GREATER_THAN: queryType = TrakHoundIndexQueryType.GreaterThan; break;
-                                case TrakHoundConditionOperator.GREATER_THAN_OR_EQUAL: queryType = TrakHoundIndexQueryType.GreaterThanOrEqual; break;
-                                case TrakHoundConditionOperator.LESS_THAN: queryType = TrakHoundIndexQueryType.LessThan; break;
-                                case TrakHoundConditionOperator.LESS_THAN_OR_EQUAL: queryType = TrakHoundIndexQueryType.LessThanOrEqual; break;
-                            }
-                            indexRequest.QueryType = queryType;
+                    //        var queryType = TrakHoundIndexQueryType.Equal;
+                    //        switch (indexQuery.Operator)
+                    //        {
+                    //            case TrakHoundConditionOperator.EQUALS: queryType = TrakHoundIndexQueryType.Equal; break;
+                    //            case TrakHoundConditionOperator.NOT_EQUALS: queryType = TrakHoundIndexQueryType.NotEqual; break;
+                    //            case TrakHoundConditionOperator.LIKE: queryType = TrakHoundIndexQueryType.Like; break;
+                    //            case TrakHoundConditionOperator.GREATER_THAN: queryType = TrakHoundIndexQueryType.GreaterThan; break;
+                    //            case TrakHoundConditionOperator.GREATER_THAN_OR_EQUAL: queryType = TrakHoundIndexQueryType.GreaterThanOrEqual; break;
+                    //            case TrakHoundConditionOperator.LESS_THAN: queryType = TrakHoundIndexQueryType.LessThan; break;
+                    //            case TrakHoundConditionOperator.LESS_THAN_OR_EQUAL: queryType = TrakHoundIndexQueryType.LessThanOrEqual; break;
+                    //        }
+                    //        indexRequest.QueryType = queryType;
 
-                            indexRequests.Add(indexRequest);
-                        }
+                    //        indexRequests.Add(indexRequest);
+                    //    }
 
 
-                        long skip = Skip != null ? Skip.Value : 0;
-                        long take = Take != null ? Take.Value : 0;
-                        SortOrder sortOrder = Order != null ? Order.Value : SortOrder.Ascending;
+                    //    long skip = Skip != null ? Skip.Value : 0;
+                    //    long take = Take != null ? Take.Value : 0;
+                    //    SortOrder sortOrder = Order != null ? Order.Value : SortOrder.Ascending;
 
-                        targetObjectUuids = await client.Objects.QueryIndex(indexRequests, skip, take, sortOrder);
-                    }
+                    //    targetObjectUuids = await client.Objects.QueryIndex(indexRequests, skip, take, sortOrder);
+                    //}
 
                     //foreach (var indexQuery in indexQueries)
                     //{
@@ -1853,6 +1905,21 @@ namespace TrakHound.Entities.QueryEngines
         }
 
         #endregion
+
+
+        private static async Task<bool> IndexExists(ITrakHoundSystemEntitiesClient client, string target)
+        {
+            if (client != null && target != null)
+            {
+                var results = await client.Objects.IndexExists(new string[] { target });
+                if (!results.IsNullOrEmpty())
+                {
+                    return results.GetValueOrDefault(target);
+                }
+            }
+
+            return false;
+        }
 
         private static string FormatValue(string value)
         {

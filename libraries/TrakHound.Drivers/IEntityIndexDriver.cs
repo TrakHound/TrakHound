@@ -9,6 +9,8 @@ namespace TrakHound.Drivers.Entities
 {
     public interface IEntityIndexQueryDriver : ITrakHoundDriver
     {
+        Task<TrakHoundResponse<bool>> IndexExists(IEnumerable<string> targets);
+
         Task<TrakHoundResponse<string>> QueryIndex(IEnumerable<EntityIndexRequest> requests, long skip, long take, SortOrder sortOrder);
     }
 

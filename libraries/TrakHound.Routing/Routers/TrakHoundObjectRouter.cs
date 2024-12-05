@@ -1215,6 +1215,36 @@ namespace TrakHound.Routing.Routers
 
         #region "Index"
 
+        public async Task<TrakHoundResponse<bool>> IndexExists(IEnumerable<string> targets, string requestId = null)
+        {
+            // Set Read Driver Function
+            Func<ParameterRouteTargetDriverRequest<IEntityIndexQueryDriver<ITrakHoundObjectEntity>, ITrakHoundObjectEntity>, Task<TrakHoundResponse<bool>>> serviceFunction = async (serviceRequest) =>
+            {
+                return await serviceRequest.Driver.IndexExists(targets);
+            };
+
+            // Set Read Router Function
+            Func<ParameterRouteTargetRouterRequest<ITrakHoundObjectEntity>, Task<TrakHoundResponse<bool>>> routerFunction = async (routerRequest) =>
+            {
+                return await routerRequest.Router.Entities.Objects.Objects.IndexExists(targets, routerRequest.Request.Id);
+            };
+
+
+            var request = new EntityParameterRouteRequest<ITrakHoundObjectEntity>("IndexQuery", requestId);
+
+            // Run Router Targets
+            var response = await ParameterRouteTarget.Run(
+                Router.Id,
+                request,
+                Router.Logger,
+                Router.GetTargets<IEntityIndexQueryDriver<ITrakHoundObjectEntity>>(TrakHoundObjectRoutes.ObjectsIndexQuery),
+                serviceFunction,
+                routerFunction
+                );
+
+            return HandleResponse(request.Id, response.Results, response.Duration);
+        }
+
         public async Task<TrakHoundResponse<string>> QueryIndex(IEnumerable<EntityIndexRequest> requests, long skip, long take, SortOrder sortOrder, string requestId = null)
         {
             // Set Read Driver Function

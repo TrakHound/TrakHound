@@ -24,8 +24,11 @@ namespace TrakHound.Http
         [JsonPropertyName("subject")]
         public string Subject { get; set; }
 
-        [JsonPropertyName("order")]
-        public long Order { get; set; }
+        [JsonPropertyName("sourceUuid")]
+        public string SourceUuid { get; set; }
+
+        [JsonPropertyName("created")]
+        public long Created { get; set; }
 
 
         public TrakHoundHttpEntityIndexPublishRequest() { }
@@ -37,19 +40,20 @@ namespace TrakHound.Http
             DataType = request.DataType;
             Value = request.Value;
             Subject = request.Subject;
-            Order = request.Order;
+            SourceUuid = request.SourceUuid;
+            Created = request.Created;
         }
 
 
         public EntityIndexPublishRequest ToRequest()
         {
-            return new EntityIndexPublishRequest(Target, (EntityIndexDataType)DataType, Value, Subject, Order);
+            return new EntityIndexPublishRequest(Target, (EntityIndexDataType)DataType, Value, Subject, SourceUuid, Created);
         }
 
 
         public static IEnumerable<TrakHoundHttpEntityIndexPublishRequest> Create(EntityIndexPublishRequest request)
         {
-            if (!string.IsNullOrEmpty(request.Target) && request.Order > 0)
+            if (!string.IsNullOrEmpty(request.Target) && request.Created > 0)
             {
                 var results = new List<TrakHoundHttpEntityIndexPublishRequest>();
                 results.Add(new TrakHoundHttpEntityIndexPublishRequest(request));

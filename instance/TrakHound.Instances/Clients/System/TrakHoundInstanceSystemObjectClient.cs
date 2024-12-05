@@ -737,6 +737,32 @@ namespace TrakHound.Clients
 
         #region "Index"
 
+        public async Task<IReadOnlyDictionary<string, bool>> IndexExists(IEnumerable<string> targets, string routerId = null)
+        {
+            if (!targets.IsNullOrEmpty())
+            {
+                var router = BaseClient.GetRouter(routerId);
+                if (router != null)
+                {
+                    var response = await router?.Entities.Objects.Objects.IndexExists(targets);
+                    if (response.IsSuccess)
+                    {
+                        var results = new Dictionary<string, bool>();
+                        foreach (var result in response.SuccessResults)
+                        {
+                            if (result.Request != null && !results.ContainsKey(result.Request))
+                            {
+                                results.Add(result.Request, result.Content);
+                            }
+                        }
+                        return results;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         public async Task<IEnumerable<string>> QueryIndex(IEnumerable<EntityIndexRequest> requests, long skip, long take, SortOrder sortOrder, string routerId = null)
         {
             if (!requests.IsNullOrEmpty())

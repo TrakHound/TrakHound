@@ -7,6 +7,8 @@ namespace TrakHound.Entities.QueryEngines.Evaluators
     {
         public string Id { get; set; }
 
+        public ConditionObjectQuery Query { get; set; }
+
         public string ConditionId { get; set; }
 
         public string GroupId { get; set; }

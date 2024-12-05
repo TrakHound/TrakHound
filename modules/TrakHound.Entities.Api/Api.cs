@@ -37,10 +37,15 @@ namespace TrakHound.Entities.Api
                             {
                                 if (!string.IsNullOrEmpty(index.Index) && !string.IsNullOrEmpty(index.Name) && index.Value != null)
                                 {
-                                    var target = TrakHoundPath.Combine(index.Index, index.Name)?.ToLower();
-                                    var subject = TrakHoundPath.GetUuid(entry.Path);
+                                    var targetNamespace = !string.IsNullOrEmpty(entry.Namespace) ? entry.Namespace : TrakHoundPath.GetNamespace(entry.Path);
+                                    if (string.IsNullOrEmpty(targetNamespace)) targetNamespace = TrakHoundNamespace.DefaultNamespace;
 
-                                    var indexRequest = new EntityIndexPublishRequest(target, index.DataType, index.Value, subject, 0);
+                                    var targetPath = TrakHoundPath.ToRoot(TrakHoundPath.GetPartialPath(entry.Path));
+
+                                    var target = TrakHoundPath.Combine(index.Index, index.Name)?.ToLower().ToSHA256Hash();
+                                    var subject = TrakHoundPath.GetUuid(targetNamespace, targetPath);
+
+                                    var indexRequest = new EntityIndexPublishRequest(target, index.DataType, index.Value, subject, "DUMMY", now);
                                     if (indexRequest.IsValid) indexes.Add(indexRequest);
                                 }
                             }

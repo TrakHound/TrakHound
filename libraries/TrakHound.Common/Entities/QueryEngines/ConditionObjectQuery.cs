@@ -5,7 +5,11 @@ namespace TrakHound.Entities.QueryEngines
 {
     public struct ConditionObjectQuery
     {
-        public ITrakHoundObjectEntity TargetObject { get; set; }
+        //public ITrakHoundObjectEntity TargetObject { get; set; }
+
+        public string TargetObjectUuid { get; set; }
+
+        public ITrakHoundObjectEntity ConditionObject { get; set; }
 
         public QueryConditionGroup ConditionGroup { get; set; }
 

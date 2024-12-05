@@ -810,7 +810,7 @@ namespace TrakHound.Sqlite.Drivers
                 item.Target = request.Target;
                 item.Value = request.Value;
                 item.Subject = request.Subject;
-                item.Order = request.Order;
+                item.Order = request.Created;
                 items.Add(item);
             }
 

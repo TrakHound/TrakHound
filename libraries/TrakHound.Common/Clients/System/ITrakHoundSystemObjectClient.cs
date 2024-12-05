@@ -121,6 +121,8 @@ namespace TrakHound.Clients
 
         #region "Index"
 
+        Task<IReadOnlyDictionary<string, bool>> IndexExists(IEnumerable<string> targets, string routerId = null);
+
         Task<IEnumerable<string>> QueryIndex(IEnumerable<EntityIndexRequest> requests, long skip, long take, SortOrder sortOrder, string routerId = null);
 
         Task<bool> UpdateIndex(IEnumerable<EntityIndexPublishRequest> requests, TrakHoundOperationMode mode = TrakHoundOperationMode.Async, string routerId = null);

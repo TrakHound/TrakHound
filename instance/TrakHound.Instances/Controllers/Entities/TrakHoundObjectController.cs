@@ -4,7 +4,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using TrakHound.Controllers.Http;
 using TrakHound.Entities;
 
@@ -682,6 +681,29 @@ namespace TrakHound.Http.Entities
         #endregion
 
         #region "Index"
+
+        [HttpPost("index/exists")]
+        public async Task<IActionResult> IndexExists(
+            [FromBody] IEnumerable<string> targets,
+            [FromQuery] string routerId = null
+            )
+        {
+            var client = GetClient(routerId);
+            if (client != null)
+            {
+                var results = await client.System.Entities.Objects.IndexExists(targets, routerId);
+                if (!results.IsNullOrEmpty())
+                {
+                    return Ok(results);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+
+            return BadRequest();
+        }
 
         [HttpPost("index/request")]
         public async Task<IActionResult> QueryIndex(

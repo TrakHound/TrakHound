@@ -728,10 +728,10 @@ namespace TrakHound.Clients.Collections
 
         #region "Index"
 
-        //public async Task<IEnumerable<string>> QueryIndex(string target, TrakHoundIndexQueryType queryType, string query, long skip, long take, SortOrder sortOrder, string routerId = null)
-        //{
-        //    return null;
-        //}
+        public async Task<IReadOnlyDictionary<string, bool>> IndexExists(IEnumerable<string> targets, string routerId = null)
+        {
+            return null;
+        }
 
         public async Task<IEnumerable<string>> QueryIndex(IEnumerable<EntityIndexRequest> requests, long skip, long take, SortOrder sortOrder, string routerId = null)
         {
