@@ -13,7 +13,7 @@
             <CascadingValue Value="this">
                 <table class="object-treeview-table" cellspacing="0" cellpadding="0">
                     <tbody>
-                        <Virtualize TItem="ObjectExplorerTreeItemModel" Items="treeItems" Context="treeItem" OverscanCount="50">
+                        <Virtualize TItem="ObjectExplorerTreeItemModel" Items="treeItems" Context="treeItem" OverscanCount="@OverscanCount">
                             <ObjectExplorerTreeItem TreeItem="@treeItem" />
                         </Virtualize>
                     </tbody>
@@ -28,18 +28,16 @@
 
     private ThrottleEvent renderThrottle = new ThrottleEvent(500);
 
+
     [CascadingParameter(Name = "ObjectExplorerService")]
     public ObjectExplorerService ObjectExplorerService { get; set; }
 
     [Parameter]
-    public int OverscanCount { get; set; } = 200;
+    public int OverscanCount { get; set; } = 50;
 
 
     protected override void OnInitialized()
     {
-        // ObjectExplorerService.NamespaceExpanded += NamespaceExpanded;
-        // ObjectExplorerService.NamespaceCollapsed += NamespaceCollapsed;
-
         renderThrottle.Elapsed += RenderThrottleElapsed;
     }
 
@@ -83,35 +81,5 @@
     {
         ObjectExplorerService.AddService.AddObject($"{ns}:/");
     }
-
-    // private async void NamespaceExpanded(object sender, string ns)
-    // {
-    //     await InvokeAsync(StateHasChanged);
-    // }
-
-    // private async void ExpandNamespace(string ns)
-    // {
-    //     var isExpanded = ObjectExplorerService.GetNamespaceExpanded(ns);
-    //     if (!isExpanded)
-    //     {
-    //         ObjectExplorerService.ExpandNamespace(ns);
-    //         await InvokeAsync(StateHasChanged);
-    //     }
-    // }
-
-    // private async void NamespaceCollapsed(object sender, string ns)
-    // {
-    //     await InvokeAsync(StateHasChanged);
-    // }
-
-    // private async void CollapseNamespace(string ns)
-    // {
-    //     var isExpanded = ObjectExplorerService.GetNamespaceExpanded(ns);
-    //     if (isExpanded)
-    //     {
-    //         ObjectExplorerService.CollapseNamespace(ns);
-    //         await InvokeAsync(StateHasChanged);
-    //     }
-    // }
 
 }

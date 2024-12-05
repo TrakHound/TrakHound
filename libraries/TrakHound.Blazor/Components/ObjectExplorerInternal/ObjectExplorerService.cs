@@ -15,7 +15,8 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         public const int RecentMilliseconds = 2000;
         public const int RecentLimit = RecentMilliseconds * 1000000;
 
-        private static readonly ObjectExplorerObjectComparer _comparer = new ObjectExplorerObjectComparer();
+        private static readonly ObjectExplorerObjectNamespaceComparer _comparerByNamespace = new ObjectExplorerObjectNamespaceComparer();
+        private static readonly ObjectExplorerObjectCombinedComparer _comparerCombined = new ObjectExplorerObjectCombinedComparer();
 
 
         private readonly string _baseUrl;
@@ -73,6 +74,8 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         public string InstanceId { get; set; }
 
         public string RouterId { get; set; }
+
+        public bool CombineNamespaces { get; set; } = false;
 
         public string BaseUrl => _baseUrl;
 
@@ -1282,6 +1285,12 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
 
         public void BuildTreeItems()
         {
+            if (CombineNamespaces) BuildTreeItemsCombined();
+            else BuildTreeItemsByNamespace();
+        }
+
+        private void BuildTreeItemsByNamespace()
+        {
             lock (_lock)
             {
                 var targetUuids = _filteredTargetUuids?.ToArray();
@@ -1289,7 +1298,6 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                 {
                     var namespaces = new ListDictionary<string, ITrakHoundObjectEntity>();
 
-                    var targetObjects = new ITrakHoundObjectEntity[targetUuids.Length];
                     for (var i = 0; i < targetUuids.Length; i++)
                     {
                         var targetObject = _objects.GetValueOrDefault(targetUuids[i]);
@@ -1312,7 +1320,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                             treeItems[x] = new ObjectExplorerNamespaceTreeItemModel(ns);
                             x++;
 
-                            foreach (var targetObject in namespaceTargetObjects.OrderBy(o => o, _comparer))
+                            foreach (var targetObject in namespaceTargetObjects.OrderBy(o => o, _comparerByNamespace))
                             {
                                 var i = AddObjectTreeItems(ref treeItems, ref treeIndexes, targetObject, x, 1);
                                 x += i;
@@ -1330,6 +1338,49 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                 }
             }
         }
+
+        private void BuildTreeItemsCombined()
+        {
+            lock (_lock)
+            {
+                var targetUuids = _filteredTargetUuids?.ToArray();
+                if (!targetUuids.IsNullOrEmpty())
+                {
+                    var targetObjects = new ITrakHoundObjectEntity[targetUuids.Length];
+                    for (var i = 0; i < targetUuids.Length; i++)
+                    {
+                        var targetObject = _objects.GetValueOrDefault(targetUuids[i]);
+                        if (targetObject != null)
+                        {
+                            targetObjects[i] = targetObject;
+                        }
+                    }
+
+                    var treeIndexes = new Dictionary<string, int>();
+                    var x = 0;
+
+                    string previousPath = null;
+
+                    var treeItems = new ObjectExplorerTreeItemModel[_objects.Count];
+                    foreach (var targetObject in targetObjects.OrderBy(o => o, _comparerCombined))
+                    {
+                        var i = AddObjectTreeItems(ref treeItems, ref treeIndexes, targetObject, x, 1);
+                        if (targetObject.Path != previousPath) x += i; // Overwrite duplicate Path? Probably Need a better way to handle this
+
+                        previousPath = targetObject.Path;
+                    }
+
+                    _treeItems = treeItems;
+                    _treeIndexes = treeIndexes;
+                }
+                else
+                {
+                    _treeItems = null;
+                    _treeIndexes = null;
+                }
+            }
+        }
+
 
         private int AddObjectTreeItems(
             ref ObjectExplorerTreeItemModel[] treeItems, 
@@ -1369,7 +1420,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                 var childObjects = GetChildObjects(targetObject.Uuid);
                 if (!childObjects.IsNullOrEmpty())
                 {
-                    foreach (var childObject in childObjects.OrderBy(o => o, _comparer))
+                    foreach (var childObject in childObjects.OrderBy(o => o, _comparerByNamespace))
                     {
                         var childCount = AddObjectTreeItems(ref treeItems, ref treeIndexes, childObject, index, depth + 1);
                         index += childCount;
@@ -1610,6 +1661,11 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             _hiddenShown = !_hiddenShown;
 
             FilterTargetObjects();
+        }
+
+        public void ToggleCombinedNamespaces()
+        {
+            CombineNamespaces = !CombineNamespaces;
         }
 
 

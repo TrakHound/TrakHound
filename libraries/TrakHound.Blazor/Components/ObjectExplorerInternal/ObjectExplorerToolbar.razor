@@ -10,6 +10,7 @@
             <button class="btn btn-sm btn-toolbar" title="Paste" @onclick="PasteClicked"><span class="icon fa-solid fa-sharp fa-paste"></span></button>
             <button class="btn btn-sm btn-toolbar" title="Collapse All" @onclick="CollapseAll"><span class="icon fa-solid fa-sharp fa-layer-minus"></span></button>
             <button class="btn btn-sm btn-toolbar" title="Toggle Hidden" @onclick="ToggleHidden"><span class="icon @hiddenIcon"></span></button>
+            <button class="btn btn-sm btn-toolbar" title="Toggle Combined Namespaces" @onclick="ToggleCombinedNamespaces"><span class="icon fa-solid fa-sharp fa-list-tree"></span></button>
         </div>
     </div>
 </div>
@@ -56,6 +57,13 @@
     private void ToggleHidden()
     {
         ObjectExplorerService.ToggleHidden();
+        ObjectExplorerService.BuildTreeItems();
+        ObjectExplorerService.Update();
+    }
+
+    private void ToggleCombinedNamespaces()
+    {
+        ObjectExplorerService.ToggleCombinedNamespaces();
         ObjectExplorerService.BuildTreeItems();
         ObjectExplorerService.Update();
     }
