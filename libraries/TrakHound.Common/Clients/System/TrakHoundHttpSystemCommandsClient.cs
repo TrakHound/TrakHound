@@ -24,21 +24,29 @@ namespace TrakHound.Clients
         }
 
 
-        public async Task<TrakHoundCommandResponse> Run(string commandId, IReadOnlyDictionary<string, string> parameters = null, string routerId = null)
+        public async Task<IEnumerable<TrakHoundCommandResponse>> Run(string commandId, IReadOnlyDictionary<string, string> parameters = null, string routerId = null)
         {
             var url = Url.Combine(BaseUrl, HttpConstants.CommandsPrefix);
             url = Url.Combine(url, "run");
             url = Url.AddQueryParameter(url, "commandId", commandId);
             url = Url.AddQueryParameter(url, "routerId", _baseClient.GetRouterId(routerId));
 
-            var httpResponse = await RestRequest.PostResponse(url, parameters);
+            var httpResponses = await RestRequest.Post<IEnumerable<TrakHoundCommandJsonResponse>>(url, parameters);
+            if (httpResponses.IsNullOrEmpty())
+            {
+                var responses = new List<TrakHoundCommandResponse>();
+                foreach (var httpResponse in httpResponses)
+                {
+                    var runResponse = new TrakHoundCommandResponse();
+                    runResponse.StatusCode = httpResponse.StatusCode;
+                    runResponse.ContentType = httpResponse.ContentType;
+                    runResponse.Content = TrakHoundCommandResponse.GetContentStreamFromBase64String(httpResponse.Content);
+                    responses.Add(runResponse);
+                }
+                return responses;
+            }
 
-            var runResponse = new TrakHoundCommandResponse();
-            runResponse.StatusCode = httpResponse.StatusCode;
-            runResponse.ContentType = httpResponse.ContentType;
-            runResponse.Content = httpResponse.Content;
-
-            return runResponse;
+            return null;
         }
     }
 }

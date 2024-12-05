@@ -21,7 +21,7 @@ namespace TrakHound.Clients
         }
 
 
-        public async Task<TrakHoundCommandResponse> Run(string commandId, IReadOnlyDictionary<string, string> parameters = null, string routerId = null)
+        public async Task<IEnumerable<TrakHoundCommandResponse>> Run(string commandId, IReadOnlyDictionary<string, string> parameters = null, string routerId = null)
         {
             if (!string.IsNullOrEmpty(commandId))
             {
@@ -31,7 +31,7 @@ namespace TrakHound.Clients
                     var response = await router.Commands.Run(commandId, parameters);
                     if (response.IsSuccess)
                     {
-                        return response.Content.FirstOrDefault();
+                        return response.Content;
                     }
                 }
             }

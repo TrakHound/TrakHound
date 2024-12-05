@@ -32,8 +32,7 @@ namespace TrakHound.Http
 
                 if (!string.IsNullOrEmpty(commandId))
                 {
-                    var response = await client.System.Commands.Run(commandId);
-                    return ProcessResponse(response);
+                    return ProcessResponse(await client.System.Commands.Run(commandId));
                 }
             }
 
@@ -50,8 +49,7 @@ namespace TrakHound.Http
 
                 if (!string.IsNullOrEmpty(commandId))
                 {
-                    var response = await client.System.Commands.Run(commandId, parameters);
-                    return ProcessResponse(response);
+                    return ProcessResponse(await client.System.Commands.Run(commandId, parameters));
                 }
             }
 
@@ -59,29 +57,21 @@ namespace TrakHound.Http
         }
 
 
-        private IActionResult ProcessResponse(TrakHoundCommandResponse response)
+        private IActionResult ProcessResponse(IEnumerable<TrakHoundCommandResponse> responses)
         {
-            if (response.ContentType == null || MimeTypes.IsText(response.ContentType))
+            if (!responses.IsNullOrEmpty())
             {
-                if (response.Content != null)
+                var httpResponses = new List<TrakHoundCommandJsonResponse>();
+                foreach (var response in responses)
                 {
-                    var contentBytes = System.Text.Encoding.ASCII.GetString(response.Content);
-                    var content = Content(contentBytes, response.ContentType);
-                    content.StatusCode = response.StatusCode;
-                    return content;
+                    httpResponses.Add(new TrakHoundCommandJsonResponse(response));
                 }
-                else if (response.StatusCode >= 200 && response.StatusCode < 300)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return StatusCode(response.StatusCode);
-                }
+
+                return Ok(httpResponses);
             }
             else
             {
-                return File(response.Content, response.ContentType, response.GetParameter("filename"));
+                return NotFound();
             }
         }
     }

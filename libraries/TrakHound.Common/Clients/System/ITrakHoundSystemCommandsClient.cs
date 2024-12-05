@@ -9,6 +9,6 @@ namespace TrakHound.Clients
 {
     public interface ITrakHoundSystemCommandsClient
     {
-        Task<TrakHoundCommandResponse> Run(string commandId, IReadOnlyDictionary<string, string> parameters = null, string routerId = null);
+        Task<IEnumerable<TrakHoundCommandResponse>> Run(string commandId, IReadOnlyDictionary<string, string> parameters = null, string routerId = null);
     }
 }
