@@ -16,7 +16,7 @@ namespace TrakHound.Drivers
         {
             get
             {
-                if (_id == null) _id = $"{Configuration?.Id}:{Name}";
+                if (_id == null) _id = $"{Configuration?.Id}:{GetType().AssemblyQualifiedName}".ToMD5Hash();
                 return _id;
             }
         }
