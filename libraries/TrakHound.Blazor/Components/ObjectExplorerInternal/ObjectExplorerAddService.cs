@@ -20,7 +20,6 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         public class AddData
         {
             public string Path { get; set; }
-            public string Name { get; set; }
             public string ContentType { get; set; }
             public string DefinitionId { get; set; }
             public string ImportJson { get; set; }
@@ -29,8 +28,6 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         public enum AddMode
         {
             Basic,
-            Advanced,
-            Occurrence,
             Json
         }
 
@@ -53,7 +50,25 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         }
 
 
-        public void SetMode(AddMode mode) => _mode = mode;
+        public void SetMode(AddMode mode)
+        {
+            _mode = mode;
+
+            switch (mode)
+            {
+                case AddMode.Basic:
+
+                    if (Data.ContentType == null) Data.ContentType = TrakHoundObjectContentTypes.Directory;
+                    Data.ImportJson = null;
+                    break;
+
+                case AddMode.Json:
+
+                    Data.DefinitionId = null;
+                    Data.ContentType = null;
+                    break;
+            }
+        }
 
 
         public void AddObject(string path = null)
@@ -83,19 +98,6 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             }
         }
 
-        //public void AddChildObject(ITrakHoundObjectEntity parentObject)
-        //{
-        //    if (parentObject != null)
-        //    {
-        //        _data.Path = $"{parentObject.Namespace}:{parentObject.Path}/";
-        //        if (_data.ContentType == null) _data.ContentType = TrakHoundObjectContentTypes.Directory;
-        //        _data.DefinitionId = null;
-
-        //        _isEdit = false;
-        //        OpenAddModal();
-        //    }
-        //}
-
         public void EditObject(string objectUuid)
         {
             if (!string.IsNullOrEmpty(objectUuid))
@@ -119,7 +121,6 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                 _isEdit = true;
 
                 _data.Path = $"{obj.Namespace}:{obj.Path}";
-                _data.Name = obj.Path;
                 _data.ContentType = obj.ContentType;
 
                 OpenAddModal();
@@ -152,6 +153,11 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
 
                 _explorerService.BuildTreeItems();
 
+                _data.Path = null;
+                _data.ContentType = TrakHoundObjectContentTypes.Directory;
+                _data.DefinitionId = null;
+                _data.ImportJson = null;
+
                 _modalLoading = false;
                 _modalVisible = false;
                 _explorerService.Update();
@@ -163,6 +169,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             _data.Path = null;
             _data.ContentType = TrakHoundObjectContentTypes.Directory;
             _data.DefinitionId = null;
+            _data.ImportJson = null;
 
             _modalLoading = false;
             _modalVisible = false;
@@ -182,11 +189,6 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                 case AddMode.Json:
 
                     await AddJson();
-                    break;
-
-                case AddMode.Advanced:
-
-                    await AddAdvanced();
                     break;
             }
         }
@@ -237,35 +239,6 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                 _explorerService.AddNotification(NotificationType.Error, "Error Adding Entity", Data.Path);
             }
         }
-
-        private async Task AddAdvanced()
-        {
-            var ns = TrakHoundPath.GetNamespace(Data.Path);
-            var partialPath = TrakHoundPath.GetPartialPath(Data.Path);
-
-            var publishEntity = new TrakHoundObjectEntity(partialPath, Data.ContentType.ConvertEnum<TrakHoundObjectContentType>(), Data.DefinitionId, ns);
-
-            if (await _explorerService.Client.System.Entities.Objects.Publish(publishEntity, TrakHoundOperationMode.Sync))
-            {
-                var entity = await _explorerService.Client.System.Entities.Objects.ReadByUuid(publishEntity.Uuid);
-                if (entity != null)
-                {
-                    await _explorerService.AddObject(entity);
-                    _explorerService.SelectObject(entity.Uuid);
-
-                    _explorerService.AddNotification(NotificationType.Information, "Object Added Successfully", entity.GetAbsolutePath());
-                }
-                else
-                {
-                    _explorerService.AddNotification(NotificationType.Error, "Error Reading Entity", entity.Uuid);
-                }
-            }
-            else
-            {
-                _explorerService.AddNotification(NotificationType.Error, "Error Adding Entity");
-            }
-        }
-
 
         private async Task Edit()
         {
