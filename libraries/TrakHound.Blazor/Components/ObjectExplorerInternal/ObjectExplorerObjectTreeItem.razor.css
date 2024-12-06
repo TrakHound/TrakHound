@@ -159,7 +159,7 @@
     .value-container.recent {
         background: rgba(255, 255, 255, 0.04);
         background: rgba(40, 112, 189, 0.1);
-        background: rgba(0, 170, 255, 0.075);
+/*        background: rgba(0, 170, 255, 0.075);*/
         border-right: 5px solid var(--accentLight);
     }
 
@@ -180,7 +180,7 @@
 .object-tree-item:hover .value-container {
     background: rgba(255, 255, 255, 0.1);
     background: rgba(40, 112, 189, 0.2);
-    background: rgba(0, 170, 255, 0.2);
+/*    background: rgba(0, 170, 255, 0.2);*/
 }
 
 .object-tree-item.selected .header-container .icon-container,

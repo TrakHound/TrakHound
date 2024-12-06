@@ -32,7 +32,7 @@
         var valueClass = TreeItem.RecentValue ? "recent" : "";
         var headerColumnSpan = TreeItem.ContentType == TrakHoundObjectContentType.Directory ? 2 : 1;
 
-        <tr class="object-tree-item @treeItemClass" @oncontextmenu="ToggleContextMenu" @oncontextmenu:preventDefault="true">
+        <tr class="object-tree-item @treeItemClass" @oncontextmenu="ToggleContextMenu" @oncontextmenu:preventDefault="true" @ondragstart="DragStart" draggable="true">
             <td class="header-cell" colspan="@headerColumnSpan">
                 <div class="header-container">
                     <div class="depth-container">
@@ -300,10 +300,18 @@
         }
     }
 
-    // private async void ItemExpanded(string uuid)
-    // {
-    //     await Expanded.InvokeAsync(uuid);
-    // }
+    private void DragStart(DragEventArgs args)
+    {
+        if (TreeItem != null)
+        {
+            ObjectExplorerService.SetDragData("ObjectPath", TrakHoundPath.SetNamespace(TreeItem.Namespace, TreeItem.Path));
+
+            var dataTransfer = new DataTransfer();
+            dataTransfer.DropEffect = "link";
+            args.DataTransfer = dataTransfer;
+        }
+    }
+
 
     private async void ItemAllExpanded(string uuid)
     {

@@ -33,7 +33,7 @@
 
                 </div>
                 <div class="input-panel-input">
-                    <TextBox @bind-Value="@targetPath" PlaceHolder="Target Path.." Enabled="@(!publishLoading)" />
+                    <TextBox @bind-Value="@targetPath" PlaceHolder="Target Path.." Enabled="@(!publishLoading)" OnDrop="OnTargetDrop" />
                 </div>
             </div>
         </div>
@@ -184,6 +184,21 @@
                 ObjectExplorerService.AddNotification(NotificationType.Error, "Error Deleting Reference");
             }
         }
+    }
+
+    private async void OnTargetDrop(DragEventArgs args)
+    {
+        var dragData = ObjectExplorerService.GetDragData();
+        if (dragData != null)
+        {
+            switch (dragData.ContentType)
+            {
+                case "ObjectUuid": targetPath = $"uuid={dragData.Content}"; break;
+                case "ObjectPath": targetPath = dragData.Content; break;
+            }
+        }
+
+        await InvokeAsync(StateHasChanged);
     }
 
 }

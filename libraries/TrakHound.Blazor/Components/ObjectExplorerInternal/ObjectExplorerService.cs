@@ -56,6 +56,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         private IEnumerable<string> _filteredTargetUuids;
         private ITrakHoundObjectEntity _selectedObject;
         private string _clipboardId;
+        private DragData _dragData;
         private bool _hiddenShown;
 
         private ObjectExplorerTreeItemModel[] _treeItems;
@@ -68,6 +69,12 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             public ITrakHoundEntity Entity { get; set; }
             public string Value { get; set; }
             public long Timestamp { get; set; }
+        }
+
+        public class DragData
+        {
+            public string ContentType { get; set; }
+            public string Content { get; set; }
         }
 
 
@@ -194,6 +201,21 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         {
             return _client;
         }
+
+
+        public void SetDragData(string contentType, string content)
+        {
+            var data = new DragData();
+            data.ContentType = contentType;
+            data.Content = content;
+            _dragData = data;
+        }
+
+        public DragData GetDragData()
+        {
+            return _dragData;
+        }
+
 
         public IEnumerable<ITrakHoundObjectEntity> GetChildObjects(string parentUuid)
         {

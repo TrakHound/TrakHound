@@ -30,6 +30,7 @@
                            @bind-value:event="oninput"
                            @onfocusout="FocusLost"
                            @onkeypress="(o) => ValueSubmitted(o)"
+                           @ondrop="OnDrop"
                            spellcheck="@SpellCheck"
                            autocomplete="off" placeholder="@PlaceHolder">
                 }
@@ -58,6 +59,7 @@
                            @onfocusout="FocusLost"
                            @onclick="ValueClicked"
                            @onkeypress="(o) => ValueSubmitted(o)"
+                           @ondrop="OnDrop"
                            spellcheck="@SpellCheck"
                            autocomplete="off" placeholder="@PlaceHolder">
                     @if (!string.IsNullOrEmpty(Message))
@@ -79,6 +81,7 @@
                                    @bind-value:event="oninput"
                                    @onfocusout="FocusLost"
                                    @onkeypress="(o) => ValueSubmitted(o)"
+                                   @ondrop="OnDrop"
                                    spellcheck="@SpellCheck"
                                    autocomplete="off" placeholder="@PlaceHolder">
                         </div>
@@ -113,6 +116,8 @@
                        @bind-value:event="oninput"
                        @onfocusout="FocusLost"
                        @onkeypress="(o) => ValueSubmitted(o)"
+                       @ondrop="OnDrop"
+                       ondragover="event.preventDefault();"
                        spellcheck="@SpellCheck"
                        autocomplete="off" placeholder="@PlaceHolder">
             }
@@ -185,6 +190,9 @@
 
     [Parameter]
     public EventCallback<string> Submitted { get; set; }
+
+    [Parameter]
+    public EventCallback<DragEventArgs> OnDrop { get; set; }
 
     [Parameter]
     public string Message { get; set; }

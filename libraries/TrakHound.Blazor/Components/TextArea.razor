@@ -31,6 +31,8 @@
                               @bind-value:event="oninput"
                               @onfocusout="FocusLost"
                               @onkeypress="(o) => ValueSubmitted(o)"
+                              @ondrop="OnDrop"
+                              ondragover="event.preventDefault();"
                               maxlength="@MaxLength"
                               autocomplete="off" spellcheck="@SpellCheck" placeholder="@PlaceHolder"></textarea>
                 }
@@ -61,6 +63,8 @@
                               @onfocusout="FocusLost"
                               @onclick="ValueClicked"
                               @onkeypress="(o) => ValueSubmitted(o)"
+                              @ondrop="OnDrop"
+                              ondragover="event.preventDefault();"
                               maxlength="@MaxLength"
                               autocomplete="off" spellcheck="@SpellCheck" placeholder="@PlaceHolder"></textarea>
                     @if (!string.IsNullOrEmpty(Message))
@@ -83,6 +87,8 @@
                                       @bind-value:event="oninput"
                                       @onfocusout="FocusLost"
                                       @onkeypress="(o) => ValueSubmitted(o)"
+                                      @ondrop="OnDrop"
+                                      ondragover="event.preventDefault();"
                                       maxlength="@MaxLength"
                                       autocomplete="off" spellcheck="@SpellCheck" placeholder="@PlaceHolder"></textarea>
                         </div>
@@ -118,6 +124,8 @@
                           @bind-value:event="oninput"
                           @onfocusout="FocusLost"
                           @onkeypress="(o) => ValueSubmitted(o)"
+                          @ondrop="OnDrop"
+                          ondragover="event.preventDefault();"
                           maxlength="@MaxLength"
                           autocomplete="off" spellcheck="@SpellCheck" placeholder="@PlaceHolder"></textarea>
             }
@@ -194,6 +202,9 @@
 
     [Parameter]
     public EventCallback<string> Submitted { get; set; }
+
+    [Parameter]
+    public EventCallback<DragEventArgs> OnDrop { get; set; }
 
     [Parameter]
     public int Rows { get; set; } = 0;

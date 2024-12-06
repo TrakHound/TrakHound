@@ -31,7 +31,7 @@
                     <TextBox @bind-Value="@memberPath" PlaceHolder="Member Path.." Enabled="@(!publishLoading)" />
                 </div>
                 <div class="input-panel-input">
-                    <RadzenNumeric @bind-Value="@index" Placeholder="Index" Disabled="@publishLoading" />
+                    <RadzenNumeric @bind-Value="@index" Placeholder="Index" Disabled="@publishLoading" OnDrop="OnTargetDrop" />
                 </div>
             </div>
         </div>
@@ -216,6 +216,21 @@
     {
         var query = $"select >> from [{path}]";
         return ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(query) : null;
+    }
+
+    private async void OnTargetDrop(DragEventArgs args)
+    {
+        var dragData = ObjectExplorerService.GetDragData();
+        if (dragData != null)
+        {
+            switch (dragData.ContentType)
+            {
+                case "ObjectUuid": memberPath = $"uuid={dragData.Content}"; break;
+                case "ObjectPath": memberPath = dragData.Content; break;
+            }
+        }
+
+        await InvokeAsync(StateHasChanged);
     }
 
 }

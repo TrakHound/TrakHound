@@ -35,7 +35,7 @@
 
                 </div>
                 <div class="input-panel-input">
-                    <TextBox @bind-Value="@memberPath" PlaceHolder="Member Path.." Enabled="@(!publishLoading)" />
+                    <TextBox @bind-Value="@memberPath" PlaceHolder="Member Path.." Enabled="@(!publishLoading)" OnDrop="OnTargetDrop" />
                 </div>
             </div>
         </div>
@@ -404,6 +404,21 @@
     {
         var query = $"select >> from [{path}]";
         return ObjectExplorerService.ObjectsQueryLinkFunction != null ? ObjectExplorerService.ObjectsQueryLinkFunction(query) : null;
+    }
+
+    private async void OnTargetDrop(DragEventArgs args)
+    {
+        var dragData = ObjectExplorerService.GetDragData();
+        if (dragData != null)
+        {
+            switch (dragData.ContentType)
+            {
+                case "ObjectUuid": memberPath = $"uuid={dragData.Content}"; break;
+                case "ObjectPath": memberPath = dragData.Content; break;
+            }
+        }
+
+        await InvokeAsync(StateHasChanged);
     }
 
 }
