@@ -201,9 +201,6 @@ namespace TrakHound
                             if (querySegment == PathSeparator)
                             {
                                 targetUuids = new string[] { null }; // No Parent (Root)
-                                //var uuids = await client.Objects.QueryRootUuids(skip, take, sortOrder);
-                                //if (i == m - 1) results.AddRange(targetUuids);
-
                                 parentLevel = 0;
                             }
                             else if (querySegment == Wildcard)
@@ -414,7 +411,7 @@ namespace TrakHound
                         if (queryRequest.Type == TrakHoundObjectQueryRequestType.DefinitionUuid)
                         {
                             var definitionType = FormatSegment(segment);
-                            var definitionUuids = (await client.Definitions.QueryIdsByType(definitionType, 0, 0))?.Select(o => o.Uuid);
+                            var definitionUuids = (await client.Definitions.Query(definitionType, 0, 0))?.Select(o => o.Uuid);
                             if (!definitionUuids.IsNullOrEmpty())
                             {
                                 var queryDefinitionUuids = new List<string>();
