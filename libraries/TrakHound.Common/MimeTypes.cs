@@ -744,14 +744,20 @@ namespace TrakHound
 
         public static bool IsText(string mimeType)
         {
-            if (mimeType == "text/plain") return true;
-            if (mimeType == "text/csv") return true;
-            if (mimeType == "text/xml") return true;
-            if (mimeType == "text/html") return true;
-            if (mimeType == "application/xml") return true;
-            if (mimeType == "application/json") return true;
+            if (mimeType != null)
+            {
+                if (mimeType.StartsWith("text/")) return true;
+                //if (mimeType == "text/plain") return true;
+                //if (mimeType == "text/csv") return true;
+                //if (mimeType == "text/xml") return true;
+                //if (mimeType == "text/html") return true;
+                if (mimeType == "application/xml") return true;
+                if (mimeType == "application/json") return true;
+                if (mimeType == "application/yaml") return true;
+                if (mimeType == "application/x-yaml") return true;
 
-            // Probably More...
+                // Probably More...
+            }
 
             return false;
         }
