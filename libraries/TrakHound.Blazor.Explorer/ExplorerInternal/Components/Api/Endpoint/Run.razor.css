@@ -135,6 +135,8 @@ td {
         background: var(--inputPrimaryBackground) !important;
         margin-top: 2px;
         margin-bottom: 0;
+        padding: 5px 10px !important;
+        color: var(--inputPrimaryText) !important;
     }
 
         .value-cell ::deep .rz-textarea:focus {

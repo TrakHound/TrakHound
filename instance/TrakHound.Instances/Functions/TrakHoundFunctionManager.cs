@@ -19,7 +19,7 @@ namespace TrakHound.Functions
     public class TrakHoundFunctionManager : IDisposable
     {
         private const string _packageCategory = "function";
-        private const string _instancesBasePath = "/.Instances";
+        private const string _instancesBasePath = "TrakHound:/.Instances";
         private const string _functionsBasePath = "Functions";
         private const string _logsPath = "Logs";
 

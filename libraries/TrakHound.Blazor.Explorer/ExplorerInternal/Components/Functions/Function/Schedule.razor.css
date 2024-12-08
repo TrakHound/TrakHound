@@ -55,7 +55,7 @@
         height: 22px;
     }
 
-    .table-panel ::deep .rz-switch-circle {
+/*    .table-panel ::deep .rz-switch-circle {
         background: var(--panelBackgroundLight);
     }
 
@@ -69,7 +69,7 @@
 
     .table-panel ::deep .rz-switch-checked .rz-switch-circle::before {
         background: var(--colorGreen);
-    }
+    }*/
 
     .table-panel ::deep .rz-switch-checked .rz-switch-circle:hover:not(.rz-disabled):before {
         box-shadow: none;

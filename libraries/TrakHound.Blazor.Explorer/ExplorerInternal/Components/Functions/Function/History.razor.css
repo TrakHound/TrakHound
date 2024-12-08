@@ -8,27 +8,24 @@
 .header-panel {
     grid-row: 1;
     padding: 0px 10px 15px;
-    border-bottom: 1px solid #eee;
     border-bottom: 1px solid var(--borderColorLight);
 }
 
     .header-panel .icon {
         font-size: 16px;
-        color: #aaa;
+        color: var(--textMild);
         margin-right: 5px;
     }
 
     .header-panel .title {
         font-size: 14px;
         font-weight: bold;
-        color: #333;
         color: var(--textDark);
         margin-right: 10px;
     }
 
     .header-panel .subtitle {
         font-size: 12px;
-        color: #888;
         color: var(--textMild);
     }
 
@@ -60,7 +57,6 @@
 
 .toolbar-panel label {
     font-size: 14px;
-    color: #888;
     color: var(--textMild);
     line-height: 40px;
     margin-right: 10px;
@@ -81,9 +77,9 @@
         padding: 0;
     }
 
-    .table-panel ::deep tr:last-child td {
+/*    .table-panel ::deep tr:last-child td {
         border-bottom: 1px solid #ddd;
-    }
+    }*/
 
         .table-panel ::deep td .rz-cell-data {
             padding: 3px 10px;
@@ -93,7 +89,7 @@
         .table-panel ::deep td.id .rz-cell-data {
             font-size: 11px;
             font-family: Consolas;
-            color: #888;
+            color: var(--textMild);
         }
 
         .table-panel ::deep td.status .rz-cell-data {
@@ -121,7 +117,7 @@
             }
 
             .table-panel ::deep td.status .rz-cell-data .completed {
-                color: var(--accent);
+                color: var(--accentLight);
             }
 
             .table-panel ::deep td.status .rz-cell-data .error {
@@ -145,18 +141,18 @@
 
     .loading-panel .icon {
         display: block;
-        font-size: 36px;
-        color: #ddd;
+        font-size: 28px;
+        color: var(--textLight);
         margin: 0;
-        height: 36px;
+        height: 28px;
         text-align: center;
     }
 
     .loading-panel .message {
         display: block;
-        font-size: 16px;
+        font-size: 13px;
         font-weight: bold;
-        color: #888;
+        color: var(--textMild);
         margin-top: 20px;
         text-align: center;
     }
@@ -168,7 +164,6 @@
     grid-template-columns: 1fr max-content 1fr;
     height: 100%;
     overflow: hidden;
-    border: 1px solid #eee;
     border: 1px solid var(--borderColorLight);
 }
 
