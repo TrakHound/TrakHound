@@ -7,9 +7,9 @@ using TrakHound.Memory;
 
 namespace TrakHound.Drivers.Memory
 {
-    public class ObjectDriver : MemoryEntityDriver<ITrakHoundObjectEntity>,
-        IObjectQueryDriver,
-        IObjectQueryStoreDriver
+    public class ObjectDriver : MemoryEntityDriver<ITrakHoundObjectEntity>
+        //IObjectQueryDriver,
+        //IObjectQueryStoreDriver
     {
         private readonly ListDictionary<string, string> _parentChildren = new ListDictionary<string, string>(); // ParentUuid => ChildUuids
         private readonly ListDictionary<string, string> _rootChildren = new ListDictionary<string, string>(); // RootUuid => ChildUuids
