@@ -72,7 +72,8 @@ namespace TrakHound.Entities.Filters
 
         public void SetOnChange(bool filterOnChange)
         {
-            if (filterOnChange) _changeFilter = new TrakHoundEntityOnChangeFilter($"{_id}.on-change");
+            if (filterOnChange) _changeFilter = new TrakHoundEntityOnChangeFilter();
+            //if (filterOnChange) _changeFilter = new TrakHoundEntityOnChangeFilter($"{_id}.on-change");
             else _changeFilter = null;
         }
 

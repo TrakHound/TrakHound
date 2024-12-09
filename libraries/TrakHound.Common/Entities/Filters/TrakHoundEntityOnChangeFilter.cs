@@ -1,59 +1,10 @@
 // Copyright (c) 2024 TrakHound Inc., All Rights Reserved.
 // TrakHound Inc. licenses this file to you under the MIT license.
 
-using System.Collections.Generic;
-using System.Text;
-
 namespace TrakHound.Entities.Filters
 {
-    public class TrakHoundEntityOnChangeFilter
+    public class TrakHoundEntityOnChangeFilter : TrakHoundOnChangeFilter
     {
-        private readonly string _id;
-        private readonly Dictionary<string, string> _values;
-        //private readonly PersistentDictionary<string, string> _values;
-        private readonly object _lock = new object();
-
-
-        public TrakHoundEntityOnChangeFilter(string id)
-        {
-            _id = id;
-            _values = new Dictionary<string, string>();
-            //_values = new PersistentDictionary<string, string>(id);
-            //_values.Recover();
-        }
-
-
-        public bool Filter(string uuid, string value)
-        {
-            if (!string.IsNullOrEmpty(uuid))
-            {
-                lock (_lock)
-                {
-                    var update = false;
-
-                    //var existing = _values.Get(uuid);
-                    var existing = _values.GetValueOrDefault(uuid);
-                    if (existing != null)
-                    {
-                        update = existing != value;
-                    }
-                    else
-                    {
-                        update = true;
-                    }
-
-                    if (update)
-                    {
-                        if (existing != null) _values.Remove(uuid);
-                        _values.Add(uuid, value);
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
         public bool Filter(ITrakHoundEntity entity)
         {
             if (entity != null)
@@ -90,7 +41,6 @@ namespace TrakHound.Entities.Filters
                             case TrakHoundObjectsEntityClassId.Boolean: return Filter((ITrakHoundObjectBooleanEntity)entity);
                             case TrakHoundObjectsEntityClassId.Duration: return Filter((ITrakHoundObjectDurationEntity)entity);
                             case TrakHoundObjectsEntityClassId.Event: return Filter((ITrakHoundObjectEventEntity)entity);
-                            //case TrakHoundObjectsEntityClassId.Feed: return Filter((ITrakHoundObjectFeedEntity)entity);
                             case TrakHoundObjectsEntityClassId.Group: return Filter((ITrakHoundObjectGroupEntity)entity);
                             case TrakHoundObjectsEntityClassId.Hash: return Filter((ITrakHoundObjectHashEntity)entity);
                             case TrakHoundObjectsEntityClassId.Log: return true;
@@ -212,16 +162,6 @@ namespace TrakHound.Entities.Filters
             return false;
         }
 
-        //public bool Filter(ITrakHoundObjectFeedEntity entity)
-        //{
-        //    if (entity != null)
-        //    {
-        //        return Filter(CreateKey("Object.Feed", entity.ObjectUuid), CreateKey(entity.Message, entity.Timestamp.ToString()));
-        //    }
-
-        //    return false;
-        //}
-
         public bool Filter(ITrakHoundObjectGroupEntity entity)
         {
             if (entity != null)
@@ -241,16 +181,6 @@ namespace TrakHound.Entities.Filters
 
             return false;
         }
-
-        //public bool Filter(ITrakHoundObjectLinkEntity entity)
-        //{
-        //    if (entity != null)
-        //    {
-        //        return Filter(CreateKey("Object.Link", entity.ObjectUuid), entity.Address);
-        //    }
-
-        //    return false;
-        //}
 
         public bool Filter(ITrakHoundObjectMetadataEntity entity)
         {
@@ -382,16 +312,6 @@ namespace TrakHound.Entities.Filters
             return false;
         }
 
-        //public bool Filter(ITrakHoundObjectWikiEntity entity)
-        //{
-        //    if (entity != null)
-        //    {
-        //        return Filter(CreateKey("Object.Wiki", entity.ObjectUuid, entity.Section), entity.Text);
-        //    }
-
-        //    return false;
-        //}
-
 
         public bool Filter(ITrakHoundSourceEntity entity)
         {
@@ -411,30 +331,6 @@ namespace TrakHound.Entities.Filters
             }
 
             return false;
-        }
-
-
-
-        private static string CreateKey(params string[] parts)
-        {
-            if (parts != null)
-            {
-                var builder = new StringBuilder();
-                for (var i = 0; i < parts.Length; i++)
-                {
-                    builder.Append(parts[i]);
-                    if (i < parts.Length - 1) builder.Append(':');
-                }
-                return builder.ToString();
-            }
-
-            return null;
-        }
-
-
-        public void Clear()
-        {
-            //lock (_lock) _values.Clear();
         }
     }
 }
