@@ -24,7 +24,7 @@ namespace TrakHound.Clients
         public TrakHoundOnChangeMiddleware(string id = _defaultId)
         {
             _id = id;
-            _filter = new TrakHoundEntityOnChangeFilter(id);
+            _filter = new TrakHoundEntityOnChangeFilter();
         }
 
 
