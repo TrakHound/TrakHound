@@ -496,6 +496,27 @@ textarea,
 }
 
 
+.rz-switch .rz-switch-circle {
+    background: var(--textVeryLight);
+}
+
+.rz-switch.rz-switch-checked .rz-switch-circle {
+    background: var(--accentVeryLight);
+}
+
+.rz-switch .rz-switch-circle::before {
+    background: var(--textLight);
+}
+
+.rz-switch.rz-switch-checked .rz-switch-circle::before {
+    background: var(--accent);
+}
+
+.rz-switch.rz-switch-checked .rz-switch-circle:hover:not(.rz-disabled):before {
+    box-shadow: none;
+}
+
+
 .rz-menu {
     background: #fff !important;
     color: var(--accent);
