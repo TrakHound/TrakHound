@@ -15,7 +15,7 @@
 
 .input-panel-container {
     display: grid;
-    grid-template-columns: max-content 180px 180px 1fr max-content;
+    grid-template-columns: max-content 200px 200px 1fr max-content;
     grid-column-gap: 10px;
 }
 
@@ -66,7 +66,7 @@
 }
 
 .input-panel-type ::deep .rz-dropdown {
-    width: 125px;
+    width: 120px;
     height: 44px !important;
     font-size: 14px;
     line-height: 30px;
@@ -77,23 +77,22 @@
     height: 44px !important;
 }
 
-.input-panel-time-range ::deep .rz-calendar input {
-    font-size: 14px !important;
-    padding: 0 10px 0 15px;
-    height: 44px !important;
-    line-height: 44px;
-    width: 210px;
-    border-radius: 2px;
-}
+    .input-panel-time-range ::deep .rz-datepicker input {
+        font-size: 13px !important;
+        padding: 0px 10px 0px 15px;
+        height: 44px !important;
+        width: 200px;
+        line-height: 48px;
+    }
 
-.input-panel-time-range ::deep .rz-calendar-button .rz-button-icon-left {
+/*.input-panel-time-range ::deep .rz-calendar-button .rz-button-icon-left {
     color: var(--accent);
     font-size: 20px;
 }
 
 .input-panel-time-range ::deep .rz-calendar-button:hover .rz-button-icon-left {
     color: var(--accentLight);
-}
+}*/
 
 
 .query-panel {
