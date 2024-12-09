@@ -239,35 +239,29 @@ namespace TrakHound.Instance.Security
                 {
                     TrakHoundApiEndpointInformation endpointInformation = null;
 
-                    if (TrakHoundHttpApiController.IsQueryRequest(method, requestedRoute))
+                    if (TrakHoundHttpApiController.IsQueryRequest(httpContext.Request, requestedRoute))
                     {
-                        //Console.WriteLine($"API Query Resource Requested : Route = {requestedRoute}");
                         endpointInformation = instance.ApiProvider.GetEndpointInformation("Query", requestedRoute);
                     }
-                    else if (TrakHoundHttpApiController.IsSubscribeRequest(method, requestedRoute))
+                    else if (TrakHoundHttpApiController.IsSubscribeRequest(httpContext.Request, requestedRoute))
                     {
                         var subsribeRoute = Url.RemoveLastFragment(requestedRoute); // remove 'subscribe' suffix
-                        //Console.WriteLine($"API Subscribe Resource Requested : Route = {subsribeRoute}");
                         endpointInformation = instance.ApiProvider.GetEndpointInformation("Subscribe", requestedRoute);
                     }
-                    else if (TrakHoundHttpApiController.IsPublishRequest(method, requestedRoute))
+                    else if (TrakHoundHttpApiController.IsPublishRequest(httpContext.Request, requestedRoute))
                     {
                         var publishRoute = Url.RemoveLastFragment(requestedRoute); // remove 'publish' suffix
-                        //Console.WriteLine($"API Publish Resource Requested : Route = {publishRoute}");
                         endpointInformation = instance.ApiProvider.GetEndpointInformation("Publish", publishRoute);
                     }
-                    else if (TrakHoundHttpApiController.IsDeleteRequest(method, requestedRoute))
+                    else if (TrakHoundHttpApiController.IsDeleteRequest(httpContext.Request, requestedRoute))
                     {
                         var deleteRoute = requestedRoute.EndsWith(TrakHoundHttpApiController.DeleteSuffix) ? Url.RemoveLastFragment(requestedRoute) : requestedRoute; // remove 'delete' suffix
-                        //Console.WriteLine($"API Delete Resource Requested : Route = {deleteRoute}");
                         endpointInformation = instance.ApiProvider.GetEndpointInformation("Delete", deleteRoute);
                     }
 
                     if (endpointInformation != null)
                     {
                         var resourceId = $"api:{endpointInformation.Api.Id}:{endpointInformation.Controller.Id}:{endpointInformation.Id}";
-
-                        //Console.WriteLine($"API Endpoint Resource Requested : ID = {resourceId}");
 
                         return resourceId;
                     }

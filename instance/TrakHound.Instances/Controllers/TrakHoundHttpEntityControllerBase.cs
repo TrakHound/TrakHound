@@ -184,7 +184,7 @@ namespace TrakHound.Http
         }
 
 
-        [HttpGet("subscribe")]
+        [Route("subscribe")]
         public async Task BaseSubscribe(
             [FromQuery] int interval = 0,
             [FromQuery] int take = 0,
@@ -269,6 +269,52 @@ namespace TrakHound.Http
             }
 
             return BadRequest();
+        }
+
+        [Route("publish")]
+        public async Task PublishStream(
+            [FromQuery] string routerId = null,
+            [FromQuery] string consumerId = null
+            )
+        {
+            if (Request.HttpContext.WebSockets.IsWebSocketRequest)
+            {
+                var client = GetClient(routerId);
+                if (client != null)
+                {
+                    var consumer = new TrakHoundConsumer<IEnumerable<TEntity>>(consumerId);
+                    consumer.Received += async (o, e) =>
+                    {
+                        await client.System.Entities.GetEntityClient<TEntity>().Publish(e);
+                    };
+
+                    var formatResponse = (byte[] responseBytes) =>
+                    {
+                        var json = StringFunctions.GetUtf8String(responseBytes);
+                        if (!string.IsNullOrEmpty(json))
+                        {
+                            var jsonLines = json.Split("\r\n");
+                            if (!jsonLines.IsNullOrEmpty())
+                            {
+                                var entities = new List<TEntity>();
+                                foreach (var line in jsonLines)
+                                {
+                                    var entity = TrakHoundEntity.FromJson<TEntity>(line);
+                                    if (entity != null)
+                                    {
+                                        entities.Add(entity);
+                                    }
+                                }
+                                return entities;
+                            }
+                        }
+
+                        return null;
+                    };
+
+                    await _webSocketManager.CreateClient<IEnumerable<TEntity>>(HttpContext, consumer, formatResponse);
+                }
+            }
         }
 
 

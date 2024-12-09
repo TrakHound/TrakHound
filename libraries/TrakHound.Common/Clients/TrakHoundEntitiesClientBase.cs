@@ -446,7 +446,18 @@ namespace TrakHound.Clients
                     if (!setObjs.IsNullOrEmpty()) tasks.Add(GetEntities(entitiesClient.Objects.Set.QueryByObjectUuid(setObjs?.Select(o => o.Uuid))));
 
                     var stateObjs = contentTypeDictionary.Get(TrakHoundObjectContentType.State);
-                    if (!stateObjs.IsNullOrEmpty()) tasks.Add(GetEntities(entitiesClient.Objects.State.LatestByObjectUuid(stateObjs?.Select(o => o.Uuid))));
+                    if (!stateObjs.IsNullOrEmpty())
+                    {
+                        var stateEntities = await entitiesClient.Objects.State.LatestByObjectUuid(stateObjs?.Select(o => o.Uuid));
+                        if (!stateEntities.IsNullOrEmpty())
+                        {
+                            var stateDefinitionUuids = stateEntities.Select(o => o.DefinitionUuid).Distinct();
+                            var stateDefinitions = await entitiesClient.Definitions.ReadByUuid(stateDefinitionUuids);
+                            collection.Add(stateObjs, false);
+                            collection.Add(stateEntities, false);
+                            collection.Add(stateDefinitions, false);
+                        }
+                    }
 
                     //var statisticObjs = fObjs.Where(o => o.ContentType == TrakHoundObjectContentType.Statistic.ToString());
                     //if (!statisticObjs.IsNullOrEmpty()) collection.Add(await entitiesClient.Objects.Statistics.LatestByObjectUuid(statisticObjs?.Select(o => o.Uuid), 0, long.MaxValue), false);

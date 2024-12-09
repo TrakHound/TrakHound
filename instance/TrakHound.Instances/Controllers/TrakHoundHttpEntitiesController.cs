@@ -244,5 +244,45 @@ namespace TrakHound.Http
 
             return BadRequest();
         }
+
+        [Route("publish")]
+        public async Task PublishStream(
+            [FromQuery] string routerId = null,
+            [FromQuery] string consumerId = null
+            )
+        {
+            if (Request.HttpContext.WebSockets.IsWebSocketRequest)
+            {
+                var client = _server.ClientProvider.GetClient();
+                if (client != null)
+                {
+                    var consumer = new TrakHoundConsumer<TrakHoundEntityCollection>(consumerId);
+                    consumer.Received += async (o, collection) =>
+                    {
+                        var entities = collection.GetEntities();
+                        if (!entities.IsNullOrEmpty())
+                        {
+                            await client.System.Entities.Publish(entities);
+                        }
+                    };
+
+                    var formatResponse = (byte[] responseBytes) =>
+                    {
+                        var json = StringFunctions.GetUtf8String(responseBytes);
+                        if (!string.IsNullOrEmpty(json))
+                        {
+                            var jsonCollection = Json.Convert<TrakHoundJsonEntityCollection>(json);
+                            if (jsonCollection != null)
+                            {
+                                return jsonCollection.ToCollection();
+                            }
+                        }
+                        return null;
+                    };
+
+                    await _webSocketManager.CreateClient<TrakHoundEntityCollection>(HttpContext, consumer, formatResponse);
+                }
+            }
+        }
     }
 }

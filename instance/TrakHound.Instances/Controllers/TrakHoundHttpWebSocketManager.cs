@@ -220,6 +220,95 @@ namespace TrakHound.Http
         }
 
 
+        public async Task CreateClient<T>(HttpContext httpContext, TrakHoundConsumer<T> consumer, Func<byte[], T> formatResponse)
+        {
+            if (httpContext.WebSockets.IsWebSocketRequest)
+            {
+                _logger.LogDebug($"WebSocket Client Request Received : {httpContext.Connection.RemoteIpAddress} : {httpContext.Request.Path}{httpContext.Request.QueryString}");
+
+
+                // Set Status Code to Successful
+                httpContext.Response.StatusCode = StatusCodes.Status200OK;
+
+                // Get Accept-Encodings Header (for response compression)
+                var acceptEncodings = httpContext.Request.Headers.AcceptEncoding.Select(o => o);
+
+                // Open WebSocket Client
+                using (var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync())
+                {
+                    _logger.LogDebug($"WebSocket Client Connected : {httpContext.Connection.RemoteIpAddress} : {httpContext.Request.Path}{httpContext.Request.QueryString}");
+
+                    if (consumer != null && !string.IsNullOrEmpty(consumer.Id))
+                    {
+                        // Add WebSocket
+                        lock (_lock) _webSockets.Add(consumer.Id, webSocket);
+
+
+                        try
+                        {
+                            var initialBufferSize = 1024;
+                            byte[] responseBuffer = new byte[initialBufferSize];
+                            var bufferOffset = 0;
+                            var dataPerPacket = 256;
+
+                            WebSocketReceiveResult result = null;
+
+                            do
+                            {
+                                bufferOffset = 0;
+                                Array.Resize(ref responseBuffer, initialBufferSize);
+
+                                do
+                                {
+                                    var bytesReceived = new ArraySegment<byte>(responseBuffer, bufferOffset, dataPerPacket);
+                                    result = await webSocket.ReceiveAsync(bytesReceived, CancellationToken.None);
+                                    bufferOffset += result.Count;
+
+                                    if (result.EndOfMessage)
+                                    {
+                                        Array.Resize(ref responseBuffer, bufferOffset);
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        // Resize the response array if the next message won't fit in the buffer
+                                        if (bufferOffset >= responseBuffer.Length - dataPerPacket)
+                                        {
+                                            Array.Resize(ref responseBuffer, responseBuffer.Length + dataPerPacket);
+                                        }
+                                    }
+                                } while (!result.CloseStatus.HasValue) ;
+
+                                    var response = HandleResponse(responseBuffer, formatResponse, acceptEncodings);
+                                if (response != null)
+                                {
+                                    consumer.Push(response);
+                                }
+
+                            } while (!result.CloseStatus.HasValue);
+                        }
+                        catch { }
+                        finally
+                        {
+                            lock (_lock) _webSockets.Remove(consumer.Id);
+                            consumer.Dispose();
+                        }
+                    }
+                    else
+                    {
+                        httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+                    }
+
+                    _logger.LogDebug($"WebSocket Client Disconnected : {httpContext.Connection.RemoteIpAddress} : {httpContext.Request.Path}{httpContext.Request.QueryString}");
+                }
+            }
+            else
+            {
+                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            }
+        }
+
+
         private static async Task HandleResponse<T>(WebSocket webSocket, T message, Func<T, byte[]> formatResponse, IEnumerable<string> acceptEncodings)
         {
             try
@@ -248,6 +337,41 @@ namespace TrakHound.Http
                 }
             }
             catch { }
+        }
+
+        private static T HandleResponse<T>(byte[] responseBytes, Func<byte[], T> formatResponse, IEnumerable<string> acceptEncodings)
+        {
+            if (!responseBytes.IsNullOrEmpty())
+            {
+                try
+                {
+                    if (acceptEncodings != null && acceptEncodings.Contains("gzip"))
+                    {
+                        using (var inputStream = new MemoryStream(responseBytes))
+                        using (var outputStream = new MemoryStream())
+                        using (var gzipStream = new GZipStream(inputStream, CompressionMode.Decompress))
+                        {
+                            gzipStream.CopyTo(outputStream);
+
+                            var bytes = outputStream.ToArray();
+                            if (!bytes.IsNullOrEmpty())
+                            {
+                                return formatResponse(bytes);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (!responseBytes.IsNullOrEmpty())
+                        {
+                            return formatResponse(responseBytes);
+                        }
+                    }
+                }
+                catch { }
+            }
+
+            return default;
         }
     }
 }

@@ -16,7 +16,6 @@ using TrakHound.Logging;
 using TrakHound.Modules;
 using TrakHound.Packages;
 using TrakHound.Requests;
-using TrakHound.Services;
 using TrakHound.Volumes;
 
 namespace TrakHound.Api
@@ -935,183 +934,6 @@ namespace TrakHound.Api
             }
         }
 
-
-        //private Task<TrakHoundApiResponse> ProcessRoute(ITrakHoundApiController controller, MethodInfo method, string route, string url, Dictionary<string, string> queryParameters, Stream requestBody, string requestContentType = "application/octet-stream")
-        //{
-        //    var fUrl = url?.TrimStart('/');
-
-        //    if (IsRouteMatch(fUrl, route))
-        //    {
-        //        // Extract the Route Parameters from the URL
-        //        var routeParameters = GetRouteParameters(fUrl, route);
-
-        //        object[] inputParameters = null;
-
-        //        var methodParameters = GetMethodParameters(method);
-        //        if (methodParameters != null && methodParameters.Count > 0)
-        //        {
-        //            inputParameters = new object[methodParameters.Count];
-
-        //            // Route Parameters
-        //            foreach (var parameterEntry in methodParameters.RouteParameters)
-        //            {
-        //                var parameterName = parameterEntry.Key;
-        //                var parameterIndex = parameterEntry.Value.Index;
-        //                var parameter = parameterEntry.Value.Parameter;
-
-        //                object inputParameterValue = null;
-        //                bool set = false;
-
-        //                var routeParameter = routeParameters?.GetValueOrDefault(parameterEntry.Key);
-        //                if (routeParameter != null)
-        //                {
-        //                    inputParameterValue = ChangeType(routeParameter.Value, parameterEntry.Value.Parameter.ParameterType);
-        //                    set = true;
-        //                }
-
-        //                if (set)
-        //                {
-        //                    inputParameters[parameterIndex] = inputParameterValue;
-        //                }
-        //                else
-        //                {
-        //                    if (parameter.HasDefaultValue)
-        //                    {
-        //                        inputParameters[parameterIndex] = parameter.DefaultValue;
-        //                    }
-        //                }
-        //            }
-
-        //            // Query Parameters
-        //            foreach (var parameterEntry in methodParameters.QueryParameters)
-        //            {
-        //                var parameterName = parameterEntry.Key;
-        //                var parameterIndex = parameterEntry.Value.Index;
-        //                var parameter = parameterEntry.Value.Parameter;
-
-        //                object inputParameterValue = null;
-        //                bool set = false;
-
-        //                var queryParameter = queryParameters?.GetValueOrDefault(parameterEntry.Key);
-        //                if (queryParameter != null)
-        //                {
-        //                    inputParameterValue = ChangeType(queryParameter, parameterEntry.Value.Parameter.ParameterType);
-        //                    set = true;
-        //                }
-
-        //                if (set)
-        //                {
-        //                    inputParameters[parameterIndex] = inputParameterValue;
-        //                }
-        //                else
-        //                {
-        //                    if (parameter.HasDefaultValue)
-        //                    {
-        //                        inputParameters[parameterIndex] = parameter.DefaultValue;
-        //                    }
-        //                }
-        //            }
-
-        //            // Body Parameter
-        //            if (methodParameters.BodyParameter != null)
-        //            {
-        //                var parameterIndex = methodParameters.BodyParameter.Index;
-        //                var parameter = methodParameters.BodyParameter.Parameter;
-        //                var parameterAttribute = methodParameters.BodyParameter.Attribute;
-
-        //                object inputParameterValue = null;
-        //                bool set = false;
-
-        //                var contentType = parameterAttribute.ContentType;
-        //                if (string.IsNullOrEmpty(contentType)) contentType = FromBodyAttribute.GetDefaultContentType(parameter.ParameterType);
-
-        //                if (requestBody != null)
-        //                {
-        //                    switch (contentType)
-        //                    {
-        //                        case "application/json":
-
-        //                            try
-        //                            {
-        //                                inputParameterValue = JsonSerializer.Deserialize(requestBody, parameter.ParameterType);
-        //                                set = true;
-        //                            }
-        //                            catch { }
-        //                            break;
-
-        //                        case "text/plain":
-
-        //                            try
-        //                            {
-        //                                byte[] requestBodyBytes = null;
-        //                                using (var readStream = new MemoryStream())
-        //                                {
-        //                                    requestBody.CopyTo(readStream);
-        //                                    readStream.Seek(0, SeekOrigin.Begin);
-        //                                    requestBodyBytes = readStream.ToArray();
-        //                                }
-        //                                inputParameterValue = Convert.ChangeType(System.Text.Encoding.UTF8.GetString(requestBodyBytes), parameter.ParameterType);
-        //                                set = true;
-        //                            }
-        //                            catch { }
-        //                            break;
-
-        //                        case "application/octet-stream":
-
-        //                            // Set Parameter as byte[]
-        //                            if (parameter.ParameterType == typeof(byte[]))
-        //                            {
-        //                                byte[] requestBodyBytes = null;
-        //                                using (var readStream = new MemoryStream())
-        //                                {
-        //                                    requestBody.CopyTo(readStream);
-        //                                    if (readStream.CanSeek) readStream.Seek(0, SeekOrigin.Begin);
-        //                                    requestBodyBytes = readStream.ToArray();
-        //                                }
-        //                                inputParameterValue = requestBodyBytes;
-        //                                set = true;
-        //                            }
-
-        //                            // Set Parameter as Stream
-        //                            if (parameter.ParameterType == typeof(Stream))
-        //                            {
-        //                                if (requestBody.CanSeek) requestBody.Seek(0, SeekOrigin.Begin);
-
-        //                                inputParameterValue = requestBody;
-        //                                set = true;
-        //                            }
-
-        //                            break;
-        //                    }
-        //                }
-
-        //                if (set)
-        //                {
-        //                    inputParameters[parameterIndex] = inputParameterValue;
-        //                }
-        //                else
-        //                {
-        //                    if (parameter.HasDefaultValue)
-        //                    {
-        //                        inputParameters[parameterIndex] = parameter.DefaultValue;
-        //                    }
-        //                }
-        //            }
-        //        }
-
-        //        try
-        //        {
-        //            return (Task<TrakHoundApiResponse>)method.Invoke(controller, inputParameters);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine(ex.Message);
-        //        }
-        //    }
-
-        //    return null;
-        //}
-
         private Task<ITrakHoundConsumer<TrakHoundApiResponse>> ProcessSubscribeRoute(ITrakHoundApiController controller, MethodInfo method, string route, string url, Dictionary<string, string> queryParameters, Stream requestBody, string requestContentType = "application/octet-stream")
         {
             var fUrl = url?.TrimStart('/');
@@ -1422,30 +1244,6 @@ namespace TrakHound.Api
             return null;
         }
 
-        //private IEnumerable<TrakHoundApiControllerInformation> GetControllerInformationByRoute(string route)
-        //{
-        //    lock (_lock)
-        //    {
-        //        if (!string.IsNullOrEmpty(route) && !_routes.IsNullOrEmpty())
-        //        {
-        //            var compareRoute = route.ToLower();
-
-        //            foreach (var routeConfig in _routes)
-        //            {
-        //                if (!string.IsNullOrEmpty(routeConfig.Route))
-        //                {
-        //                    if (compareRoute.StartsWith(routeConfig.Route.ToLower()))
-        //                    {
-        //                        return routeConfig.Controllers;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return null;
-        //}
-
 
         private bool IsRouteMatch(string url, string route)
         {
@@ -1520,61 +1318,12 @@ namespace TrakHound.Api
 
                 var parameterNames = new List<string>();
 
-                //if (urlParts != null && routeParts != null && urlParts.Length == routeParts.Length)
                 if (urlParts != null && routeParts != null)
                 {
                     for (var i = 0; i < urlParts.Length && i < routeParts.Length; i++)
                     {
                         var urlPart = urlParts[i];
                         var routePart = routeParts[i];
-
-                        //if (_routeParameterRegex.IsMatch(routePart))
-                        //{
-                        //    var match = _routeParameterRegex.Match(routePart);
-                        //    if (match != null)
-                        //    {
-                        //        var matchText = match.Groups[1].ToString();
-                        //        var routeParameterName = match.Groups[2].ToString();
-
-                        //        //Url.GetRouteParameter(url, route, routeParameterName);
-
-                        //        parameterNames.Add(routeParameterName);
-                        //    }
-                        //}
-
-                        //// Check for Slug Match
-                        //var slugRegex = new Regex(@"(\{\*(.*?)(?:\:.+)?\})");
-                        //if (slugRegex.IsMatch(routePart))
-                        //{
-                        //    var match = slugRegex.Match(routePart);
-                        //    if (match != null)
-                        //    {
-                        //        var matchText = match.Groups[1].ToString();
-                        //        var routeParameterName = match.Groups[2].ToString();
-
-                        //        if (routeParameterName == parameterName)
-                        //        {
-                        //            var slugParts = new List<string>();
-                        //            for (var j = i; j < urlParts.Length; j++) slugParts.Add(urlParts[j]);
-
-                        //            return string.Join('/', slugParts);
-                        //        }
-                        //    }
-                        //}
-
-                        //// Check for Exact Match
-                        //var exactRegex = new Regex(@"(\{(.*?)(?:\:.+)?\})");
-                        //if (exactRegex.IsMatch(routePart))
-                        //{
-                        //    var match = exactRegex.Match(routePart);
-                        //    if (match != null)
-                        //    {
-                        //        var matchText = match.Groups[1].ToString();
-                        //        var routeParameterName = match.Groups[2].ToString();
-
-                        //        if (routeParameterName == parameterName) return urlPart;
-                        //    }
-                        //}
 
                         if (_routeParameterRegex.IsMatch(routePart))
                         {

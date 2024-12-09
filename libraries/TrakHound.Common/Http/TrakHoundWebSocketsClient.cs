@@ -98,6 +98,24 @@ namespace TrakHound.Http
         }
 
 
+        public async Task<bool> Send(ArraySegment<byte> messageBody)
+        {
+            try
+            {
+                if (_client != null && _client.State == WebSocketState.Open)
+                {
+                    await _client.SendAsync(messageBody, WebSocketMessageType.Binary, true, _stop.Token);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ConnectionError != null) ConnectionError.Invoke(this, ex);
+            }
+
+            return false;
+        }
+
+
 
         private async Task Worker()
         {
