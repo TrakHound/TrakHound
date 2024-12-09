@@ -557,25 +557,12 @@ namespace TrakHound.Buffers
                                 lock (_lock) _fileBufferReadPageSequence = readPageSequence;
                             }
 
-                            if (readPageSequence == writePageSequence)
+                            if (readPageSequence >= writePageSequence)
                             {
-                                pageSize = 0;
-
-                                // Dispose of Read Stream
-                                try
+                                if (CloseWriteStream())
                                 {
-                                    if (readStream != null)
-                                    {
-                                        readStream.Flush();
-                                        readStream.Dispose();
-                                        readStream = null;
-                                        GC.Collect();
-                                    }
+                                    writePageSequence = 0;
                                 }
-                                catch { }
-
-                                readPageSequence = 0;
-                                lock (_lock) _fileBufferReadPageSequence = 0;
                             }
 
                             if (readPageSequence > 0 && (writePageSequence == 0 || readPageSequence < writePageSequence))
@@ -588,7 +575,7 @@ namespace TrakHound.Buffers
                                     readStream = new FileStream(pagePath, FileMode.Open, FileAccess.Read);
                                     pageSize = (int)readStream.Length;
 
-                                    _fileBufferStatus = FileBufferStatus.Active;
+                                    //_fileBufferStatus = FileBufferStatus.Active;
                                 }
                                 else
                                 {
@@ -731,10 +718,10 @@ namespace TrakHound.Buffers
                     writePageSequence = _fileBufferWritePageSequence;
                 }
 
-                if (writePageSequence == 0 || writePageSequence == readPageSequence)
+                if (writePageSequence == 0 || writePageSequence <= readPageSequence)
                 {
                     writePageSequence = _fileBuffer.GetLastPageSequence(_firstPageSequence);
-                    if (writePageSequence == readPageSequence) writePageSequence++;
+                    if (writePageSequence <= readPageSequence) writePageSequence = readPageSequence + 1;
                     lock (_lock) _fileBufferWritePageSequence = writePageSequence;
 
                     _metrics.FileBuffer.WritePageSequence = writePageSequence;
@@ -876,11 +863,15 @@ namespace TrakHound.Buffers
             }
         }
 
-        private void WriteCloseDelayElapsed(object sender, EventArgs e)
+        private bool CloseWriteStream()
         {
             try
             {
-                lock (_lock) _fileBufferWritePageSequence = 0;
+                lock (_lock)
+                {
+                    _fileBufferWritePageSequence = 0;
+                    _fileBufferStatus = FileBufferStatus.Idle;
+                }
 
                 if (_writeStream != null)
                 {
@@ -893,12 +884,22 @@ namespace TrakHound.Buffers
                 _metrics.FileBuffer.IsWriteActive = false;
                 _metrics.FileBuffer.WritePageSequence = 0;
                 _metrics.LastUpdated = UnixDateTime.Now;
+
+                return true;
             }
             catch (TaskCanceledException) { }
             catch (Exception ex)
             {
                 _logger.Log(TrakHoundLogLevel.Error, $"Buffer {Id} : FlushBuffer() : Exception : {ex.Message}");
+            }
 
+            return false;
+        }
+
+        private void WriteCloseDelayElapsed(object sender, EventArgs e)
+        {
+            if (!CloseWriteStream())
+            {
                 _writeCloseDelay.Set(); // Reset if Error Occurred
             }
         }
