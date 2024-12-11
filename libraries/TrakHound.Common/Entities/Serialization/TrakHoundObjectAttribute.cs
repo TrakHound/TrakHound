@@ -17,6 +17,8 @@ namespace TrakHound.Serialization
 
         public TrakHoundObjectContentType ContentType { get; set; }
 
+        public byte Priority { get; set; }
+
 
         public TrakHoundObjectAttribute()
         {

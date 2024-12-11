@@ -142,6 +142,9 @@ namespace TrakHound.Serialization
 
                     // Set Object ContentType
                     objectRequest.ContentType = rootObjectAttribute.ContentType.ToString();
+
+                    // Set Object Priority
+                    objectRequest.Priority = rootObjectAttribute.Priority;
                 }
 
                 // Set Object Definition
@@ -650,6 +653,7 @@ namespace TrakHound.Serialization
                                         childEntry.Path = TrakHoundPath.Combine(objectRequest.Path, childObjectName);
                                         childEntry.DefinitionId = CreateDefinitions(transaction, property);
                                         childEntry.ContentType = objectAttribute.ContentType.ToString();
+                                        childEntry.Priority = objectAttribute.Priority;
                                         transaction.Add(childEntry);
                                     }
                                 }
