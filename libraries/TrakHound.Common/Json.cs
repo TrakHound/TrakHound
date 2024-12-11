@@ -18,7 +18,7 @@ namespace TrakHound
     {
         #region "Conversion"
 
-        private static readonly IJsonTypeInfoResolver _defaultResolver = new DefaultJsonTypeInfoResolver();
+        //private static readonly IJsonTypeInfoResolver _defaultResolver = new DefaultJsonTypeInfoResolver();
 
         public static JsonSerializerOptions DefaultOptions
         {
@@ -31,8 +31,8 @@ namespace TrakHound
                     PropertyNameCaseInsensitive = true,
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     MaxDepth = 1000,
-                    NumberHandling = JsonNumberHandling.AllowReadingFromString,
-                    TypeInfoResolver = _defaultResolver
+                    NumberHandling = JsonNumberHandling.AllowReadingFromString
+                    //TypeInfoResolver = _defaultResolver
                 };
             }
         }
