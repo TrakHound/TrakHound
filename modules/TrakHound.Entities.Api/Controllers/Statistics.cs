@@ -94,15 +94,17 @@ namespace TrakHound.Entities.Api
         [TrakHoundApiSubscribe]
         public async Task<ITrakHoundConsumer<TrakHoundApiResponse>> SubscribeStatistics(
             [FromQuery] string objectPath,
+            [FromBody(ContentType = "application/json")] IEnumerable<string> objectPaths,
             [FromQuery] int interval = _defaultSubscribeInterval,
             [FromQuery] int take = _defaultSubscribeTake,
             [FromQuery] string routerId = null
             )
         {
-            if (!string.IsNullOrEmpty(objectPath))
+            if (!string.IsNullOrEmpty(objectPath) || !objectPaths.IsNullOrEmpty())
             {
-                var objectPaths = new string[] { objectPath };
-                var consumer = await Client.System.Entities.Objects.Statistic.SubscribeByObject(objectPaths, interval, take, routerId: routerId);
+                var paths = !string.IsNullOrEmpty(objectPath) ? new string[] { objectPath } : objectPaths;
+
+                var consumer = await Client.System.Entities.Objects.Statistic.SubscribeByObject(paths, interval, take, routerId: routerId);
                 if (consumer != null)
                 {
                     var resultConsumer = new TrakHoundConsumer<IEnumerable<ITrakHoundObjectStatisticEntity>, TrakHoundApiResponse>(consumer);

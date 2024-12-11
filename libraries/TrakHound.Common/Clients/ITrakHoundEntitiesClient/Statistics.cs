@@ -11,17 +11,18 @@ namespace TrakHound.Clients
 {
     public partial interface ITrakHoundEntitiesClient
     {
-        Task<IEnumerable<TrakHoundStatistic>> GetLatestStatistics(string objectPath, DateTime start, DateTime stop, TimeSpan span, int skip = _defaultSkip, int take = _defaultTake, SortOrder sortOrder = _defaultSortOrder, string routerId = null);
-
-        Task<IEnumerable<TrakHoundStatistic>> GetLatestStatistics(string objectPath, string startExpression, string stopExpression, string spanExpression, int skip = _defaultSkip, int take = _defaultTake, SortOrder sortOrder = _defaultSortOrder, string routerId = null);
-
-
         Task<IEnumerable<TrakHoundStatistic>> GetStatistics(string objectPath, DateTime start, DateTime stop, TimeSpan span, int skip = _defaultSkip, int take = _defaultTake, SortOrder sortOrder = _defaultSortOrder, string routerId = null);
 
         Task<IEnumerable<TrakHoundStatistic>> GetStatistics(string objectPath, string startExpression, string stopExpression, string spanExpression, int skip = _defaultSkip, int take = _defaultTake, SortOrder sortOrder = _defaultSortOrder, string routerId = null);
 
+        Task<IEnumerable<TrakHoundStatistic>> GetStatistics(IEnumerable<string> objectPaths, DateTime start, DateTime stop, TimeSpan span, int skip = _defaultSkip, int take = _defaultTake, SortOrder sortOrder = _defaultSortOrder, string routerId = null);
+
+        Task<IEnumerable<TrakHoundStatistic>> GetStatistics(IEnumerable<string> objectPaths, string startExpression, string stopExpression, string spanExpression, int skip = _defaultSkip, int take = _defaultTake, SortOrder sortOrder = _defaultSortOrder, string routerId = null);
+
 
         Task<ITrakHoundConsumer<IEnumerable<TrakHoundStatistic>>> SubscribeStatistics(string objectPath, string routerId = null);
+
+        Task<ITrakHoundConsumer<IEnumerable<TrakHoundStatistic>>> SubscribeStatistics(IEnumerable<string> objectPaths, string routerId = null);
 
 
         Task<bool> PublishStatistic(string objectPath, DateTime rangeStart, DateTime rangeEnd, object value, TrakHoundStatisticDataType? dataType = null, DateTime? timestamp = null, TrakHoundUpdateType aggregateType = TrakHoundUpdateType.Absolute, bool async = false, string routerId = null);
