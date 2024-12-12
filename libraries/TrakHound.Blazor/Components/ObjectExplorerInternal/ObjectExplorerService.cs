@@ -721,7 +721,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         {
             if (_client != null)
             {
-                var childObjects = await _client.System.Entities.Objects.QueryByParentUuid(uuid, 0, 100, SortOrder.Ascending);
+                var childObjects = await _client.System.Entities.Objects.QueryByParentUuid(uuid, 0, 1000, SortOrder.Ascending);
                 if (!childObjects.IsNullOrEmpty())
                 {
                     var obj = _objects.GetValueOrDefault(uuid);
@@ -783,7 +783,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
         {
             if (_client != null && !uuids.IsNullOrEmpty())
             {
-                var childObjects = await _client.System.Entities.Objects.QueryByParentUuid(uuids, 0, 100);
+                var childObjects = await _client.System.Entities.Objects.QueryByParentUuid(uuids, 0, 1000);
                 if (!childObjects.IsNullOrEmpty())
                 {
                     foreach (var childObject in childObjects)
@@ -961,7 +961,17 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                         var obj = _objects.GetValueOrDefault(targetUuid);
                         if (obj != null && !obj.Name.StartsWith('.')) shownUuids.Add(targetUuid);
                     }
-                    _filteredTargetUuids = shownUuids;
+
+                    if (shownUuids.Count > 0)
+                    {
+                        _filteredTargetUuids = shownUuids;
+                    }
+                    else
+                    {
+                        // Force Show Hidden if all Targets are hidden
+                        _hiddenShown = true;
+                        _filteredTargetUuids = _targetUuids;
+                    }
                 }
             }
             else
@@ -1973,6 +1983,7 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
             if (obj != null)
             {
                 _definitionParents.Remove(obj.DefinitionUuid);
+                _objectMetadata.Remove(obj.Uuid);
 
                 var definitionUuids = new HashSet<string>();
                 if (!string.IsNullOrEmpty(obj.DefinitionUuid)) definitionUuids.Add(obj.DefinitionUuid);
