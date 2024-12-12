@@ -6,7 +6,6 @@
     border-left: none;
     border-radius: 0 !important;
     min-width: 70px;
-    padding: 7px 20px;
     font-size: 14px;
     margin: 0;
     color: var(--buttonToolbarText);
@@ -61,6 +60,14 @@
     }
 
     .btn-toolbar:hover .icon {
+        margin-left: -1px !important;
+    }
+
+    .btn-toolbar:hover:first-child .icon {
+        margin-left: 0px !important;
+    }
+
+    .btn-toolbar:hover .icon {
         color: var(--buttonToolbarIconHover);
         transition: none;
     }
@@ -79,5 +86,5 @@
     }
 
     .btn-toolbar .icon:only-child {
-        margin-right: 10px !important;
+        margin-right: 0px !important;
     }
