@@ -75,7 +75,7 @@ namespace TrakHound
         }
 
 
-        public CircularBuffer(int limit = 5000000)
+        public CircularBuffer(int limit = 500000)
         {
             _itemLimit = limit;
             _items = new TValue[limit];
@@ -86,11 +86,16 @@ namespace TrakHound
         {
             lock (_lock)
             {
-                var result = new TValue[_itemLimit];
+                if (_itemCount > 0)
+                {
+                    var result = new TValue[_itemCount];
 
-                Array.Copy(_items, 0, result, 0, _itemLimit);
+                    Array.Copy(_items, 0, result, 0, _itemCount);
 
-                return result;
+                    return result;
+                }
+
+                return Array.Empty<TValue>();
             }
         }
 
@@ -102,6 +107,7 @@ namespace TrakHound
                 {
                     Array.Copy(_items, 0, _items, 1, _itemLimit - 1);
                     _items[0] = item;
+                    if (_itemCount < _itemLimit) _itemCount++;
                 }
             }
         }
@@ -114,6 +120,8 @@ namespace TrakHound
                 {
                     _items[i] = default;
                 }
+
+                _itemCount = 0;
             }
         }
     }
