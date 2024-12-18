@@ -69,7 +69,7 @@ namespace TrakHound.Clients
                     var collection = response.GetEntityCollection();
                     if (collection != null)
                     {
-                        var paths = collection.Objects.Objects.Select(o => $"uuid:{o.Uuid}");
+                        var paths = collection.Objects.Objects.Select(o => $"uuid={o.Uuid}");
                         return await GetObjects(paths, skip, take);
                     }
                 }
