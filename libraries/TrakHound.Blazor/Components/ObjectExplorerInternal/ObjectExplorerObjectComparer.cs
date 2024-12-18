@@ -38,10 +38,10 @@ namespace TrakHound.Blazor.Components.ObjectExplorerInternal
                             if (xV > yV) return 1;
                             if (xV == yV) return 0;
                         }
-                        else if (x.IsNumeric() && y.IsNumeric())
+                        else if (xName.IsNumeric() && yName.IsNumeric())
                         {
-                            var xD = x.ToDouble();
-                            var yD = y.ToDouble();
+                            var xD = xName.ToDouble();
+                            var yD = yName.ToDouble();
 
                             if (xD < yD) return -1;
                             if (xD > yD) return 1;
