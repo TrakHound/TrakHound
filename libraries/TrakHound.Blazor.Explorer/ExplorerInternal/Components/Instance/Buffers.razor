@@ -20,7 +20,7 @@
                     var driverBufferSize = _bufferSize.Get(driverBufferMetric.Name)?.Reverse().ToArray();
 
                     var queueChartData = new ChartData[10];
-                    if (driverQueuedItems != null)
+                    if (driverQueuedItems != null && driverQueuedItems.Length >= 10)
                     {
                         for (var i = 0; i < 10; i++)
                         {
