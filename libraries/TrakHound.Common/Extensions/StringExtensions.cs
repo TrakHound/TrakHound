@@ -512,7 +512,7 @@ namespace TrakHound
 
         public static Version ToVersion(this string s)
         {
-            if (!string.IsNullOrEmpty(s) && Version.TryParse(s, out var x)) return x;
+            if (!string.IsNullOrEmpty(s) && s.Contains('.') && Version.TryParse(s, out var x)) return x;
             else return null;
         }
 
