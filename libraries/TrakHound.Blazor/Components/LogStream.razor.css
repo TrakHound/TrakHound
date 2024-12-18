@@ -1,0 +1,75 @@
+.log-table {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+}
+
+    .log-table .table {
+        padding: 0;
+        margin: 0;
+        border: none;
+    }
+
+        .log-table .table td {
+            font-size: 12px;
+            padding: 3px 20px;
+            background: #192b4d;
+            border-color: #002b80;
+            color: #e6eeff;
+        }
+
+        .log-table .table tr:hover td {
+            background: var(--accent);
+        }
+
+        .log-table .table td.level {
+            width: 120px;
+        }
+
+        .log-table .table td.timestamp {
+            width: 300px;
+        }
+
+        .log-table .table td.message p {
+            margin: 0;
+        }
+
+
+        .log-table .table tr.debug td {
+            background: #2d4c86;
+            color: #e6eeff;
+        }
+
+        .log-table .table tr.debug:hover td {
+            background: var(--accent);
+        }
+
+        .log-table .table tr.warning td {
+            background: #ff6600;
+            border-color: #cc5200;
+            color: #e6eeff;
+        }
+
+        .log-table .table tr.warning:hover td {
+            background: #ff8533;
+        }
+
+        .log-table .table tr.error td {
+            background: #ff0000;
+            border-color: #cc0000;
+            color: #e6eeff;
+        }
+
+        .log-table .table tr.error:hover td {
+            background: #ff3333;
+        }
+
+        .log-table .table tr.critical td {
+            background: #ff0000;
+            border-color: #cc0000;
+            color: #e6eeff;
+        }
+
+        .log-table .table tr.critical:hover td {
+            background: #ff3333;
+        }

@@ -86,11 +86,11 @@ namespace TrakHound.Clients
             _drivers = new TrakHoundInstanceSystemDriversClient(driverProvider);
             _entities = new TrakHoundInstanceSystemEntitiesClient(baseClient);
             _functions = new TrakHoundInstanceSystemFunctionsClient(functionManager);
-            _instances = new TrakHoundInstanceSystemInstancesClient(instance);
+            _instances = new TrakHoundInstanceSystemInstancesClient(instance, instance.LogProvider);
             _messages = new TrakHoundInstanceSystemMessagesClient(baseClient);
             _messageQueues = new TrakHoundInstanceSystemMessageQueuesClient(baseClient);
             _routers = new TrakHoundInstanceSystemRoutersClient(routerProvider);
-            _services = new TrakHoundInstanceSystemServicesClient(serviceManager);
+            _services = new TrakHoundInstanceSystemServicesClient(serviceManager, instance.LogProvider);
         }
     }
 }

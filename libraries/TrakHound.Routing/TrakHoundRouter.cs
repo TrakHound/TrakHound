@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 using TrakHound.Buffers;
 using TrakHound.Clients;
 using TrakHound.Drivers;
-using TrakHound.Entities;
 using TrakHound.Entities.Filters;
 using TrakHound.Extensions;
 using TrakHound.Logging;
@@ -19,12 +18,12 @@ namespace TrakHound.Routing
     {
         public const string Default = "default";
 
-        private static ITrakHoundLogger _logger = new TrakHoundLogger<TrakHoundRouter>();
-
         private readonly Dictionary<string, bool?> _routeCache = new Dictionary<string, bool?>();
 
         private readonly string _id;
         private readonly TrakHoundRouterConfiguration _configuration;
+        private readonly ITrakHoundLogProvider _logProvider;
+        private readonly ITrakHoundLogger _logger;
         private readonly ITrakHoundDriverProvider _driverProvider;
         private readonly ITrakHoundBufferProvider _bufferProvider;
         private readonly ITrakHoundClient _client;
@@ -63,7 +62,12 @@ namespace TrakHound.Routing
         public ITrakHoundLogger Logger => _logger;
 
 
-        public TrakHoundRouter(TrakHoundRouterConfiguration configuration, ITrakHoundDriverProvider driverProvider, ITrakHoundBufferProvider bufferProvider)
+        public TrakHoundRouter(
+            TrakHoundRouterConfiguration configuration,
+            ITrakHoundLogProvider logProvider,
+            ITrakHoundDriverProvider driverProvider,
+            ITrakHoundBufferProvider bufferProvider
+            )
         {
             _blobs = new TrakHoundBlobRouter(this);
             _commands = new TrakHoundCommandRouter(this);
@@ -75,6 +79,7 @@ namespace TrakHound.Routing
             if (_configuration != null)
             {
                 _id = configuration.Id;
+                _logger = logProvider.GetLogger($"routers/{configuration.Id}");
 
                 var targets = InitializeTargets(configuration);
                 lock (_lock) _targets = targets;

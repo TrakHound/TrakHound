@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -31,7 +30,7 @@ namespace TrakHound.Instances
 {
     public sealed class TrakHoundInstance : ITrakHoundInstance
     {
-        private readonly ITrakHoundLogger _logger = new TrakHoundLogger<TrakHoundInstance>();
+        private const string _loggerIdPrefix = "trakhound.instance";
         private readonly string _configurationProfileId = TrakHoundConfigurationProfile.Default;
 
         private TrakHoundManagementClient _managementClient;
@@ -62,6 +61,7 @@ namespace TrakHound.Instances
         private TrakHoundServiceManager _serviceManager;
         private TrakHoundVolumeProvider _volumeProvider;
         private ITrakHoundClientProvider _clientProvider;
+        private ITrakHoundLogProvider _logProvider;
 
 
         public string Id => _configuration?.InstanceId;
@@ -96,8 +96,7 @@ namespace TrakHound.Instances
         public TrakHoundServiceManager ServiceManager => _serviceManager;
         public ITrakHoundVolumeProvider VolumeProvider => _volumeProvider;
         public ITrakHoundClientProvider ClientProvider => _clientProvider;
-
-        public ITrakHoundLogger Logger => _logger;
+        public ITrakHoundLogProvider LogProvider => _logProvider;
 
 
         public event EventHandler Starting;
@@ -113,42 +112,41 @@ namespace TrakHound.Instances
         public event TrakHoundInstanceLogHandler LogUpdated;
 
 
-        public TrakHoundInstance() 
+        public TrakHoundInstance(ITrakHoundLogProvider logProvider) 
         { 
             _version = GetInstanceVersion();
-
-            TrakHoundLogProvider.Get().LogEntryReceived += LogReceived;
+            _logProvider = logProvider;
+            if (logProvider != null) logProvider.LogEntryReceived += LogReceived;
         }
 
-        public TrakHoundInstance(string configurationProfileId)
+        public TrakHoundInstance(string configurationProfileId, ITrakHoundLogProvider logProvider)
         {
             _version = GetInstanceVersion();
             _configurationProfileId = configurationProfileId;
-
-            TrakHoundLogProvider.Get().LogEntryReceived += LogReceived;
+            _logProvider = logProvider;
+            if (logProvider != null) logProvider.LogEntryReceived += LogReceived;
         }
 
-        public TrakHoundInstance(TrakHoundInstanceConfiguration configuration)
+        public TrakHoundInstance(TrakHoundInstanceConfiguration configuration, ITrakHoundLogProvider logProvider)
         {
             _version = GetInstanceVersion();
             _configuration = configuration;
-
-            TrakHoundLogProvider.Get().LogEntryReceived += LogReceived;
+            _logProvider = logProvider;
+            if (logProvider != null) logProvider.LogEntryReceived += LogReceived;
         }
 
-        public TrakHoundInstance(TrakHoundInstanceConfiguration configuration, string configurationProfileId)
+        public TrakHoundInstance(TrakHoundInstanceConfiguration configuration, string configurationProfileId, ITrakHoundLogProvider logProvider)
         {
             _version = GetInstanceVersion();
             _configuration = configuration;
             _configurationProfileId = configurationProfileId;
-
-            TrakHoundLogProvider.Get().LogEntryReceived += LogReceived;
+            _logProvider = logProvider;
+            if (logProvider != null) logProvider.LogEntryReceived += LogReceived;
         }
 
 
         private string GetInstanceVersion()
         {
-            //return Assembly.GetExecutingAssembly().GetName().Version.ToString();
             return FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
         }
 
@@ -167,6 +165,8 @@ namespace TrakHound.Instances
                     _configuration = new TrakHoundInstanceConfiguration();
                     _configuration.Save();
                 }
+
+                var logger = _logProvider.GetLogger("instance");
 
                 _instanceInformation = new TrakHoundInstanceInformation();
                 _instanceInformation.Id = _configuration.InstanceId;
@@ -203,16 +203,16 @@ namespace TrakHound.Instances
 
 
                 // Initialize License Manager(s)
-                TrakHoundLicenseManagers.ManagerAdded += (s, publisherId) => _logger.LogInformation($"License Manager Loaded : Publisher ID = {publisherId}");
+                TrakHoundLicenseManagers.ManagerAdded += (s, publisherId) => logger.LogInformation($"License Manager Loaded : Publisher ID = {publisherId}");
                 TrakHoundLicenseManagers.Initialize();
 
                 // Initialize Package Manager
                 _packageManager = new TrakHoundPackageManager(_managementInstance?.Organization, _managementClient);
 
                 // Load Configuration
-                _logger.LogInformation($"Loading Configuration Profile ({_configurationProfileId})...");
+                logger.LogInformation($"Loading Configuration Profile ({_configurationProfileId})...");
                 _configurationProfile = new TrakHoundConfigurationProfile(_configurationProfileId, _packageManager);
-                _configurationProfile.ConfigurationAdded += (s, args) => { _logger.LogDebug($"Configuration Loaded : {args.Category} : {args.Id}"); };
+                _configurationProfile.ConfigurationAdded += (s, args) => { logger.LogDebug($"Configuration Loaded : {args.Category} : {args.Id}"); };
                 _configurationProfile.Load<TrakHoundFunctionConfiguration>(TrakHoundFunctionConfiguration.ConfigurationCategory);
                 _configurationProfile.Load<TrakHoundServiceConfiguration>(TrakHoundServiceConfiguration.ConfigurationCategory);
                 _configurationProfile.Load<TrakHoundRouterConfiguration>(TrakHoundRouterConfiguration.ConfigurationCategory);
@@ -221,8 +221,8 @@ namespace TrakHound.Instances
                 _configurationProfile.Load<TrakHoundDriverConfiguration>(TrakHoundDriverConfiguration.ConfigurationCategory);
                 _configurationProfile.Load<TrakHoundIdentityProviderConfiguration>(TrakHoundIdentityProviderConfiguration.ConfigurationCategory);
 
-                _packageManager.PackageAdded += (s, args) => { _logger.LogDebug($"Package Loaded : {args.Id} v{args.Version}"); };
-                _logger.LogInformation("Loading Packages...");
+                _packageManager.PackageAdded += (s, args) => { logger.LogDebug($"Package Loaded : {args.Id} v{args.Version}"); };
+                logger.LogInformation("Loading Packages...");
                 _packageManager.Load();
 
                 // Initialize Module Provider
@@ -235,23 +235,23 @@ namespace TrakHound.Instances
                 // Security Manager
                 _securityManager = new TrakHoundSecurityManager(_configurationProfile, _moduleProvider, volumeProvider, _packageManager);
                 _securityManager.IdentityProviderAdded += (s, args) => { Console.WriteLine($"Identity Provider Loaded : {args.Id}"); };
-                _logger.LogInformation("Loading Identity Providers...");
+                logger.LogInformation("Loading Identity Providers...");
                 _securityManager.Load();
 
                 // Initialize Driver Provider
                 _driverProvider = new TrakHoundDriverProvider(_configurationProfile, _moduleProvider, volumeProvider, _packageManager);
-                _driverProvider.DriverAdded += (s, args) => { _logger.LogInformation($"Entity Driver Loaded : {args.Id}"); };
-                _driverProvider.DriverLoadError += (s, ex) => { _logger.LogError($"Entity Driver Load ERROR : {ex.Message}"); };
-                _logger.LogInformation("Loading Drivers...");
+                _driverProvider.DriverAdded += (s, args) => { logger.LogInformation($"Entity Driver Loaded : {args.Id}"); };
+                _driverProvider.DriverLoadError += (s, ex) => { logger.LogError($"Entity Driver Load ERROR : {ex.Message}"); };
+                logger.LogInformation("Loading Drivers...");
                 _driverProvider.Load();
 
                 // Initialize Buffer Provider
-                _bufferProvider = new TrakHoundBufferProvider();
+                _bufferProvider = new TrakHoundBufferProvider(_logProvider);
 
                 // Initialize Router Provider
-                _routerProvider = new TrakHoundRouterProvider(_configurationProfile, _driverProvider, _bufferProvider);
-                _routerProvider.RouterAdded += (s, args) => { _logger.LogInformation($"Router Loaded : {args.Configuration?.Id} => {args.Configuration?.Name}"); };
-                _logger.LogInformation("Loading Routers...");
+                _routerProvider = new TrakHoundRouterProvider(_configurationProfile, _logProvider, _driverProvider, _bufferProvider);
+                _routerProvider.RouterAdded += (s, args) => { logger.LogInformation($"Router Loaded : {args.Configuration?.Id} => {args.Configuration?.Name}"); };
+                logger.LogInformation("Loading Routers...");
 
 
                 // Initialize Client Provider
@@ -263,21 +263,21 @@ namespace TrakHound.Instances
 
 
                 // Initialize Api Provider
-                _apiProvider = new TrakHoundApiProvider(this, _configurationProfile, _moduleProvider, clientProvider, volumeProvider, _packageManager);
-                _apiProvider.ApiAdded += (s, args) => { _logger.LogInformation($"Api Loaded : {args.PackageId}: {args.PackageVersion} : {args.Id} => {args.Route}"); };
-                _apiProvider.ApiRemoved += (s, args) => { _logger.LogInformation($"Api Removed : {args}"); };
+                _apiProvider = new TrakHoundApiProvider(this, _configurationProfile, _moduleProvider, clientProvider, volumeProvider, _logProvider, _packageManager);
+                _apiProvider.ApiAdded += (s, args) => { logger.LogInformation($"Api Loaded : {args.PackageId}: {args.PackageVersion} : {args.Id} => {args.Route}"); };
+                _apiProvider.ApiRemoved += (s, args) => { logger.LogInformation($"Api Removed : {args}"); };
                 clientProvider.ApiProvider = _apiProvider;
 
                 // Initialize Function Manager
-                _functionManager = new TrakHoundFunctionManager(this, _configurationProfile, _moduleProvider, clientProvider, volumeProvider, _packageManager);
-                _functionManager.EngineAdded += (s, args) => { _logger.LogInformation($"Function Engine Loaded : {args.PackageId}: {args.PackageVersion} : {args?.EngineId}"); };
-                _functionManager.EngineRemoved += (s, args) => { _logger.LogInformation($"Function Engine Removed : {args}"); };
+                _functionManager = new TrakHoundFunctionManager(this, _configurationProfile, _moduleProvider, clientProvider, volumeProvider, _logProvider, _packageManager);
+                _functionManager.EngineAdded += (s, args) => { logger.LogInformation($"Function Engine Loaded : {args.PackageId}: {args.PackageVersion} : {args?.EngineId}"); };
+                _functionManager.EngineRemoved += (s, args) => { logger.LogInformation($"Function Engine Removed : {args}"); };
                 clientProvider.FunctionManager = _functionManager;
 
                 // Initialize Service Manager
-                _serviceManager = new TrakHoundServiceManager(this, _configurationProfile, _moduleProvider, clientProvider, volumeProvider, _packageManager);
-                _serviceManager.EngineAdded += (s, args) => { _logger.LogInformation($"Service Engine Loaded : {args.PackageId}: {args.PackageVersion} : {args?.EngineId}"); };
-                _serviceManager.EngineRemoved += (s, args) => { _logger.LogInformation($"Service Engine Removed : {args}"); };
+                _serviceManager = new TrakHoundServiceManager(this, _configurationProfile, _moduleProvider, clientProvider, volumeProvider, _logProvider, _packageManager);
+                _serviceManager.EngineAdded += (s, args) => { logger.LogInformation($"Service Engine Loaded : {args.PackageId}: {args.PackageVersion} : {args?.EngineId}"); };
+                _serviceManager.EngineRemoved += (s, args) => { logger.LogInformation($"Service Engine Removed : {args}"); };
                 clientProvider.ServiceManager = _serviceManager;
 
                 if (!_routerProvider.Routers.IsNullOrEmpty())
@@ -290,13 +290,13 @@ namespace TrakHound.Instances
                     }
                 }
 
-                _logger.LogInformation("Loading Apis...");
+                logger.LogInformation("Loading Apis...");
                 _apiProvider.Load();
 
-                _logger.LogInformation("Loading Functions...");
+                logger.LogInformation("Loading Functions...");
                 _functionManager.Load();
 
-                _logger.LogInformation("Loading Services...");
+                logger.LogInformation("Loading Services...");
                 await _serviceManager.Load();
                 _serviceManager.StartAll();
 

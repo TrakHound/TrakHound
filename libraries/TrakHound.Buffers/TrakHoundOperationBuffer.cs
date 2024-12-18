@@ -45,7 +45,8 @@ namespace TrakHound.Buffers
         private const int DefaultFileBufferWriteInterval = 100;
 
         private readonly TrakHoundBufferConfiguration _configuration;
-        private readonly ITrakHoundLogger _logger = new TrakHoundLogger<TrakHoundOperationBuffer<TItem>>();
+        private readonly ITrakHoundLogProvider _logProvider;
+        private readonly ITrakHoundLogger _logger;
         private readonly TrakHoundBufferMetrics _metrics;
         private readonly MovingStatistics _queueItemStatistics;
         private readonly MovingStatistics _fileBufferItemReadStatistics;
@@ -156,9 +157,19 @@ namespace TrakHound.Buffers
         public int FileBufferWriteInterval => _fileBufferWriteInterval;
 
 
-        public TrakHoundOperationBuffer(string bufferId, string driverId, string name = null, string operationType = null, TrakHoundBufferConfiguration bufferConfiguration = null)
+        public TrakHoundOperationBuffer(
+            string bufferId,
+            string driverId,
+            ITrakHoundLogProvider logProvider,
+            string name = null,
+            string operationType = null,
+            TrakHoundBufferConfiguration bufferConfiguration = null
+            )
         {
             _id = bufferId;
+            
+            _logProvider = logProvider;
+            _logger = logProvider.GetLogger($"buffers/{bufferId}");
 
             // Set configuration properties to defaults
             _processInterval = DefaultProcessInterval;

@@ -1,62 +1,28 @@
-﻿@implements IDisposable
-@rendermode InteractiveServer
+﻿@rendermode InteractiveServer
 @inject ExplorerService explorerService
-@inject JavascriptService javascriptService
 @using TrakHound.Blazor.Services
 @using TrakHound.Logging
-@using TrakHound.Requests
 @using TrakHound.Instances
 
-@{
-    var subscribeDisabled = consumer != null ? "disabled" : "";
-    var unsubscribeDisabled = consumer == null ? "disabled" : "";
-}
-
-<div class="log-panel">
-    <div class="content-panel">
-
-        @{
-            var logLines = GetLogLines();
-            if (!logLines.IsNullOrEmpty())
-            {
-                <table class="table table-sm">
-                    <tbody>
-
-                        @for (var i = 0; i < logLines.Count; i++)
-                        {
-                            var logLine = logLines[i];
-                            var level = logLine.LogLevel.ToString();
-                            var levelClass = level.ToLower();
-                            var levelId = i == logLines.Count - 1 ? lastLogElementId : "";
-
-                            <tr id="@levelId" class="@levelClass">
-                                <td class="level">@level</td>
-                                <td class="timestamp">@logLine.Timestamp.ToDateTime().ToISO8601String()</td>
-                                <td class="message"><p>@logLine.Message</p></td>
-                            </tr>
-                        }
-
-                    </tbody>
-                </table>
-            }
-        }
-
-    </div>
-</div>
+<LogExplorer GetLogNames="GetLogNames"
+             GetLogLineConsumer="SubscribeLogLines"
+             GetLogLines="GetLogLines"
+             @bind-SelectedLogName="selectedLogName"
+             @bind-SelectedLogLevel="selectedLogLevel"
+             @bind-From="@from"
+             @bind-To="@to" />
 
 @code {
 
-    private const string lastLogElementId = "last-log-entry";
-    private const int maxLogLines = 1000;
-    private string parameterHash;
-
-    private ITrakHoundConsumer<IEnumerable<TrakHoundLogItem>> consumer;
-    private List<TrakHoundLogItem> logLines = new List<TrakHoundLogItem>();
-    private DelayEvent _logDelay = new DelayEvent(50);
-    private readonly object _lock = new object();
-
-    private IEnumerable<TrakHoundLogLevel> levels = Enum.GetValues<TrakHoundLogLevel>();
-    private TrakHoundLogLevel selectedLevel = TrakHoundLogLevel.Information;
+    private IEnumerable<string> logNames;
+    private string selectedLogName;
+    private TrakHoundLogLevel selectedLogLevel;
+    private IEnumerable<TrakHoundLogItem> historyLogLines;
+    private DateTime from;
+    private DateTime to;
+    private int skip = 0;
+    private int take = 1000;
+    private TrakHound.SortOrder sortOrder = TrakHound.SortOrder.Ascending;
 
 
     [CascadingParameter(Name = "Explorer")]
@@ -68,89 +34,43 @@
 
     protected override void OnInitialized()
     {
-        _logDelay.Elapsed += LogUpdated;
+        from = DateTime.Today;
+        to = from.AddDays(1);
     }
 
-    protected async override Task OnParametersSetAsync()
+    private async Task<IEnumerable<string>> GetLogNames()
     {
-        await Load();
-    }
-
-    void IDisposable.Dispose()
-    {
-        _logDelay.Elapsed -= LogUpdated;
-        Unsubscribe();
-    }
-
-    private async Task Load()
-    {
-        if (InstanceInformation != null)
-        {
-            var hash = $"{explorerService.SelectedInstanceId}:{InstanceInformation.Id}".ToMD5Hash();
-            if (hash != parameterHash)
-            {
-                parameterHash = hash;
-
-                if (consumer != null) consumer.Dispose();
-                lock (_lock) logLines.Clear();
-
-                await Subscribe();
-                await InvokeAsync(StateHasChanged);
-            }
-        }
-    }
-
-    private async Task Subscribe()
-    {
-        Unsubscribe();
-
         var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
         if (client != null)
         {
-            consumer = await client.System.Instances.SubscribeToLog(InstanceInformation.Id, selectedLevel);
-            consumer.Received += LogReceived;
+            var logNames = await client.System.Instances.QueryLogNames(InstanceInformation.Id);
+            if (selectedLogName == null) selectedLogName = logNames?.FirstOrDefault();
+            return logNames;
         }
+
+        return null;
     }
 
-    private void Unsubscribe()
+    private async Task<ITrakHoundConsumer<IEnumerable<TrakHoundLogItem>>> SubscribeLogLines()
     {
-        if (consumer != null)
+        var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+        if (client != null)
         {
-            consumer.Received -= LogReceived;
-            consumer.Dispose();
+            return await client.System.Instances.SubscribeToLog(InstanceInformation.Id, selectedLogName, selectedLogLevel);
         }
+
+        return null;
     }
 
-    private async void LogUpdated(object sender, EventArgs args)
+    private async Task<IEnumerable<TrakHoundLogItem>> GetLogLines()
     {
-        await InvokeAsync(StateHasChanged);
-        await javascriptService.ScrollIntoView(lastLogElementId);
-    }
-
-    private async void SelectedLevelChanged(TrakHoundLogLevel level)
-    {
-        selectedLevel = level;
-        lock (_lock) logLines.Clear();
-        await Subscribe();
-    }
-
-    private void LogReceived(object sender, IEnumerable<TrakHoundLogItem> items)
-    {
-        lock (_lock)
+        var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
+        if (client != null)
         {
-            foreach (var item in items) logLines.Add(item);
-            logLines = logLines.TakeLast(maxLogLines).ToList();
+            return await client.System.Instances.QueryLogsByMinimumLevel(InstanceInformation.Id, selectedLogName, selectedLogLevel, from, to, skip, take, sortOrder);
         }
 
-        _logDelay.Set();
-    }
-
-    private List<TrakHoundLogItem> GetLogLines()
-    {
-        lock (_lock)
-        {
-            return logLines.OrderBy(o => o.Timestamp).ToList();
-        }
+        return null;
     }
 
 }

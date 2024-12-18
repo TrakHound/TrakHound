@@ -13,11 +13,13 @@ namespace TrakHound.Clients
     public class TrakHoundInstanceSystemServicesClient : ITrakHoundSystemServicesClient
     {
         private readonly TrakHoundServiceManager _serviceManager;
+        private readonly ITrakHoundLogProvider _logProvider;
 
 
-        public TrakHoundInstanceSystemServicesClient(TrakHoundServiceManager serviceManager)
+        public TrakHoundInstanceSystemServicesClient(TrakHoundServiceManager serviceManager, ITrakHoundLogProvider logProvider)
         {
             _serviceManager = serviceManager;
+            _logProvider = logProvider;
         }
 
 
@@ -74,11 +76,41 @@ namespace TrakHound.Clients
         {
             if (!string.IsNullOrEmpty(serviceId))
             {
+                var loggerName = $"service/{serviceId}/main";
+                var loggerId = _logProvider.GetLoggerId(loggerName);
                 var consumer = new TrakHoundInstanceConsumer<IEnumerable<TrakHoundLogItem>>();
 
                 _serviceManager.ServiceLogUpdated += (id, item) =>
                 {
-                    if (id == serviceId)
+                    var itemLoggerName = $"service/{id}/{item.Sender}";
+                    var itemLoggerId = _logProvider.GetLoggerId(itemLoggerName);
+
+                    if (itemLoggerId == loggerId && item.LogLevel <= minimumLevel)
+                    {
+                        consumer.Push(new TrakHoundLogItem[] { item });
+                    }
+                };
+
+                return consumer;
+            }
+
+            return null;
+        }
+
+        public async Task<ITrakHoundConsumer<IEnumerable<TrakHoundLogItem>>> SubscribeToLog(string serviceId, string logName, TrakHoundLogLevel minimumLevel = TrakHoundLogLevel.Information)
+        {
+            if (!string.IsNullOrEmpty(serviceId) && !string.IsNullOrEmpty(logName))
+            {
+                var loggerName = $"service/{serviceId}/{logName}";
+                var loggerId = _logProvider.GetLoggerId(loggerName);
+                var consumer = new TrakHoundInstanceConsumer<IEnumerable<TrakHoundLogItem>>();
+
+                _serviceManager.ServiceLogUpdated += (id, item) =>
+                {
+                    var itemLoggerName = $"service/{id}/{item.Sender}";
+                    var itemLoggerId = _logProvider.GetLoggerId(itemLoggerName);
+
+                    if (itemLoggerId == loggerId && item.LogLevel <= minimumLevel)
                     {
                         consumer.Push(new TrakHoundLogItem[] { item });
                     }
@@ -143,6 +175,74 @@ namespace TrakHound.Clients
             }
 
             return default;
+        }
+
+
+        public async Task<IEnumerable<string>> QueryLogNames(string serviceId)
+        {
+            var pattern = $"service/{serviceId}/*";
+            var loggerIds = _logProvider.QueryLoggerIds(pattern);
+            if (!loggerIds.IsNullOrEmpty())
+            {
+                return loggerIds.Select(o => GetLogName(serviceId, o));
+            }
+
+            return null;
+        }
+
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogs(string serviceId, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        {
+            var loggerName = $"service/{serviceId}";
+            return _logProvider.QueryLogs(loggerName, from, to, skip, take, sortOrder);
+        }
+
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogsByMinimumLevel(string serviceId, TrakHoundLogLevel minimumLevel, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        {
+            var loggerName = $"service/{serviceId}";
+            return _logProvider.QueryLogsByMinimumLevel(loggerName, minimumLevel, from, to, skip, take, sortOrder);
+        }
+
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogsByLevel(string serviceId, TrakHoundLogLevel level, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        {
+            var loggerName = $"service/{serviceId}";
+            return _logProvider.QueryLogsByLevel(loggerName, level, from, to, skip, take, sortOrder);
+        }
+
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogs(string serviceId, string logName, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        {
+            var loggerName = $"service/{serviceId}/{logName}";
+            return _logProvider.QueryLogs(loggerName, from, to, skip, take, sortOrder);
+        }
+
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogsByMinimumLevel(string serviceId, string logName, TrakHoundLogLevel minimumLevel, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        {
+            var loggerName = $"service/{serviceId}/{logName}";
+            return _logProvider.QueryLogsByMinimumLevel(loggerName, minimumLevel, from, to, skip, take, sortOrder);
+        }
+
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogsByLevel(string serviceId, string logName, TrakHoundLogLevel level, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        {
+            var loggerName = $"service/{serviceId}/{logName}";
+            return _logProvider.QueryLogsByLevel(loggerName, level, from, to, skip, take, sortOrder);
+        }
+
+
+        private string GetLogName(string serviceId, string loggerId)
+        {
+            if (!string.IsNullOrEmpty(loggerId))
+            {
+                var prefix = _logProvider.GetLoggerId($"service/{serviceId}");
+                if (loggerId != prefix)
+                {
+                    return loggerId.Substring(prefix.Length + 1);
+                }
+                else
+                {
+                    return "main";
+                }
+            }
+
+            return null;
         }
     }
 }

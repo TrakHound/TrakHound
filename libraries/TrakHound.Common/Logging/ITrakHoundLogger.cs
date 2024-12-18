@@ -10,12 +10,12 @@ namespace TrakHound.Logging
         /// <summary>
         /// The Name of the Logger
         /// </summary>
-        string Name { get; }
+        string Id { get; }
 
         /// <summary>
         /// Event for when a new Log Entry is received
         /// </summary>
-        event EventHandler<TrakHoundLogItem> LogEntryReceived;
+        event TrakHoundLogEventHandler LogEntryReceived;
 
 
         void Log(TrakHoundLogItem logEntry);

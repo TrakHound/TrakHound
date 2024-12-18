@@ -1,0 +1,79 @@
+.log-explorer {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.log-sidebar-panel {
+    grid-column: 1;
+    border-right: 1px solid var(--borderColor);
+    min-width: 200px;
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.log-sidebar-panel .log-sidebar-toolbar-panel {
+    border-bottom: 1px solid var(--borderColor);
+    padding: 5px 0;
+}
+
+    .log-sidebar-panel .log-sidebar-toolbar-panel .btn-toolbar {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+
+    .log-sidebar-panel .log-sidebar-toolbar-panel .btn-toolbar .icon {
+        font-size: 12px !important;
+    }
+
+    .log-sidebar-panel .log-sidebar-list-panel {
+        padding-top: 20px;
+        height: 100%;
+        overflow: auto;
+    }
+
+.log-content-panel {
+    height: 100%;
+    overflow: hidden;
+}
+
+.log-live-panel,
+.log-history-panel {
+    grid-column: 2;
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .log-content-panel .log-toolbar-panel {
+        grid-row: 1;
+        display: grid;
+        grid-template-columns: max-content max-content max-content 1fr;
+        grid-column-gap: 15px;
+        padding: 10px;
+        border-bottom: 1px solid var(--borderColor);
+    }
+
+        .log-content-panel .log-toolbar-panel .btn-subscribe {
+            width: 130px;
+            font-size: 14px;
+            height: 38px;
+            border-radius: 0;
+        }
+
+.log-content-panel .log-toolbar-panel .btn-query {
+    width: 130px;
+    font-size: 14px;
+    height: 38px;
+    border-radius: 0;
+}
+
+    .log-content-panel .log-table-panel {
+        grid-row: 2;
+        height: 100%;
+        overflow: hidden;
+    }

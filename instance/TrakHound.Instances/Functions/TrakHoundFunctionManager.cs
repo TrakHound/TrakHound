@@ -29,6 +29,7 @@ namespace TrakHound.Functions
         private readonly ITrakHoundClientProvider _clientProvider;
         private readonly ITrakHoundClient _client;
         private readonly ITrakHoundVolumeProvider _volumeProvider;
+        private readonly ITrakHoundLogProvider _logProvider;
         private readonly TrakHoundPackageManager _packageManager;
         private readonly Dictionary<string, FunctionItem> _functions = new Dictionary<string, FunctionItem>();
         private readonly List<TrakHoundFunctionEngine> _engines = new List<TrakHoundFunctionEngine>();
@@ -63,6 +64,7 @@ namespace TrakHound.Functions
             ITrakHoundModuleProvider moduleProvider,
             ITrakHoundClientProvider clientProvider,
             ITrakHoundVolumeProvider volumeProvider,
+            ITrakHoundLogProvider logProvider,
             TrakHoundPackageManager packageManager
             )
         {
@@ -82,6 +84,8 @@ namespace TrakHound.Functions
             _client = _clientProvider.GetClient();
 
             _volumeProvider = volumeProvider;
+
+            _logProvider = logProvider;
 
             _delayLoadEvent.Elapsed += LoadDelayElapsed;
         }
@@ -360,6 +364,12 @@ namespace TrakHound.Functions
         {
             if (function != null)
             {
+                // Add to System Logger
+                var loggerId = $"trakhound.function.{function.Id}";
+                var logger = _logProvider.GetLogger(loggerId);
+                logger.Log(item);
+
+                // Publish to Log Object (Run Specific)
                 var path = TrakHoundPath.Combine(_instancesBasePath, _instance.Id, _functionsBasePath, function.Configuration.FunctionId, "Run", runId, "Log");
                 await function.Client.Entities.PublishLog(path, item.LogLevel, item.Message, item.Code, item.Timestamp.ToDateTime(), true);
             }

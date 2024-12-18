@@ -1,70 +1,57 @@
-﻿@implements IDisposable
-@inject JavascriptService javascriptService
-@using TrakHound.Blazor.Services
-@using TrakHound.Logging
+﻿@using TrakHound.Logging
 
 <div class="log-table">
 
-    @{
-        var logLines = GetLogLines();
-        if (!logLines.IsNullOrEmpty())
-        {
-            <table class="table table-sm">
-                <tbody>
-
-                    @for (var i = 0; i < logLines.Count; i++)
-                    {
-                        var logLine = logLines[i];
-                        var level = logLine.LogLevel.ToString();
-                        var levelClass = level.ToLower();
-                        var levelId = i == logLines.Count - 1 ? lastLogElementId : "";
-
-                        <tr id="@levelId" class="@levelClass">
-                            <td class="level">@level</td>
-                            <td class="timestamp">@logLine.Timestamp.ToDateTime().ToISO8601String()</td>
-                            <td class="message"><p>@logLine.Message</p></td>
-                        </tr>
-                    }
-
-                </tbody>
-            </table>
-        }
+    @if (!LogLines.IsNullOrEmpty())
+    {
+        <RadzenDataGrid Data="@CreateTableItems(LogLines)" TItem="TableItem" Density="Density.Compact" GridLines="DataGridGridLines.Vertical">
+            <Columns>
+                <RadzenDataGridColumn TItem="TableItem" Property="Level" Title="Level" Width="100px" Sortable="false" />
+                <RadzenDataGridColumn TItem="TableItem" Property="Timestamp" Title="Timestamp" Width="250px" Sortable="false">
+                    <Template Context="context">
+                        @context.Timestamp.ToISO8601String()
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="TableItem" Property="Message" Title="Message" Sortable="false" />
+            </Columns>
+        </RadzenDataGrid>
     }
 
 </div>
 
 @code {
 
-    private const string lastLogElementId = "last-log-entry";
-    private const int maxLogLines = 1000;
-
-    private List<TrakHoundLogItem> logLines = new List<TrakHoundLogItem>();
-    private DelayEvent _logDelay = new DelayEvent(50);
-    private readonly object _lock = new object();
-
-
-    protected override void OnInitialized()
+    class TableItem
     {
-        _logDelay.Elapsed += LogUpdated;
+        public string Level { get; set; }
+        public DateTime Timestamp { get; set; }
+        public string Message { get; set; }
     }
 
-    void IDisposable.Dispose()
-    {
-        _logDelay.Elapsed -= LogUpdated;
-    }
 
-    private List<TrakHoundLogItem> GetLogLines()
+    [Parameter]
+    public IEnumerable<TrakHoundLogItem> LogLines { get; set; }
+
+
+    private static IEnumerable<TableItem> CreateTableItems(IEnumerable<TrakHoundLogItem> logItems)
     {
-        lock (_lock)
+        if (!logItems.IsNullOrEmpty())
         {
-            return logLines.OrderBy(o => o.Timestamp).ToList();
-        }
-    }
+            var tableItems = new List<TableItem>();
 
-    private async void LogUpdated(object sender, EventArgs args)
-    {
-        await InvokeAsync(StateHasChanged);
-        await javascriptService.ScrollIntoView(lastLogElementId);
+            foreach (var logItem in logItems)
+            {
+                var tableItem = new TableItem();
+                tableItem.Level = logItem.LogLevel.ToString();
+                tableItem.Timestamp = logItem.Timestamp.ToLocalDateTime();
+                tableItem.Message = logItem.Message;
+                tableItems.Add(tableItem);
+            }
+
+            return tableItems;
+        }
+
+        return null;
     }
 
 }

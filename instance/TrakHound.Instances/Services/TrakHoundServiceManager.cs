@@ -28,6 +28,7 @@ namespace TrakHound.Services
         private readonly ITrakHoundModuleManager _moduleManager;
         private readonly ITrakHoundClientProvider _clientProvider;
         private readonly ITrakHoundVolumeProvider _volumeProvider;
+        private readonly ITrakHoundLogProvider _logProvider;
         private readonly ITrakHoundClient _client;
         private readonly TrakHoundPackageManager _packageManager;
         private readonly Dictionary<string, ServiceItem> _services = new Dictionary<string, ServiceItem>();
@@ -69,6 +70,7 @@ namespace TrakHound.Services
             ITrakHoundModuleProvider moduleProvider,
             ITrakHoundClientProvider clientProvider,
             ITrakHoundVolumeProvider volumeProvider,
+            ITrakHoundLogProvider logProvider,
             TrakHoundPackageManager packageManager
             )
         {
@@ -88,6 +90,8 @@ namespace TrakHound.Services
             _client = _clientProvider.GetClient();
 
             _volumeProvider = volumeProvider;
+
+            _logProvider = logProvider;
 
             _delayLoadEvent.Elapsed += LoadDelayElapsed;
         }
@@ -411,6 +415,9 @@ namespace TrakHound.Services
                 var service = sender as ITrakHoundService;
                 if (service != null)
                 {
+                    var logger = _logProvider.GetLogger($"service/{service.Id}/{item.Sender}");
+                    logger.Log(item);
+
                     if (ServiceLogUpdated != null) ServiceLogUpdated.Invoke(service.Id, item);
                 }
             }

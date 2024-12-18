@@ -1,0 +1,127 @@
+﻿@implements IDisposable
+@inject JavascriptService javascriptService
+@using TrakHound.Blazor.Services
+@using TrakHound.Logging
+
+<div class="log-table">
+
+    @{
+        var logLines = GetLogLines();
+        if (!logLines.IsNullOrEmpty())
+        {
+            <table class="table table-sm">
+                <tbody>
+
+                    @for (var i = 0; i < logLines.Count; i++)
+                    {
+                        var logLine = logLines[i];
+                        var level = logLine.LogLevel.ToString();
+                        var levelClass = level.ToLower();
+                        var levelId = i == logLines.Count - 1 ? lastLogElementId : "";
+
+                        <tr id="@levelId" class="@levelClass">
+                            <td class="level">@level</td>
+                            <td class="timestamp">@logLine.Timestamp.ToDateTime().ToISO8601String()</td>
+                            <td class="message"><p>@logLine.Message</p></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+    }
+
+</div>
+
+@code {
+
+    private const string lastLogElementId = "last-log-entry";
+    private const int DefaultMaxLines = 1000;
+
+    private string previousConsumerId;
+    private CircularBuffer<TrakHoundLogItem> logLines = new CircularBuffer<TrakHoundLogItem>(DefaultMaxLines);
+    private ThrottleEvent _logThrottle = new ThrottleEvent(500);
+    private readonly object _lock = new object();
+
+
+    [Parameter]
+    public ITrakHoundConsumer<IEnumerable<TrakHoundLogItem>> Consumer { get; set; }
+
+    [Parameter]
+    public int MaxLines { get; set; } = DefaultMaxLines;
+
+
+    protected override void OnInitialized()
+    {
+        _logThrottle.Elapsed += LogUpdated;
+        Load();
+    }
+
+    protected override void OnParametersSet()
+    {
+        Load();
+    }
+
+    private void Load()
+    {
+        if (Consumer != null)
+        {
+            if (Consumer.Id != previousConsumerId)
+            {
+                lock (_lock) logLines.Clear();
+                previousConsumerId = Consumer.Id;
+                Consumer.Disposed += ConsumerDisposed;
+                Consumer.Received += LogReceived;
+            }
+        }
+        else
+        {
+            previousConsumerId = null;
+            lock (_lock) logLines.Clear();
+        }
+    }
+
+    void IDisposable.Dispose()
+    {
+        if (_logThrottle != null)
+        {
+            _logThrottle.Elapsed -= LogUpdated;
+            _logThrottle.Dispose();
+        }
+
+        if (Consumer != null)
+        {
+            Consumer.Received -= LogReceived;
+        }
+    }
+
+    private void ConsumerDisposed(object sender, string id)
+    {
+        if (Consumer != null)
+        {
+            Consumer.Received -= LogReceived;
+        }
+    }
+
+    private List<TrakHoundLogItem> GetLogLines()
+    {
+        lock (_lock)
+        {
+            return logLines.Get()?.OrderBy(o => o.Timestamp).ToList();
+        }
+    }
+
+    private async void LogUpdated(object sender, EventArgs args)
+    {
+        await InvokeAsync(StateHasChanged);
+        await javascriptService.ScrollIntoView(lastLogElementId);
+    }
+
+    private void LogReceived(object sender, IEnumerable<TrakHoundLogItem> items)
+    {
+        foreach (var item in items) logLines.Add(item);
+
+        _logThrottle.Set();
+    }
+
+}

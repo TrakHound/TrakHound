@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TrakHound.Drivers;
 using TrakHound.Drivers.Entities;
 using TrakHound.Entities;
+using TrakHound.Logging;
 
 namespace TrakHound.Buffers
 {
@@ -17,7 +18,8 @@ namespace TrakHound.Buffers
         private readonly IEntityPublishDriver<TEntity> _driver;
 
 
-        public TrakHoundEntityPublishBuffer(IEntityPublishDriver<TEntity> driver) : base(GetBufferId(driver), driver.Configuration.Id, GetBufferName(), _operationType, driver.Configuration.Buffer)
+        public TrakHoundEntityPublishBuffer(IEntityPublishDriver<TEntity> driver, ITrakHoundLogProvider logProvider)
+            : base(GetBufferId(driver), driver.Configuration.Id, logProvider, GetBufferName(), _operationType, driver.Configuration.Buffer)
         {
             _driver = driver;
 

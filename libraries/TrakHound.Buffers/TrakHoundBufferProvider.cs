@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using TrakHound.Drivers.Entities;
 using TrakHound.Entities;
+using TrakHound.Logging;
 
 namespace TrakHound.Buffers
 {
@@ -12,14 +13,17 @@ namespace TrakHound.Buffers
     {
         private const int _metricsInterval = 1000;
 
+        private readonly ITrakHoundLogProvider _logProvider;
         private readonly Dictionary<string, ITrakHoundOperationBuffer> _buffers = new Dictionary<string, ITrakHoundOperationBuffer>();
         private readonly Dictionary<string, TrakHoundBufferMetrics> _metrics = new Dictionary<string, TrakHoundBufferMetrics>();
         private readonly System.Timers.Timer _metricsTimer;
         private readonly object _lock = new object();
 
 
-        public TrakHoundBufferProvider()
+        public TrakHoundBufferProvider(ITrakHoundLogProvider logProvider)
         {
+            _logProvider = logProvider;
+
             _metricsTimer = new System.Timers.Timer();
             _metricsTimer.Interval = _metricsInterval;
             _metricsTimer.Elapsed += MetricsTimerElapsed;
@@ -83,7 +87,7 @@ namespace TrakHound.Buffers
                 var bufferId = TrakHoundEntityPublishBuffer<TEntity>.GetBufferId(driver);
                 if (!BufferExists(bufferId))
                 {
-                    var buffer = new TrakHoundEntityPublishBuffer<TEntity>(driver);
+                    var buffer = new TrakHoundEntityPublishBuffer<TEntity>(driver, _logProvider);
                     AddBuffer(buffer);
 
                     return (TrakHoundEntityPublishBuffer<TEntity>)GetBuffer<TEntity>(bufferId);
@@ -112,7 +116,7 @@ namespace TrakHound.Buffers
                 var bufferId = TrakHoundEntityEmptyBuffer<TEntity>.GetBufferId(driver);
                 if (!BufferExists(bufferId))
                 {
-                    var buffer = new TrakHoundEntityEmptyBuffer<TEntity>(driver);
+                    var buffer = new TrakHoundEntityEmptyBuffer<TEntity>(driver, _logProvider);
                     AddBuffer(buffer);
 
                     return (TrakHoundEntityEmptyBuffer<TEntity>)GetBuffer<EntityEmptyRequest>(bufferId);
@@ -141,7 +145,7 @@ namespace TrakHound.Buffers
                 var bufferId = TrakHoundEntityDeleteBuffer<TEntity>.GetBufferId(driver);
                 if (!BufferExists(bufferId))
                 {
-                    var buffer = new TrakHoundEntityDeleteBuffer<TEntity>(driver);
+                    var buffer = new TrakHoundEntityDeleteBuffer<TEntity>(driver, _logProvider);
                     AddBuffer(buffer);
 
                     return (TrakHoundEntityDeleteBuffer<TEntity>)GetBuffer<EntityDeleteRequest>(bufferId);
@@ -170,7 +174,7 @@ namespace TrakHound.Buffers
                 var bufferId = TrakHoundEntityIndexBuffer<TEntity>.GetBufferId(driver);
                 if (!BufferExists(bufferId))
                 {
-                    var buffer = new TrakHoundEntityIndexBuffer<TEntity>(driver);
+                    var buffer = new TrakHoundEntityIndexBuffer<TEntity>(driver, _logProvider);
                     AddBuffer(buffer);
 
                     return (TrakHoundEntityIndexBuffer<TEntity>)GetBuffer<EntityIndexPublishRequest>(bufferId);

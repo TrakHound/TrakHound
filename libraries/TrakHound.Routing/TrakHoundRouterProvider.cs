@@ -10,6 +10,7 @@ using TrakHound.Configurations;
 using TrakHound.Drivers;
 using TrakHound.Drivers.Entities;
 using TrakHound.Entities;
+using TrakHound.Logging;
 
 namespace TrakHound.Routing
 {
@@ -19,6 +20,7 @@ namespace TrakHound.Routing
     public partial class TrakHoundRouterProvider
     {
         private readonly ITrakHoundConfigurationProfile _configurationProfile;
+        private readonly ITrakHoundLogProvider _logProvider;
         private readonly ITrakHoundDriverProvider _driverProvider;
         private readonly ITrakHoundBufferProvider _bufferProvider;
 
@@ -40,6 +42,7 @@ namespace TrakHound.Routing
 
         public TrakHoundRouterProvider(
             ITrakHoundConfigurationProfile configurationProfile,
+            ITrakHoundLogProvider logProvider,
             ITrakHoundDriverProvider driverProvider,
             ITrakHoundBufferProvider bufferProvider
             )
@@ -47,6 +50,8 @@ namespace TrakHound.Routing
             _configurationProfile = configurationProfile;
             _configurationProfile.ConfigurationAdded += ConfigurationUpdated;
             _configurationProfile.ConfigurationRemoved += ConfigurationUpdated;
+
+            _logProvider = logProvider;
 
             _driverProvider = driverProvider;
             _driverProvider.DriverAdded += (s, o) => { _loadDelay.Set(); };
@@ -133,7 +138,7 @@ namespace TrakHound.Routing
             lock (_lock) add = !_routers.Any(o => o.Id == configuration.Id);
             if (add)
             {
-                var router = new TrakHoundRouter(configuration, _driverProvider, _bufferProvider);
+                var router = new TrakHoundRouter(configuration, _logProvider, _driverProvider, _bufferProvider);
 
                 var client = ClientProvider?.GetClient();
                 client.RouterId = configuration.Id;
@@ -202,7 +207,7 @@ namespace TrakHound.Routing
                 {
                     foreach (var configuration in configurations)
                     {
-                        var router = new TrakHoundRouter(configuration, _driverProvider, _bufferProvider);
+                        var router = new TrakHoundRouter(configuration, _logProvider, _driverProvider, _bufferProvider);
 
                         lock (_lock)
                         {

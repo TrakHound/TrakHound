@@ -33,6 +33,7 @@ namespace TrakHound.Api
         private readonly ITrakHoundConfigurationProfile _configurationProfile;
         private readonly ITrakHoundClientProvider _clientProvider;
         private readonly ITrakHoundVolumeProvider _volumeProvider;
+        private readonly ITrakHoundLogProvider _logProvider;
         private readonly ITrakHoundModuleManager _moduleManager;
         private readonly TrakHoundPackageManager _packageManager;
         private readonly string _baseUrl;
@@ -64,12 +65,14 @@ namespace TrakHound.Api
             ITrakHoundModuleProvider moduleProvider,
             ITrakHoundClientProvider clientProvider,
             ITrakHoundVolumeProvider volumeProvider,
+            ITrakHoundLogProvider logProvider,
             TrakHoundPackageManager packageManager
             )
         {
             _instance = instance;
             _clientProvider = clientProvider;
             _volumeProvider = volumeProvider;
+            _logProvider = logProvider;
 
             // Set Base URL (HTTP Address)
             if (_instance != null)
@@ -1461,7 +1464,7 @@ namespace TrakHound.Api
                     var volumeId = configuration.VolumeId ?? configuration.Id;
                     var volume = _volumeProvider.GetVolume(volumeId);
 
-                    var logger = new TrakHoundLogger(configuration.Id);
+                    var logger = _logProvider.GetLogger($"api/{configuration.Id}");
                     logger.LogEntryReceived += LogEntryReceived;
 
                     if (client != null && volume != null)
@@ -1543,7 +1546,7 @@ namespace TrakHound.Api
                 var logger = sender as ITrakHoundLogger;
                 if (logger != null)
                 {
-                    if (ApiLogUpdated != null) ApiLogUpdated.Invoke(logger.Name, item);
+                    if (ApiLogUpdated != null) ApiLogUpdated.Invoke(logger.Id, item);
                 }
             }
         }

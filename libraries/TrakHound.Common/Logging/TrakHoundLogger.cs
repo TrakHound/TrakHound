@@ -14,28 +14,33 @@ namespace TrakHound.Logging
         {
             LoggerType = typeof(T);
         }
+
+        public TrakHoundLogger(string name) : base(name)
+        {
+            LoggerType = typeof(T);
+        }
     }
 
     public class TrakHoundLogger : ITrakHoundLogger
     {
-        private readonly string _name;
+        private readonly string _id;
 
         
         /// <summary>
         /// The Name of the Logger
         /// </summary>
-        public string Name => _name;
+        public string Id => _id;
 
         /// <summary>
         /// Event for when a new Log Entry is received
         /// </summary>
-        public event EventHandler<TrakHoundLogItem> LogEntryReceived;
+        public event TrakHoundLogEventHandler LogEntryReceived;
 
 
-        public TrakHoundLogger(string name)
+        public TrakHoundLogger(string id)
         {
-            _name = name;
-            TrakHoundLogProvider.AddLogger(this);
+            _id = id;
+            //TrakHoundLogProvider.AddLogger(this);
         }
 
 
@@ -46,10 +51,7 @@ namespace TrakHound.Logging
 
         public virtual void Log(TrakHoundLogLevel logLevel, string message)
         {
-            if (logLevel <= TrakHoundLogProvider.MinimumLogLevel)
-            {
-                LogEntryReceived?.Invoke(this, new TrakHoundLogItem(_name, logLevel, message));
-            }
+            if (LogEntryReceived != null) LogEntryReceived.Invoke(this, new TrakHoundLogItem(_id, logLevel, message));
         }
 
         public void LogCritical(string message) => Log(TrakHoundLogLevel.Critical, message);

@@ -10,6 +10,7 @@ using TrakHound.Clients;
 using TrakHound.Configurations;
 using TrakHound.Drivers;
 using TrakHound.Functions;
+using TrakHound.Logging;
 using TrakHound.Management;
 using TrakHound.Modules;
 using TrakHound.Packages;
@@ -55,9 +56,8 @@ namespace TrakHound.Instances
         TrakHoundFunctionManager FunctionManager { get; }
         TrakHoundServiceManager ServiceManager { get; }
         ITrakHoundVolumeProvider VolumeProvider { get; }
-
         ITrakHoundClientProvider ClientProvider { get; }
-        //ITrakHoundProducer Producer { get; }
+        ITrakHoundLogProvider LogProvider { get; }
 
 
         event EventHandler Starting;

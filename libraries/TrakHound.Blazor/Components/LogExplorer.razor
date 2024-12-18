@@ -1,0 +1,228 @@
+﻿@using TrakHound.Logging
+
+<div class="log-explorer">
+    <div class="log-sidebar-panel">
+        <div class="log-sidebar-toolbar-panel">
+            <div class="log-buttons-container">
+
+                @if (!refreshLoading)
+                {
+                    <button class="btn btn-toolbar" @onclick="Refresh"><span class="icon fa-solid fa-sharp fa-rotate"></span>Refresh</button>
+                }
+                else
+                {
+                    <button class="btn btn-toolbar"><span class="icon fa-solid fa-sharp fa-rotate spin"></span>Refresh</button>
+                }
+
+            </div>
+        </div>
+        <div class="log-sidebar-list-panel">
+            <TreeView SelectedId="@SelectedLogName">
+
+                @if (!logNames.IsNullOrEmpty())
+                {
+                    foreach (var logName in logNames)
+                    {
+                        <TreeItem Id="@logName" Title="@logName" Selected="() => SelectLog(logName)"/>
+                    }
+                }
+
+            </TreeView>
+        </div>
+    </div>
+    <div class="log-content-panel">
+        <RadzenTabs>
+            <Tabs>
+                <RadzenTabsItem Text="Live">
+                    <div class="log-live-panel">
+                        <div class="log-toolbar-panel">
+                            <div class="log-buttons-container">
+
+                                @if (!queryLoading)
+                                {
+                                    @if (logConsumer != null)
+                                    {
+                                        <button class="btn btn-secondary btn-subscribe" @onclick="@Unsubscribe"><span class="icon fa-solid fa-sharp fa-pause"></span>Unsubscribe</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-primary btn-subscribe" @onclick="@Subscribe"><span class="icon fa-solid fa-sharp fa-play"></span>Subscribe</button>
+                                    }
+                                }
+                                else
+                                {
+                                    <button class="btn btn-primary btn-query disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
+                                }
+
+                            </div>
+                            <div class="log-options-container">
+                                <RadzenDropDown Data="@logLevels" TValue="TrakHoundLogLevel" Value="@SelectedLogLevel" ValueChanged="SelectLogLevel" />
+                            </div>
+                        </div>
+                        <div class="log-table-panel">
+                            <LogStream Consumer="@logConsumer" />
+                        </div>
+                    </div>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="History">
+                    <div class="log-history-panel">
+                        <div class="log-toolbar-panel">
+                            <div class="log-buttons-container">
+
+                                @if (!queryLoading)
+                                {
+                                    <button class="btn btn-primary btn-query" @onclick="@QueryLogLines"><span class="icon fa-solid fa-sharp fa-magnifying-glass"></span>Query</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-primary btn-query disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
+                                }
+
+                            </div>
+                            <div class="log-options-container">
+                                <RadzenDropDown Data="@logLevels" TValue="TrakHoundLogLevel" Value="@SelectedLogLevel" ValueChanged="SelectLogLevel" />
+                            </div>
+                            <div class="log-timerange-container">
+                                <TimeRangeSelection From="@From" To="@To" FromChanged="SelectFrom" ToChanged="SelectTo" />
+                            </div>
+                        </div>
+                        <div class="log-table-panel">
+                            <LogTable LogLines="@logLines" />
+                        </div>
+                    </div>
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+    </div>
+</div>
+
+@code {
+
+    private static TrakHoundLogLevel[] logLevels = Enum.GetValues<TrakHoundLogLevel>();
+    private IEnumerable<string> logNames;
+    private ITrakHoundConsumer<IEnumerable<TrakHoundLogItem>> logConsumer;
+    private IEnumerable<TrakHoundLogItem> logLines;
+    private bool refreshLoading;
+    private bool queryLoading;
+
+    [Parameter]
+    public Func<Task<IEnumerable<string>>> GetLogNames { get; set; }
+
+    [Parameter]
+    public Func<Task<ITrakHoundConsumer<IEnumerable<TrakHoundLogItem>>>> GetLogLineConsumer { get; set; }
+
+    [Parameter]
+    public Func<Task<IEnumerable<TrakHoundLogItem>>> GetLogLines { get; set; }
+
+    [Parameter]
+    public TrakHoundLogLevel SelectedLogLevel { get; set; }
+
+    [Parameter]
+    public EventCallback<TrakHoundLogLevel> SelectedLogLevelChanged { get; set; }
+
+    [Parameter]
+    public string SelectedLogName { get; set; }
+
+    [Parameter]
+    public EventCallback<string> SelectedLogNameChanged { get; set; }
+
+    [Parameter]
+    public DateTime From { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTime> FromChanged { get; set; }
+
+    [Parameter]
+    public DateTime To { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTime> ToChanged { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Refresh();
+    }
+
+
+    private async Task Refresh()
+    {
+        if (GetLogNames != null)
+        {
+            refreshLoading = true;
+            await InvokeAsync(StateHasChanged);
+
+            _ = Task.Run(async () =>
+            {
+                logNames = await GetLogNames();
+                refreshLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
+    }
+
+    private async void SelectLogLevel(TrakHoundLogLevel level)
+    {
+        if (logConsumer != null) logConsumer.Dispose();
+        logConsumer = null;
+
+        logLines = null;
+        SelectedLogLevel = level;
+        await SelectedLogLevelChanged.InvokeAsync(level);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void SelectLog(string logName)
+    {
+        if (logConsumer != null) logConsumer.Dispose();
+        logConsumer = null;
+
+        logLines = null;
+        SelectedLogName = logName;
+        await SelectedLogNameChanged.InvokeAsync(logName);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task Subscribe()
+    {
+        if (GetLogLineConsumer != null)
+        {
+            logConsumer = await GetLogLineConsumer();
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task Unsubscribe()
+    {
+        if (logConsumer != null) logConsumer.Dispose();
+        logConsumer = null;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task QueryLogLines()
+    {
+        if (GetLogLines != null)
+        {
+            queryLoading = true;
+            await InvokeAsync(StateHasChanged);
+
+            _ = Task.Run(async () => {
+
+                logLines = await GetLogLines();
+                queryLoading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
+    }
+
+    private async void SelectFrom(DateTime timestamp)
+    {
+        await FromChanged.InvokeAsync(timestamp);
+    }
+
+    private async void SelectTo(DateTime timestamp)
+    {
+        await ToChanged.InvokeAsync(timestamp);
+    }
+
+}

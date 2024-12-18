@@ -1,0 +1,63 @@
+.log-table {
+    height: 100%;
+    overflow: hidden;
+}
+
+.log-table ::deep .rz-data-grid {
+    height: 100%;
+    overflow: auto;
+}
+
+    .log-table ::deep .rz-data-grid .rz-cell-data {
+        padding: 0;
+        font-size: 12px !important;
+        line-height: normal;
+    }
+
+/*
+.log-table table tr {
+    padding: 0;
+}
+
+.log-table table th {
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: normal;
+}
+
+    .log-table table th.level {
+        text-align: left;
+    }
+
+    .log-table table th.timestamp {
+        text-align: left;
+    }
+
+    .log-table table th.message {
+        text-align: left;
+    }
+
+
+.log-table table td {
+    padding: 4px 10px;
+    font-size: 12px;
+    line-height: normal;
+}
+
+    .log-table table td.level {
+        width: 90px;
+        text-align: left;
+    }
+
+    .log-table table td.timestamp {
+        width: 200px;
+        text-align: left;
+    }
+
+    .log-table table td.message {
+        text-align: left;
+        white-space: normal;
+        overflow-wrap: break-word;
+        word-break: normal;
+    }*/

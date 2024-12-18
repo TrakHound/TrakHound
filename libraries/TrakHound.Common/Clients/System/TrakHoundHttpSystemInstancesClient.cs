@@ -1,6 +1,7 @@
 // Copyright (c) 2024 TrakHound Inc., All Rights Reserved.
 // TrakHound Inc. licenses this file to you under the MIT license.
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TrakHound.Buffers;
@@ -48,6 +49,47 @@ namespace TrakHound.Clients
         public async Task<ITrakHoundConsumer<IEnumerable<TrakHoundLogItem>>> SubscribeToLog(string instanceId, TrakHoundLogLevel minimumLevel = TrakHoundLogLevel.Information)
         {
             return null; // Not Implemented
+        }
+
+        public async Task<ITrakHoundConsumer<IEnumerable<TrakHoundLogItem>>> SubscribeToLog(string instanceId, string logName, TrakHoundLogLevel minimumLevel = TrakHoundLogLevel.Information)
+        {
+            return null; // Not Implemented
+        }
+
+
+        public async Task<IEnumerable<string>> QueryLogNames(string instanceId)
+        {
+            return null;
+        }
+
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogs(string instanceId, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        {
+            return null;
+        }
+
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogsByMinimumLevel(string instanceId, TrakHoundLogLevel minimumLevel, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        {
+            return null;
+        }
+
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogsByLevel(string instanceId, TrakHoundLogLevel level, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        {
+            return null;
+        }
+
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogs(string instanceId, string logName, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        {
+            return null;
+        }
+
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogsByMinimumLevel(string instanceId, string logName, TrakHoundLogLevel minimumLevel, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        {
+            return null;
+        }
+
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogsByLevel(string instanceId, string logName, TrakHoundLogLevel level, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        {
+            return null;
         }
 
 

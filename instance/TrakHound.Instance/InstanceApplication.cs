@@ -19,6 +19,7 @@ using TrakHound.Clients;
 using TrakHound.Configurations;
 using TrakHound.Http;
 using TrakHound.Instance.Configurations;
+using TrakHound.Instance.Logging;
 using TrakHound.Instance.Security;
 using TrakHound.Instance.Services;
 using TrakHound.Instances;
@@ -85,11 +86,10 @@ namespace TrakHound.Instance
                 }
 
                 // Add Logging
-                //builder.Logging.ClearProviders();
                 builder.Host.UseNLog();
-                var logProvider = TrakHoundLogProvider.Get();
-                TrakHoundLogProvider.MinimumLogLevel = TrakHoundLogLevel.Debug;
+                var logProvider = new TrakHoundNLogProvider(instanceConfiguration.InstanceId, _logger);
                 logProvider.LogEntryReceived += LogEntryReceived;
+
 
                 // Add Local Storage (using Blazored)
                 builder.Services.AddBlazoredLocalStorage();
@@ -102,7 +102,7 @@ namespace TrakHound.Instance
                 if (instanceConfiguration.AdminInterfaceEnabled) builder.AddTrakHoundExplorer();
 
                 // Create TrakHound Instance
-                _instance = new TrakHoundInstance(instanceConfiguration);
+                _instance = new TrakHoundInstance(instanceConfiguration, logProvider);
                 await _instance.Start();
                 builder.Services.AddSingleton<TrakHoundInstanceConfiguration>(instanceConfiguration);
                 builder.Services.AddSingleton<ITrakHoundInstance>(_instance);
@@ -480,7 +480,7 @@ namespace TrakHound.Instance
             var logger = (ITrakHoundLogger)sender;
 
             var logEvent = new LogEventInfo();
-            logEvent.LoggerName = logger.Name;
+            logEvent.LoggerName = logger.Id;
             logEvent.Message = entry.Message;
 
             switch (entry.LogLevel)

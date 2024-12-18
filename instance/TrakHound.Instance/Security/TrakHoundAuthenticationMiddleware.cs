@@ -16,7 +16,6 @@ namespace TrakHound.Instance.Security
         public const string CallbackPrefix = "/_identity/callback";
         public const string RevokePrefix = "/_identity/revoke";
 
-        private static readonly ITrakHoundLogger _logger = new TrakHoundLogger<TrakHoundAuthenticationMiddleware>();
         private readonly ITrakHoundInstance _instance;
         private readonly ITrakHoundSecurityManager _identityManager;
         private readonly RequestDelegate _next;
@@ -59,7 +58,6 @@ namespace TrakHound.Instance.Security
                             // Will need to add ability to store Body as well. Probably a struct?
                             //LinkStore.Add(request.Id, $"{context.Request.}{context.Request.QueryString}");
                             var requestedUrl = "/" + Url.Combine(_instance.Configuration.BasePath, $"{context.Request.Path}{context.Request.QueryString}");
-                            _logger.LogError($"requestedUrl = {requestedUrl}");
                             LinkStore.Add(request.Id, requestedUrl);
                             //var requestedUrl = Url.Combine($"{context.Request.Scheme}://{context.Request.Host}", context.Request.PathBase, context.Request.Path);
                             //LinkStore.Add(request.Id, requestedUrl);
