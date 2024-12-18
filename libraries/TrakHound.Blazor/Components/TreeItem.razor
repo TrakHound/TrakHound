@@ -52,7 +52,7 @@
             <div class="tree-item-header-container">
                 <TreeItemHeader Title="@Title" Subtitle="@Subtitle" TitleLabel="@TitleLabel"
                                 Icon="@Icon" IconLabel="@IconLabel"
-                                Value="@Value" Link="@Link" IsActive="@isActive" IsExpanded="@IsExpanded"
+                                Value="@Value" Link="@Link" IsActive="@isActive" IsExpanded="@IsExpanded" Selected="@Select"
                                 HeaderTemplate="@HeaderTemplate" ValueTemplate="@ValueTemplate" ContextMenu="@ContextMenu"
                                 Expanded="Expand" />
             </div>
@@ -173,6 +173,11 @@
         await IsExpandedChanged.InvokeAsync(IsExpanded);
         await Collapsed.InvokeAsync(Id);
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async void Select()
+    {
+        await Selected.InvokeAsync(Id);
     }
 
     private async void ToggleCheck()

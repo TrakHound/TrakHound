@@ -1,6 +1,7 @@
 .tree-item-header ::deep .default-header-content-container {
     display: grid;
     grid-template-columns: max-content 1fr 200px;
+    grid-template-columns: max-content 1fr max-content;
     border: 1px solid transparent;
     border-radius: 2px;
     line-height: 14px;
@@ -52,6 +53,10 @@
 }
 
 /* Hover */
+
+.default-header-content-container:hover {
+    cursor: pointer;
+}
 
 .default-header-content-container:hover .icon {
     color: var(--accentLight) !important;
