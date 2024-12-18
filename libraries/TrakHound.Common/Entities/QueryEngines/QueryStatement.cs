@@ -98,6 +98,8 @@ namespace TrakHound.Entities.QueryEngines
                                         var conditionValue = Scope.GetVariable(condition.Value);
                                         if (conditionValue != null)
                                         {
+                                            IEnumerable<string> subTargetObjectUuids = null;
+
                                             conditionTarget = conditionTarget.TrimStart('[').TrimEnd(']');
                                             var indexTarget = TrakHoundPath.Combine(target, conditionTarget)?.ToLower().ToSHA256Hash();
 
@@ -125,7 +127,7 @@ namespace TrakHound.Entities.QueryEngines
                                                 long take = Take != null ? Take.Value : 0;
                                                 SortOrder sortOrder = Order != null ? Order.Value : SortOrder.Ascending;
 
-                                                targetObjectUuids = await client.Objects.QueryIndex(indexRequests, skip, take, sortOrder);
+                                                subTargetObjectUuids = await client.Objects.QueryIndex(indexRequests, skip, take, sortOrder);
                                             }
                                             else
                                             {
@@ -151,8 +153,40 @@ namespace TrakHound.Entities.QueryEngines
                                                     var results = await EntityEvaluator.Evaluate(this, client, evaluators);
                                                     if (!results.IsNullOrEmpty())
                                                     {
-                                                        targetObjectUuids = results.Select(o => o.Query.TargetObjectUuid).Distinct();
+                                                        subTargetObjectUuids = results.Select(o => o.Query.TargetObjectUuid).Distinct();
                                                     }
+                                                }
+                                            }
+
+                                            if (!subTargetObjectUuids.IsNullOrEmpty())
+                                            {
+                                                if (!targetObjectUuids.IsNullOrEmpty())
+                                                {
+                                                    switch (conditionGroup.GroupOperator)
+                                                    {
+                                                        case TrakHoundConditionGroupOperator.AND:
+                                                            targetObjectUuids = targetObjectUuids.Intersect(subTargetObjectUuids);
+                                                            break;
+
+                                                        case TrakHoundConditionGroupOperator.OR:
+                                                            var x = new List<string>();
+                                                            x.AddRange(targetObjectUuids);
+                                                            x.AddRange(subTargetObjectUuids);
+                                                            targetObjectUuids = x;
+                                                            break;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    targetObjectUuids = subTargetObjectUuids;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (conditionGroup.GroupOperator == TrakHoundConditionGroupOperator.AND)
+                                                {
+                                                    targetObjectUuids = null;
+                                                    break;
                                                 }
                                             }
                                         }
