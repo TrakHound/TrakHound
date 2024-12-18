@@ -15,7 +15,6 @@
 
 .object-explorer-toolbar-right {
     padding-left: 5px;
-    border-left: 1px solid #eee;
     border-left: 1px solid var(--borderColorLight);
 }
 

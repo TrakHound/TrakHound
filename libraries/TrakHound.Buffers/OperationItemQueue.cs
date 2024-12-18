@@ -56,7 +56,6 @@ namespace TrakHound.Buffers
                     if (remaining > 0)
                     {
                         Array.Copy(_items, take, _items, 0, remaining);
-                        //Array.Fill()
                     }
 
                     _itemIndex -= take;
