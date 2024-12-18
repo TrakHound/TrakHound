@@ -1,4 +1,11 @@
-﻿<TrakHoundNavLink href="@Link" Match="NavLinkMatch.All">@Text</TrakHoundNavLink>
+﻿@if (!string.IsNullOrEmpty(Link))
+{
+    <TrakHoundNavLink href="@Link" class="btn list-menu-item" Match="NavLinkMatch.All">@Text</TrakHoundNavLink>
+}
+else
+{
+    <button class="btn list-menu-item @GetActiveClass()" @onclick="Selected">@Text</button>
+}
 
 @code {
 
@@ -7,5 +14,17 @@
 
     [Parameter]
     public string Link { get; set; }
+
+    [Parameter]
+    public bool IsActive { get; set; }
+
+    [Parameter]
+    public EventCallback Selected { get; set; }
+
+
+    private string GetActiveClass()
+    {
+        return IsActive ? "active" : "";
+    }
 
 }

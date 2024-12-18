@@ -1,26 +1,32 @@
 .list-menu {
     padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    background: var(--panelBackground);
 }
 
-.list-menu ::deep a {
+.list-menu ::deep .list-menu-item {
     display: block;
+    width: 100%;
     padding: 10px 20px;
     margin: 0;
-    border-bottom: 1px solid #ddd;
-    border-right: 5px solid transparent;
-    color: #555;
-    font-size: 12px;
+    border-bottom: 1px solid var(--borderColorLight);
+    border-left: 5px solid transparent;
+    border-radius: 0;
+    color: var(--textDark);
+    font-size: 14px;
     font-weight: bold;
     text-decoration: none;
 }
 
-    .list-menu ::deep a:hover {
-        background: #f4f4f4;
-        color: #333;
+    .list-menu ::deep .list-menu-item:hover {
+        background: var(--accent);
+        color: #fff;
     }
 
-    .list-menu ::deep a.active {
-        background: #f0f0f0;
-        color: var(--accent);
-        border-right: 5px solid var(--accent);
+    .list-menu ::deep .list-menu-item.active {
+        background: var(--panelBackgroundMedium);
+        color: var(--accentLight);
+        border-left: 5px solid var(--accentLight);
     }
