@@ -32,7 +32,7 @@ namespace TrakHound.Clients
             url = Url.AddQueryParameter(url, "routerId", _baseClient.GetRouterId(routerId));
 
             var httpResponses = await RestRequest.Post<IEnumerable<TrakHoundCommandJsonResponse>>(url, parameters);
-            if (httpResponses.IsNullOrEmpty())
+            if (!httpResponses.IsNullOrEmpty())
             {
                 var responses = new List<TrakHoundCommandResponse>();
                 foreach (var httpResponse in httpResponses)
