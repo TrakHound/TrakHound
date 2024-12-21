@@ -10,6 +10,7 @@ namespace TrakHound.Blazor
     public class TrakHoundHeadOutlet : ComponentBase
     {
         internal const string TitleSectionName = "TrakHound.Page.Title";
+        internal const string FaviconSectionName = "TrakHound.Page.Favicon";
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
@@ -18,6 +19,12 @@ namespace TrakHound.Blazor
             builder.AddComponentParameter(2, nameof(SectionOutlet.SectionName), TitleSectionName);
             builder.CloseComponent();
             builder.AddMarkupContent(3, "<!-- End Page Title -->");
+
+            builder.AddMarkupContent(4, "<!-- TrakHound Page Favicon -->");
+            builder.OpenComponent<SectionOutlet>(5);
+            builder.AddComponentParameter(6, nameof(SectionOutlet.SectionName), FaviconSectionName);
+            builder.CloseComponent();
+            builder.AddMarkupContent(7, "<!-- End Page Favicon -->");
         }
     }
 }
