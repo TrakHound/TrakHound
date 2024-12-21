@@ -10,7 +10,7 @@ namespace TrakHound.Blazor
     public class TrakHoundPageTitle : ComponentBase
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public string Text { get; set; }
 
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
@@ -23,10 +23,10 @@ namespace TrakHound.Blazor
 
         private void BuildTitle(RenderTreeBuilder builder)
         {
-            if (ChildContent != null)
+            if (Text != null)
             {
                 builder.OpenElement(0, "title");
-                builder.AddContent(1, ChildContent);
+                builder.AddContent(1, Text);
                 builder.CloseElement();
             }
         }
