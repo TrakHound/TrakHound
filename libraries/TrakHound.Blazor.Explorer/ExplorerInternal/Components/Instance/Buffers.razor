@@ -20,15 +20,16 @@
                     var driverBufferSize = _bufferSize.Get(driverBufferMetric.Name)?.Reverse().ToArray();
 
                     var queueChartData = new ChartData[10];
-                    if (driverQueuedItems != null && driverQueuedItems.Length >= 10)
+                    for (var i = 0; i < 10; i++) queueChartData[i] = new ChartData();
+                    if (driverQueuedItems != null)
                     {
-                        for (var i = 0; i < 10; i++)
+                        for (var i = 0; i < driverQueuedItems.Length; i++)
                         {
                             var chartData = new ChartData();
                             chartData.Value = driverQueuedItems[i];
                             chartData.Timestamp = i + 1;
                             queueChartData[i] = chartData;
-                        }
+                        }                    
                     }
 
                     ChartData[] fileBufferData = null;
@@ -480,36 +481,60 @@
 
     private static int[] GetQueueItemAxis(int[] values)
     {
-        var max = values.Max();
-        var min = values.Min();
-        var d = max - min;
-
-        var result = new int[4];
-        for (var i = 0; i < 4; i++)
+        if (!values.IsNullOrEmpty())
         {
-            result[i] = min + (i * (d / 4));
+            var max = values.Max();
+            var min = values.Min();
+            var d = max - min;
+
+            var result = new int[4];
+            for (var i = 0; i < 4; i++)
+            {
+                result[i] = min + (i * (d / 4));
+            }
+            return result;
         }
-        return result;
+        else
+        {
+            var result = new int[4];
+            for (var i = 0; i < 4; i++)
+            {
+                result[i] = 0;
+            }
+            return result;
+        }
     }
 
     private static string[] GetBufferSizeAxis(long[] values)
     {
-        var max = values.Max();
-        var min = values.Min();
-        var d = max - min;
-
-        var bytes = new long[4];
-        for (var i = 0; i < 4; i++)
+        if (!values.IsNullOrEmpty())
         {
-            bytes[i] = min + (i * (d / 4));
-        }
+            var max = values.Max();
+            var min = values.Min();
+            var d = max - min;
 
-        var result = new string[4];
-        for (var i = 0; i < 4; i++)
-        {
-            result[i] = StringFunctions.ToFileSize(bytes[i]);
+            var bytes = new long[4];
+            for (var i = 0; i < 4; i++)
+            {
+                bytes[i] = min + (i * (d / 4));
+            }
+
+            var result = new string[4];
+            for (var i = 0; i < 4; i++)
+            {
+                result[i] = StringFunctions.ToFileSize(bytes[i]);
+            }
+            return result;
         }
-        return result;
+        else
+        {
+            var result = new string[4];
+            for (var i = 0; i < 4; i++)
+            {
+                result[i] = "0B";
+            }
+            return result;
+        }
     }
 
 }
