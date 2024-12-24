@@ -102,6 +102,17 @@ namespace TrakHound.Api
         protected virtual void AfterLoggerSet() { }
 
 
+        protected void Log(TrakHoundLogLevel level, string message, string code = null)
+        {
+            if (_logger != null) _logger.Log(new TrakHoundLogItem("Main", level, message, code, UnixDateTime.Now));
+        }
+
+        protected void Log(string logName, TrakHoundLogLevel level, string message, string code = null)
+        {
+            if (_logger != null) _logger.Log(new TrakHoundLogItem(logName, level, message, code, UnixDateTime.Now));
+        }
+
+
         public static TrakHoundApiResponse Ok() => new TrakHoundApiResponse(200);
         public static TrakHoundApiResponse Ok(string message) => new TrakHoundApiResponse(200, message.ToUtf8Bytes(), "text/plain");
         public static TrakHoundApiResponse Ok(object response) => new TrakHoundApiResponse(200, response.ToJson(true).ToUtf8Bytes(), "application/json");

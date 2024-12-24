@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TrakHound.Configurations;
+using TrakHound.Logging;
 using TrakHound.Modules;
 using TrakHound.Packages;
 using TrakHound.Volumes;
@@ -21,6 +22,7 @@ namespace TrakHound.Drivers
         private readonly ITrakHoundModuleProvider _moduleSource;
         private readonly ITrakHoundModuleManager _moduleManager;
         private readonly ITrakHoundVolumeProvider _volumeProvider;
+        private readonly ITrakHoundLogProvider _logProvider;
         private readonly TrakHoundPackageManager _packageManager;
         private readonly object _lock = new object();
         private readonly DelayEvent _delayLoadEvent = new DelayEvent(5000);
@@ -42,6 +44,7 @@ namespace TrakHound.Drivers
             ITrakHoundConfigurationProfile configurationProfile,
             ITrakHoundModuleProvider moduleProvider,
             ITrakHoundVolumeProvider volumeProvider,
+            ITrakHoundLogProvider logProvider,
             TrakHoundPackageManager packageManager
             )
         {
@@ -50,6 +53,8 @@ namespace TrakHound.Drivers
             _configurationProfile.ConfigurationRemoved += ConfigurationUpdated;
 
             _volumeProvider = volumeProvider;
+
+            _logProvider = logProvider;
 
             _packageManager = packageManager;
             _packageManager.PackageAdded += PackageAdded;
@@ -202,8 +207,11 @@ namespace TrakHound.Drivers
                         var driver = (ITrakHoundDriver)constructor.Invoke(new object[] { configuration });
                         if (driver != null)
                         {
+                            var loggerName = $"drivers/{configuration.Id}/{type.FullName}";
+                            ((TrakHoundDriver)driver).SetLogger(_logProvider.GetLogger(loggerName));
+
                             var volumeId = configuration.VolumeId ?? configuration.Id;
-                            ((TrakHoundDriver)driver).Volume = _volumeProvider.GetVolume(volumeId);
+                            ((TrakHoundDriver)driver).SetVolume(_volumeProvider.GetVolume(volumeId));
 
                             _drivers.Add(configuration.Id, driver);
 

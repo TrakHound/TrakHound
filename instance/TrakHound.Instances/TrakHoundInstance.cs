@@ -239,7 +239,7 @@ namespace TrakHound.Instances
                 _securityManager.Load();
 
                 // Initialize Driver Provider
-                _driverProvider = new TrakHoundDriverProvider(_configurationProfile, _moduleProvider, volumeProvider, _packageManager);
+                _driverProvider = new TrakHoundDriverProvider(_configurationProfile, _moduleProvider, volumeProvider, _logProvider, _packageManager);
                 _driverProvider.DriverAdded += (s, args) => { logger.LogInformation($"Entity Driver Loaded : {args.Id}"); };
                 _driverProvider.DriverLoadError += (s, ex) => { logger.LogError($"Entity Driver Load ERROR : {ex.Message}"); };
                 logger.LogInformation("Loading Drivers...");
