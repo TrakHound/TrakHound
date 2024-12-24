@@ -1,0 +1,78 @@
+﻿@implements IDisposable
+@inject JavascriptService javascriptService
+@using TrakHound.Blazor.Services
+
+<input id="@inputId" class="hidden-input" type="text" inputmode="none" @bind-value="@InputValue" @bind-value:event="oninput" />
+
+@code {
+
+    private const int defaultFocusInterval = 1000;
+
+    private readonly string inputId = Guid.NewGuid().ToString();
+    private System.Timers.Timer focusInputTimer;
+    private DelayEvent inputDelayEvent;
+    private string inputValue;
+    private string outputValue;
+
+    internal string InputValue
+    {
+        get => inputValue;
+        set
+        {
+            inputValue = null;
+            outputValue = value;
+
+            inputDelayEvent.Set();
+            InvokeAsync(StateHasChanged); // Update input value to clear InputValue
+        }
+    }
+
+
+    [Parameter]
+    public EventCallback<string> InputReceived { get; set; }
+
+    [Parameter]
+    public int InputFocusInterval { get; set; } = defaultFocusInterval;
+
+
+    protected override void OnInitialized()
+    {
+        focusInputTimer = new System.Timers.Timer();
+        focusInputTimer.Interval = InputFocusInterval;
+        focusInputTimer.Elapsed += FocusInputTimerElapsed;
+        focusInputTimer.Start();
+
+        inputDelayEvent = new DelayEvent(100);
+        inputDelayEvent.Elapsed += InputDelayElapsed;
+    }
+
+    void IDisposable.Dispose()
+    {
+        if (focusInputTimer != null) focusInputTimer.Dispose();
+        if (inputDelayEvent != null) inputDelayEvent.Dispose();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await javascriptService.FocusElement(inputId);
+    }
+
+    private async void InputDelayElapsed(object sender, System.EventArgs args)
+    {
+        if (!string.IsNullOrEmpty(outputValue))
+        {
+            await InvokeAsync(() => UpdateValue(outputValue));
+        }
+    }
+
+    private async void FocusInputTimerElapsed(object sender, System.Timers.ElapsedEventArgs args)
+    {
+        await javascriptService.FocusElement(inputId);
+    }
+
+    private async Task UpdateValue(string value)
+    {
+        await InputReceived.InvokeAsync(value);
+    }
+
+}
