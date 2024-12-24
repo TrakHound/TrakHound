@@ -9,60 +9,63 @@
     var licenseRequired = Package.Metadata != null && Package.Metadata.ContainsKey(".licenseRequired") ? Package.Metadata[".licenseRequired"].ToBoolean() : false;
 
     <div class="package-item @active" @onclick="Click">
-        <div class="package-item-content">
-            <div class="icon-container">
 
-                @if (!string.IsNullOrEmpty(image))
-                {
-                    <img src="@image" class="icon" />
-                }
-                else
-                {
-                    <span class="icon fa-solid fa-sharp fa-box"></span>
-                }
+        <div class="icon-container">
 
-            </div>
-            <div class="identity">
-                <span class="identifier">
-                    @Package.Id           
-                    @if (!string.IsNullOrEmpty(publisher))
-                    {
-                        <span class="publisher">by @publisher</span>
-                    }
-                </span>
-                <span class="description">@description</span>
-            </div>
-
-            @if (licenseRequired)
+            @if (!string.IsNullOrEmpty(image))
             {
-                <div class="license">
-                    <span class="license-label"><span class="icon fa-solid fa-sharp fa-key"></span>License Required</span>
-                </div>
+                <img src="@image" class="icon" />
+            }
+            else
+            {
+                <span class="icon fa-solid fa-sharp fa-box"></span>
             }
 
-            <div class="buttons">
-
-                <span class="version"><span class="symbol">v</span>@Package.Version</span>
-
-                @if (IsInstalling)
-                {
-                    <div class="installing"><span class="loader fa-solid fa-sharp fa-loader spin"></span></div>
-                }
-                else if (!IsInstalled)
-                {
-                    <button class="btn-install btn-command btn" @onclick="Select"><span class="icon fa-solid fa-sharp fa-down-to-bracket"></span>Install</button>
-                }
-                else if (!IsUpdated)
-                {
-                    <button class="btn-install btn-command btn" @onclick="Select"><span class="icon fa-solid fa-sharp fa-up-to-line"></span>Update</button>
-                }
-                else
-                {
-                    <span class="installed">Installed</span>
-                }
-
-            </div>
         </div>
+
+        <div class="identity-container">
+            <span class="identifier">
+                @Package.Id
+                @if (!string.IsNullOrEmpty(publisher))
+                {
+                    <span class="publisher">by @publisher</span>
+                }
+            </span>
+            <span class="description">@description</span>
+        </div>
+
+        @if (licenseRequired)
+        {
+            <div class="license-container">
+                <span class="license-label"><span class="icon fa-solid fa-sharp fa-key"></span>License Required</span>
+            </div>
+        }
+
+        <div class="version-container">
+            <span class="version"><span class="symbol">v</span>@Package.Version</span>
+        </div>
+
+        <div class="buttons-container">
+
+            @if (IsInstalling)
+            {
+                <div class="installing"><span class="loader fa-solid fa-sharp fa-loader spin"></span></div>
+            }
+            else if (!IsInstalled)
+            {
+                <button class="btn-install btn-command btn" @onclick="Select"><span class="icon fa-solid fa-sharp fa-down-to-bracket"></span>Install</button>
+            }
+            else if (!IsUpdated)
+            {
+                <button class="btn-install btn-command btn" @onclick="Select"><span class="icon fa-solid fa-sharp fa-up-to-line"></span>Update</button>
+            }
+            else
+            {
+                <span class="installed">Installed</span>
+            }
+
+        </div>
+
     </div>
 }
 

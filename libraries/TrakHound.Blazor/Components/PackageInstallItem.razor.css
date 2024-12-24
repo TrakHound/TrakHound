@@ -1,14 +1,16 @@
 ﻿.package-item {
+    display: grid;
+    grid-template-columns: max-content 1fr 130px 50px 90px;
+    grid-column-gap: 20px;
     padding: 10px 10px 10px 25px;
     border: 1px solid var(--borderColor);
     border-radius: 2px;
     margin-top: 5px;
-    min-height: 55px;
     background: var(--panelItemBackground);
 }
 
     .package-item.active {
-        background: var(--panelItemBackgroundHover);
+        background: var(--panelItemBackgroundHover) !important;
         border: 1px solid var(--accentLight);
     }
 
@@ -17,14 +19,8 @@
         cursor: default;
     }
 
-    .package-item .package-item-content {
-        display: grid;
-        grid-template-columns: max-content 1fr max-content max-content;
-    }
-
     .package-item .icon-container {
         grid-column: 1;
-        margin-right: 30px;
         text-align: center;
         width: 36px;
     }
@@ -46,12 +42,11 @@
     }
 
 
-    .package-item .package-item-content > .identity {
+    .package-item .identity-container {
         grid-column: 2;
-        padding-right: 50px;
     }
 
-        .package-item .package-item-content > .identity > .identifier {
+        .package-item .identity-container > .identifier {
             display: block;
             font-size: 12px;
             font-weight: bold;
@@ -60,31 +55,36 @@
             min-width: 150px;
         }
 
-        .package-item .package-item-content > .identity .publisher {
+        .package-item .identity-container .publisher {
             color: var(--textLight);
             font-size: 11px;
             font-weight: normal;
             margin-left: 8px;
         }
 
-        .package-item .package-item-content > .identity .description {
+        .package-item .identity-container .description {
             display: block;
             font-size: 11px;
             color: var(--textMild);
         }
 
-    .package-item.active .package-item-content > .identity .publisher,
-    .package-item.active .package-item-content > .identity .description {
+    .package-item.active .identity-container .publisher,
+    .package-item.active .identity-container .description {
         color: var(--textDark);
     }
 
 
-    .package-item .package-item-content > .license {
+    .package-item .license-container {
         grid-column: 3;
-        padding: 3px 30px 3px 10px;
     }
 
-        .package-item .package-item-content > .license .license-label {
+        .package-item .license-container .license {
+            display: inline-block;
+            padding: 3px 30px 3px 10px;
+            background: red;
+        }
+
+        .package-item .license-container .license-label {
             color: var(--accent);
             font-size: 11px;
             padding: 5px 10px;
@@ -92,52 +92,67 @@
             border-radius: 2px;
         }
 
-    .package-item.active .package-item-content > .license .license-label {
+    .package-item.active .license-container .license-label {
         border: 1px solid var(--accentLight);
     }
 
-    .package-item .package-item-content > .license .license-label .icon {
+    .package-item .license-container .license-label .icon {
         color: var(--accent);
         margin-right: 10px;
         font-size: 11px;
     }
 
 
-    .package-item .package-item-content > .buttons {
+    .package-item .version-container {
         grid-column: 4;
-        width: auto;
-        padding: 0 !important;
-        margin: 0 !important;
     }
 
-        .package-item .package-item-content > .buttons .btn {
+    .package-item .version {
+        display: inline-block;
+        font-size: 12px;
+        color: var(--textMild);
+    }
+
+    .package-item.active .version {
+        color: var(--textDark);
+    }
+
+    .package-item .version .symbol {
+        font-size: 12px;
+    }
+
+
+    .package-item .buttons-container {
+        grid-column: 5;
+    }
+
+        .package-item .buttons-container .btn {
             display: inline-block;
-            margin-left: 10px;
             margin-right: 0px;
             font-size: 13px;
+            border: 1px solid var(--borderColorMedium);
             border-radius: 0;
             width: 90px;
         }
 
-
-            .package-item .package-item-content > .buttons .btn .icon {
+            .package-item .buttons-container .btn .icon {
                 color: var(--accentLight) !important;
             }
 
-            .package-item .package-item-content > .buttons .btn:last-child {
+            .package-item .buttons-container .btn:last-child {
                 margin-right: 0;
             }
 
-    .package-item:hover .package-item-content > .buttons .btn-install {
+    .package-item:hover .buttons-container .btn-install {
         background: var(--accent);
         color: #fff;
     }
 
-        .package-item:hover .package-item-content > .buttons .btn-install:hover {
+        .package-item:hover .buttons-container .btn-install:hover {
             background: var(--accentLight);
         }
 
-        .package-item:hover .package-item-content > .buttons .btn-install .icon {
+        .package-item:hover .buttons-container .btn-install .icon {
             color: #fff !important;
         }
 
@@ -148,8 +163,7 @@
         margin-left: 10px;
         margin-right: 0px;
         font-size: 13px;
-        color: #aaa;
-        width: 90px;
+        color: var(--textMild);
         height: 28px;
     }
 
@@ -169,27 +183,42 @@
         padding: 2px 5px 0;
     }
 
-/*        .package-item .installing ::deep .lds-spinner {
-            padding-top: 5px;
+
+@media only screen and (max-width: 1600px) {
+
+    .package-item {
+        grid-template-rows: max-content max-content 1fr;
+        grid-template-columns: max-content 1fr 130px;
+        grid-row-gap: 5px;
+    }
+
+        .package-item .icon-container {
+            grid-row-start: 1;
+            grid-row-end: 4;
+            grid-column: 1;
         }
 
-            .package-item .installing ::deep .lds-spinner div:after {
-                background: var(--accent);
-            }*/
+        .package-item .identity-container {
+            grid-row-start: 1;
+            grid-row-end: 4;
+            grid-column: 2;
+        }
 
+        .package-item .license-container {
+            grid-row: 3;
+            grid-column: 3;
+            text-align: right;
+        }
 
-    .package-item .version {
-        display: inline-block;
-        margin-right: 20px;
-        font-size: 12px;
-        line-height: 36px;
-        color: var(--textMild);
-    }
+        .package-item .version-container {
+            grid-row: 2;
+            grid-column: 3;
+            text-align: right;
+        }
 
-    .package-item.active .version {
-        color: var(--textDark);
-    }
-
-    .package-item .version .symbol {
-        font-size: 12px;
-    }
+        .package-item .buttons-container {
+            grid-row: 1;
+            grid-column: 3;
+            text-align: right;
+        }
+}
