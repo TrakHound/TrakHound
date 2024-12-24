@@ -17,6 +17,7 @@ namespace TrakHound.Clients
         private readonly TrakHoundHttpSystemMessagesClient _messages;
         private readonly TrakHoundHttpSystemMessageQueuesClient _messageQueues;
         private readonly TrakHoundHttpSystemRoutersClient _routers;
+        private readonly TrakHoundHttpSystemSequencesClient _sequences;
         private readonly TrakHoundHttpSystemServicesClient _services;
 
         private TrakHoundConnectionStatus _connectionStatus;
@@ -47,6 +48,8 @@ namespace TrakHound.Clients
 
         public ITrakHoundSystemRoutersClient Routers => _routers;
 
+        public ITrakHoundSystemSequencesClient Sequences => _sequences;
+
         public ITrakHoundSystemServicesClient Services => _services;
 
 
@@ -62,6 +65,7 @@ namespace TrakHound.Clients
             _messages = new TrakHoundHttpSystemMessagesClient(baseClient);
             _messageQueues = new TrakHoundHttpSystemMessageQueuesClient(baseClient);
             _routers = new TrakHoundHttpSystemRoutersClient(baseClient);
+            _sequences = new TrakHoundHttpSystemSequencesClient(baseClient);
             _services = new TrakHoundHttpSystemServicesClient(baseClient);
         }
     }

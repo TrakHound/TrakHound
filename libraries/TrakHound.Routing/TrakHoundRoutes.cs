@@ -40,6 +40,7 @@ namespace TrakHound.Routing
                 foreach (var route in Routers.TrakHoundCommandRoutes._routes) routes.Add(route.Key, route.Value);
                 foreach (var route in Routers.TrakHoundMessageRoutes._routes) routes.Add(route.Key, route.Value);
                 foreach (var route in Routers.TrakHoundMessageQueueRoutes._routes) routes.Add(route.Key, route.Value);
+                foreach (var route in Routers.TrakHoundSequenceRoutes._routes) routes.Add(route.Key, route.Value);
                 foreach (var route in Routers.TrakHoundSourceRoutes._routes) routes.Add(route.Key, route.Value);
                 foreach (var route in Routers.TrakHoundDefinitionRoutes._routes) routes.Add(route.Key, route.Value);
                 foreach (var route in Routers.TrakHoundObjectRoutes._routes) routes.Add(route.Key, route.Value);

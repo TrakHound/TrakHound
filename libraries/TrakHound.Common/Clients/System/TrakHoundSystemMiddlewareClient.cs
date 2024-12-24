@@ -18,6 +18,7 @@ namespace TrakHound.Clients
         private readonly ITrakHoundSystemMessagesClient _messages;
         private readonly ITrakHoundSystemMessageQueuesClient _messageQueues;
         private readonly ITrakHoundSystemRoutersClient _routers;
+        private readonly ITrakHoundSystemSequencesClient _sequences;
         private readonly ITrakHoundSystemServicesClient _services;
 
 
@@ -51,6 +52,8 @@ namespace TrakHound.Clients
 
         public ITrakHoundSystemRoutersClient Routers => _routers;
 
+        public ITrakHoundSystemSequencesClient Sequences => _sequences;
+
         public ITrakHoundSystemServicesClient Services => _services;
 
 
@@ -68,6 +71,7 @@ namespace TrakHound.Clients
             _messages = client.Messages;
             _messageQueues = client.MessageQueues;
             _routers = client.Routers;
+            _sequences = client.Sequences;
             _services = client.Services;
         }
     }

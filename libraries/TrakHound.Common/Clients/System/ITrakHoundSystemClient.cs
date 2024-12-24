@@ -32,6 +32,8 @@ namespace TrakHound.Clients
 
         ITrakHoundSystemRoutersClient Routers { get; }
 
+        ITrakHoundSystemSequencesClient Sequences { get; }
+
         ITrakHoundSystemServicesClient Services { get; }
     }
 }

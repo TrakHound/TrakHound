@@ -19,6 +19,7 @@ namespace TrakHound.Http
         public const string MessagesPrefix = "_messages";
         public const string MessageQueuesPrefix = "_message-queues";
         public const string RoutersPrefix = "_routers";
+        public const string SequencesPrefix = "_sequences";
         public const string InstancesPrefix = "_instances";
     }
 }

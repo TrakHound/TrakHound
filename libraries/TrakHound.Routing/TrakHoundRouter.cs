@@ -36,6 +36,7 @@ namespace TrakHound.Routing
         private TrakHoundEntitiesRouter _entities;
         private TrakHoundMessageRouter _messages;
         private TrakHoundMessageQueueRouter _messageQueues;
+        private TrakHoundSequenceRouter _sequences;
 
 
         public string Id => _id;
@@ -59,6 +60,8 @@ namespace TrakHound.Routing
 
         public TrakHoundMessageQueueRouter MessageQueues => _messageQueues;
 
+        public TrakHoundSequenceRouter Sequences => _sequences;
+
         public ITrakHoundLogger Logger => _logger;
 
 
@@ -74,6 +77,7 @@ namespace TrakHound.Routing
             _entities = new TrakHoundEntitiesRouter(this, driverProvider, bufferProvider);
             _messages = new TrakHoundMessageRouter(this);
             _messageQueues = new TrakHoundMessageQueueRouter(this);
+            _sequences = new TrakHoundSequenceRouter(this);
 
             _configuration = configuration;
             if (_configuration != null)

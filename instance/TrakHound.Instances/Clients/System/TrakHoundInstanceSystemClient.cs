@@ -25,6 +25,7 @@ namespace TrakHound.Clients
         private readonly TrakHoundInstanceSystemMessagesClient _messages;
         private readonly TrakHoundInstanceSystemMessageQueuesClient _messageQueues;
         private readonly TrakHoundInstanceSystemRoutersClient _routers;
+        private readonly TrakHoundInstanceSystemSequencesClient _sequences;
         private readonly TrakHoundInstanceSystemServicesClient _services;
 
 
@@ -65,7 +66,9 @@ namespace TrakHound.Clients
 
         public ITrakHoundSystemRoutersClient Routers => _routers;
 
-		public ITrakHoundSystemServicesClient Services => _services;
+        public ITrakHoundSystemSequencesClient Sequences => _sequences;
+
+        public ITrakHoundSystemServicesClient Services => _services;
 
 
         public TrakHoundInstanceSystemClient(
@@ -90,6 +93,7 @@ namespace TrakHound.Clients
             _messages = new TrakHoundInstanceSystemMessagesClient(baseClient);
             _messageQueues = new TrakHoundInstanceSystemMessageQueuesClient(baseClient);
             _routers = new TrakHoundInstanceSystemRoutersClient(routerProvider);
+            _sequences = new TrakHoundInstanceSystemSequencesClient(baseClient);
             _services = new TrakHoundInstanceSystemServicesClient(serviceManager, instance.LogProvider);
         }
     }
