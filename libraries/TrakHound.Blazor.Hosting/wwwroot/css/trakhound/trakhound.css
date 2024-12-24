@@ -554,16 +554,60 @@ textarea,
 }
 
 
-/*.text-box input:hover {
-    border-color: #555 !important;
+.rz-listbox {
+    padding: 0;
+    background: var(--panelItemBackground);
+    border: 1px solid var(--borderColor);
+    border-radius: 0;
 }
 
-.text-box input:focus {
-    border-color: var(--accentLight) !important;
-    box-shadow: inset 0px 0px 1px 1px var(--accentLight) !important;
-    outline: none;
-}*/
+    .rz-listbox:focus {
+        border: 1px solid var(--borderColor) !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
 
+.rz-listbox-header {
+    border-bottom: 1px solid var(--borderColor);
+}
+
+    .rz-listbox-header .rz-chkbox-box {
+        background: var(--panelBackground);
+        border-color: var(--borderColorDark);
+    }
+
+        .rz-listbox-header .rz-chkbox-box.rz-state-active {
+            background: var(--accent);
+            color: #fff;
+        }
+
+.rz-listbox li {
+    padding: 3px 15px;
+    border-bottom: 1px solid var(--borderColorLight);
+    font-size: 15px;
+    color: var(--textDark);
+}
+
+    .rz-listbox li:hover {
+        background: var(--panelItemBackgroundHover);
+        color: var(--textDark);
+    }
+
+    .rz-listbox li.rz-state-highlight {
+        background: var(--accent) !important;
+        border-bottom: 1px solid var(--accentDark) !important;
+        color: #fff !important;
+    }
+
+    .rz-listbox li .rz-chkbox-box {
+        background: var(--panelBackground);
+        border-color: var(--borderColorDark);
+    }
+
+    .rz-listbox li.rz-state-highlight .rz-chkbox-box {
+        background: var(--accent);
+        color: #fff;
+    }
 
 
 .rz-datepicker-popup-container {
@@ -590,9 +634,9 @@ textarea,
             color: #fff !important;
         }
 
-    .rz-calendar-header .rz-button .rzi {
-        color: #fff !important;
-    }
+        .rz-calendar-header .rz-button .rzi {
+            color: #fff !important;
+        }
 
 .rz-calendar-view {
     border: 1px solid var(--borderColor);
@@ -632,11 +676,11 @@ textarea,
             border-radius: 0 !important;
         }
 
-        .rz-calendar-view td .rz-state-active:hover {
-            color: #fff !important;
-            background: var(--accentLight) !important;
-            border-radius: 0 !important;
-        }
+            .rz-calendar-view td .rz-state-active:hover {
+                color: #fff !important;
+                background: var(--accentLight) !important;
+                border-radius: 0 !important;
+            }
 
         .rz-calendar-view td.rz-calendar-other-month {
             background: var(--panelBackgroundDark) !important;
@@ -646,9 +690,9 @@ textarea,
             color: var(--textMild) !important;
         }
 
-        .rz-timepicker .rz-ampm-picker span {
-            color: var(--textDark) !important;
-        }
+.rz-timepicker .rz-ampm-picker span {
+    color: var(--textDark) !important;
+}
 
 
 .rz-timepicker > .rz-button {
@@ -688,21 +732,21 @@ textarea,
         border-radius: 0 !important;
     }
 
-.rz-datepicker .rz-button-icon-left {
-    color: var(--textMild);
-}
-
-    .rz-datepicker .rz-button-icon-left:hover {
-        color: var(--inputTextHighlight);
+    .rz-datepicker .rz-button-icon-left {
+        color: var(--textMild);
     }
 
-.rz-datepicker.rz-state-disabled .rz-button-icon-left {
-    color: var(--textLight);
-}
+        .rz-datepicker .rz-button-icon-left:hover {
+            color: var(--inputTextHighlight);
+        }
 
-.rz-datepicker.rz-state-disabled .rz-button-icon-left:hover {
-    color: var(--textLight);
-}
+    .rz-datepicker.rz-state-disabled .rz-button-icon-left {
+        color: var(--textLight);
+    }
+
+        .rz-datepicker.rz-state-disabled .rz-button-icon-left:hover {
+            color: var(--textLight);
+        }
 
 
 #reconnection-panel {

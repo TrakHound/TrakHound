@@ -4,7 +4,6 @@
     overflow: auto;
     padding-bottom: 200px;
     padding-top: 15px;
-    background: #fcfcfe;
     background: var(--panelBackgroundMedium);
 }
 

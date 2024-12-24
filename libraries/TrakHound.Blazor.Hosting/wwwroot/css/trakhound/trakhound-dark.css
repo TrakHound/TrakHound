@@ -12,13 +12,24 @@
     --accentBackground: linear-gradient(0deg, #007bf7 0%, #0073e6 25%, #0073e6 50%, #0073e6 75%, #007bf7 100%);
     /* Panel Colors */
     --panelBackground: #121821;
+    --panelBackground: #131A22;
     --panelBackgroundMedium: #1b2431;
+/*    --panelBackgroundMedium: #232F3E;*/
+    /*    --panelBackgroundMedium: blue;*/
     --panelBackgroundDark: #090c10;
+    --panelBackgroundDark: #090d10;
+    /*    --panelBackgroundDark: red;*/
     --panelSidebarBackground: #0d1726;
+    /*    --panelSidebarBackground: red;*/
     --panelItemBackground: #1b2431;
+    /*    --panelItemBackground: blue;*/
     --panelItemBackgroundHover: var(--accentVeryVeryLight);
     --panelItemBackgroundHover: #364863;
+    --panelItemBackgroundHover: #243042;
+    /*    --panelItemBackgroundHover: #121821;
+    --panelItemBackgroundHover: red;*/
     --panelItemBackgroundLight: #203960;
+    --panelItemBackgroundLight: #37475A;
     --panelItemBackgroundLightHover: var(--accentVeryLight);
     --panelItemBorder: #253041;
     /* Border Colors */
