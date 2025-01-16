@@ -1070,7 +1070,7 @@ namespace TrakHound
                 if (!match) match = IsNamespaceMatch(query, obj);
                 if (!match) match = IsContentTypeMatch(query, obj);
                 if (!match) match = IsTypeMatch(query, collection, obj);
-                if (!match) match = IsMetadataMatch(query, obj);
+                if (!match) match = IsMetadataMatch(query, collection, obj);
 
                 return match;
             }
@@ -1181,10 +1181,45 @@ namespace TrakHound
             return false;
         }
 
-        private static bool IsMetadataMatch(string query, ITrakHoundObjectEntity obj)
+        private static bool IsMetadataMatch(string query, TrakHoundEntityCollection collection, ITrakHoundObjectEntity obj)
         {
             if (!string.IsNullOrEmpty(query) && obj != null)
             {
+                // Process exact match
+                var match = _metadataRegex.Match(query);
+                if (match.Success && match.Groups.Count > 2)
+                {
+                    var nameValue = match.Groups[1].Value;
+                    var metadataValue = collection.Objects.QueryMetadataByEntityUuid(obj.Uuid, nameValue.ToPascalCase())?.Value;
+                    if (metadataValue != null)
+                    {
+                        var valueValue = match.Groups[2].Value;
+                        if (valueValue != null)
+                        {
+                            return valueValue.ToLower() == metadataValue.ToLower();
+                        }
+                    }
+                }
+                else
+                {
+                    match = _metadataLikeRegex.Match(query);
+                    if (match.Success && match.Groups.Count > 2)
+                    {
+                        var nameValue = match.Groups[1].Value;
+                        var metadataValue = collection.Objects.QueryMetadataByEntityUuid(obj.Uuid, nameValue.ToPascalCase())?.Value;
+                        if (metadataValue != null)
+                        {
+                            var valuePattern = match.Groups[2].Value;
+                            if (valuePattern != null)
+                            {
+                                var likePattern = valuePattern.ToLower().Replace("*", ".*");
+                                var regex = new Regex(likePattern);
+                                return regex.IsMatch(metadataValue.ToLower());
+                            }
+                        }
+                    }
+                }
+
                 //// Process exact match
                 //var match = _metadataRegex.Match(query);
                 //if (match.Success && match.Groups.Count > 2)
