@@ -108,6 +108,18 @@ namespace TrakHound.Entities.Api
                     controller.CreateEntities(publishCollection, transaction.PublishOperations.Log, now);
                 }
 
+                if (!transaction.PublishOperations.MessageMapping.IsNullOrEmpty())
+                {
+                    var controller = new Messages(Configuration, Client);
+                    controller.CreateEntities(publishCollection, transaction.PublishOperations.MessageMapping, now);
+                }
+
+                if (!transaction.PublishOperations.MessageQueueMapping.IsNullOrEmpty())
+                {
+                    var controller = new MessageQueues(Configuration, Client);
+                    controller.CreateEntities(publishCollection, transaction.PublishOperations.MessageQueueMapping, now);
+                }
+
                 if (!transaction.PublishOperations.Number.IsNullOrEmpty())
                 {
                     var controller = new Numbers(Configuration, Client);
