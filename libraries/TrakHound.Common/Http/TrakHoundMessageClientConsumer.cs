@@ -11,6 +11,7 @@ namespace TrakHound.Http
     public class TrakHoundMessageClientConsumer : ITrakHoundConsumer<TrakHoundMessageResponse>
     {
         private readonly string _url;
+        private readonly string _brokerId;
         private readonly object _requestBody;
         private readonly TrakHoundHttpClientConfiguration _clientConfiguration;
         private readonly TrakHoundWebSocketsClient _websocketClient;
@@ -40,6 +41,7 @@ namespace TrakHound.Http
             _consumerId = Guid.NewGuid().ToString();
             _clientConfiguration = clientConfiguration;
             _url = url;
+            _brokerId = Url.GetQueryParameter(url, "brokerId");
             _cancellationTokenSource = new CancellationTokenSource();
             _cancellationToken = _cancellationTokenSource.Token;
 
@@ -52,6 +54,7 @@ namespace TrakHound.Http
             _consumerId = Guid.NewGuid().ToString();
             _clientConfiguration = clientConfiguration;
             _url = url;
+            _brokerId = Url.GetQueryParameter(url, "brokerId");
             _cancellationToken = cancellationToken;
 
             _websocketClient = new TrakHoundWebSocketsClient(Url.Combine(clientConfiguration?.GetWebSocketBaseUrl(), _url));
@@ -63,6 +66,7 @@ namespace TrakHound.Http
             _consumerId = Guid.NewGuid().ToString();
             _clientConfiguration = clientConfiguration;
             _url = url;
+            _brokerId = Url.GetQueryParameter(url, "brokerId");
             _cancellationTokenSource = new CancellationTokenSource();
             _cancellationToken = _cancellationTokenSource.Token;
             _requestBody = requestBody;
@@ -76,6 +80,7 @@ namespace TrakHound.Http
             _consumerId = Guid.NewGuid().ToString();
             _clientConfiguration = clientConfiguration;
             _url = url;
+            _brokerId = Url.GetQueryParameter(url, "brokerId");
             _cancellationToken = cancellationToken;
             _requestBody = requestBody;
 
@@ -107,6 +112,7 @@ namespace TrakHound.Http
             if (response.Content != null)
             {
                 var messageResponse = TrakHoundHttpMessageResponse.Parse(response.Content);
+                messageResponse.BrokerId = _brokerId;
                 if (messageResponse.IsValid)
                 {
                     Push(messageResponse);
