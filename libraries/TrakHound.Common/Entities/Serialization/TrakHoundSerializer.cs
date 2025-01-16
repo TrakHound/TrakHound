@@ -807,6 +807,15 @@ namespace TrakHound.Serialization
                                                         type = objectDefinitions.FirstOrDefault(o => MatchDefinitionType(o.Id, typeAttribute.Pattern))?.Type;
                                                         if (!string.IsNullOrEmpty(type)) break;
                                                     }
+                                                    else
+                                                    {
+                                                        var definition = collection.Definitions.GetDefinition(objectEntity.DefinitionUuid);
+                                                        if (definition != null)
+                                                        {
+                                                            type = definition.Type;
+                                                            break;
+                                                        }
+                                                    }
                                                 }
 
                                                 SetProperty(property, response, ChangeType(type, property.PropertyType));
