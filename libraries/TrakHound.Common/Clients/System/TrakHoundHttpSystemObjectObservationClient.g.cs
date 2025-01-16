@@ -452,7 +452,7 @@ namespace TrakHound.Clients
             string routerId = null)
         {
             var route = "";
-            
+            route = Url.Combine(route, "count/object");
             route = Url.AddQueryParameter(route, "path", (string)path);
             route = Url.AddQueryParameter(route, "start", (long)start);
             route = Url.AddQueryParameter(route, "stop", (long)stop);
@@ -472,7 +472,7 @@ namespace TrakHound.Clients
             string routerId = null)
         {
             var route = "";
-            route = Url.Combine(route, "object/path");
+            route = Url.Combine(route, "count/object/path");
             route = Url.AddQueryParameter(route, "start", (long)start);
             route = Url.AddQueryParameter(route, "stop", (long)stop);
             route = Url.AddQueryParameter(route, "routerId", BaseClient.GetRouterId(routerId));
@@ -492,8 +492,8 @@ namespace TrakHound.Clients
             string routerId = null)
         {
             var route = "";
-            route = Url.Combine(route, "object/{objectUuid}");
-            route = Url.AddRouteParameter(route, "object/{objectUuid}", "objectUuid", objectUuid);
+            route = Url.Combine(route, "count/object/{objectUuid}");
+            route = Url.AddRouteParameter(route, "count/object/{objectUuid}", "objectUuid", objectUuid);
             route = Url.AddQueryParameter(route, "start", (long)start);
             route = Url.AddQueryParameter(route, "stop", (long)stop);
             route = Url.AddQueryParameter(route, "routerId", BaseClient.GetRouterId(routerId));
@@ -512,7 +512,7 @@ namespace TrakHound.Clients
             string routerId = null)
         {
             var route = "";
-            route = Url.Combine(route, "object");
+            route = Url.Combine(route, "count/object");
             route = Url.AddQueryParameter(route, "start", (long)start);
             route = Url.AddQueryParameter(route, "stop", (long)stop);
             route = Url.AddQueryParameter(route, "routerId", BaseClient.GetRouterId(routerId));

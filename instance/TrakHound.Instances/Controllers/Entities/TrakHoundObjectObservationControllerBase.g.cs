@@ -744,7 +744,7 @@ namespace TrakHound.Http.Entities
         /// <summary>
         /// Count by Object
         /// </summary>
-        [HttpGet]
+        [HttpGet("count/object")]
         public async Task<IActionResult> CountByObject(
             [FromQuery] string path,
             [FromQuery] long start,
@@ -779,7 +779,7 @@ namespace TrakHound.Http.Entities
         /// <summary>
         /// Count by Object
         /// </summary>
-        [HttpPost("object/path")]
+        [HttpPost("count/object/path")]
         public async Task<IActionResult> CountByObject(
             [FromBody] IEnumerable<string> paths,
             [FromQuery] long start,
@@ -814,7 +814,7 @@ namespace TrakHound.Http.Entities
         /// <summary>
         /// Count by Object UUID
         /// </summary>
-        [HttpGet("object/{objectUuid}")]
+        [HttpGet("count/object/{objectUuid}")]
         public async Task<IActionResult> CountByObjectUuid(
             [FromRoute] string objectUuid,
             [FromQuery] long start,
@@ -849,7 +849,7 @@ namespace TrakHound.Http.Entities
         /// <summary>
         /// Count by Object UUID
         /// </summary>
-        [HttpPost("object")]
+        [HttpPost("count/object")]
         public async Task<IActionResult> CountByObjectUuid(
             [FromBody] IEnumerable<string> objectUuids,
             [FromQuery] long start,
