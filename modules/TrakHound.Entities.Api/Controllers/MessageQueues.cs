@@ -404,11 +404,13 @@ namespace TrakHound.Entities.Api
                 foreach (var entry in entries)
                 {
                     string objectUuid = TrakHoundPath.GetUuid(entry.ObjectPath);
-                    if (!string.IsNullOrEmpty(objectUuid) && !string.IsNullOrEmpty(entry.QueueId))
+                    string queueId = !string.IsNullOrEmpty(entry.QueueId) ? entry.QueueId : objectUuid;
+
+                    if (!string.IsNullOrEmpty(objectUuid) && !string.IsNullOrEmpty(queueId))
                     {
                         var contentType = !string.IsNullOrEmpty(entry.ContentType) ? entry.ContentType : "application/octet-stream";
 
-                        collection.Add(new TrakHoundObjectMessageQueueEntity(objectUuid, entry.QueueId, contentType, created: ts));
+                        collection.Add(new TrakHoundObjectMessageQueueEntity(objectUuid, queueId, contentType, created: ts));
                     }
                 }
             }
