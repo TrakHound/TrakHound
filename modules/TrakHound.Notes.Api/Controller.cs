@@ -62,7 +62,7 @@ public class Controller : TrakHoundApiController
         [FromQuery] string basePath,
         [FromBody] string text,
         [FromQuery] string authorPath = null,
-        [FromQuery] int nodeId = 0,
+        [FromQuery] int noteId = 0,
         [FromQuery] DateTime? created = null
         )
     {
@@ -70,9 +70,9 @@ public class Controller : TrakHoundApiController
         {
             string path;
 
-            if (nodeId > 0)
+            if (noteId > 0)
             {
-                path = TrakHoundPath.Combine(basePath, _directoryName, nodeId.ToString());
+                path = TrakHoundPath.Combine(basePath, _directoryName, noteId.ToString());
             }
             else
             {
