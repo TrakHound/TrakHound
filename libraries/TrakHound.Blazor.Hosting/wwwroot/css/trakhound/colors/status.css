@@ -17,7 +17,7 @@
     --colorOrangeVeryLight: #ffe8cc;
     --colorOrangeHover: #ffd199;
     --colorOrangeDark: #e67e00;
-    /* Orange Colors */
+    /* Red Colors */
     --colorRed: #ff0000;
     --colorRedLight: #ff4c4c;
     --colorRedVeryLight: #ffb3b3;
@@ -26,7 +26,12 @@
     --colorRedHover: #ffb3b3;
     --colorRedGradient: linear-gradient(0deg, var(--colorRed) 0%, var(--colorRed) 50%, var(--colorRedLight) 51%, var(--colorRedLight) 100%);
     --colorRedGradientLight: linear-gradient(0deg, var(--colorRedLight) 0%, var(--colorRedLight) 50%, var(--colorRedHover) 51%, var(--colorRedHover) 100%);
-    /* Orange Colors */
+    /* Blue Colors */
+    --colorBlue: #0063cc;
+    --colorBlueLight: #00aaff;
+    --colorBlueHover: #cce6ff;
+    --colorBlueDark: #0066cc;
+    /* Purple Colors */
     --colorPurple: #9966ff;
     --colorPurpleLight: #ccb3ff;
     --colorPurpleHover: #eee6ff;
