@@ -23,6 +23,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Routers\TrakHoundObjectNotifyEntity.cs" />
+	  <Compile Remove="Routers\TrakHoundObjectNotifyHandler.cs" />
+	  <Compile Remove="Routers\TrakHoundObjectNotifySubscription.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Routers\TrakHoundObjectNotifyEntity.cs" />
+	  <None Include="Routers\TrakHoundObjectNotifyHandler.cs" />
+	  <None Include="Routers\TrakHoundObjectNotifySubscription.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

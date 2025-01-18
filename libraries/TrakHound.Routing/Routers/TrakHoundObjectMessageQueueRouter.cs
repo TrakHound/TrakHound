@@ -15,13 +15,13 @@ namespace TrakHound.Routing.Routers
     public class TrakHoundObjectMessageQueueRouter : TrakHoundEntityRouter<ITrakHoundObjectMessageQueueEntity>
     {
         private readonly ITrakHoundClient _client;
-        private readonly TrakHoundObjectNotifyHandler _notifyHandler;
+        //private readonly TrakHoundObjectNotifyHandler _notifyHandler;
 
 
         public TrakHoundObjectMessageQueueRouter(TrakHoundRouter router) : base(router) 
         {
             _client = router.Client;
-            _notifyHandler = new TrakHoundObjectNotifyHandler(_client);
+            //_notifyHandler = new TrakHoundObjectNotifyHandler(_client);
         }
 
 

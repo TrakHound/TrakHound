@@ -15,70 +15,70 @@ namespace TrakHound.Routing.Routers
     public class TrakHoundObjectQueueRouter : TrakHoundEntityRouter<ITrakHoundObjectQueueEntity>
     {
         private readonly ITrakHoundClient _client;
-        private readonly TrakHoundObjectNotifyHandler _notifyHandler;
+        //private readonly TrakHoundObjectNotifyHandler _notifyHandler;
 
 
         public TrakHoundObjectQueueRouter(TrakHoundRouter router) : base(router) 
         {
             _client = router.Client;
-            _notifyHandler = new TrakHoundObjectNotifyHandler(_client);
+            //_notifyHandler = new TrakHoundObjectNotifyHandler(_client);
         }
 
 
-        protected async override Task OnAfterPublish(IEnumerable<TrakHoundPublishResult<ITrakHoundObjectQueueEntity>> results, IEnumerable<ITrakHoundObjectQueueEntity> entities, TrakHoundOperationMode publishMode = TrakHoundOperationMode.Async, string requestId = null)
-        {
-            if (!entities.IsNullOrEmpty())
-            {
-                await UpdateNotifications(entities);
-            }
-        }
+        //protected async override Task OnAfterPublish(IEnumerable<TrakHoundPublishResult<ITrakHoundObjectQueueEntity>> results, IEnumerable<ITrakHoundObjectQueueEntity> entities, TrakHoundOperationMode publishMode = TrakHoundOperationMode.Async, string requestId = null)
+        //{
+        //    if (!entities.IsNullOrEmpty())
+        //    {
+        //        await UpdateNotifications(entities);
+        //    }
+        //}
 
-        protected async override Task OnBeforeDelete(IEnumerable<EntityDeleteRequest> requests, TrakHoundOperationMode publishMode = TrakHoundOperationMode.Async, string requestId = null)
-        {
-            if (!requests.IsNullOrEmpty())
-            {
-                await UpdateNotifications(requests);
-            }
-        }
+        //protected async override Task OnBeforeDelete(IEnumerable<EntityDeleteRequest> requests, TrakHoundOperationMode publishMode = TrakHoundOperationMode.Async, string requestId = null)
+        //{
+        //    if (!requests.IsNullOrEmpty())
+        //    {
+        //        await UpdateNotifications(requests);
+        //    }
+        //}
 
-        private async Task UpdateNotifications(string queueUuid)
-        {
-            if (!string.IsNullOrEmpty(queueUuid))
-            {
-                var objectEntity = await _client.System.Entities.Objects.ReadByUuid(queueUuid);
-                if (objectEntity != null)
-                {
-                    _notifyHandler.AddPublishNotification(TrakHoundEntityNotificationType.ComponentChanged, objectEntity);
-                }
-            }
-        }
+        //private async Task UpdateNotifications(string queueUuid)
+        //{
+        //    if (!string.IsNullOrEmpty(queueUuid))
+        //    {
+        //        var objectEntity = await _client.System.Entities.Objects.ReadByUuid(queueUuid);
+        //        if (objectEntity != null)
+        //        {
+        //            _notifyHandler.AddPublishNotification(TrakHoundEntityNotificationType.ComponentChanged, objectEntity);
+        //        }
+        //    }
+        //}
 
-        private async Task UpdateNotifications(IEnumerable<ITrakHoundObjectQueueEntity> entities)
-        {
-            var objectUuids = entities.Select(o => o.QueueUuid).Distinct();
-            var objectEntities = await _client.System.Entities.Objects.ReadByUuid(objectUuids);
+        //private async Task UpdateNotifications(IEnumerable<ITrakHoundObjectQueueEntity> entities)
+        //{
+        //    var objectUuids = entities.Select(o => o.QueueUuid).Distinct();
+        //    var objectEntities = await _client.System.Entities.Objects.ReadByUuid(objectUuids);
 
-            foreach (var objectEntity in objectEntities)
-            {
-                _notifyHandler.AddPublishNotification(TrakHoundEntityNotificationType.ComponentChanged, objectEntity);
-            }
-        }
+        //    foreach (var objectEntity in objectEntities)
+        //    {
+        //        _notifyHandler.AddPublishNotification(TrakHoundEntityNotificationType.ComponentChanged, objectEntity);
+        //    }
+        //}
 
-        private async Task UpdateNotifications(IEnumerable<EntityDeleteRequest> requests)
-        {
-            var uuids = requests.Select(o => o.Target).Distinct();
-            var entities = await _client.System.Entities.Objects.Queue.ReadByUuid(uuids);
-            if (!entities.IsNullOrEmpty())
-            {
-                var objectUuids = entities.Select(o => o.QueueUuid).Distinct();
-                var objectEntities = await _client.System.Entities.Objects.ReadByUuid(objectUuids);
+        //private async Task UpdateNotifications(IEnumerable<EntityDeleteRequest> requests)
+        //{
+        //    var uuids = requests.Select(o => o.Target).Distinct();
+        //    var entities = await _client.System.Entities.Objects.Queue.ReadByUuid(uuids);
+        //    if (!entities.IsNullOrEmpty())
+        //    {
+        //        var objectUuids = entities.Select(o => o.QueueUuid).Distinct();
+        //        var objectEntities = await _client.System.Entities.Objects.ReadByUuid(objectUuids);
 
-                foreach (var objectEntity in objectEntities)
-                {
-                    _notifyHandler.AddPublishNotification(TrakHoundEntityNotificationType.ComponentChanged, objectEntity);
-                }
-            }
-        }
+        //        foreach (var objectEntity in objectEntities)
+        //        {
+        //            _notifyHandler.AddPublishNotification(TrakHoundEntityNotificationType.ComponentChanged, objectEntity);
+        //        }
+        //    }
+        //}
 
 
         public async Task<TrakHoundResponse<ITrakHoundObjectQueueEntity>> Pull(string queueUuid, int count = 1, string requestId = null)
@@ -113,7 +113,7 @@ namespace TrakHound.Routing.Routers
                 await ProcessOptions(requestId, response.Options);
 
                 // Notify that Queue has Changed
-                await UpdateNotifications(queueUuid);
+                //await UpdateNotifications(queueUuid);
             }
 
             return HandleResponse(requestId, response.Results, response.Duration);
@@ -388,25 +388,25 @@ namespace TrakHound.Routing.Routers
 
         #region "Notify"
 
-        public async Task<TrakHoundResponse<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>> Notify(string objectQuery, TrakHoundEntityNotificationType notificationType = TrakHoundEntityNotificationType.All, string requestId = null)
-        {
-            if (string.IsNullOrEmpty(requestId)) requestId = Guid.NewGuid().ToString();
-            var stpw = System.Diagnostics.Stopwatch.StartNew();
-            var results = new List<TrakHoundResult<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>>();
+        //public async Task<TrakHoundResponse<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>> Notify(string objectQuery, TrakHoundEntityNotificationType notificationType = TrakHoundEntityNotificationType.All, string requestId = null)
+        //{
+        //    if (string.IsNullOrEmpty(requestId)) requestId = Guid.NewGuid().ToString();
+        //    var stpw = System.Diagnostics.Stopwatch.StartNew();
+        //    var results = new List<TrakHoundResult<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>>();
 
-            var subscription = _notifyHandler.CreateSubscription(objectQuery);
-            if (subscription != null)
-            {
-                results.Add(new TrakHoundResult<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>(Router.Id, objectQuery, TrakHoundResultType.Ok, subscription.Consumer));
-            }
-            else
-            {
-                results.Add(new TrakHoundResult<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>(Router.Id, objectQuery, TrakHoundResultType.InternalError));
-            }
+        //    var subscription = _notifyHandler.CreateSubscription(objectQuery);
+        //    if (subscription != null)
+        //    {
+        //        results.Add(new TrakHoundResult<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>(Router.Id, objectQuery, TrakHoundResultType.Ok, subscription.Consumer));
+        //    }
+        //    else
+        //    {
+        //        results.Add(new TrakHoundResult<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>(Router.Id, objectQuery, TrakHoundResultType.InternalError));
+        //    }
 
-            stpw.Stop();
-            return new TrakHoundResponse<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>(results, stpw.ElapsedTicks);
-        }
+        //    stpw.Stop();
+        //    return new TrakHoundResponse<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>(results, stpw.ElapsedTicks);
+        //}
 
         #endregion
 

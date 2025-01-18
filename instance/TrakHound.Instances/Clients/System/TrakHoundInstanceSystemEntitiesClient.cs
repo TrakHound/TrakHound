@@ -105,13 +105,13 @@ namespace TrakHound.Clients
                 var consumerId = Guid.NewGuid().ToString();
                 ITrakHoundConsumer<IEnumerable<ITrakHoundEntity>> entityContentConsumer = null;
 
-                var objectConsumer = await _baseClient.System.Entities.Objects.Notify(TrakHoundExpression.Convert(subscriptions), TrakHoundEntityNotificationType.All, routerId);
-                objectConsumer.Received += async (s, notification) =>
-                {
-                    Console.WriteLine("Subscribe() : OBJECTS CHANGED!!!!");
+                //var objectConsumer = await _baseClient.System.Entities.Objects.Subscribe(TrakHoundExpression.Convert(subscriptions), routerId);
+                //objectConsumer.Received += async (s, notification) =>
+                //{
+                //    Console.WriteLine("Subscribe() : OBJECTS CHANGED!!!!");
 
-                    //entityContentConsumer = await _baseClient.Entities.SubscribeToContent(subscriptions, consumerId);
-                };
+                //    //entityContentConsumer = await _baseClient.Entities.SubscribeToContent(subscriptions, consumerId);
+                //};
 
                 entityContentConsumer = await _baseClient.System.Entities.CreateSubscriptions(subscriptions, consumerId, routerId);
 

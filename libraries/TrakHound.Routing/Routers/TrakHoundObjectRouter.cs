@@ -19,14 +19,14 @@ namespace TrakHound.Routing.Routers
 
 
         private readonly ITrakHoundClient _client;
-        private readonly TrakHoundObjectNotifyHandler _notifyHandler;
+        //private readonly TrakHoundObjectNotifyHandler _notifyHandler;
         private readonly ItemIntervalQueue<ITrakHoundObjectQueryResult> _queryResultsQueue;
 
 
         public TrakHoundObjectRouter(TrakHoundRouter router) : base(router)
         {
             _client = router.Client;
-            _notifyHandler = new TrakHoundObjectNotifyHandler(_client);
+            //_notifyHandler = new TrakHoundObjectNotifyHandler(_client);
 
             _queryResultsQueue = new ItemIntervalQueue<ITrakHoundObjectQueryResult>(_storeQueueInterval, _storeQueueTake);
             _queryResultsQueue.ItemsReceived += QueryResultsQueueItemsReceived;
@@ -35,10 +35,10 @@ namespace TrakHound.Routing.Routers
 
         protected override Task OnAfterPublish(IEnumerable<TrakHoundPublishResult<ITrakHoundObjectEntity>> results, IEnumerable<ITrakHoundObjectEntity> entities, TrakHoundOperationMode publishMode = TrakHoundOperationMode.Async, string requestId = null)
         {
-            if (!results.IsNullOrEmpty())
-            {
-                UpdateNotifications(results);
-            }
+            //if (!results.IsNullOrEmpty())
+            //{
+            //    UpdateNotifications(results);
+            //}
 
             return Task.CompletedTask;
         }
@@ -289,21 +289,21 @@ namespace TrakHound.Routing.Routers
             }
         }
 
-        private void UpdateNotifications(IEnumerable<TrakHoundPublishResult<ITrakHoundObjectEntity>> results)
-        {
-            if (!results.IsNullOrEmpty())
-            {
-                foreach (var result in results)
-                {
-                    if (result.Type != TrakHoundPublishResultType.Queued)
-                    {
-                        var notificationType = result.Type == TrakHoundPublishResultType.Created ? TrakHoundEntityNotificationType.Created : TrakHoundEntityNotificationType.Changed;
+        //private void UpdateNotifications(IEnumerable<TrakHoundPublishResult<ITrakHoundObjectEntity>> results)
+        //{
+        //    if (!results.IsNullOrEmpty())
+        //    {
+        //        foreach (var result in results)
+        //        {
+        //            if (result.Type != TrakHoundPublishResultType.Queued)
+        //            {
+        //                var notificationType = result.Type == TrakHoundPublishResultType.Created ? TrakHoundEntityNotificationType.Created : TrakHoundEntityNotificationType.Changed;
 
-                        _notifyHandler.AddPublishNotification(notificationType, result.Result);
-                    }
-                }
-            }
-        }
+        //                _notifyHandler.AddPublishNotification(notificationType, result.Result);
+        //            }
+        //        }
+        //    }
+        //}
 
         private async Task UpdateNotifications(IEnumerable<EntityDeleteRequest> requests)
         {
@@ -1188,31 +1188,7 @@ namespace TrakHound.Routing.Routers
         }
 
         #endregion
-
-        #region "Notify"
-
-        public async Task<TrakHoundResponse<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>> Notify(string objectQuery, TrakHoundEntityNotificationType notificationType = TrakHoundEntityNotificationType.All, string requestId = null)
-        {
-            if (string.IsNullOrEmpty(requestId)) requestId = Guid.NewGuid().ToString();
-            var stpw = System.Diagnostics.Stopwatch.StartNew();
-            var results = new List<TrakHoundResult<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>>();
-
-            var subscription = _notifyHandler.CreateSubscription(objectQuery);
-            if (subscription != null)
-            {
-                results.Add(new TrakHoundResult<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>(Router.Id, objectQuery, TrakHoundResultType.Ok, subscription.Consumer));
-            }
-            else
-            {
-                results.Add(new TrakHoundResult<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>(Router.Id, objectQuery, TrakHoundResultType.InternalError));
-            }
-
-            stpw.Stop();
-            return new TrakHoundResponse<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>(results, stpw.ElapsedTicks);
-        }
-
-        #endregion
-
+ 
         #region "Index"
 
         public async Task<TrakHoundResponse<bool>> IndexExists(IEnumerable<string> targets, string requestId = null)
@@ -1405,5 +1381,28 @@ namespace TrakHound.Routing.Routers
 
         #endregion
 
+        //#region "Notify"
+
+        //public async Task<TrakHoundResponse<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>> Notify(string objectQuery, TrakHoundEntityNotificationType notificationType = TrakHoundEntityNotificationType.All, string requestId = null)
+        //{
+        //    if (string.IsNullOrEmpty(requestId)) requestId = Guid.NewGuid().ToString();
+        //    var stpw = System.Diagnostics.Stopwatch.StartNew();
+        //    var results = new List<TrakHoundResult<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>>();
+
+        //    var subscription = _notifyHandler.CreateSubscription(objectQuery);
+        //    if (subscription != null)
+        //    {
+        //        results.Add(new TrakHoundResult<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>(Router.Id, objectQuery, TrakHoundResultType.Ok, subscription.Consumer));
+        //    }
+        //    else
+        //    {
+        //        results.Add(new TrakHoundResult<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>(Router.Id, objectQuery, TrakHoundResultType.InternalError));
+        //    }
+
+        //    stpw.Stop();
+        //    return new TrakHoundResponse<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>>(results, stpw.ElapsedTicks);
+        //}
+
+        //#endregion
     }
 }

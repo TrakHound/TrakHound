@@ -12,18 +12,18 @@ namespace TrakHound.Clients
 
         public async Task<ITrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>> Notify(string path, TrakHoundEntityNotificationType notificationType = TrakHoundEntityNotificationType.All, string routerId = null)
         {
-            if (!string.IsNullOrEmpty(path))
-            {
-                var router = BaseClient.GetRouter(routerId);
-                if (router != null)
-                {
-                    var response = await router.Entities.Objects.Queues.Notify(path, notificationType);
-                    if (response.IsSuccess)
-                    {
-                        return new TrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>(response.Content);
-                    }
-                }
-            }
+            //if (!string.IsNullOrEmpty(path))
+            //{
+            //    var router = BaseClient.GetRouter(routerId);
+            //    if (router != null)
+            //    {
+            //        var response = await router.Entities.Objects.Queues.Notify(path, notificationType);
+            //        if (response.IsSuccess)
+            //        {
+            //            return new TrakHoundConsumer<IEnumerable<TrakHoundEntityNotification>>(response.Content);
+            //        }
+            //    }
+            //}
 
             return null;
         }

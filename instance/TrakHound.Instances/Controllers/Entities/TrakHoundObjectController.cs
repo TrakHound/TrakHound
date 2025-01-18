@@ -642,43 +642,43 @@ namespace TrakHound.Http.Entities
 
         #endregion
 
-        #region "Notify"
+        //#region "Notify"
 
-        [HttpGet("notify")]
-        public async Task Notify(
-            [FromQuery(Name = "path")] string path,
-            [FromQuery] string type = null,
-            [FromQuery] int interval = 0,
-            [FromQuery] int take = 100,
-            [FromQuery] string routerId = null,
-            [FromQuery] string consumerId = null,
-            [FromQuery] bool indentOutput = false
-            )
-        {
-            if (!string.IsNullOrEmpty(path))
-            {
-                var getConsumer = async () =>
-                {
-                    var client = GetClient(routerId);
-                    if (client != null)
-                    {
-                        var notificationType = type != null ? type.ConvertEnum<TrakHoundEntityNotificationType>() : TrakHoundEntityNotificationType.All;
+        //[HttpGet("notify")]
+        //public async Task Notify(
+        //    [FromQuery(Name = "path")] string path,
+        //    [FromQuery] string type = null,
+        //    [FromQuery] int interval = 0,
+        //    [FromQuery] int take = 100,
+        //    [FromQuery] string routerId = null,
+        //    [FromQuery] string consumerId = null,
+        //    [FromQuery] bool indentOutput = false
+        //    )
+        //{
+        //    if (!string.IsNullOrEmpty(path))
+        //    {
+        //        var getConsumer = async () =>
+        //        {
+        //            var client = GetClient(routerId);
+        //            if (client != null)
+        //            {
+        //                var notificationType = type != null ? type.ConvertEnum<TrakHoundEntityNotificationType>() : TrakHoundEntityNotificationType.All;
 
-                        return await client.System.Entities.Objects.Notify(path, notificationType, routerId);
-                    }
-                    return null;
-                };
+        //                return await client.System.Entities.Objects.Notify(path, notificationType, routerId);
+        //            }
+        //            return null;
+        //        };
 
-                var formatResponse = (IEnumerable<TrakHoundEntityNotification> notifications) =>
-                {
-                    return notifications.ToJson(indentOutput).ToUtf8Bytes();
-                };
+        //        var formatResponse = (IEnumerable<TrakHoundEntityNotification> notifications) =>
+        //        {
+        //            return notifications.ToJson(indentOutput).ToUtf8Bytes();
+        //        };
 
-                await WebSocketManager.Create<IEnumerable<TrakHoundEntityNotification>>(HttpContext, getConsumer, formatResponse);
-            }
-        }
+        //        await WebSocketManager.Create<IEnumerable<TrakHoundEntityNotification>>(HttpContext, getConsumer, formatResponse);
+        //    }
+        //}
 
-        #endregion
+        //#endregion
 
         #region "Index"
 
