@@ -40,13 +40,12 @@ namespace TrakHound.Logging
         public TrakHoundLogger(string id)
         {
             _id = id;
-            //TrakHoundLogProvider.AddLogger(this);
         }
 
 
         public virtual void Log(TrakHoundLogItem logEntry)
         {
-            Log(logEntry.LogLevel, logEntry.Message);
+            Log(logEntry.LogLevel, logEntry.Sender, logEntry.Message);
         }
 
         public virtual void Log(TrakHoundLogLevel logLevel, string message)
@@ -54,16 +53,28 @@ namespace TrakHound.Logging
             if (LogEntryReceived != null) LogEntryReceived.Invoke(this, new TrakHoundLogItem(_id, logLevel, message));
         }
 
+        public virtual void Log(TrakHoundLogLevel logLevel, string name, string message)
+        {
+            var loggerId = !string.IsNullOrEmpty(name) ? Url.Combine(_id, name) : _id;
+            if (LogEntryReceived != null) LogEntryReceived.Invoke(this, new TrakHoundLogItem(loggerId, logLevel, message));
+        }
+
         public void LogCritical(string message) => Log(TrakHoundLogLevel.Critical, message);
+        public void LogCritical(string name, string message) => Log(TrakHoundLogLevel.Critical, name, message);
 
         public void LogError(string message) => Log(TrakHoundLogLevel.Error, message);
+        public void LogError(string name, string message) => Log(TrakHoundLogLevel.Error, name, message);
 
         public void LogWarning(string message) => Log(TrakHoundLogLevel.Warning, message);
+        public void LogWarning(string name, string message) => Log(TrakHoundLogLevel.Warning, name, message);
 
         public void LogInformation(string message) => Log(TrakHoundLogLevel.Information, message);
+        public void LogInformation(string name, string message) => Log(TrakHoundLogLevel.Information, name, message);
 
         public void LogDebug(string message) => Log(TrakHoundLogLevel.Debug, message);
+        public void LogDebug(string name, string message) => Log(TrakHoundLogLevel.Debug, name, message);
 
         public void LogTrace(string message) => Log(TrakHoundLogLevel.Trace, message);
+        public void LogTrace(string name, string message) => Log(TrakHoundLogLevel.Trace, name, message);
     }
 }

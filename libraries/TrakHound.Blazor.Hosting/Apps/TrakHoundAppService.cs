@@ -1,18 +1,16 @@
-// Copyright (c) 2024 TrakHound Inc., All Rights Reserved.
+// Copyright (c) 2025 TrakHound Inc., All Rights Reserved.
 // TrakHound Inc. licenses this file to you under the MIT license.
 
 using Microsoft.AspNetCore.Components;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using TrakHound.Api;
 using TrakHound.Apps;
 using TrakHound.Blazor.Routing;
-using TrakHound.Clients;
 using TrakHound.Configurations;
 using TrakHound.Instances;
+using TrakHound.Logging;
 using TrakHound.Modules;
 using TrakHound.Packages;
-using TrakHound.Requests;
 
 namespace TrakHound.Blazor.Apps
 {
@@ -29,6 +27,7 @@ namespace TrakHound.Blazor.Apps
         private readonly ITrakHoundPageRouteManager _routeManager;
         private readonly ITrakHoundPackageManager _packageManager;
         private readonly ITrakHoundModuleManager _moduleManager;
+        private readonly ITrakHoundLogProvider _logProvider;
         private readonly string _baseUrl;
         private readonly Dictionary<string, TrakHoundAppInformation> _appInformations = new Dictionary<string, TrakHoundAppInformation>();
         private readonly Dictionary<string, TrakHoundPackage> _appPackages = new Dictionary<string, TrakHoundPackage>();
@@ -69,10 +68,12 @@ namespace TrakHound.Blazor.Apps
             ITrakHoundConfigurationProfile configurationProfile,
             ITrakHoundPageRouteManager routeManager,
             ITrakHoundPackageManager packageManager,
-            ITrakHoundModuleProvider moduleProvider
+            ITrakHoundModuleProvider moduleProvider,
+            ITrakHoundLogProvider logProvider
             )
         {
             _instance = instance;
+            _logProvider = logProvider;
             _delayLoadEvent.Elapsed += UpdateDelayElapsed;
 
             // Set Base URL (HTTP Address)
@@ -101,10 +102,12 @@ namespace TrakHound.Blazor.Apps
             ITrakHoundPageRouteManager routeManager,
             ITrakHoundPackageManager packageManager,
             ITrakHoundModuleProvider moduleProvider,
+            ITrakHoundLogProvider logProvider,
             TrakHoundModuleContext context
             )
         {
             _instance = instance;
+            _logProvider = logProvider;
             _delayLoadEvent.Elapsed += UpdateDelayElapsed;
 
             _configurationProfile = configurationProfile;
@@ -559,10 +562,7 @@ namespace TrakHound.Blazor.Apps
             {
                 foreach (var stylesheet in stylesheets)
                 {
-                    lock (_lock)
-                    {
-                        _packageStylesheets.Remove(stylesheet.AppId);
-                    }
+                    lock (_lock) _packageStylesheets.Remove(stylesheet.AppId);
 
                     if (!string.IsNullOrEmpty(stylesheet.PackageDirectory))
                     {
@@ -621,7 +621,7 @@ namespace TrakHound.Blazor.Apps
                                         if (File.Exists(destinationFile)) File.Delete(destinationFile);
                                         File.WriteAllLines(destinationFile, newLines);
 
-                                        _packageStylesheets.Add(stylesheet.AppId, stylesheetPath);
+                                        lock (_lock) _packageStylesheets.Add(stylesheet.AppId, stylesheetPath);
                                     }
                                 }
                             }
@@ -638,10 +638,7 @@ namespace TrakHound.Blazor.Apps
             {
                 foreach (var stylesheet in stylesheets)
                 {
-                    lock (_lock)
-                    {
-                        _packageScripts.Remove(stylesheet.AppId);
-                    }
+                    lock (_lock) _packageScripts.Remove(stylesheet.AppId);
 
                     if (!string.IsNullOrEmpty(stylesheet.PackageDirectory))
                     {
@@ -671,7 +668,7 @@ namespace TrakHound.Blazor.Apps
 
                                         File.Copy(scriptFile, destinationFile, true);
 
-                                        _packageScripts.Add(stylesheet.AppId, scriptPath);
+                                        lock (_lock) _packageScripts.Add(stylesheet.AppId, scriptPath);
                                     }
                                 }
                             }

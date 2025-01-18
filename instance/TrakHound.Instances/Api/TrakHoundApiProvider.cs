@@ -472,6 +472,12 @@ namespace TrakHound.Api
 
         class MethodRoute
         {
+            public TrakHoundApiRouteType Type { get; set; }
+
+            public string ControllerRoute { get; set; }
+
+            public string EndpointRoute { get; set; }
+
             public string Route { get; set; }
 
             public ITrakHoundApiController Controller { get; set; }
@@ -637,7 +643,10 @@ namespace TrakHound.Api
                                             if (attribute != null)
                                             {
                                                 var route = new MethodRoute();
+                                                route.Type = attribute.Type;
                                                 route.Controller = controller;
+                                                route.ControllerRoute = controllerRoute;
+                                                route.EndpointRoute = attribute.Route;
                                                 route.Route = Url.Combine(controllerRoute, attribute.Route);
                                                 route.Method = method;
                                                 controllerRoutes.Add(route);
@@ -675,15 +684,25 @@ namespace TrakHound.Api
                             var requestId = Guid.NewGuid().ToString();
                             var requestedRoute = !string.IsNullOrEmpty(route.Route) ? route.Route : "/";
 
+                            var controllerRoute = !string.IsNullOrEmpty(route.ControllerRoute) && route.ControllerRoute != "/" ? route.ControllerRoute : ":";
+                            var endpointRoute = !string.IsNullOrEmpty(route.EndpointRoute) && route.EndpointRoute != "/" ? route.EndpointRoute : ":";
+
                             var controller = (TrakHoundApiController)route.Controller;
-                            controller.Logger.LogDebug($"Request Received : {requestId} : Route = '{requestedRoute}'");
+
+                            var logger = _logProvider.GetLogger($"api/{controller.Package.Id}/{controllerRoute}/{route.Type}/{endpointRoute}");
+                            logger.LogInformation($"Request Received : {route.Type} : {requestId} : Route = '{requestedRoute}'");
 
                             if (!queryParameters.IsNullOrEmpty())
                             {
                                 foreach (var queryParameter in queryParameters)
                                 {
-                                    controller.Logger.LogDebug($"Request Received : {requestId} : Query Parameter : Name = '{queryParameter.Key}' : Value = {queryParameter.Value}");
+                                    logger.LogDebug($"Request Received : {route.Type} : {requestId} : Query Parameter : Name = '{queryParameter.Key}' : Value = {queryParameter.Value}");
                                 }
+                            }
+
+                            if (requestBody != null)
+                            {
+                                logger.LogDebug($"Request Received : {route.Type} : {requestId} : Body Parameter : Size = {requestBody.Length.ToFileSize()}");
                             }
 
                             var stpw = System.Diagnostics.Stopwatch.StartNew();
@@ -691,7 +710,7 @@ namespace TrakHound.Api
 
                             stpw.Stop();
                             var responseMilliseconds = ((double)stpw.ElapsedTicks) / 10000;
-                            controller.Logger.LogDebug($"Request Response : {requestId} : Status Code = {response.StatusCode} : Duration = {Math.Round(responseMilliseconds, 4)}ms");
+                            logger.LogInformation($"Request Response : {route.Type} : {requestId} : Status Code = {response.StatusCode} : Duration = {Math.Round(responseMilliseconds, 4)}ms");
 
                             return response;
                         }
@@ -857,7 +876,7 @@ namespace TrakHound.Api
 
                                 try
                                 {
-                                    inputParameterValue = JsonSerializer.Deserialize(requestBody, parameter.ParameterType);
+                                    inputParameterValue = JsonSerializer.Deserialize(requestBody, parameter.ParameterType, Json.DefaultOptions);
                                     set = true;
                                 }
                                 catch { }
@@ -1034,7 +1053,7 @@ namespace TrakHound.Api
 
                                     try
                                     {
-                                        inputParameterValue = JsonSerializer.Deserialize(requestBody, parameter.ParameterType);
+                                        inputParameterValue = JsonSerializer.Deserialize(requestBody, parameter.ParameterType, Json.DefaultOptions);
                                         set = true;
                                     }
                                     catch { }
@@ -1464,7 +1483,7 @@ namespace TrakHound.Api
                     var volumeId = configuration.VolumeId ?? configuration.Id;
                     var volume = _volumeProvider.GetVolume(volumeId);
 
-                    var logger = _logProvider.GetLogger($"api/{configuration.Id}");
+                    var logger = _logProvider.GetLogger($"api/{module.Package.Id}");
                     logger.LogEntryReceived += LogEntryReceived;
 
                     if (client != null && volume != null)
@@ -1516,13 +1535,18 @@ namespace TrakHound.Api
                 var apiInformation = TrakHoundApiInformation.Create(controllers, configuration, module.Package, module.PackageReadMe);
                 if (apiInformation != null)
                 {
-                    // Add Security Resources
                     foreach (var controllerInformation in apiInformation.Controllers)
                     {
                         foreach (var endpointInformation in controllerInformation.EndPoints)
                         {
-                            var resourceId = $"api:{apiInformation.Id}:{controllerInformation.Id}:{endpointInformation.Id}";
+                            var controllerRoute = !string.IsNullOrEmpty(controllerInformation.Route) && controllerInformation.Route != "/" ? controllerInformation.Route : ":";
+                            var endpointRoute = !string.IsNullOrEmpty(endpointInformation.Route) && endpointInformation.Route != "/" ? endpointInformation.Route : ":";
 
+                            // Add Endpoint Logger
+                            _logProvider.AddLogger(TrakHoundPath.Combine("api", module.Package.Id, controllerRoute, endpointInformation.Type, endpointRoute));
+
+                            // Add Security Resources
+                            var resourceId = $"api:{apiInformation.Id}:{controllerInformation.Id}:{endpointInformation.Id}";
                             if (!endpointInformation.Permissions.IsNullOrEmpty())
                             {
                                 _instance.SecurityManager.AddResource(Security.TrakHoundIdentityResourceType.Api, resourceId, endpointInformation.Permissions);
@@ -1580,7 +1604,6 @@ namespace TrakHound.Api
 
             return null;
         }
-
 
         private static string GetMethodId(MethodInfo methodInfo)
         {

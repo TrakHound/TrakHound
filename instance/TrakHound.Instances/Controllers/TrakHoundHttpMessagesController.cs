@@ -143,6 +143,7 @@ namespace TrakHound.Http
 
                 var formatResponse = (TrakHoundMessageResponse messageResponse) =>
                 {
+                    //messageResponse.BrokerId = brokerId;
                     return TrakHoundHttpMessageResponse.Create(messageResponse);
                 };
 

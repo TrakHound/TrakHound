@@ -100,11 +100,11 @@ namespace TrakHound.Logging
         public virtual IEnumerable<string> QueryLoggerIds(IEnumerable<string> pattern) => null;
 
 
-        public virtual IEnumerable<TrakHoundLogItem> QueryLogs(string id, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending) => null;
+        public virtual IEnumerable<TrakHoundLogItem> QueryLogs(string filter, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending) => null;
         
-        public virtual IEnumerable<TrakHoundLogItem> QueryLogsByMinimumLevel(string id, TrakHoundLogLevel minmimumLogLevel, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending) => null;
+        public virtual IEnumerable<TrakHoundLogItem> QueryLogsByMinimumLevel(string filter, TrakHoundLogLevel minmimumLogLevel, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending) => null;
         
-        public virtual IEnumerable<TrakHoundLogItem> QueryLogsByLevel(string id, TrakHoundLogLevel logLevel, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending) => null;
+        public virtual IEnumerable<TrakHoundLogItem> QueryLogsByLevel(string filter, TrakHoundLogLevel logLevel, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending) => null;
 
     }
 }

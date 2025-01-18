@@ -44,7 +44,6 @@ namespace TrakHound.Clients
             entityConsumers.Add(await GetConsumer<ITrakHoundObjectBooleanEntity>(routerId: routerId));
             entityConsumers.Add(await GetConsumer<ITrakHoundObjectDurationEntity>(routerId: routerId));
             entityConsumers.Add(await GetConsumer<ITrakHoundObjectEventEntity>(routerId: routerId));
-            //entityConsumers.Add(await GetConsumer<ITrakHoundObjectFeedEntity>(routerId: routerId));
             entityConsumers.Add(await GetConsumer<ITrakHoundObjectGroupEntity>(routerId: routerId));
             entityConsumers.Add(await GetConsumer<ITrakHoundObjectHashEntity>(routerId: routerId));
             entityConsumers.Add(await GetConsumer<ITrakHoundObjectLogEntity>(routerId: routerId));

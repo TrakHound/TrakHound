@@ -71,6 +71,8 @@ namespace TrakHound.Blazor.Routing
             outputRouteData.BaseLocation = routeData.BaseLocation;
             outputRouteData.Data = routeData.Data;
 
+            if (routeData.Logger != null) routeData.Logger.Log(TrakHoundLogLevel.Debug, $"Page Requested : {routeData.Data.Template}");
+
             // Filter out Parameters that aren't implmented in the Handler Type
             if (routeData != null && routeData.Data != null && routeData.Data.PageType != null && !routeData.Data.RouteValues.IsNullOrEmpty())
             {
@@ -235,6 +237,7 @@ namespace TrakHound.Blazor.Routing
                 routeData.BasePath = matchResult.MatchedRoute.BasePath;
                 routeData.BaseLocation = matchResult.MatchedRoute.BaseLocation;
                 routeData.Data = new RouteData(matchResult.MatchedRoute.Handler, parameters);
+                routeData.Data.Template = matchResult.MatchedRoute.Template;
 
                 OnRefresh(routeData);
             }

@@ -1,14 +1,22 @@
 .log-explorer {
     display: grid;
-    grid-template-columns: max-content 1fr;
     height: 100%;
     overflow: hidden;
 }
 
+    .log-explorer ::deep .rz-splitter {
+        height: 100%;
+        overflow-y: hidden;
+    }
+
+    .log-explorer ::deep .rz-splitter-pane {
+        height: 100%;
+        overflow-y: hidden;
+    }
+
 .log-sidebar-panel {
-    grid-column: 1;
     border-right: 1px solid var(--borderColor);
-    min-width: 200px;
+    min-width: 250px;
     display: grid;
     grid-template-rows: max-content 1fr;
     height: 100%;
@@ -35,6 +43,7 @@
         overflow: auto;
     }
 
+
 .log-content-panel {
     height: 100%;
     overflow: hidden;
@@ -42,7 +51,6 @@
 
 .log-live-panel,
 .log-history-panel {
-    grid-column: 2;
     display: grid;
     grid-template-rows: max-content 1fr;
     height: 100%;
@@ -52,7 +60,7 @@
     .log-content-panel .log-toolbar-panel {
         grid-row: 1;
         display: grid;
-        grid-template-columns: max-content max-content max-content 1fr;
+        grid-template-columns: max-content max-content 1fr;
         grid-column-gap: 15px;
         padding: 10px;
         border-bottom: 1px solid var(--borderColor);
@@ -63,6 +71,10 @@
             font-size: 14px;
             height: 38px;
             border-radius: 0;
+        }
+
+        .log-content-panel .log-toolbar-panel .log-filter-container ::deep .text-box.small input {
+            height: 38px !important;
         }
 
 .log-content-panel .log-toolbar-panel .btn-query {

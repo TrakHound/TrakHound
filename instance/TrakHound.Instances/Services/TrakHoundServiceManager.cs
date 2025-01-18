@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TrakHound.Clients;
 using TrakHound.Configurations;
+using TrakHound.Drivers;
 using TrakHound.Instances;
 using TrakHound.Logging;
 using TrakHound.Modules;
@@ -376,9 +377,12 @@ namespace TrakHound.Services
                 serviceItem.Configuration = configuration;
                 serviceItem.LastUpdated = now;
 
-                var engine = new TrakHoundServiceEngine(service, module.PackageId, module.PackageVersion);
+                var engineLoggerName = $"services/{module.PackageId}/{service.Id}/Engine";
+                var engineLogger = _logProvider.GetLogger(engineLoggerName);
+
+                var engine = new TrakHoundServiceEngine(service, module.PackageId, module.PackageVersion, engineLogger);
                 engine.StatusChanged += ServiceStatusChangeHandler;
-                engine.LogReceived += ServiceLogReceivedHandler;
+                //engine.LogReceived += ServiceLogReceivedHandler;
 
                 var serviceKey = service.Id.ToLower();
 
@@ -408,20 +412,20 @@ namespace TrakHound.Services
         }
 
 
-        private void ServiceLogReceivedHandler(object sender, TrakHoundLogItem item)
-        {
-            if (sender != null)
-            {
-                var service = sender as ITrakHoundService;
-                if (service != null)
-                {
-                    var logger = _logProvider.GetLogger($"service/{service.Id}/{item.Sender}");
-                    logger.Log(item);
+        //private void ServiceLogReceivedHandler(object sender, TrakHoundLogItem item)
+        //{
+        //    if (sender != null)
+        //    {
+        //        var service = sender as ITrakHoundService;
+        //        if (service != null)
+        //        {
+        //            var logger = _logProvider.GetLogger($"service/{service.Id}/{item.Sender}");
+        //            logger.Log(item);
 
-                    if (ServiceLogUpdated != null) ServiceLogUpdated.Invoke(service.Id, item);
-                }
-            }
-        }
+        //            if (ServiceLogUpdated != null) ServiceLogUpdated.Invoke(service.Id, item);
+        //        }
+        //    }
+        //}
 
         private void ServiceStatusChangeHandler(object sender, TrakHoundServiceStatusType status)
         {
@@ -488,6 +492,10 @@ namespace TrakHound.Services
                                 ((TrakHoundService)service).Id = GenerateServiceId(_instance.Id, configuration.PackageId, configuration.Id);
                                 ((TrakHoundService)service).SourceChain = sourceChain;
                                 ((TrakHoundService)service).Source = source;
+
+                                var loggerName = $"services/{module.PackageId}/{service.Id}/Service";
+                                var logger = _logProvider.GetLogger(loggerName);
+                                ((TrakHoundService)service).SetLogger(logger);
 
                                 return service;
                             }

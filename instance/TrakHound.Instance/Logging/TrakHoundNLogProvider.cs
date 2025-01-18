@@ -111,16 +111,16 @@ namespace TrakHound.Instance.Logging
         //}
 
 
-        public override IEnumerable<TrakHoundLogItem> QueryLogs(string name, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        public override IEnumerable<TrakHoundLogItem> QueryLogs(string filter, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
         {
-            if (!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(filter))
             {
                 var logItems = new List<TrakHoundLogItem>();
 
                 var logLevels = Enum.GetValues<TrakHoundLogLevel>();
                 foreach (var logLevel in logLevels)
                 {
-                    var levelItems = QueryLogsByLevel(name, logLevel, from, to, skip, take, sortOrder);
+                    var levelItems = QueryLogsByLevel(filter, logLevel, from, to, skip, take, sortOrder);
                     if (!levelItems.IsNullOrEmpty())
                     {
                         logItems.AddRange(levelItems);
@@ -133,16 +133,16 @@ namespace TrakHound.Instance.Logging
             return null;
         }
 
-        public override IEnumerable<TrakHoundLogItem> QueryLogsByMinimumLevel(string name, TrakHoundLogLevel minimumLogLevel, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        public override IEnumerable<TrakHoundLogItem> QueryLogsByMinimumLevel(string filter, TrakHoundLogLevel minimumLogLevel, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
         {
-            if (!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(filter))
             {
                 var logItems = new List<TrakHoundLogItem>();
 
                 for (var i = 0; i < (int)minimumLogLevel; i++)
                 {
                     var logLevel = (TrakHoundLogLevel)i;
-                    var levelItems = QueryLogsByLevel(name, logLevel, from, to, skip, take, sortOrder);
+                    var levelItems = QueryLogsByLevel(filter, logLevel, from, to, skip, take, sortOrder);
                     if (!levelItems.IsNullOrEmpty())
                     {
                         logItems.AddRange(levelItems);
@@ -155,14 +155,14 @@ namespace TrakHound.Instance.Logging
             return null;
         }
 
-        public override IEnumerable<TrakHoundLogItem> QueryLogsByLevel(string name, TrakHoundLogLevel logLevel, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        public override IEnumerable<TrakHoundLogItem> QueryLogsByLevel(string filter, TrakHoundLogLevel logLevel, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
         {
-            var loggerId = GetLoggerId(name);
+            var loggerId = GetLoggerId(filter);
             if (!string.IsNullOrEmpty(loggerId))
             {
                 try
                 {
-                    var directoryPath = Path.Combine(GetLogsDirectory(), name);
+                    var directoryPath = Path.Combine(GetLogsDirectory(), filter);
                     if (Directory.Exists(directoryPath))
                     {
                         var nlogLevel = GetLogLevel(logLevel);

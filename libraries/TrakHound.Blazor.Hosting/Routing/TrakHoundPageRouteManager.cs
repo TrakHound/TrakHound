@@ -21,7 +21,8 @@ namespace TrakHound.Blazor.Routing
             string packageCategory,
             TrakHoundModuleContext context,
             ITrakHoundClientProvider clientProvider,
-            ITrakHoundVolumeProvider volumeProvider
+            ITrakHoundVolumeProvider volumeProvider,
+            ITrakHoundLogProvider logProvider
             )
             : base(baseUrl)
         {
@@ -30,6 +31,7 @@ namespace TrakHound.Blazor.Routing
             _configurationProfile = configurationProfile;
             _clientProvider = clientProvider;
             _volumeProvider = volumeProvider;
+            _logProvider = logProvider;
         }
     }
 
@@ -50,6 +52,7 @@ namespace TrakHound.Blazor.Routing
         protected ITrakHoundModuleManager _moduleManager;
         protected ITrakHoundClientProvider _clientProvider;
         protected ITrakHoundVolumeProvider _volumeProvider;
+        protected ITrakHoundLogProvider _logProvider;
 
 
         public IEnumerable<Route> Routes => _routes.Values;
@@ -173,7 +176,7 @@ namespace TrakHound.Blazor.Routing
                         var volume = _volumeProvider.GetVolume(volumeId);
 
                         // Create Logger
-                        var logger = new TrakHoundLogger(appConfiguration.Id);
+                        var logger = _logProvider.GetLogger($"app/{module.Package.Id}");
 
                         foreach (var moduleType in module.ModuleTypes)
                         {

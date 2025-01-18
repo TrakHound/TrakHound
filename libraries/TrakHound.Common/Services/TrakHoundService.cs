@@ -16,6 +16,7 @@ namespace TrakHound.Services
         private readonly ITrakHoundServiceConfiguration _configuration;
         private readonly ITrakHoundClient _client;
         private readonly ITrakHoundVolume _volume;
+        private ITrakHoundLogger _logger;
         private TrakHoundServiceStatus _status;
 
 
@@ -35,12 +36,14 @@ namespace TrakHound.Services
 
         public ITrakHoundVolume Volume => _volume;
 
+        public ITrakHoundLogger Logger => _logger;
+
         public TrakHoundServiceStatus Status => _status;
 
 
         public event EventHandler<TrakHoundServiceStatusType> StatusChanged;
 
-        public event EventHandler<TrakHoundLogItem> LogReceived;
+        //public event EventHandler<TrakHoundLogItem> LogReceived;
 
 
         public TrakHoundService(
@@ -82,24 +85,33 @@ namespace TrakHound.Services
         protected virtual Task OnStopAsync() => Task.CompletedTask;
 
 
+        public void SetLogger(ITrakHoundLogger logger)
+        {
+            _logger = logger;
+            AfterLoggerSet();
+        }
+
+        protected virtual void AfterLoggerSet() { }
+
+
         protected void Log(TrakHoundLogLevel level, string message, string code = null)
         {
-            if (LogReceived != null) LogReceived.Invoke(this, new TrakHoundLogItem("Main", level, message, code, UnixDateTime.Now));
+            if (Logger != null) Logger.Log(new TrakHoundLogItem("Main", level, message, code, UnixDateTime.Now));
         }
 
         protected void Log(string logName, TrakHoundLogLevel level, string message, string code = null)
         {
-            if (LogReceived != null) LogReceived.Invoke(this, new TrakHoundLogItem(logName, level, message, code, UnixDateTime.Now));
+            if (Logger != null) Logger.Log(new TrakHoundLogItem(logName, level, message, code, UnixDateTime.Now));
         }
 
         internal void LogInternal(TrakHoundLogLevel level, string message, string code = null)
         {
-            if (LogReceived != null) LogReceived.Invoke(this, new TrakHoundLogItem("Main", level, message, code, UnixDateTime.Now));
+            if (Logger != null) Logger.Log( new TrakHoundLogItem("Main", level, message, code, UnixDateTime.Now));
         }
 
         internal void LogInternal(string logName, TrakHoundLogLevel level, string message, string code = null)
         {
-            if (LogReceived != null) LogReceived.Invoke(this, new TrakHoundLogItem(logName, level, message, code, UnixDateTime.Now));
+            if (Logger != null) Logger.Log( new TrakHoundLogItem(logName, level, message, code, UnixDateTime.Now));
         }
     }
 }

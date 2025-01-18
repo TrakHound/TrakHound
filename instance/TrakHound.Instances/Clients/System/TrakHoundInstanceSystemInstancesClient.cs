@@ -80,12 +80,11 @@ namespace TrakHound.Clients
         {
             if (!string.IsNullOrEmpty(instanceId) && instanceId == _instance.Id)
             {
-                var loggerId = _logProvider.GetLoggerId("instance");
                 var consumer = new TrakHoundInstanceConsumer<IEnumerable<TrakHoundLogItem>>();
 
                 _instance.LogUpdated += (id, item) =>
                 {
-                    if (item.Sender == loggerId && item.LogLevel <= minimumLevel)
+                    if (IsMatch("*", item.Sender) && item.LogLevel <= minimumLevel)
                     {
                         consumer.Push(new TrakHoundLogItem[] { item });
                     }
@@ -97,16 +96,15 @@ namespace TrakHound.Clients
             return null;
         }
 
-        public async Task<ITrakHoundConsumer<IEnumerable<TrakHoundLogItem>>> SubscribeToLog(string instanceId, string logName, TrakHoundLogLevel minimumLevel = TrakHoundLogLevel.Information)
+        public async Task<ITrakHoundConsumer<IEnumerable<TrakHoundLogItem>>> SubscribeToLog(string instanceId, string filter, TrakHoundLogLevel minimumLevel = TrakHoundLogLevel.Information)
         {
-            if (!string.IsNullOrEmpty(instanceId) && instanceId == _instance.Id && !string.IsNullOrEmpty(logName))
+            if (!string.IsNullOrEmpty(instanceId) && instanceId == _instance.Id && !string.IsNullOrEmpty(filter))
             {
-                var loggerId = _logProvider.GetLoggerId(logName);
                 var consumer = new TrakHoundInstanceConsumer<IEnumerable<TrakHoundLogItem>>();
 
                 _instance.LogUpdated += (id, item) =>
                 {
-                    if (item.Sender == loggerId && item.LogLevel <= minimumLevel)
+                    if (IsMatch(filter, item.Sender) && item.LogLevel <= minimumLevel)
                     {
                         consumer.Push(new TrakHoundLogItem[] { item });
                     }
@@ -145,19 +143,39 @@ namespace TrakHound.Clients
             return _logProvider.QueryLogsByLevel("instance", level, from, to, skip, take, sortOrder);
         }
 
-        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogs(string instanceId, string logName, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogs(string instanceId, string filter, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
         {
-            return _logProvider.QueryLogs(logName, from, to, skip, take, sortOrder);
+            return _logProvider.QueryLogs(filter, from, to, skip, take, sortOrder);
         }
 
-        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogsByMinimumLevel(string instanceId, string logName, TrakHoundLogLevel minimumLevel, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogsByMinimumLevel(string instanceId, string filter, TrakHoundLogLevel minimumLevel, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
         {
-            return _logProvider.QueryLogsByMinimumLevel(logName, minimumLevel, from, to, skip, take, sortOrder);
+            return _logProvider.QueryLogsByMinimumLevel(filter, minimumLevel, from, to, skip, take, sortOrder);
         }
 
-        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogsByLevel(string instanceId, string logName, TrakHoundLogLevel level, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
+        public async Task<IEnumerable<TrakHoundLogItem>> QueryLogsByLevel(string instanceId, string filter, TrakHoundLogLevel level, DateTime from, DateTime to, int skip = 0, int take = 1000, SortOrder sortOrder = SortOrder.Ascending)
         {
-            return _logProvider.QueryLogsByLevel(logName, level, from, to, skip, take, sortOrder);
+            return _logProvider.QueryLogsByLevel(filter, level, from, to, skip, take, sortOrder);
+        }
+
+
+        private bool IsMatch(string pattern, string loggerId)
+        {
+            if (!string.IsNullOrEmpty(pattern) && !string.IsNullOrEmpty(loggerId))
+            {
+                var loggerPattern = _logProvider.GetLoggerId(pattern);
+
+                if (loggerPattern.EndsWith('*'))
+                {
+                    return loggerId.StartsWith(loggerPattern.TrimEnd('*').TrimEnd('/'));
+                }
+                else
+                {
+                    return loggerId == pattern;
+                }
+            }
+
+            return false;
         }
 
 
@@ -196,7 +214,6 @@ namespace TrakHound.Clients
 
             return null;
         }
-
 
 
         public async Task<IEnumerable<TrakHoundBufferMetrics>> GetBufferMetrics()

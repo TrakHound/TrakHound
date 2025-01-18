@@ -37,11 +37,11 @@ namespace TrakHound.Blazor
             services.AddTransient<ITrakHoundAppInjectionServices, TrakHoundAppInjectionServices>();
 
 
-            var routeManager = new TrakHoundPageRouteManager<ComponentBase>(instance.Configuration.BasePath, instance.ConfigurationProfile, instance.ModuleProvider, "app", context, instance.ClientProvider, instance.VolumeProvider);
+            var routeManager = new TrakHoundPageRouteManager<ComponentBase>(instance.Configuration.BasePath, instance.ConfigurationProfile, instance.ModuleProvider, "app", context, instance.ClientProvider, instance.VolumeProvider, instance.LogProvider);
             services.AddSingleton<ITrakHoundPageRouteManager>(routeManager);
 
 
-            var appService = new TrakHoundAppService(instance, instance.ConfigurationProfile, routeManager, instance.PackageManager, instance.ModuleProvider);
+            var appService = new TrakHoundAppService(instance, instance.ConfigurationProfile, routeManager, instance.PackageManager, instance.ModuleProvider, instance.LogProvider);
             services.AddSingleton<ITrakHoundAppProvider>(appService);
         }
     }

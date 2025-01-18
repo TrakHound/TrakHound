@@ -5,18 +5,18 @@
 @using TrakHound.Instances
 
 <LogExplorer GetLogNames="GetLogNames"
-             GetLogLineConsumer="SubscribeLogLines"
-             GetLogLines="GetLogLines"
-             @bind-SelectedLogName="selectedLogName"
-             @bind-SelectedLogLevel="selectedLogLevel"
-             @bind-From="@from"
-             @bind-To="@to" />
+GetLogLineConsumer="SubscribeLogLines"
+GetLogLines="GetLogLines"
+@bind-SelectedLogLevel="selectedLogLevel"
+@bind-Filter="filter"
+@bind-From="@from"
+@bind-To="@to" />
 
 @code {
 
     private IEnumerable<string> logNames;
-    private string selectedLogName;
-    private TrakHoundLogLevel selectedLogLevel;
+    private TrakHoundLogLevel selectedLogLevel = TrakHoundLogLevel.Information;
+    private string filter;
     private IEnumerable<TrakHoundLogItem> historyLogLines;
     private DateTime from;
     private DateTime to;
@@ -43,9 +43,11 @@
         var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
         if (client != null)
         {
-            var logNames = await client.System.Instances.QueryLogNames(InstanceInformation.Id);
-            if (selectedLogName == null) selectedLogName = logNames?.FirstOrDefault();
-            return logNames;
+            // var logNames = await client.System.Instances.QueryLogNames(InstanceInformation.Id);
+            // if (selectedLogName == null) selectedLogName = logNames?.FirstOrDefault();
+            // return logNames;
+
+            return await client.System.Instances.QueryLogNames(InstanceInformation.Id);
         }
 
         return null;
@@ -56,7 +58,8 @@
         var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
         if (client != null)
         {
-            return await client.System.Instances.SubscribeToLog(InstanceInformation.Id, selectedLogName, selectedLogLevel);
+            var f = !string.IsNullOrEmpty(filter) ? $"{filter}/*" : "*";
+            return await client.System.Instances.SubscribeToLog(InstanceInformation.Id, f, selectedLogLevel);
         }
 
         return null;
@@ -67,7 +70,8 @@
         var client = Explorer.Instances.GetClient(explorerService.SelectedInstanceId);
         if (client != null)
         {
-            return await client.System.Instances.QueryLogsByMinimumLevel(InstanceInformation.Id, selectedLogName, selectedLogLevel, from, to, skip, take, sortOrder);
+            var f = !string.IsNullOrEmpty(filter) ? $"{filter}/*" : "*";
+            return await client.System.Instances.QueryLogsByMinimumLevel(InstanceInformation.Id, f, selectedLogLevel, from, to, skip, take, sortOrder);
         }
 
         return null;

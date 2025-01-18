@@ -1,105 +1,106 @@
 ﻿@using TrakHound.Logging
 
 <div class="log-explorer">
-    <div class="log-sidebar-panel">
-        <div class="log-sidebar-toolbar-panel">
-            <div class="log-buttons-container">
+    <RadzenSplitter>
+        <RadzenSplitterPane Size="350px" Min="100px" Collapsible="false">
+            <div class="log-sidebar-panel">
+                <div class="log-sidebar-toolbar-panel">
+                    <div class="log-buttons-container">
 
-                @if (!refreshLoading)
-                {
-                    <button class="btn btn-toolbar" @onclick="Refresh"><span class="icon fa-solid fa-sharp fa-rotate"></span>Refresh</button>
-                }
-                else
-                {
-                    <button class="btn btn-toolbar"><span class="icon fa-solid fa-sharp fa-rotate spin"></span>Refresh</button>
-                }
+                        @if (!refreshLoading)
+                        {
+                            <button class="btn btn-toolbar" @onclick="Refresh"><span class="icon fa-solid fa-sharp fa-rotate"></span>Refresh</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-toolbar"><span class="icon fa-solid fa-sharp fa-rotate spin"></span>Refresh</button>
+                        }
 
+                    </div>
+                </div>
+                <div class="log-sidebar-list-panel">
+                    <LogTreeView RootPaths="@logTreeRootNames" LogNames="@logTreeNames" SelectedLogName="@Filter" LogSelected="SelectLog" />
+                </div>
             </div>
-        </div>
-        <div class="log-sidebar-list-panel">
-            <TreeView SelectedId="@SelectedLogName">
+        </RadzenSplitterPane>
+        <RadzenSplitterPane Min="25%" Collapsible="false">
+            <div class="log-content-panel">
+                <RadzenTabs>
+                    <Tabs>
+                        <RadzenTabsItem Text="Live">
+                            <div class="log-live-panel">
+                                <div class="log-toolbar-panel">
+                                    <div class="log-buttons-container">
 
-                @if (!logNames.IsNullOrEmpty())
-                {
-                    foreach (var logName in logNames)
-                    {
-                        <TreeItem Id="@logName" Title="@logName" Selected="() => SelectLog(logName)"/>
-                    }
-                }
+                                        @if (!queryLoading)
+                                        {
+                                            @if (logConsumer != null)
+                                            {
+                                                <button class="btn btn-secondary btn-subscribe" @onclick="@Unsubscribe"><span class="icon fa-solid fa-sharp fa-pause"></span>Unsubscribe</button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-primary btn-subscribe" @onclick="@Subscribe"><span class="icon fa-solid fa-sharp fa-play"></span>Subscribe</button>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-primary btn-query disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
+                                        }
 
-            </TreeView>
-        </div>
-    </div>
-    <div class="log-content-panel">
-        <RadzenTabs>
-            <Tabs>
-                <RadzenTabsItem Text="Live">
-                    <div class="log-live-panel">
-                        <div class="log-toolbar-panel">
-                            <div class="log-buttons-container">
-
-                                @if (!queryLoading)
-                                {
-                                    @if (logConsumer != null)
-                                    {
-                                        <button class="btn btn-secondary btn-subscribe" @onclick="@Unsubscribe"><span class="icon fa-solid fa-sharp fa-pause"></span>Unsubscribe</button>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn btn-primary btn-subscribe" @onclick="@Subscribe"><span class="icon fa-solid fa-sharp fa-play"></span>Subscribe</button>
-                                    }
-                                }
-                                else
-                                {
-                                    <button class="btn btn-primary btn-query disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
-                                }
-
+                                    </div>
+                                    <div class="log-options-container">
+                                        <RadzenDropDown Data="@logLevels" TValue="TrakHoundLogLevel" Value="@SelectedLogLevel" ValueChanged="SelectLogLevel" />
+                                    </div>
+                                    <div class="log-filter-container">
+                                        <TextBox @bind-Value="@Filter" />
+                                    </div>
+                                </div>
+                                <div class="log-table-panel">
+                                    <LogStream Consumer="@logConsumer" />
+                                </div>
                             </div>
-                            <div class="log-options-container">
-                                <RadzenDropDown Data="@logLevels" TValue="TrakHoundLogLevel" Value="@SelectedLogLevel" ValueChanged="SelectLogLevel" />
-                            </div>
-                        </div>
-                        <div class="log-table-panel">
-                            <LogStream Consumer="@logConsumer" />
-                        </div>
-                    </div>
-                </RadzenTabsItem>
-                <RadzenTabsItem Text="History">
-                    <div class="log-history-panel">
-                        <div class="log-toolbar-panel">
-                            <div class="log-buttons-container">
+                        </RadzenTabsItem>
+                        <RadzenTabsItem Text="History">
+                            <div class="log-history-panel">
+                                <div class="log-toolbar-panel">
+                                    <div class="log-buttons-container">
 
-                                @if (!queryLoading)
-                                {
-                                    <button class="btn btn-primary btn-query" @onclick="@QueryLogLines"><span class="icon fa-solid fa-sharp fa-magnifying-glass"></span>Query</button>
-                                }
-                                else
-                                {
-                                    <button class="btn btn-primary btn-query disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
-                                }
+                                        @if (!queryLoading)
+                                        {
+                                            <button class="btn btn-primary btn-query" @onclick="@QueryLogLines"><span class="icon fa-solid fa-sharp fa-magnifying-glass"></span>Query</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-primary btn-query disabled"><span class="icon fa-solid fa-sharp fa-loader spin"></span>Loading..</button>
+                                        }
 
+                                    </div>
+                                    <div class="log-options-container">
+                                        <RadzenDropDown Data="@logLevels" TValue="TrakHoundLogLevel" Value="@SelectedLogLevel" ValueChanged="SelectLogLevel" />
+                                    </div>
+                                    <div class="log-timerange-container">
+                                        <TimeRangeSelection From="@From" To="@To" FromChanged="SelectFrom" ToChanged="SelectTo" />
+                                    </div>
+                                </div>
+                                <div class="log-table-panel">
+                                    <LogTable LogLines="@logLines" />
+                                </div>
                             </div>
-                            <div class="log-options-container">
-                                <RadzenDropDown Data="@logLevels" TValue="TrakHoundLogLevel" Value="@SelectedLogLevel" ValueChanged="SelectLogLevel" />
-                            </div>
-                            <div class="log-timerange-container">
-                                <TimeRangeSelection From="@From" To="@To" FromChanged="SelectFrom" ToChanged="SelectTo" />
-                            </div>
-                        </div>
-                        <div class="log-table-panel">
-                            <LogTable LogLines="@logLines" />
-                        </div>
-                    </div>
-                </RadzenTabsItem>
-            </Tabs>
-        </RadzenTabs>
-    </div>
+                        </RadzenTabsItem>
+                    </Tabs>
+                </RadzenTabs>
+            </div>
+        </RadzenSplitterPane>
+    </RadzenSplitter>
 </div>
 
 @code {
 
     private static TrakHoundLogLevel[] logLevels = Enum.GetValues<TrakHoundLogLevel>();
     private IEnumerable<string> logNames;
+    private ListDictionary<string, string> logTreeNames;
+    private IEnumerable<string> logTreeRootNames;
     private ITrakHoundConsumer<IEnumerable<TrakHoundLogItem>> logConsumer;
     private IEnumerable<TrakHoundLogItem> logLines;
     private bool refreshLoading;
@@ -121,10 +122,10 @@
     public EventCallback<TrakHoundLogLevel> SelectedLogLevelChanged { get; set; }
 
     [Parameter]
-    public string SelectedLogName { get; set; }
+    public string Filter { get; set; }
 
     [Parameter]
-    public EventCallback<string> SelectedLogNameChanged { get; set; }
+    public EventCallback<string> FilterChanged { get; set; }
 
     [Parameter]
     public DateTime From { get; set; }
@@ -155,6 +156,8 @@
             _ = Task.Run(async () =>
             {
                 logNames = await GetLogNames();
+                logTreeNames = BuildTreeView(logNames);
+                logTreeRootNames = GetTreeRootNames(logNames);
                 refreshLoading = false;
                 await InvokeAsync(StateHasChanged);
             });
@@ -178,8 +181,8 @@
         logConsumer = null;
 
         logLines = null;
-        SelectedLogName = logName;
-        await SelectedLogNameChanged.InvokeAsync(logName);
+        Filter = logName;
+        await FilterChanged.InvokeAsync(logName);
         await InvokeAsync(StateHasChanged);
     }
 
@@ -223,6 +226,79 @@
     private async void SelectTo(DateTime timestamp)
     {
         await ToChanged.InvokeAsync(timestamp);
+    }
+
+
+    private static ListDictionary<string, string> BuildTreeView(IEnumerable<string> names)
+    {
+        if (!names.IsNullOrEmpty())
+        {
+            var results = new ListDictionary<string, string>();
+
+            var rootNames = GetTreeRootNames(names);
+            foreach (var rootName in rootNames)
+            {
+                BuildTreeItems(ref results, names, rootName);
+            }
+
+            return results;
+        }
+
+        return null;
+    }
+
+    private static void BuildTreeItems(ref ListDictionary<string, string> results, IEnumerable<string> names, string path)
+    {
+        if (!string.IsNullOrEmpty(path))
+        {
+            var childNames = GetTreeChildNames(names, path);
+
+            results.Add(path, childNames);
+
+            if (!childNames.IsNullOrEmpty())
+            {
+                foreach (var childName in childNames)
+                {
+                    BuildTreeItems(ref results, names, childName);
+                }
+            }
+        }
+    }
+
+    private static IEnumerable<string> GetTreeRootNames(IEnumerable<string> names)
+    {
+        if (!names.IsNullOrEmpty())
+        {
+            return names.Select(o => GetTreeRoot(o)).Distinct();
+        }
+
+        return null;
+    }
+
+    private static string GetTreeRoot(string logName)
+    {
+        if (!string.IsNullOrEmpty(logName))
+        {
+            return TrakHoundPath.GetRoot(logName);
+        }
+
+        return logName;
+    }
+
+    private static IEnumerable<string> GetTreeChildNames(IEnumerable<string> names, string path)
+    {
+        if (!names.IsNullOrEmpty() && !string.IsNullOrEmpty(path))
+        {
+            var childLogNames = names.Where(o => TrakHoundPath.IsChildOf(path, o) && o != path);
+            if (!childLogNames.IsNullOrEmpty())
+            {
+                var relativeNames = childLogNames.Select(o => TrakHoundPath.GetRelativeTo(path, o));
+                var relativeRootNames = relativeNames.Select(o => TrakHoundPath.GetRoot(o)).Distinct();
+                return relativeRootNames.Select(o => TrakHoundPath.Combine(path, o));
+            }
+        }
+
+        return null;
     }
 
 }

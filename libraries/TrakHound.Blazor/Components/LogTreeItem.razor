@@ -1,0 +1,34 @@
+﻿@if (Path != null)
+{
+    var title = TrakHoundPath.GetObject(Path);
+    var childNames = LogNames.Get(Path);
+
+    @if (!childNames.IsNullOrEmpty())
+    {
+        <TreeItem Id="@Path" Title="@title" Icon="fa-sharp fa-solid fa-folder" CssClass="folder" Selected="LogSelected">
+
+            @foreach (var childName in childNames.OrderBy(o => o))
+            {
+                <LogTreeItem LogNames="@LogNames" Path="@childName" LogSelected="LogSelected" />
+            }
+
+        </TreeItem>
+    }
+    else
+    {
+        <TreeItem Id="@Path" Title="@title" Icon="fa-sharp fa-regular fa-file-lines" Selected="LogSelected" IsExpandable="false" />
+    }
+}
+
+@code {
+
+    [Parameter]
+    public ListDictionary<string, string> LogNames { get; set; }
+
+    [Parameter]
+    public string Path { get; set; }
+
+    [Parameter]
+    public EventCallback<string> LogSelected { get; set; }
+
+}

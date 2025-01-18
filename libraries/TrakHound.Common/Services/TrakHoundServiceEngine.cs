@@ -18,6 +18,7 @@ namespace TrakHound.Services
         private readonly string _packageVersion;
         private readonly ITrakHoundService _service;
         private readonly ITrakHoundClient _client;
+        private readonly ITrakHoundLogger _logger;
         private CancellationTokenSource _stop;
         private TrakHoundServiceStatusType _status;
 
@@ -32,17 +33,20 @@ namespace TrakHound.Services
 
         public ITrakHoundClient Client => _client;
 
+        public ITrakHoundLogger Logger => _logger;
+
         public TrakHoundServiceStatusType Status => _status;
 
 
         public event EventHandler<TrakHoundServiceStatusType> StatusChanged;
 
-        public event EventHandler<TrakHoundLogItem> LogReceived;
+        //public event EventHandler<TrakHoundLogItem> LogReceived;
 
 
-        public TrakHoundServiceEngine(ITrakHoundService service, string packageId, string packageVersion)
+        public TrakHoundServiceEngine(ITrakHoundService service, string packageId, string packageVersion, ITrakHoundLogger logger)
         {
             _service = service;
+            _logger = logger;
 
             if (service != null)
             {
@@ -51,7 +55,7 @@ namespace TrakHound.Services
                 _packageVersion = packageVersion;
                 _client = service.Client;
 
-                service.LogReceived += ServiceLogReceived;
+                //service.LogReceived += ServiceLogReceived;
             }
         }
 
@@ -62,7 +66,7 @@ namespace TrakHound.Services
             {
                 _status = TrakHoundServiceStatusType.Starting;
                 if (StatusChanged != null) StatusChanged.Invoke(_service, _status);
-                if (LogReceived != null) LogReceived.Invoke(_service, new TrakHoundLogItem("Engine", TrakHoundLogLevel.Information, "Service Starting.."));
+                if (_logger != null) _logger.Log(TrakHoundLogLevel.Information, "Service Starting..");
 
                 _stop = new CancellationTokenSource();
 
@@ -76,7 +80,7 @@ namespace TrakHound.Services
             {
                 _status = TrakHoundServiceStatusType.Stopping;
                 if (StatusChanged != null) StatusChanged.Invoke(_service, _status);
-                if (LogReceived != null) LogReceived.Invoke(_service, new TrakHoundLogItem("Engine", TrakHoundLogLevel.Information, "Service Stopping.."));
+                if (_logger != null) _logger.Log(TrakHoundLogLevel.Information, "Service Stopping..");
 
                 try
                 {
@@ -86,11 +90,11 @@ namespace TrakHound.Services
                 }
                 catch (Exception ex)
                 {
-                    if (LogReceived != null) LogReceived.Invoke(_service, new TrakHoundLogItem("Engine", TrakHoundLogLevel.Error, $"Service Stop ERROR : {ex.Message}"));
+                    if (_logger != null) _logger.Log(TrakHoundLogLevel.Error, $"Service Stop ERROR : {ex.Message}");
 
                     _status = TrakHoundServiceStatusType.Stopped;
                     if (StatusChanged != null) StatusChanged.Invoke(_service, _status);
-                    if (LogReceived != null) LogReceived.Invoke(_service, new TrakHoundLogItem("Engine", TrakHoundLogLevel.Information, "Service Stopped"));
+                    if (_logger != null) _logger.Log(TrakHoundLogLevel.Information, "Service Stopped");
                 }
             }
         }
@@ -111,7 +115,7 @@ namespace TrakHound.Services
                         {
                             _status = TrakHoundServiceStatusType.Starting;
                             if (StatusChanged != null) StatusChanged.Invoke(_service, _status);
-                            if (LogReceived != null) LogReceived.Invoke(_service, new TrakHoundLogItem("Engine", TrakHoundLogLevel.Information, "Service Starting.."));
+                            if (_logger != null) _logger.Log(TrakHoundLogLevel.Information, "Service Starting..");
 
                             await Task.Delay(250);
                         }
@@ -121,7 +125,7 @@ namespace TrakHound.Services
 
                         _status = TrakHoundServiceStatusType.Started;
                         if (StatusChanged != null) StatusChanged.Invoke(_service, _status);
-                        if (LogReceived != null) LogReceived.Invoke(_service, new TrakHoundLogItem("Engine", TrakHoundLogLevel.Information, "Service Started"));
+                        if (_logger != null) _logger.Log(TrakHoundLogLevel.Information, "Service Started");
 
                         while (!_stop.IsCancellationRequested) await Task.Delay(250);
                     }
@@ -130,14 +134,14 @@ namespace TrakHound.Services
                     {
                         _status = TrakHoundServiceStatusType.Error;
                         if (StatusChanged != null) StatusChanged.Invoke(_service, _status);
-                        if (LogReceived != null) LogReceived.Invoke(_service, new TrakHoundLogItem("Engine", TrakHoundLogLevel.Critical, ex.Message, ex.HResult.ToString()));
+                        if (_logger != null) _logger.Log(TrakHoundLogLevel.Critical, ex.Message, ex.HResult.ToString());
 
                         await Task.Delay(_restartInterval, _stop.Token);
                     }
 
                     if (!_stop.IsCancellationRequested)
                     {
-                        if (LogReceived != null) LogReceived.Invoke(_service, new TrakHoundLogItem("Engine", TrakHoundLogLevel.Information, "Service Restarting"));
+                        if (_logger != null) _logger.Log(TrakHoundLogLevel.Information, "Service Restarting");
                     }
 
                     first = false;
@@ -147,13 +151,13 @@ namespace TrakHound.Services
 
                 _status = TrakHoundServiceStatusType.Stopped;
                 if (StatusChanged != null) StatusChanged.Invoke(_service, _status);
-                if (LogReceived != null) LogReceived.Invoke(_service, new TrakHoundLogItem("Engine", TrakHoundLogLevel.Information, "Service Stopped"));
+                if (_logger != null) _logger.Log(TrakHoundLogLevel.Information, "Service Stopped");
             }
         }
 
-        private void ServiceLogReceived(object sender, TrakHoundLogItem item)
-        {
-            if (LogReceived != null) LogReceived.Invoke(_service, item);
-        }
+        //private void ServiceLogReceived(object sender, TrakHoundLogItem item)
+        //{
+        //    if (LogReceived != null) LogReceived.Invoke(_service, item);
+        //}
     }
 }

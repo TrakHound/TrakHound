@@ -26,13 +26,15 @@ namespace TrakHound.Services
 
         ITrakHoundVolume Volume { get; }
 
+        ITrakHoundLogger Logger { get; }
+
         TrakHoundServiceStatus Status { get; }
 
 
         event EventHandler<TrakHoundServiceStatusType> StatusChanged;
 
 
-        event EventHandler<TrakHoundLogItem> LogReceived;
+        //event EventHandler<TrakHoundLogItem> LogReceived;
 
 
         Task Start();

@@ -1,0 +1,38 @@
+﻿<TreeView SelectedId="@SelectedLogName">
+
+    @if (!RootPaths.IsNullOrEmpty())
+    {
+        foreach (var path in RootPaths)
+        {
+            <LogTreeItem LogNames="@LogNames" Path="@path" LogSelected="LogSelected" />
+        }
+    }
+
+</TreeView>
+
+@code {
+
+    [Parameter]
+    public IEnumerable<string> RootPaths { get; set; }
+
+    [Parameter]
+    public ListDictionary<string, string> LogNames { get; set; }
+
+    [Parameter]
+    public string SelectedLogName { get; set; }
+
+    [Parameter]
+    public EventCallback<string> LogSelected { get; set; }
+
+
+    private static string GetRoot(string logName)
+    {
+        if (!string.IsNullOrEmpty(logName))
+        {
+            return TrakHoundPath.GetRoot(logName);
+        }
+
+        return logName;
+    }
+
+}

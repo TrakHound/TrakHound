@@ -30,19 +30,13 @@ namespace TrakHound.Modules
                 {
                     if (!_contexts.ContainsKey(loadContextId))
                     {
-                        //Console.WriteLine($"{loadContextId} => No Cache Found");
-
                         var context = new TrakHoundModuleLoadContext(loadContextId, assemblyPath, true);
-
-                        //_contexts.Remove(loadContextId);
                         _contexts.Add(loadContextId, context);
 
                         return context;
                     }
                     else
                     {
-                        //Console.WriteLine($"{loadContextId} => Cache Found");
-
                         return _contexts.GetValueOrDefault(loadContextId);
                     }
                 }

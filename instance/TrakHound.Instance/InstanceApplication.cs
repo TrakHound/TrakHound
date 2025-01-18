@@ -502,7 +502,7 @@ namespace TrakHound.Instance
             var version = assembly.GetName().Version;
 
             Console.WriteLine("--------------------");
-            Console.WriteLine("Copyright 2024 TrakHound Inc., All Rights Reserved");
+            Console.WriteLine("Copyright 2025 TrakHound Inc., All Rights Reserved");
             Console.WriteLine("TrakHound Instance : Version " + version.ToString());
             Console.WriteLine("--------------------");
             Console.WriteLine("This application is licensed under the MIT License (https://choosealicense.com/licenses/mit/)");

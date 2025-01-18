@@ -21,17 +21,24 @@ namespace TrakHound.Logging
         void Log(TrakHoundLogItem logEntry);
 
         void Log(TrakHoundLogLevel logLevel, string message);
+        void Log(TrakHoundLogLevel logLevel, string name, string message);
 
         void LogCritical(string message);
+        void LogCritical(string name, string message);
 
         void LogError(string message);
+        void LogError(string name, string message);
 
         void LogWarning(string message);
+        void LogWarning(string name, string message);
 
         void LogInformation(string message);
+        void LogInformation(string name, string message);
 
         void LogDebug(string message);
+        void LogDebug(string name, string message);
 
         void LogTrace(string message);
+        void LogTrace(string name, string message);
     }
 }
