@@ -241,10 +241,16 @@ namespace TrakHound.Memory
                     if (publishResult.Result != null)
                     {
                         // Update Publish Consumers
-                        if (entity.Created > _initializedTimestamp && consumers != null)
+                        if (consumers != null)
                         {
                             consumerEntities.Add(entity);
                         }
+
+                        //// Update Publish Consumers
+                        //if (entity.Created > _initializedTimestamp && consumers != null)
+                        //{
+                        //    consumerEntities.Add(entity);
+                        //}
                     }
 
                     results.Add(new TrakHoundResult<TrakHoundPublishResult<TEntity>>(Id, entity.Uuid, TrakHoundResultType.Ok, publishResult));
