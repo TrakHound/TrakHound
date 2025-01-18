@@ -81,11 +81,11 @@ namespace TrakHound.Services
             //}
 
             // Listen for Changes to MTConnect Device Configuration Objects
-            _configurationNotifyConsumer = await _service.Client.System.Entities.Objects.Notify(query, TrakHoundEntityNotificationType.All);
-            if (_configurationNotifyConsumer != null)
-            {
-                _configurationNotifyConsumer.Received += ConfigurationNotificationsReceived;
-            }
+            //_configurationNotifyConsumer = await _service.Client.System.Entities.Objects.Notify(query, TrakHoundEntityNotificationType.All);
+            //if (_configurationNotifyConsumer != null)
+            //{
+            //    _configurationNotifyConsumer.Received += ConfigurationNotificationsReceived;
+            //}
         }
 
         private async Task StopProcesses()
