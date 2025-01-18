@@ -1,0 +1,10 @@
+﻿{
+  "id": "TrakHound.ScanSelect.Api",
+  "category": "api",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Select data using a barcode scanner data",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultRoute": "scan-select"
+  }
+}
