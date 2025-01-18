@@ -550,15 +550,6 @@ namespace TrakHound.Requests
         }
 
 
-        public void Add(TrakHoundObjectEntry entry)
-        {
-            if (entry != null)
-            {
-                _object.Remove(entry.EntryId);
-                _object.Add(entry.EntryId, entry);
-            }
-        }
-
         public void Add(TrakHoundDefinitionEntry entry)
         {
             if (entry != null)

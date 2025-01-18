@@ -81,5 +81,68 @@ namespace TrakHound.Requests
                 }
             }
         }
+
+        public void Add(TrakHoundObjectEntry entry)
+        {
+            if (entry != null)
+            {
+                var existingEntry = _object.GetValueOrDefault(entry.EntryId);
+                if (existingEntry != null)
+                {
+                    var o = existingEntry;
+                    if (entry.Priority >= o.Priority)
+                    {
+                        o.Priority = entry.Priority;
+                        o.ContentType = entry.ContentType;
+                        o.DefinitionId = entry.DefinitionId;
+                    }
+
+                    if (!existingEntry.Indexes.IsNullOrEmpty())
+                    {
+                        var indexEntries = new List<TrakHoundIndexEntry>();
+                        indexEntries.AddRange(existingEntry.Indexes);
+                        if (!entry.Indexes.IsNullOrEmpty()) indexEntries.AddRange(entry.Indexes);
+
+                        o.Indexes = indexEntries;
+                    }
+                    else if (!entry.Indexes.IsNullOrEmpty())
+                    {
+                        o.Indexes = entry.Indexes;
+                    }
+
+                    if (!existingEntry.Metadata.IsNullOrEmpty())
+                    {
+                        var metadata = new Dictionary<string, string>();
+
+                        foreach (var m in existingEntry.Metadata)
+                        {
+                            metadata.Remove(m.Key);
+                            metadata.Add(m.Key, m.Value);
+                        }
+
+                        if (!entry.Indexes.IsNullOrEmpty())
+                        {
+                            foreach (var m in entry.Metadata)
+                            {
+                                if (!metadata.ContainsKey(m.Key) || entry.Priority >= o.Priority)
+                                {
+                                    metadata.Remove(m.Key);
+                                    metadata.Add(m.Key, m.Value);
+                                }
+                            }
+                        }
+
+                        o.Metadata = metadata;
+                    }
+
+                    _object.Remove(o.EntryId);
+                    _object.Add(o.EntryId, o);
+                }
+                else
+                {
+                    _object.Add(entry.EntryId, entry);
+                }
+            }
+        }
     }
 }
