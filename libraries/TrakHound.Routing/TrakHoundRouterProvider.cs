@@ -218,8 +218,11 @@ namespace TrakHound.Routing
                         }
 
                         var client = ClientProvider?.GetClient();
-                        client.RouterId = configuration.Id;
-                        router.Client = client;
+                        if (client != null)
+                        {
+                            client.RouterId = configuration.Id;
+                            router.Client = client;
+                        }
 
                         if (RouterAdded != null) RouterAdded.Invoke(this, router);
                     }
@@ -291,62 +294,6 @@ namespace TrakHound.Routing
         #endregion
 
         #region "Buffers"
-
-        //public void InitializeBuffers()
-        //{
-        //    if (_bufferProvider != null && _driverProvider != null && !_driverProvider.Drivers.IsNullOrEmpty())
-        //    {
-        //        var driverConfigurationIds = _driverProvider.Drivers.Select(o => o.Configuration.Id).Distinct().ToList();
-        //        foreach (var driverConfigurationId in driverConfigurationIds)
-        //        {
-        //            AddEntityBuffers<ITrakHoundDefinitionEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundDefinitionMetadataEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundDefinitionDescriptionEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundDefinitionWikiEntity>(driverConfigurationId);
-
-        //            AddEntityBuffers<ITrakHoundObjectEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectAssignmentEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectBlobEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectBooleanEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectDurationEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectEventEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectFeedEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectGroupEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectHashEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectLedgerEntity>(driverConfigurationId);
-        //            //AddEntityBuffers<ITrakHoundObjectLinkEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectLogEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectMessageEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectMessageQueueEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectMetadataEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectNumberEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectObservationEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectQueueEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectReferenceEntity>(driverConfigurationId);
-        //            //AddEntityBuffers<ITrakHoundObjectSequenceEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectSetEntity>(driverConfigurationId);
-        //            //AddEntityBuffers<ITrakHoundObjectSnapshotEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectStateEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectStatisticEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectStringEntity>(driverConfigurationId);
-        //            //AddEntityBuffers<ITrakHoundObjectTimeGroupEntity>(driverConfigurationId);
-        //            //AddEntityBuffers<ITrakHoundObjectTimeHashEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectTimeRangeEntity>(driverConfigurationId);
-        //            //AddEntityBuffers<ITrakHoundObjectTimeSequenceEntity>(driverConfigurationId);
-        //            //AddEntityBuffers<ITrakHoundObjectTimeSetEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectTimestampEntity>(driverConfigurationId);
-        //            //AddEntityBuffers<ITrakHoundObjectTimeWikiEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectVocabularyEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundObjectVocabularySetEntity>(driverConfigurationId);
-        //            //AddEntityBuffers<ITrakHoundObjectWikiEntity>(driverConfigurationId);
-
-        //            AddEntityBuffers<ITrakHoundSourceEntity>(driverConfigurationId);
-        //            AddEntityBuffers<ITrakHoundSourceMetadataEntity>(driverConfigurationId);
-
-        //            //AddEntityBuffers<ITrakHoundTransactionEntity>(driverConfigurationId);
-        //        }
-        //    }
-        //}
 
         private void AddEntityBuffers<TEntity>(string configurationId) where TEntity : ITrakHoundEntity
         {

@@ -59,8 +59,11 @@ namespace TrakHound.Configurations
             _id = id;
             _path = !string.IsNullOrEmpty(path) ? path : GetDirectory(id);
 
-            _packageManager = packageManager;
-            _packageManager.PackageAdded += PackageAdded;
+            if (packageManager != null)
+            {
+                _packageManager = packageManager;
+                _packageManager.PackageAdded += PackageAdded;
+            }
 
             _watcherDelay.Elapsed += WatcherDelayElapsed;
         }
