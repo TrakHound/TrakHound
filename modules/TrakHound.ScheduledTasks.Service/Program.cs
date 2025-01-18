@@ -25,7 +25,7 @@ namespace TrakHound.ScheduledTasks
             // Create a new instance of the Function
             var service = new Service(serviceConfiguration, client, volume);
             service.InstanceId = instanceInformation?.Id;
-            service.LogReceived += ServiceLogReceived;
+            service.Logger.LogEntryReceived += ServiceLogReceived;
 
             await service.Start();
 
