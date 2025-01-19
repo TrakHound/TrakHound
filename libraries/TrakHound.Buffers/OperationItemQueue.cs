@@ -7,13 +7,17 @@ using System.Linq;
 
 namespace TrakHound.Buffers
 {
-    class OperationItemQueue<TItem>
+    class OperationItemQueue<TItem> : IDisposable
     {
+        private const int _accessInterval = 30000;
+
         private readonly object _lock = new object();
         private readonly int _itemLimit;
-        private readonly TItem[] _items;
+        private readonly System.Timers.Timer _accessTimer;
+        private TItem[] _items;
         private int _itemIndex;
         private int _itemCount = 0;
+        private long _lastAccessed;
 
 
         public int Limit => _itemLimit;
@@ -33,8 +37,29 @@ namespace TrakHound.Buffers
         public OperationItemQueue(int limit = 5000000)
         {
             _itemLimit = limit;
-            _items = new TItem[limit];
             _itemIndex = 0;
+
+            //_accessTimer = new System.Timers.Timer();
+            //_accessTimer.Interval = _accessInterval;
+            //_accessTimer.Elapsed += AccessTimerElapsed;
+            //_accessTimer.Start();
+        }
+
+        public void Dispose()
+        {
+            if (_accessTimer != null) _accessTimer.Dispose();
+        }
+
+        private void AccessTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            lock (_lock)
+            {
+                if (_itemCount == 0 && _items != null)
+                {
+                    _items = null;
+                    //GC.Collect();
+                }
+            }
         }
 
 
@@ -45,7 +70,7 @@ namespace TrakHound.Buffers
         {
             lock (_lock)
             {
-                if (_itemCount > 0 && bufferIndex >= 0 && bufferIndex < buffer.Length && count > 0)
+                if (_itemCount > 0 && _items != null && bufferIndex >= 0 && bufferIndex < buffer.Length && count > 0)
                 {
                     var take = count < _itemCount ? count : _itemCount;
 
@@ -61,6 +86,8 @@ namespace TrakHound.Buffers
                     _itemIndex -= take;
                     _itemCount -= take;
 
+                    _lastAccessed = UnixDateTime.Now;
+
                     return take;
                 }
             }
@@ -75,7 +102,7 @@ namespace TrakHound.Buffers
         {
             lock (_lock)
             {
-                if (_itemCount > 0 && bufferIndex >= 0 && bufferIndex < buffer.Length && count > 0)
+                if (_itemCount > 0 && _items != null && bufferIndex >= 0 && bufferIndex < buffer.Length && count > 0)
                 {
                     var take = count < _itemCount ? count : _itemCount;
 
@@ -95,7 +122,7 @@ namespace TrakHound.Buffers
         {
             lock (_lock)
             {
-                if (_itemCount > 0 && count > 0)
+                if (_itemCount > 0 && _items != null && count > 0)
                 {
                     var take = count < _itemCount ? count : _itemCount;
                     var remaining = _itemCount - take;
@@ -123,6 +150,8 @@ namespace TrakHound.Buffers
                 {
                     if (_itemIndex < _itemLimit)
                     {
+                        if (_items == null) _items = new TItem[_itemLimit];
+
                         _items[_itemIndex] = item;
                         _itemIndex++;
                         _itemCount++;
@@ -144,6 +173,8 @@ namespace TrakHound.Buffers
                     var remainingSize = _itemLimit - _itemCount;
                     if (items.Count() <= remainingSize)
                     {
+                        if (_items == null) _items = new TItem[_itemLimit];
+
                         foreach (var item in items)
                         {
                             _items[_itemIndex] = item;

@@ -302,6 +302,8 @@ namespace TrakHound.Buffers
             _metricsTimer.Elapsed -= MetricsTimerElapsed;
             _metricsTimer.Dispose();
 
+            _workingQueue.Dispose();
+
             Stop();
             GC.SuppressFinalize(this);
         }
@@ -409,7 +411,8 @@ namespace TrakHound.Buffers
 
             try
             {
-                var itemBuffer = new TItem[MaxItemsPerInterval];
+                TItem[] itemBuffer = null;
+                //var itemBuffer = new TItem[MaxItemsPerInterval];
                 string itemLabel = "";
 
                 long now;
@@ -433,6 +436,8 @@ namespace TrakHound.Buffers
                             // Get (n) Items from working queue (if not previously failed)
                             if (count < 1)
                             {
+                                if (itemBuffer == null) itemBuffer = new TItem[MaxItemsPerInterval];
+
                                 count = _workingQueue.Get(ref itemBuffer, 0, _maxItemsPerInterval);
 
                                 if (count > 0)
@@ -485,6 +490,13 @@ namespace TrakHound.Buffers
 
                                 // Set Interval
                                 interval = _processInterval;
+
+                                // Clear Item Buffer
+                                if (itemBuffer != null)
+                                {
+                                    itemBuffer = null;
+                                    //GC.Collect();
+                                }
                             }
                         }
                         else
@@ -531,10 +543,12 @@ namespace TrakHound.Buffers
             int pageSize = 0;
 
             var readBufferSize = _fileBufferPageLimit;
-            var readBuffer = new byte[readBufferSize];
+            byte[] readBuffer = null;
+            //var readBuffer = new byte[readBufferSize];
 
             var itemBufferSize = MaxItemsPerInterval;
-            var itemBuffer = new TItem[itemBufferSize];
+            TItem[] itemBuffer = null;
+            //var itemBuffer = new TItem[itemBufferSize];
 
             await Task.Delay(interval / 2, cancel); // Delay to Offset from Process Worker
 
@@ -614,6 +628,9 @@ namespace TrakHound.Buffers
                                     now = UnixDateTime.Now;
                                     var originalStreamPosition = readStream.Position;
 
+                                    if (readBuffer == null) readBuffer = new byte[readBufferSize];
+                                    if (itemBuffer == null) itemBuffer = new TItem[itemBufferSize];
+
                                     // Read from File Buffer
                                     readCount = _fileBuffer.Read(readStream, ref readBuffer, pageSize, ref itemBuffer);
 
@@ -643,6 +660,10 @@ namespace TrakHound.Buffers
                                     readStream = null;
                                     pageSize = 0;
                                     readPageSequence = 0;
+
+                                    if (readBuffer != null) readBuffer = null;
+                                    if (itemBuffer != null) itemBuffer = null;
+
                                     lock (_lock) _fileBufferReadPageSequence = readPageSequence;
 
                                     _metrics.FileBuffer.IsReadActive = false;
