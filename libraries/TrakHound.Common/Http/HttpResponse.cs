@@ -16,6 +16,8 @@ namespace TrakHound.Http
 
         public HttpResponseHeaders Headers { get; set; }
 
+        public bool Success => StatusCode >= 200 && StatusCode < 400;
+
 
         public HttpResponse(HttpResponseMessage responseMessage, byte[] content)
         {
