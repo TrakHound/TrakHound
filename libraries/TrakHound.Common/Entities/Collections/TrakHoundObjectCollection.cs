@@ -1,4 +1,4 @@
-// Copyright (c) 2024 TrakHound Inc., All Rights Reserved.
+// Copyright (c) 2025 TrakHound Inc., All Rights Reserved.
 // TrakHound Inc. licenses this file to you under the MIT license.
 
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace TrakHound.Entities.Collections
         private readonly ListDictionary<string, ITrakHoundObjectEntity> _objectExpressions = new ListDictionary<string, ITrakHoundObjectEntity>();
         private readonly HashSet<string> _emptyObjectExpressions = new HashSet<string>();
         private readonly ListDictionary<string, string> _objectParents = new ListDictionary<string, string>(); // ParentUuid => Uuid[]
-        private readonly ListDictionary<string, string> _metadataEntities = new ListDictionary<string, string>(); // EntityUuid => Uuid[]
+        //private readonly ListDictionary<string, string> _metadataEntities = new ListDictionary<string, string>(); // EntityUuid => Uuid[]
 
 
         public int TotalCount()
@@ -194,7 +194,7 @@ namespace TrakHound.Entities.Collections
             _objectExpressions.Clear();
             _emptyObjectExpressions.Clear();
             _objectParents.Clear();
-            _metadataEntities.Clear();
+            //_metadataEntities.Clear();
         }
     }
 }

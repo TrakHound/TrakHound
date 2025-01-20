@@ -57,7 +57,6 @@ namespace TrakHound
                 {
                     Console.WriteLine($"Files.Copy() : {sourceDirectory} : {destinationDirectory} : {ex.Message}");
                 }
-                //catch { }
             }
         }
 
