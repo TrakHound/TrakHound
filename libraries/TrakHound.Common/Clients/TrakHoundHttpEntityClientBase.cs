@@ -46,7 +46,7 @@ namespace TrakHound.Clients
         {
             if (!arrays.IsNullOrEmpty())
             {
-                var entities = new List<TEntity>();
+                var entities = new List<TEntity>(arrays.Length);
                 foreach (var array in arrays)
                 {
                     var entity = TrakHoundEntity.FromArray<TEntity>(array);
@@ -215,8 +215,8 @@ namespace TrakHound.Clients
                 var publishEntity = (TEntity)_entitiesClient.Process(entity, mode);
                 if (publishEntity != null)
                 {
-                    OnPublishBefore(publishEntity);
-                    await _entitiesClient.OnBeforePublish(new ITrakHoundEntity[] { publishEntity }, mode);
+                    //OnPublishBefore(publishEntity);
+                    //await _entitiesClient.OnBeforePublish(new ITrakHoundEntity[] { publishEntity }, mode);
 
                     var url = Url.Combine(BaseUrl, TrakHoundHttp.GetEntityPath<TEntity>());
                     url = Url.Combine(url, "publish");
@@ -226,12 +226,12 @@ namespace TrakHound.Clients
                     var arrays = new List<object[]>();
                     arrays.Add(TrakHoundEntity.ToArray(publishEntity));
 
-                    await RestRequest.Post(url, arrays);
+                    var response = await RestRequest.PostResponse(url, arrays);
 
-                    OnPublishAfter(publishEntity);
-                    await _entitiesClient.OnAfterPublish(new ITrakHoundEntity[] { publishEntity }, mode);
+                    //OnPublishAfter(publishEntities);
+                    //await _entitiesClient.OnAfterPublish(sendEntities, mode);
 
-                    return true;
+                    return response.Success;
                 }
             }
 
@@ -252,11 +252,11 @@ namespace TrakHound.Clients
                 //var publishEntities = _entitiesClient.Process(entities, mode);
                 if (!publishEntities.IsNullOrEmpty())
                 {
-                    var sendEntities = new List<ITrakHoundEntity>();
-                    foreach (var entity in publishEntities) sendEntities.Add(entity);
+                    //var sendEntities = new List<ITrakHoundEntity>();
+                    //foreach (var entity in publishEntities) sendEntities.Add(entity);
 
-                    OnPublishBefore(publishEntities);
-                    await _entitiesClient.OnBeforePublish(sendEntities, mode);
+                    //OnPublishBefore(publishEntities);
+                    //await _entitiesClient.OnBeforePublish(sendEntities, mode);
 
                     var url = Url.Combine(BaseUrl, TrakHoundHttp.GetEntityPath<TEntity>());
                     url = Url.Combine(url, "publish");
@@ -264,17 +264,17 @@ namespace TrakHound.Clients
                     if (mode == TrakHoundOperationMode.Sync) url = Url.AddQueryParameter(url, "async", false);
 
                     var arrays = new List<object[]>();
-                    foreach (var entity in sendEntities)
+                    foreach (var entity in publishEntities)
                     {
                         arrays.Add(TrakHoundEntity.ToArray(entity));
                     }
 
-                    await RestRequest.Post(url, arrays);
+                    var response = await RestRequest.PostResponse(url, arrays);
 
-                    OnPublishAfter(publishEntities);
-                    await _entitiesClient.OnAfterPublish(sendEntities, mode);
+                    //OnPublishAfter(publishEntities);
+                    //await _entitiesClient.OnAfterPublish(sendEntities, mode);
 
-                    return true;
+                    return response.Success;
                 }
             }
 
