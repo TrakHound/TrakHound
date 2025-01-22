@@ -50,6 +50,25 @@ namespace TrakHound.Clients
         Task<bool> PublishJson(string basePath, string json, bool async = false, string routerId = null);
 
 
+        Task<string> GetCache(string cacheName, string key, string routerId = null);
+
+        Task<TValue> GetCachedJson<TValue>(string cacheName, string key, string routerId = null);
+
+        Task<IEnumerable<TValue>> GetCachedJson<TValue>(string cacheName, IEnumerable<string> keys, string routerId = null);
+
+        Task<bool> PublishCache(string cacheName, string key, string value, bool async = false, string routerId = null);
+
+        Task<bool> PublishCacheJson<TValue>(string cacheName, string key, TValue value, bool async = false, string routerId = null);
+
+        Task<bool> PublishCache(string cacheName, IReadOnlyDictionary<string, string> values, bool async = false, string routerId = null);
+
+        Task<bool> PublishCacheJson<TValue>(string cacheName, IReadOnlyDictionary<string, TValue> values, bool async = false, string routerId = null);
+
+        Task<bool> DeleteCache(string cacheName, string key, string routerId = null);
+
+        Task<bool> DeleteCache(string cacheName, IEnumerable<string> keys, string routerId = null);
+
+
         Task<bool> CopyToClipboard(string clipboardId, string path);
 
         Task<bool> PasteClipboard(string clipboardId, string destinationBasePath);

@@ -3,12 +3,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TrakHound.Entities;
 using TrakHound.Entities.Collections;
 using TrakHound.Requests;
 using TrakHound.Serialization;
+using YamlDotNet.Core.Tokens;
 
 namespace TrakHound.Clients
 {
@@ -46,7 +48,7 @@ namespace TrakHound.Clients
                             var targetObjectUuids = collection.Objects.Objects.Select(o => o.Uuid);
                             var targetObjects = await EntitiesClient.Objects.ReadByUuid(targetObjectUuids);
 
-                            var contentObjectUuids = await GetContentObjectUuids<TReturn>(targetObjects?.Select(o => o.Path));
+                            var contentObjectUuids = await GetContentObjectUuids<TReturn>(targetObjects?.Select(o => o.GetAbsolutePath()));
                             var contentObjects = await EntitiesClient.Objects.Query(contentObjectUuids);
 
                             var contentCollection = await GetObjectContent(EntitiesClient, targetObjects, contentObjects);
@@ -437,6 +439,8 @@ namespace TrakHound.Clients
                         {
                             var referenceTargetObjects = await entitiesClient.Objects.ReadByUuid(referenceEntities.Select(o => o.TargetUuid).Distinct());
                             collection.Add(referenceEntities, false);
+                            collection.Add(await entitiesClient.Objects.QueryRootByChildUuid(referenceObjs?.Select(o => o.Uuid)));
+                            collection.Add(await entitiesClient.Objects.QueryRootByChildUuid(referenceTargetObjects?.Select(o => o.Uuid)));
                             collection.Add(referenceTargetObjects, false);
                             collection.Add(await GetContent(referenceTargetObjects), false);
                         }
@@ -776,6 +780,161 @@ namespace TrakHound.Clients
             return false;
         }
 
+
+        public async Task<string> GetCache(string cacheName, string key, string routerId = null)
+        {
+            if (!string.IsNullOrEmpty(cacheName) && !string.IsNullOrEmpty(key))
+            {
+                var route = Url.Combine("cache/api", cacheName, key);
+
+                var parameters = new Dictionary<string, string>();
+                parameters["routerId"] = routerId;
+
+                return await ApiClient.QueryString(route, parameters);
+            }
+
+            return default;
+        }
+
+        public async Task<TValue> GetCachedJson<TValue>(string cacheName, string key, string routerId = null)
+        {
+            if (!string.IsNullOrEmpty(cacheName) && !string.IsNullOrEmpty(key))
+            {
+                var route = Url.Combine("cache/api", cacheName, key);
+
+                var parameters = new Dictionary<string, string>();
+                parameters["routerId"] = routerId;
+
+                return await ApiClient.QueryJson<TValue>(route, parameters);
+            }
+
+            return default;
+        }
+
+        public async Task<IEnumerable<TValue>> GetCachedJson<TValue>(string cacheName, IEnumerable<string> keys, string routerId = null)
+        {
+            if (!string.IsNullOrEmpty(cacheName) && !keys.IsNullOrEmpty())
+            {
+                var route = Url.Combine("cache/api", cacheName);
+
+                var parameters = new Dictionary<string, string>();
+                parameters["routerId"] = routerId;
+
+                return await ApiClient.QueryJson<IEnumerable<TValue>>(route, parameters);
+            }
+
+            return default;
+        }
+
+        public async Task<bool> PublishCache(string cacheName, string key, string value, bool async = false, string routerId = null)
+        {
+            if (!string.IsNullOrEmpty(cacheName) && !string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+            {
+                var route = Url.Combine("cache/api", cacheName, key);
+
+                var parameters = new Dictionary<string, string>();
+                parameters["async"] = async.ToString();
+                parameters["routerId"] = routerId;
+
+                var requestBody = System.Text.Encoding.UTF8.GetBytes(value);
+
+                var response = await ApiClient.Publish(route, requestBody, "text/plain", parameters);
+                return response.Success;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> PublishCacheJson<TValue>(string cacheName, string key, TValue value, bool async = false, string routerId = null)
+        {
+            if (!string.IsNullOrEmpty(cacheName) && !string.IsNullOrEmpty(key) && value != null)
+            {
+                var route = Url.Combine("cache/api", cacheName, key);
+
+                var parameters = new Dictionary<string, string>();
+                parameters["async"] = async.ToString();
+                parameters["routerId"] = routerId;
+
+                var requestBody = value.ToJson().ToUtf8Bytes();
+
+                var response = await ApiClient.Publish(route, requestBody, "text/plain", parameters);
+                return response.Success;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> PublishCache(string cacheName, IReadOnlyDictionary<string, string> values, bool async = false, string routerId = null)
+        {
+            if (!string.IsNullOrEmpty(cacheName) && !values.IsNullOrEmpty())
+            {
+                var route = Url.Combine("cache/api", cacheName);
+
+                var parameters = new Dictionary<string, string>();
+                parameters["async"] = async.ToString();
+                parameters["routerId"] = routerId;
+
+                var response = await ApiClient.Publish(route, values, queryParameters: parameters);
+                return response.Success;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> PublishCacheJson<TValue>(string cacheName, IReadOnlyDictionary<string, TValue> values, bool async = false, string routerId = null)
+        {
+            if (!string.IsNullOrEmpty(cacheName) && !values.IsNullOrEmpty())
+            {
+                var route = Url.Combine("cache/api", cacheName);
+
+                var parameters = new Dictionary<string, string>();
+                parameters["async"] = async.ToString();
+                parameters["routerId"] = routerId;
+
+                var requestValues = new Dictionary<string, string>();
+                foreach (var value in values)
+                {
+                    requestValues.Add(value.Key, value.Value.ToJson());
+                }
+
+                var response = await ApiClient.Publish(route, requestValues, queryParameters: parameters);
+                return response.Success;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> DeleteCache(string cacheName, string key, string routerId = null)
+        {
+            if (!string.IsNullOrEmpty(cacheName) && !string.IsNullOrEmpty(key))
+            {
+                var route = Url.Combine("cache/api", cacheName, key);
+
+                var parameters = new Dictionary<string, string>();
+                parameters["routerId"] = routerId;
+
+                var response = await ApiClient.Delete(route, parameters);
+                return response.Success;
+            }
+
+            return default;
+        }
+
+        public async Task<bool> DeleteCache(string cacheName, IEnumerable<string> keys, string routerId = null)
+        {
+            if (!string.IsNullOrEmpty(cacheName) && !keys.IsNullOrEmpty())
+            {
+                var route = Url.Combine("cache/api", cacheName);
+
+                var parameters = new Dictionary<string, string>();
+                parameters["routerId"] = routerId;
+
+                var response = await ApiClient.Delete(route, parameters);
+                return response.Success;
+            }
+
+            return default;
+        }
 
 
         public async Task<bool> CopyToClipboard(string clipboardId, string path)

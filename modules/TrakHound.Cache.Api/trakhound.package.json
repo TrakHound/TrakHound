@@ -1,0 +1,12 @@
+﻿{
+  "id": "TrakHound.Cache.Api",
+  "category": "api",
+  "metadata": {
+    "publisher": "TrakHound Inc.",
+    "description": "Cache for models/responses",
+    "repository": "https://github.com/TrakHound/TrakHound",
+    "repositoryDirectory": "modules/TrakHound.Cache.Api",
+    ".image": "http://www.trakhound.com/static/trakhound-logo-background-sm.png",
+    ".defaultRoute": "cache/api"
+  }
+}
