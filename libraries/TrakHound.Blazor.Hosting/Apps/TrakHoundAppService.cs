@@ -38,7 +38,7 @@ namespace TrakHound.Blazor.Apps
         private readonly Dictionary<string, string> _installedModuleHashes = new Dictionary<string, string>(); // Configuration.Id => Module.Hash
         private AppInfo[] _routes;
         private readonly CacheDictionary<string, bool?> _routeCache = new CacheDictionary<string, bool?>();
-        private readonly DelayEvent _delayLoadEvent = new DelayEvent(2000);
+        private readonly DelayEvent _delayLoadEvent = new DelayEvent(5000);
         private readonly object _lock = new object();
 
 
@@ -125,6 +125,14 @@ namespace TrakHound.Blazor.Apps
         }
 
 
+        private void ConfigurationUpdated(object sender, ITrakHoundConfiguration configuration)
+        {
+            if (configuration != null && configuration.Category == TrakHoundAppConfiguration.ConfigurationCategory)
+            {
+                _delayLoadEvent.Set();
+            }
+        }
+
         private void PackageAdded(object sender, TrakHoundPackage package)
         {
             if (package != null && package.Category == _packageCategory)
@@ -141,14 +149,6 @@ namespace TrakHound.Blazor.Apps
             }
         }
 
-
-        private void ConfigurationUpdated(object sender, ITrakHoundConfiguration configuration)
-        {
-            if (configuration != null && configuration.Category == TrakHoundAppConfiguration.ConfigurationCategory)
-            {
-                _delayLoadEvent.Set();
-            }
-        }
 
 
         public IEnumerable<TrakHoundAppInformation> GetInformation()

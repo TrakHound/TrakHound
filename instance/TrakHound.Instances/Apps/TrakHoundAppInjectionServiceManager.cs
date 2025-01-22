@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TrakHound.Api;
 using TrakHound.Clients;
 using TrakHound.Configurations;
 using TrakHound.Modules;
@@ -47,8 +48,8 @@ namespace TrakHound.Apps
             _delayLoadEvent.Elapsed += DelayElapsed;
 
             _configurationProfile = configurationProfile;
-            _configurationProfile.ConfigurationAdded += (o, args) => _delayLoadEvent.Set();
-            _configurationProfile.ConfigurationRemoved += (o, args) => _delayLoadEvent.Set();
+            _configurationProfile.ConfigurationAdded += ConfigurationUpdated;
+            _configurationProfile.ConfigurationRemoved += ConfigurationUpdated;
 
             _packageManager = packageManager;
             _packageManager.PackageAdded += PackageAdded;
@@ -127,6 +128,14 @@ namespace TrakHound.Apps
             }
         }
 
+
+        private void ConfigurationUpdated(object sender, ITrakHoundConfiguration configuration)
+        {
+            if (configuration != null && configuration.Category == TrakHoundAppConfiguration.ConfigurationCategory)
+            {
+                _delayLoadEvent.Set();
+            }
+        }
 
         private void PackageAdded(object sender, TrakHoundPackage package)
         {
