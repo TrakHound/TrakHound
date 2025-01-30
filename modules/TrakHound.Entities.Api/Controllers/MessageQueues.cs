@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TrakHound.Api;
 using TrakHound.Clients;
 using TrakHound.Entities.Collections;
+using TrakHound.Http;
 using TrakHound.MessageQueues;
 using TrakHound.Requests;
 
@@ -120,6 +121,7 @@ namespace TrakHound.Entities.Api
         [TrakHoundApiQuery("content/pull")]
         public async Task<TrakHoundApiResponse> PullContentFromMessageQueue(
             [FromQuery] string objectPath,
+            [FromQuery] int count = 1,
             [FromQuery] bool acknowledge = true,
             [FromQuery] string routerId = null
             )
@@ -135,23 +137,71 @@ namespace TrakHound.Entities.Api
                         var entity = await Client.System.Entities.Objects.MessageQueue.QueryByObjectUuid(objectUuid, routerId);
                         if (entity != null)
                         {
-                            var messageQueueResponse = await Client.System.MessageQueues.Pull(entity.QueueId, acknowledge, routerId);
-                            if (messageQueueResponse.IsValid)
+                            var messageQueueResponses = await Client.System.MessageQueues.Pull(entity.QueueId, count, acknowledge, routerId);
+                            if (!messageQueueResponses.IsNullOrEmpty())
                             {
-                                var parameters = new Dictionary<string, string>();
-                                parameters.Add("Object", obj.GetAbsolutePath());
-                                parameters.Add("QueueId", entity.QueueId);
-                                parameters.Add("DeliveryId", messageQueueResponse.DeliveryId);
+                                var messages = new List<TrakHoundMessageQueue>();
+                                foreach (var response in messageQueueResponses)
+                                {
+                                    var message = new TrakHoundMessageQueue();
+                                    message.Object = obj.GetAbsolutePath();
+                                    message.ObjectUuid = obj.Uuid;
+                                    message.QueueId = entity.QueueId;
+                                    message.DeliveryId = response.DeliveryId;
+                                    message.Timestamp = response.Timestamp.ToDateTime();
+                                    message.Content = StringFunctions.Base64Encode(response.GetContentBytes());
+                                    messages.Add(message);
+                                }
+                                return Ok(messages);
 
-                                var response = new TrakHoundApiResponse(200, messageQueueResponse.Content, entity.ContentType);
-                                response.Parameters = parameters;
+                                //var messages = new List<TrakHoundMessageQueue>();
+                                //foreach (var response in messageQueueResponses)
+                                //{
+                                //    var message = new TrakHoundMessageQueue();
+                                //    message.Object = obj.GetAbsolutePath();
+                                //    message.ObjectUuid = obj.Uuid;
+                                //    message.QueueId = entity.QueueId;
+                                //    message.DeliveryId = response.DeliveryId;
+                                //    message.Timestamp = response.Timestamp.ToDateTime();
+                                //    message.Content = response.Content;
+                                //    messages.Add(message);
+                                //}
+                                //return Ok(messages);
 
-                                return response;
+                                //return Ok(TrakHoundHttpMessageQueueResponse.Create(messageQueueResponses), entity.ContentType);
+
+                                //var parameters = new Dictionary<string, string>();
+                                //parameters.Add("Object", obj.GetAbsolutePath());
+                                //parameters.Add("QueueId", entity.QueueId);
+                                //parameters.Add("DeliveryId", messageQueueResponse.DeliveryId);
+
+                                //var response = new TrakHoundApiResponse(200, messageQueueResponse.Content, entity.ContentType);
+                                //response.Parameters = parameters;
+
+                                //return response;
                             }
                             else
                             {
                                 return NotFound();
                             }
+
+                            //var messageQueueResponses = await Client.System.MessageQueues.Pull(entity.QueueId, count, acknowledge, routerId);
+                            //if (messageQueueResponse.IsValid)
+                            //{
+                            //    var parameters = new Dictionary<string, string>();
+                            //    parameters.Add("Object", obj.GetAbsolutePath());
+                            //    parameters.Add("QueueId", entity.QueueId);
+                            //    parameters.Add("DeliveryId", messageQueueResponse.DeliveryId);
+
+                            //    var response = new TrakHoundApiResponse(200, messageQueueResponse.Content, entity.ContentType);
+                            //    response.Parameters = parameters;
+
+                            //    return response;
+                            //}
+                            //else
+                            //{
+                            //    return NotFound();
+                            //}
                         }
                         else
                         {
@@ -209,8 +259,50 @@ namespace TrakHound.Entities.Api
             }
         }
 
+        [TrakHoundApiPublish("entries")]
+        public async Task<TrakHoundApiResponse> PublishMessageQueue(
+            [FromBody("application/json")] IEnumerable<TrakHoundMessageQueueEntry> entries,
+            [FromQuery] string routerId = null
+            )
+        {
+            if (!entries.IsNullOrEmpty())
+            {
+                var now = UnixDateTime.Now;
 
-        [TrakHoundApiQuery("acknowledge")]
+                var objectPaths = entries.Select(o => o.ObjectPath).Distinct();
+                var entities = await Client.System.Entities.Objects.MessageQueue.QueryByObject(objectPaths, routerId);
+                if (!entities.IsNullOrEmpty())
+                {
+                    var dEntities = entities.ToDictionary(o => o.ObjectUuid);
+                    foreach (var entry in entries)
+                    {
+                        var objectUuid = TrakHoundPath.GetUuid(entry.ObjectPath);
+                        var entity = dEntities.GetValueOrDefault(objectUuid);
+                        if (entity != null)
+                        {
+                            // Publish Message Content
+                            if (!await Client.System.MessageQueues.Publish(entity.QueueId, entry.GetContentStream(), routerId))
+                            {
+                                return InternalError();
+                            }
+                        }
+                    }
+
+                    return Created();
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+
+        [TrakHoundApiPublish("acknowledge")]
         public async Task<TrakHoundApiResponse> AcknowledgeMessageQueue(
             [FromQuery] string objectPath,
             [FromBody("application/json")] IEnumerable<string> deliveryIds,
@@ -264,7 +356,7 @@ namespace TrakHound.Entities.Api
             }
         }
 
-        [TrakHoundApiQuery("reject")]
+        [TrakHoundApiPublish("reject")]
         public async Task<TrakHoundApiResponse> RejectMessageQueue(
             [FromQuery] string objectPath,
             [FromBody("application/json")] IEnumerable<string> deliveryIds,

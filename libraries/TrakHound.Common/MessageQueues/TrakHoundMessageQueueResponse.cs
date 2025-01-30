@@ -19,30 +19,10 @@ namespace TrakHound.MessageQueues
         public long Timestamp { get; set; }
 
 
-        public byte[] GetContentBytes()
-        {
-            if (Content != null)
-            {
-                return GetContentBytes(Content);
-            }
+        public byte[] GetContentBytes() => GetContentBytes(Content);
 
-            return null;
-        }
+        public string GetContentUtf8String() => GetContentUtf8String(Content);
 
-        public string GetContentUtf8String()
-        {
-            var contentBytes = GetContentBytes();
-            if (contentBytes != null)
-            {
-                try
-                {
-                    return Encoding.UTF8.GetString(contentBytes);
-                }
-                catch { }
-            }
-
-            return null;
-        }
 
         public static byte[] GetContentBytes(Stream contentStream)
         {
@@ -56,6 +36,21 @@ namespace TrakHound.MessageQueues
                         readStream.Seek(0, SeekOrigin.Begin);
                         return readStream.ToArray();
                     }
+                }
+                catch { }
+            }
+
+            return null;
+        }
+
+        public static string GetContentUtf8String(Stream contentStream)
+        {
+            var contentBytes = GetContentBytes(contentStream);
+            if (contentBytes != null)
+            {
+                try
+                {
+                    return Encoding.UTF8.GetString(contentBytes);
                 }
                 catch { }
             }

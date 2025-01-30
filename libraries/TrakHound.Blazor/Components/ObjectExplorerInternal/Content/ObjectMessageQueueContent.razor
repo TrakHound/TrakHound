@@ -266,9 +266,13 @@
                 var client = ObjectExplorerService.GetClient();
                 if (client != null)
                 {
-                    messageResponse = await client.System.MessageQueues.Pull(entity.QueueId, false);
-                    messageContent = messageResponse.GetContentBytes();
-                    messageStatus = MessageStatus.Received;
+                    var responses = await client.System.MessageQueues.Pull(entity.QueueId, 1, false);
+                    if (!responses.IsNullOrEmpty())
+                    {
+                        messageResponse = responses.FirstOrDefault();
+                        messageContent = messageResponse.GetContentBytes();
+                        messageStatus = MessageStatus.Received;
+                    }
                 }
             }
 

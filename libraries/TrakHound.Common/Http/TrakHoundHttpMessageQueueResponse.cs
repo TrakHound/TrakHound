@@ -2,26 +2,72 @@
 // TrakHound Inc. licenses this file to you under the MIT license.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using TrakHound.MessageQueues;
 
 namespace TrakHound.Http
 {
-    public static class TrakHoundHttpMessageQueueResponse
+    public class TrakHoundHttpMessageQueueResponse
     {
+        [JsonPropertyName("queueId")]
+        public string QueueId { get; set; }
+
+        [JsonPropertyName("deliveryId")]
+        public string DeliveryId { get; set; }
+
+        [JsonPropertyName("timestamp")]
+        public long Timestamp { get; set; }
+
+        [JsonPropertyName("content")]
+        public string Content { get; set; }
+
+
+        public TrakHoundMessageQueueResponse ToResponse()
+        {
+            var response = new TrakHoundMessageQueueResponse();
+            response.DeliveryId = DeliveryId;
+            response.Timestamp = Timestamp;
+
+            var contentBytes = StringFunctions.Base64Decode(Content).ToUtf8Bytes();
+            if (!contentBytes.IsNullOrEmpty())
+            {
+                response.Content = new MemoryStream(contentBytes);
+            }
+
+            return response;
+        }
+
         public static byte[] Create(TrakHoundMessageQueueResponse response)
         {
             if (!string.IsNullOrEmpty(response.DeliveryId) && response.Content != null)
             {
-                // DELIVERY_ID
-                // TIMESTAMP (UNIX ns)
+                return Create(new TrakHoundMessageQueueResponse[] { response });
+            }
 
-                var headers = new string[2];
-                headers[0] = response.DeliveryId;
-                headers[1] = response.Timestamp.ToString();
+            return null;
+        }
 
-                return CreateResponseBytes(headers, response.GetContentBytes());
+        public static byte[] Create(IEnumerable<TrakHoundMessageQueueResponse> responses)
+        {
+            if (!responses.IsNullOrEmpty())
+            {
+                var httpResponses = new List<TrakHoundHttpMessageQueueResponse>(responses.Count());
+                foreach (var response in responses)
+                {
+                    if (!string.IsNullOrEmpty(response.DeliveryId) && response.Content != null)
+                    {
+                        var httpResponse = new TrakHoundHttpMessageQueueResponse();
+                        httpResponse.DeliveryId = response.DeliveryId;
+                        httpResponse.Timestamp = response.Timestamp;
+                        httpResponse.Content = StringFunctions.Base64Encode(response.GetContentBytes());
+                        httpResponses.Add(httpResponse);
+                    }
+                }
+                return httpResponses.ToJson().ToUtf8Bytes();
             }
 
             return null;
@@ -46,47 +92,41 @@ namespace TrakHound.Http
             return responseBytes;
         }
 
-        public static TrakHoundMessageQueueResponse Parse(byte[] responseBytes)
+        private static byte[] CreateResponseBytes(IEnumerable<byte[]> contents)
         {
-            var response = new TrakHoundMessageQueueResponse();
-
-            if (responseBytes != null)
+            if (!contents.IsNullOrEmpty())
             {
-                var headerIndex = 0;
-
                 var i = 0;
-                while (i < responseBytes.Length)
+                var responseBytes = new byte[contents.Sum(o => o.Length)];
+                foreach (var content in contents)
                 {
-                    if (responseBytes[i] == 10 && responseBytes[i + 1] == 13)
-                    {
-                        headerIndex = i;
-                        break;
-                    }
-
-                    i++;
+                    Array.Copy(content, 0, responseBytes, i, content.Length);
+                    i += content.Length;
                 }
+                return responseBytes;
+            }
 
-                if (headerIndex > 0)
+            return null;
+        }
+
+        public static IEnumerable<TrakHoundMessageQueueResponse> Parse(byte[] responseBytes)
+        {
+            if (!responseBytes.IsNullOrEmpty())
+            {
+                var json = StringFunctions.GetUtf8String(responseBytes);
+                var httpResponses = Json.Convert<IEnumerable<TrakHoundHttpMessageQueueResponse>>(json);
+                if (!httpResponses.IsNullOrEmpty())
                 {
-                    var headerBytes = new byte[headerIndex];
-                    Array.Copy(responseBytes, 0, headerBytes, 0, headerIndex);
-                    var header = StringFunctions.GetUtf8String(headerBytes);
-
-                    var headers = header.Split("\r");
-                    if (headers.Length > 1)
+                    var responses = new List<TrakHoundMessageQueueResponse>();
+                    foreach (var httpResponse in httpResponses)
                     {
-                        response.DeliveryId = headers[0];
-                        response.Timestamp = headers[1].ToLong();
-                    }
-
-                    var contentLength = responseBytes.Length - headerIndex - 2; // 2 = 10 & 13 bytes for CR+LF
-                    var contentBytes = new byte[contentLength];
-                    Array.Copy(responseBytes, headerIndex + 2, contentBytes, 0, contentLength);
-                    response.Content = new MemoryStream(contentBytes);
+                        responses.Add(httpResponse.ToResponse());
+                    }     
+                    return responses;
                 }
             }
 
-            return response;
+            return null;
         }
     }
 }

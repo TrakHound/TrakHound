@@ -1291,47 +1291,156 @@ namespace TrakHound.Serialization
                                                 referencePath = TrakHoundPath.IsAbsolute(referenceAttribute.Path) ? referenceAttribute.Path : TrakHoundPath.Combine(objectEntity.GetAbsolutePath(), referenceAttribute.Path);
                                             }
 
-                                            var referenceObject = collection.Objects.QueryObjects(referencePath)?.FirstOrDefault();
-                                            if (referenceObject != null)
+                                            var referenceObjects = collection.Objects.QueryObjects(referencePath);
+                                            if (!referenceObjects.IsNullOrEmpty())
                                             {
-                                                var referenceEntity = collection.Objects.QueryReferenceByObjectUuid(referenceObject.Uuid);
-                                                if (referenceEntity != null)
+                                                if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
                                                 {
-                                                    var targetObject = collection.Objects.GetObject(referenceEntity.TargetUuid);
-
-                                                    if (property.PropertyType == typeof(string))
+                                                    var childObjects = new Dictionary<string, object>();
+                                                    var childType = property.PropertyType.GetGenericArguments()?.FirstOrDefault();
+                                                    foreach (var referenceObject in referenceObjects)
                                                     {
-                                                        var targetPath = targetObject?.GetAbsolutePath();
-                                                        if (!string.IsNullOrEmpty(referenceAttribute.TargetBasePath)) targetPath = TrakHoundPath.GetRelativeTo(referenceAttribute.TargetBasePath, targetPath);
-
-                                                        SetProperty(property, response, ChangeType(targetPath, property.PropertyType));
-                                                    }
-                                                    else
-                                                    {
-                                                        var childEntity = collection.Objects.GetObject(referenceEntity.TargetUuid);
-                                                        if (childEntity != null)
+                                                        var referenceEntity = collection.Objects.QueryReferenceByObjectUuid(referenceObject.Uuid);
+                                                        if (referenceEntity != null)
                                                         {
-                                                            var childResponses = DeserializeObjectsToResult(property.PropertyType, collection, new string[] { childEntity.Uuid }, outputModels, level + 1);
-                                                            if (!childResponses.IsNullOrEmpty())
+                                                            var targetObject = collection.Objects.GetObject(referenceEntity.TargetUuid);
+
+                                                            if (childType == typeof(string))
                                                             {
-                                                                var childResponse = childResponses.FirstOrDefault();
-                                                                if (childResponse.Key != null)
+                                                                var targetPath = targetObject?.GetAbsolutePath();
+                                                                if (!string.IsNullOrEmpty(referenceAttribute.TargetBasePath)) targetPath = TrakHoundPath.GetRelativeTo(referenceAttribute.TargetBasePath, targetPath);
+
+                                                                childObjects.Remove(targetPath);
+                                                                childObjects.Add(targetPath, targetPath);
+
+                                                                //SetProperty(property, response, ChangeType(targetPath, childType));
+                                                            }
+                                                            else
+                                                            {
+                                                                var childEntity = collection.Objects.GetObject(referenceEntity.TargetUuid);
+                                                                if (childEntity != null)
                                                                 {
-                                                                    if (outputModels != null)
+                                                                    var childResponses = DeserializeObjectsToResult(childType, collection, new string[] { childEntity.Uuid }, outputModels, level + 1);
+                                                                    if (!childResponses.IsNullOrEmpty())
                                                                     {
-                                                                        var childResponseKey = $"{property.PropertyType.AssemblyQualifiedName}:{childResponse.Key}";
+                                                                        var childResponse = childResponses.FirstOrDefault();
+                                                                        if (childResponse.Key != null)
+                                                                        {
+                                                                            if (outputModels != null)
+                                                                            {
+                                                                                var childResponseKey = $"{childType.AssemblyQualifiedName}:{childResponse.Key}";
 
-                                                                        outputModels.Remove(childResponseKey);
-                                                                        outputModels.Add(childResponseKey, childResponse.Value);
+                                                                                outputModels.Remove(childResponseKey);
+                                                                                outputModels.Add(childResponseKey, childResponse.Value);
+                                                                            }
+
+                                                                            childObjects.Remove(childEntity.Uuid);
+                                                                            childObjects.Add(childEntity.Uuid, childResponse.Value);
+
+                                                                            //SetProperty(property, response, childResponse.Value);
+                                                                        }
                                                                     }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
 
-                                                                    SetProperty(property, response, childResponse.Value);
+                                                    if (!childObjects.IsNullOrEmpty())
+                                                    {
+                                                        var genericListType = typeof(List<>).MakeGenericType(childType);
+                                                        var genericList = Activator.CreateInstance(genericListType);
+
+                                                        foreach (var childObject in childObjects)
+                                                        {
+                                                            ((IList)genericList).Add(childObject.Value);
+                                                        }
+
+                                                        SetProperty(property, response, genericList);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    var referenceEntity = collection.Objects.QueryReferenceByObjectUuid(referenceObjects.FirstOrDefault().Uuid);
+                                                    if (referenceEntity != null)
+                                                    {
+                                                        var targetObject = collection.Objects.GetObject(referenceEntity.TargetUuid);
+
+                                                        if (property.PropertyType == typeof(string))
+                                                        {
+                                                            var targetPath = targetObject?.GetAbsolutePath();
+                                                            if (!string.IsNullOrEmpty(referenceAttribute.TargetBasePath)) targetPath = TrakHoundPath.GetRelativeTo(referenceAttribute.TargetBasePath, targetPath);
+
+                                                            SetProperty(property, response, ChangeType(targetPath, property.PropertyType));
+                                                        }
+                                                        else
+                                                        {
+                                                            var childEntity = collection.Objects.GetObject(referenceEntity.TargetUuid);
+                                                            if (childEntity != null)
+                                                            {
+                                                                var childResponses = DeserializeObjectsToResult(property.PropertyType, collection, new string[] { childEntity.Uuid }, outputModels, level + 1);
+                                                                if (!childResponses.IsNullOrEmpty())
+                                                                {
+                                                                    var childResponse = childResponses.FirstOrDefault();
+                                                                    if (childResponse.Key != null)
+                                                                    {
+                                                                        if (outputModels != null)
+                                                                        {
+                                                                            var childResponseKey = $"{property.PropertyType.AssemblyQualifiedName}:{childResponse.Key}";
+
+                                                                            outputModels.Remove(childResponseKey);
+                                                                            outputModels.Add(childResponseKey, childResponse.Value);
+                                                                        }
+
+                                                                        SetProperty(property, response, childResponse.Value);
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
                                             }
+
+                                            //var referenceObject = collection.Objects.QueryObjects(referencePath)?.FirstOrDefault();
+                                            //if (referenceObject != null)
+                                            //{
+                                            //    var referenceEntity = collection.Objects.QueryReferenceByObjectUuid(referenceObject.Uuid);
+                                            //    if (referenceEntity != null)
+                                            //    {
+                                            //        var targetObject = collection.Objects.GetObject(referenceEntity.TargetUuid);
+
+                                            //        if (property.PropertyType == typeof(string))
+                                            //        {
+                                            //            var targetPath = targetObject?.GetAbsolutePath();
+                                            //            if (!string.IsNullOrEmpty(referenceAttribute.TargetBasePath)) targetPath = TrakHoundPath.GetRelativeTo(referenceAttribute.TargetBasePath, targetPath);
+
+                                            //            SetProperty(property, response, ChangeType(targetPath, property.PropertyType));
+                                            //        }
+                                            //        else
+                                            //        {
+                                            //            var childEntity = collection.Objects.GetObject(referenceEntity.TargetUuid);
+                                            //            if (childEntity != null)
+                                            //            {
+                                            //                var childResponses = DeserializeObjectsToResult(property.PropertyType, collection, new string[] { childEntity.Uuid }, outputModels, level + 1);
+                                            //                if (!childResponses.IsNullOrEmpty())
+                                            //                {
+                                            //                    var childResponse = childResponses.FirstOrDefault();
+                                            //                    if (childResponse.Key != null)
+                                            //                    {
+                                            //                        if (outputModels != null)
+                                            //                        {
+                                            //                            var childResponseKey = $"{property.PropertyType.AssemblyQualifiedName}:{childResponse.Key}";
+
+                                            //                            outputModels.Remove(childResponseKey);
+                                            //                            outputModels.Add(childResponseKey, childResponse.Value);
+                                            //                        }
+
+                                            //                        SetProperty(property, response, childResponse.Value);
+                                            //                    }
+                                            //                }
+                                            //            }
+                                            //        }
+                                            //    }
+                                            //}
                                         }
 
                                         // Sets

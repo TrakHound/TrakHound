@@ -1,7 +1,9 @@
 // Copyright (c) 2024 TrakHound Inc., All Rights Reserved.
 // TrakHound Inc. licenses this file to you under the MIT license.
 
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using TrakHound.Http;
 using TrakHound.MessageQueues;
@@ -24,11 +26,13 @@ namespace TrakHound.Clients
         }
 
 
-        public async Task<TrakHoundMessageQueueResponse> Pull(string queue, bool acknowledge, string routerId = null)
+        public async Task<IEnumerable<TrakHoundMessageQueueResponse>> Pull(string queue, int count = 1, bool acknowledge = true, string routerId = null)
         {
             var url = Url.Combine(BaseUrl, HttpConstants.MessageQueuesPrefix);
             url = Url.Combine(url, "pull");
+            url = Url.AddQueryParameter(url, "queue", queue);
             url = Url.AddQueryParameter(url, "acknowledge", acknowledge.ToString());
+            url = Url.AddQueryParameter(url, "count", count);
             url = Url.AddQueryParameter(url, "routerId", _baseClient.GetRouterId(routerId));
 
             var httpResponse = await RestRequest.GetResponse(url);
@@ -63,6 +67,7 @@ namespace TrakHound.Clients
         {
             var url = Url.Combine(BaseUrl, HttpConstants.MessageQueuesPrefix);
             url = Url.Combine(url, "acknowledge");
+            url = Url.AddQueryParameter(url, "queue", queue);
             url = Url.AddQueryParameter(url, "deliveryId", deliveryId);
             url = Url.AddQueryParameter(url, "routerId", _baseClient.GetRouterId(routerId));
 
@@ -74,6 +79,7 @@ namespace TrakHound.Clients
         {
             var url = Url.Combine(BaseUrl, HttpConstants.MessageQueuesPrefix);
             url = Url.Combine(url, "reject");
+            url = Url.AddQueryParameter(url, "queue", queue);
             url = Url.AddQueryParameter(url, "deliveryId", deliveryId);
             url = Url.AddQueryParameter(url, "routerId", _baseClient.GetRouterId(routerId));
 

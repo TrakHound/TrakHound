@@ -1,10 +1,12 @@
 // Copyright (c) 2024 TrakHound Inc., All Rights Reserved.
 // TrakHound Inc. licenses this file to you under the MIT license.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TrakHound.Http;
 using TrakHound.Requests;
 
 namespace TrakHound.Clients
@@ -69,7 +71,7 @@ namespace TrakHound.Clients
             if (!string.IsNullOrEmpty(objectPath))
             {
                 var url = Url.Combine(ApiRoute, _objectsRoute, _messageQueuesRoute);
-                url = Url.Combine(url, "pull");
+                url = Url.Combine(url, "content", "pull");
 
                 var parameters = new Dictionary<string, string>();
                 parameters["objectPath"] = objectPath;
@@ -77,7 +79,11 @@ namespace TrakHound.Clients
                 parameters["acknowledge"] = acknowledge.ToString();
                 if (!string.IsNullOrEmpty(routerId)) parameters["routerId"] = routerId;
 
-                return await ApiClient.QueryJson<IEnumerable<TrakHoundMessageQueue>>(url, parameters);
+                var apiResponse = await ApiClient.Query(url, parameters);
+                if (apiResponse.Success)
+                {
+                    return apiResponse.GetJsonContentObject<IEnumerable<TrakHoundMessageQueue>>();
+                }
             }
 
             return null;
@@ -176,6 +182,20 @@ namespace TrakHound.Clients
         }
 
 
+        public async Task<bool> PublishMessageQueueContent(IEnumerable<TrakHoundMessageQueueEntry> messages, string routerId = null)
+        {
+            if (!messages.IsNullOrEmpty())
+            {
+                var url = Url.Combine(ApiRoute, _objectsRoute, _messageQueuesRoute, "entries");
+
+                var response = await ApiClient.Publish(url, messages);
+                await PublishAfter();
+                return response.Success;
+            }
+
+            return false;
+        }
+
         public async Task<bool> PublishMessageQueueContent(string objectPath, string content, string routerId = null)
         {
             if (!string.IsNullOrEmpty(objectPath) && !string.IsNullOrEmpty(content))
@@ -225,6 +245,79 @@ namespace TrakHound.Clients
                 if (!string.IsNullOrEmpty(routerId)) parameters["routerId"] = routerId;
 
                 var response = await ApiClient.Publish(url, content, queryParameters: parameters);
+                await PublishAfter();
+                return response.Success;
+            }
+
+            return false;
+        }
+
+
+        public async Task<bool> AcknowledgeMessageQueue(string objectPath, string deliveryId, string routerId = null)
+        {
+            if (!string.IsNullOrEmpty(objectPath) && !string.IsNullOrEmpty(deliveryId))
+            {
+                var url = Url.Combine(ApiRoute, _objectsRoute, _messageQueuesRoute, "acknowledge");
+
+                var parameters = new Dictionary<string, string>();
+                parameters["objectPath"] = objectPath;
+                if (!string.IsNullOrEmpty(routerId)) parameters["routerId"] = routerId;
+
+                var response = await ApiClient.Publish(url, new string[] { deliveryId }, queryParameters: parameters);
+                await PublishAfter();
+                return response.Success;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> AcknowledgeMessageQueue(string objectPath, IEnumerable<string> deliveryIds, string routerId = null)
+        {
+            if (!string.IsNullOrEmpty(objectPath) && !deliveryIds.IsNullOrEmpty())
+            {
+                var url = Url.Combine(ApiRoute, _objectsRoute, _messageQueuesRoute, "acknowledge");
+
+                var parameters = new Dictionary<string, string>();
+                parameters["objectPath"] = objectPath;
+                if (!string.IsNullOrEmpty(routerId)) parameters["routerId"] = routerId;
+
+                var response = await ApiClient.Publish(url, deliveryIds, queryParameters: parameters);
+                await PublishAfter();
+                return response.Success;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> RejectMessageQueue(string objectPath, string deliveryId, string routerId = null)
+        {
+            if (!string.IsNullOrEmpty(objectPath) && !string.IsNullOrEmpty(deliveryId))
+            {
+                var url = Url.Combine(ApiRoute, _objectsRoute, _messageQueuesRoute, "reject");
+
+                var parameters = new Dictionary<string, string>();
+                parameters["objectPath"] = objectPath;
+                if (!string.IsNullOrEmpty(routerId)) parameters["routerId"] = routerId;
+
+                var response = await ApiClient.Publish(url, new string[] { deliveryId }, queryParameters: parameters);
+                await PublishAfter();
+                return response.Success;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> RejectMessageQueue(string objectPath, IEnumerable<string> deliveryIds, string routerId = null)
+        {
+            if (!string.IsNullOrEmpty(objectPath) && !deliveryIds.IsNullOrEmpty())
+            {
+                var url = Url.Combine(ApiRoute, _objectsRoute, _messageQueuesRoute, "reject");
+
+                var parameters = new Dictionary<string, string>();
+                parameters["objectPath"] = objectPath;
+                if (!string.IsNullOrEmpty(routerId)) parameters["routerId"] = routerId;
+
+                var response = await ApiClient.Publish(url, deliveryIds, queryParameters: parameters);
                 await PublishAfter();
                 return response.Success;
             }

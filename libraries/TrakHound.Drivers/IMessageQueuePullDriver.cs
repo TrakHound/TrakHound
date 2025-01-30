@@ -8,7 +8,7 @@ namespace TrakHound.Drivers
 {
     public interface IMessageQueuePullDriver : ITrakHoundDriver
     {
-        public Task<TrakHoundResponse<TrakHoundMessageQueueResponse>> Pull(string queue, bool acknowledge);
+        public Task<TrakHoundResponse<TrakHoundMessageQueueResponse>> Pull(string queue, int count, bool acknowledge);
 
         public Task<TrakHoundResponse<bool>> Acknowledge(string queue, string deliveryId);
 

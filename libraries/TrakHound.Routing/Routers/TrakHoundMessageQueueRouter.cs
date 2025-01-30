@@ -20,18 +20,18 @@ namespace TrakHound.Routing.Routers
         }
 
 
-        public async Task<TrakHoundResponse<TrakHoundMessageQueueResponse>> Pull(string queue, bool acknowledge, string requestId = null)
+        public async Task<TrakHoundResponse<TrakHoundMessageQueueResponse>> Pull(string queue, int count, bool acknowledge, string requestId = null)
         {
             // Set Query Driver Command
             Func<ParameterRouteTargetDriverRequest<IMessageQueuePullDriver, TrakHoundMessageQueueResponse>, Task<TrakHoundResponse<TrakHoundMessageQueueResponse>>> serviceCommand = async (serviceRequest) =>
             {
-                return await serviceRequest.Driver.Pull(queue, acknowledge);
+                return await serviceRequest.Driver.Pull(queue, count, acknowledge);
             };
 
             // Set Query Router Command
             Func<ParameterRouteTargetRouterRequest<TrakHoundMessageQueueResponse>, Task<TrakHoundResponse<TrakHoundMessageQueueResponse>>> routerCommand = async (routerRequest) =>
             {
-                return await routerRequest.Router.MessageQueues.Pull(queue, acknowledge, routerRequest.Request.Id);
+                return await routerRequest.Router.MessageQueues.Pull(queue, count, acknowledge, routerRequest.Request.Id);
             };
 
 

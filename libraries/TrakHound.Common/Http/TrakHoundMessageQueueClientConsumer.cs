@@ -106,13 +106,28 @@ namespace TrakHound.Http
         {
             if (response.Content != null)
             {
-                var messageQueueResponse = TrakHoundHttpMessageQueueResponse.Parse(response.Content);
-                if (messageQueueResponse.IsValid)
+                var messageQueueResponses = TrakHoundHttpMessageQueueResponse.Parse(response.Content);
+                if (!messageQueueResponses.IsNullOrEmpty())
                 {
-                    Push(messageQueueResponse);
+                    foreach (var messageQueueResponse in messageQueueResponses)
+                    {
+                        Push(messageQueueResponse);
+                    }
                 }
             }
         }
+
+        //private void WebsocketClientResponseReceived(object sender, TrakHoundWebSocketResponse response)
+        //{
+        //    if (response.Content != null)
+        //    {
+        //        var messageQueueResponse = TrakHoundHttpMessageQueueResponse.Parse(response.Content);
+        //        if (messageQueueResponse.IsValid)
+        //        {
+        //            Push(messageQueueResponse);
+        //        }
+        //    }
+        //}
 
         public virtual bool Push(TrakHoundMessageQueueResponse response)
         {

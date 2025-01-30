@@ -880,6 +880,35 @@ namespace TrakHound
             return false;
         }
 
+        public static string Base64Encode(byte[] input)
+        {
+            if (!input.IsNullOrEmpty())
+            {
+                try
+                {
+                    return System.Convert.ToBase64String(input);
+                }
+                catch { }
+            }
+
+            return null;
+        }
+
+        public static string Base64Decode(string input)
+        {
+            if (!string.IsNullOrEmpty(input))
+            {
+                try
+                {
+                    var bytes = System.Convert.FromBase64String(input);
+                    return System.Text.Encoding.UTF8.GetString(bytes);
+                }
+                catch { }
+            }
+
+            return null;
+        }
+
         public static byte[] ConvertHexidecimalToBytes(string hex)
         {
             if (hex != null)

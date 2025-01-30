@@ -658,13 +658,16 @@ namespace TrakHound.Routing.Routers
 
 		public async Task<TrakHoundResponse<TrakHoundPublishResult<TEntity>>> Publish(IEnumerable<TEntity> entities, TrakHoundOperationMode publishMode = TrakHoundOperationMode.Async, string requestId = null)
         {
-            var dEntities = entities?.ToDistinct();
+            //var dEntities = entities?.ToDistinct();
 
-            await OnBeforePublish(dEntities, publishMode, requestId);
+            await OnBeforePublish(entities, publishMode, requestId);
+            //await OnBeforePublish(dEntities, publishMode, requestId);
 
-            var response = await _router.Entities.Publish<TEntity>(TrakHoundRoutes.Get(typeof(IEntityPublishDriver<TEntity>)), dEntities, publishMode, requestId);
+            var response = await _router.Entities.Publish<TEntity>(TrakHoundRoutes.Get(typeof(IEntityPublishDriver<TEntity>)), entities, publishMode, requestId);
+            //var response = await _router.Entities.Publish<TEntity>(TrakHoundRoutes.Get(typeof(IEntityPublishDriver<TEntity>)), dEntities, publishMode, requestId);
 
-            await OnAfterPublish(response.Content, dEntities, publishMode, requestId);
+            await OnAfterPublish(response.Content, entities, publishMode, requestId);
+            //await OnAfterPublish(response.Content, dEntities, publishMode, requestId);
 
 			return response;
         }

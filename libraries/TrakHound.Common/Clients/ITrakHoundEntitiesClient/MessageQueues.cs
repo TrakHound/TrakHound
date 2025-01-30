@@ -32,10 +32,21 @@ namespace TrakHound.Clients
         Task<bool> PublishMessageQueueMappings(IEnumerable<TrakHoundMessageQueueMappingEntry> entries, bool async = false, string routerId = null);
 
 
+        Task<bool> PublishMessageQueueContent(IEnumerable<TrakHoundMessageQueueEntry> messages, string routerId = null);
+
         Task<bool> PublishMessageQueueContent(string objectPath, string content, string routerId = null);
 
         Task<bool> PublishMessageQueueContent(string objectPath, byte[] content, string routerId = null);
 
         Task<bool> PublishMessageQueueContent(string objectPath, Stream content, string routerId = null);
+
+
+        Task<bool> AcknowledgeMessageQueue(string objectPath, string deliveryId, string routerId = null);
+
+        Task<bool> AcknowledgeMessageQueue(string objectPath, IEnumerable<string> deliveryIds, string routerId = null);
+
+        Task<bool> RejectMessageQueue(string objectPath, string deliveryId, string routerId = null);
+
+        Task<bool> RejectMessageQueue(string objectPath, IEnumerable<string> deliveryIds, string routerId = null);
     }
 }

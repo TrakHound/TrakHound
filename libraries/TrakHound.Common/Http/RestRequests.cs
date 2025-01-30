@@ -19,6 +19,10 @@ namespace TrakHound.Http
         private static readonly HttpClient httpClient = new HttpClient(
             new HttpClientHandler
             {
+                ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, cetChain, policyErrors) =>
+                {
+                    return true; // Allow Untrusted Server Certificate
+                },
                 AutomaticDecompression = System.Net.DecompressionMethods.GZip
             }
             )

@@ -48,6 +48,7 @@
 	  <Compile Remove="Entities\QueryEngines\Evaluators\Entities\ObjectStatisticEvaluator.cs" />
 	  <Compile Remove="Entities\QueryEngines\Evaluators\Entities\ObjectStatusEvaluator.cs" />
 	  <Compile Remove="Entities\QueryEngines\Evaluators\Entities\ObjectTimestampEvaluator.cs" />
+	  <Compile Remove="Http\TrakHoundHttpMessageQueueResponse - Copy.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -66,6 +67,7 @@
 	  <None Include="Entities\QueryEngines\Evaluators\Entities\ObjectStatisticEvaluator.cs" />
 	  <None Include="Entities\QueryEngines\Evaluators\Entities\ObjectStatusEvaluator.cs" />
 	  <None Include="Entities\QueryEngines\Evaluators\Entities\ObjectTimestampEvaluator.cs" />
+	  <None Include="Http\TrakHoundHttpMessageQueueResponse - Copy.cs" />
 	</ItemGroup>
 
 </Project>

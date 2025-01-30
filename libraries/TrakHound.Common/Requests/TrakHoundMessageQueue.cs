@@ -4,6 +4,8 @@
 using System;
 using System.IO;
 using System.Text.Json.Serialization;
+using TrakHound.MessageQueues;
+using TrakHound.Messages;
 
 namespace TrakHound.Requests
 {
@@ -25,12 +27,36 @@ namespace TrakHound.Requests
         public string ContentType { get; set; }
 
         [JsonPropertyName("content")]
-        public Stream Content { get; set; }
+        public string Content { get; set; }
 
         [JsonPropertyName("deliveryId")]
         public string DeliveryId { get; set; }
 
         [JsonPropertyName("timestamp")]
         public DateTime Timestamp { get; set; }
+
+
+        public Stream GetContentStream()
+        {
+            var bytes = GetContentBytes();
+            if (!bytes.IsNullOrEmpty())
+            {
+                try
+                {
+                    return new MemoryStream(bytes);
+                }
+                catch { }
+            }
+
+            return null;
+        }
+
+        public byte[] GetContentBytes() => StringFunctions.ToUtf8Bytes(StringFunctions.Base64Decode(Content));
+
+        public string GetContentUtf8String() => StringFunctions.Base64Decode(Content);
+
+        //public byte[] GetContentBytes() => TrakHoundMessageQueueResponse.GetContentBytes(Content);
+
+        //public string GetContentUtf8String() => TrakHoundMessageQueueResponse.GetContentUtf8String(Content);
     }
 }

@@ -25,7 +25,7 @@ namespace TrakHound.Http
 
 
         [HttpGet("pull")]
-        public async Task Pull([FromQuery] string queue, [FromQuery] bool acknowledge = true, [FromQuery] string routerId = null)
+        public async Task Pull([FromQuery] string queue, [FromQuery] int count = 1, [FromQuery] bool acknowledge = true, [FromQuery] string routerId = null)
         {
             var client = _instance.ClientProvider.GetClient();
             if (client != null)
@@ -34,10 +34,10 @@ namespace TrakHound.Http
 
                 if (!string.IsNullOrEmpty(queue))
                 {
-                    var response = await client.System.MessageQueues.Pull(queue, acknowledge);
-                    if (response.IsValid)
+                    var responses = await client.System.MessageQueues.Pull(queue, count, acknowledge);
+                    if (!responses.IsNullOrEmpty())
                     {
-                        var responseBytes = TrakHoundHttpMessageQueueResponse.Create(response);
+                        var responseBytes = TrakHoundHttpMessageQueueResponse.Create(responses);
                         if (responseBytes != null)
                         {
                             Response.StatusCode = 200;
