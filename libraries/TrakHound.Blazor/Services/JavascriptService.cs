@@ -1,4 +1,4 @@
-// Copyright (c) 2024 TrakHound Inc., All Rights Reserved.
+// Copyright (c) 2025 TrakHound Inc., All Rights Reserved.
 // TrakHound Inc. licenses this file to you under the MIT license.
 
 using Microsoft.JSInterop;
@@ -53,6 +53,16 @@ namespace TrakHound.Blazor.Services
 		public async Task FocusElement(string elementId)
         {
             await InvokeVoid("JsFunctions.focusElement", elementId);
+        }
+
+        public async Task FocusSelectElement(string elementId)
+        {
+            await InvokeVoid("JsFunctions.focusSelectElement", elementId);
+        }
+
+        public async Task SelectElement(string elementId)
+        {
+            await InvokeVoid("JsFunctions.selectElement", elementId);
         }
 
         public async Task CopyClipboard(string text)

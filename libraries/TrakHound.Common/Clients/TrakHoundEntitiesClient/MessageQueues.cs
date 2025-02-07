@@ -1,12 +1,10 @@
-// Copyright (c) 2024 TrakHound Inc., All Rights Reserved.
+// Copyright (c) 2025 TrakHound Inc., All Rights Reserved.
 // TrakHound Inc. licenses this file to you under the MIT license.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using TrakHound.Http;
 using TrakHound.Requests;
 
 namespace TrakHound.Clients
@@ -89,12 +87,39 @@ namespace TrakHound.Clients
             return null;
         }
 
+        public async Task<IEnumerable<TContent>> PullFromMessageQueue<TContent>(string objectPath, int count = 1, bool acknowledge = true, string routerId = null)
+        {
+            if (!string.IsNullOrEmpty(objectPath))
+            {
+                var url = Url.Combine(ApiRoute, _objectsRoute, _messageQueuesRoute);
+                url = Url.Combine(url, "content", "pull");
+
+                var parameters = new Dictionary<string, string>();
+                parameters["objectPath"] = objectPath;
+                parameters["count"] = count.ToString();
+                parameters["acknowledge"] = acknowledge.ToString();
+                if (!string.IsNullOrEmpty(routerId)) parameters["routerId"] = routerId;
+
+                var apiResponse = await ApiClient.Query(url, parameters);
+                if (apiResponse.Success)
+                {
+                    var messages = apiResponse.GetJsonContentObject<IEnumerable<TrakHoundMessageQueue>>();
+                    if (!messages.IsNullOrEmpty())
+                    {
+                        return messages.Select(o => Json.Convert<TContent>(o.GetContentUtf8String()));
+                    }
+                }
+            }
+
+            return null;
+        }
+
 
         public async Task<ITrakHoundConsumer<TrakHoundMessageQueue>> SubscribeMessageQueue(string objectPath, bool acknowledge = true, string routerId = null)
         {
             if (!string.IsNullOrEmpty(objectPath))
             {
-                var route = Url.Combine(ApiRoute, _objectsRoute, _messageQueuesRoute);
+                var route = Url.Combine(ApiRoute, _objectsRoute, _messageQueuesRoute, _messageQueuesContentRoute);
 
                 var parameters = new Dictionary<string, string>();
                 parameters["objectPath"] = objectPath;
@@ -111,31 +136,35 @@ namespace TrakHound.Clients
         {
             if (!string.IsNullOrEmpty(objectPath))
             {
-                var route = Url.Combine(ApiRoute, _objectsRoute, _messageQueuesRoute, _messageQueuesContentRoute);
-
-                var parameters = new Dictionary<string, string>();
-                parameters["objectPath"] = objectPath;
-                parameters["acknowledge"] = acknowledge.ToString();
-                if (!string.IsNullOrEmpty(routerId)) parameters["routerId"] = routerId;
-
-                return await ApiClient.SubscribeBytes(route, parameters);
+                var consumer = await SubscribeMessageQueue(objectPath, acknowledge, routerId);
+                if (consumer != null)
+                {
+                    var outputConsumer = new TrakHoundConsumer<TrakHoundMessageQueue, byte[]>(consumer);
+                    outputConsumer.OnReceived = (o) =>
+                    {
+                        return o?.GetContentBytes();
+                    };
+                    return outputConsumer;
+                }
             }
 
             return null;
         }
 
-        public async Task<ITrakHoundConsumer<T>> SubscribeMessageQueueContent<T>(string objectPath, bool acknowledge = true, string routerId = null)
+        public async Task<ITrakHoundConsumer<TContent>> SubscribeMessageQueueContent<TContent>(string objectPath, bool acknowledge = true, string routerId = null)
         {
             if (!string.IsNullOrEmpty(objectPath))
             {
-                var route = Url.Combine(ApiRoute, _objectsRoute, _messageQueuesRoute, _messageQueuesContentRoute);
-
-                var parameters = new Dictionary<string, string>();
-                parameters["objectPath"] = objectPath;
-                parameters["acknowledge"] = acknowledge.ToString();
-                if (!string.IsNullOrEmpty(routerId)) parameters["routerId"] = routerId;
-
-                return await ApiClient.SubscribeJson<T>(route, parameters);
+                var consumer = await SubscribeMessageQueue(objectPath, acknowledge, routerId);
+                if (consumer != null)
+                {
+                    var outputConsumer = new TrakHoundConsumer<TrakHoundMessageQueue, TContent>(consumer);
+                    outputConsumer.OnReceived = (o) =>
+                    {
+                        return Json.Convert<TContent>(o?.GetContentUtf8String());
+                    };
+                    return outputConsumer;
+                }
             }
 
             return null;

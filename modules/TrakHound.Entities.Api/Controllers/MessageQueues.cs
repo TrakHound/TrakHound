@@ -1,4 +1,4 @@
-// Copyright (c) 2024 TrakHound Inc., All Rights Reserved.
+// Copyright (c) 2025 TrakHound Inc., All Rights Reserved.
 // TrakHound Inc. licenses this file to you under the MIT license.
 
 using System.Collections.Generic;
@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using TrakHound.Api;
 using TrakHound.Clients;
 using TrakHound.Entities.Collections;
-using TrakHound.Http;
 using TrakHound.MessageQueues;
 using TrakHound.Requests;
 
@@ -98,14 +97,23 @@ namespace TrakHound.Entities.Api
                                 var resultConsumer = new TrakHoundConsumer<TrakHoundMessageQueueResponse, TrakHoundApiResponse>(messageQueueConsumer);
                                 resultConsumer.OnReceived = (messageQueueResponse) =>
                                 {
-                                    var parameters = new Dictionary<string, string>();
-                                    parameters.Add("Object", obj.GetAbsolutePath());
-                                    parameters.Add("DeliveryId", messageQueueResponse.DeliveryId);
+                                    var message = new TrakHoundMessageQueue();
+                                    message.Object = obj.GetAbsolutePath();
+                                    message.ObjectUuid = obj.Uuid;
+                                    message.QueueId = entity.QueueId;
+                                    message.DeliveryId = messageQueueResponse.DeliveryId;
+                                    message.Timestamp = messageQueueResponse.Timestamp.ToDateTime();
+                                    message.Content = StringFunctions.Base64Encode(messageQueueResponse.GetContentBytes());
+                                    return Ok(message);
 
-                                    var response = new TrakHoundApiResponse(200, messageQueueResponse.Content, entity.ContentType);
-                                    response.Parameters = parameters;
+                                    //var parameters = new Dictionary<string, string>();
+                                    //parameters.Add("Object", obj.GetAbsolutePath());
+                                    //parameters.Add("DeliveryId", messageQueueResponse.DeliveryId);
 
-                                    return response;
+                                    //var response = new TrakHoundApiResponse(200, messageQueueResponse.Content, entity.ContentType);
+                                    //response.Parameters = parameters;
+
+                                    //return response;
                                 };
 
                                 return resultConsumer;

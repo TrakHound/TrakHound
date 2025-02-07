@@ -65,6 +65,12 @@ JsFunctions = {
     focusElement: function (id) {
         const element = document.getElementById(id); element.focus();
     },
+    focusSelectElement: function (id) {
+        const element = document.getElementById(id); element.focus(); element.select();
+    },
+    selectElement: function (id) {
+        const element = document.getElementById(id); element.select();
+    },
     clickElement: function (id) {
         const element = document.getElementById(id); element.click();
     },
