@@ -19,12 +19,14 @@ namespace TrakHound.Clients
 
         Task<IEnumerable<TrakHoundMessageQueue>> PullFromMessageQueue(string objectPath, int count = 1, bool acknowledge = true, string routerId = null);
 
+        Task<IEnumerable<TContent>> PullFromMessageQueue<TContent>(string objectPath, int count = 1, bool acknowledge = true, string routerId = null);
+
 
         Task<ITrakHoundConsumer<TrakHoundMessageQueue>> SubscribeMessageQueue(string objectPath, bool acknowledge = true, string routerId = null);
 
         Task<ITrakHoundConsumer<byte[]>> SubscribeMessageQueueContent(string objectPath, bool acknowledge = true, string routerId = null);
 
-        Task<ITrakHoundConsumer<T>> SubscribeMessageQueueContent<T>(string objectPath, bool acknowledge = true, string routerId = null);
+        Task<ITrakHoundConsumer<TContent>> SubscribeMessageQueueContent<TContent>(string objectPath, bool acknowledge = true, string routerId = null);
 
 
         Task<bool> PublishMessageQueueMapping(string objectPath, string queueId, string contentType = "application/octet-stream", bool async = false, string routerId = null);
