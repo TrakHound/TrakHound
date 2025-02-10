@@ -1,8 +1,7 @@
-// Copyright (c) 2024 TrakHound Inc., All Rights Reserved.
+// Copyright (c) 2025 TrakHound Inc., All Rights Reserved.
 // TrakHound Inc. licenses this file to you under the MIT license.
 
 using System;
-using TrakHound.Configurations;
 using TrakHound.Volumes;
 
 namespace TrakHound.Drivers
@@ -12,8 +11,6 @@ namespace TrakHound.Drivers
     /// </summary>
     public interface ITrakHoundDriver : IDisposable
     {
-        ITrakHoundDriverConfiguration Configuration { get; }
-
         string Id { get; }
 
         string Name { get; }
@@ -21,6 +18,8 @@ namespace TrakHound.Drivers
         bool IsAvailable { get; }
 
         string AvailabilityMessage { get; }
+
+        ITrakHoundDriverConfiguration Configuration { get; }
 
         ITrakHoundVolume Volume { get; }
     }

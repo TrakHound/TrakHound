@@ -1,4 +1,4 @@
-// Copyright (c) 2024 TrakHound Inc., All Rights Reserved.
+// Copyright (c) 2025 TrakHound Inc., All Rights Reserved.
 // TrakHound Inc. licenses this file to you under the MIT license.
 
 using TrakHound.Logging;
@@ -12,7 +12,6 @@ namespace TrakHound.Drivers
         private ITrakHoundVolume _volume;
         private ITrakHoundLogger _logger;
 
-        public ITrakHoundDriverConfiguration Configuration => _configuration;
 
         private string _id;
         public string Id
@@ -37,6 +36,8 @@ namespace TrakHound.Drivers
         public virtual bool IsAvailable { get; set; }
 
         public virtual string AvailabilityMessage { get; set; }
+
+        public ITrakHoundDriverConfiguration Configuration => _configuration;
 
         public ITrakHoundVolume Volume => _volume;
 
