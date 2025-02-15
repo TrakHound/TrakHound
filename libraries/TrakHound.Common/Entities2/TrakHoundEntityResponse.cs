@@ -5,6 +5,12 @@ namespace TrakHound.Entities
 {
     public struct TrakHoundEntityResponse<TResult>
     {
+        public bool Success => StatusCode >= 200 && StatusCode < 400;
+
         public TResult Result { get; set; }
+
+        public int StatusCode { get; set; }
+
+        public string Message { get; set; }
     }
 }
