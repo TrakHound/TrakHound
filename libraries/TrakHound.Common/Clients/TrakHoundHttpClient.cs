@@ -97,5 +97,10 @@ namespace TrakHound.Clients
             else x = RouterId;
             return x != "default" ? x : null;
         }
+
+        public string GetLink(string route)
+        {
+            return Url.Combine(_httpBaseUrl, route);
+        }
     }
 }

@@ -70,5 +70,10 @@ namespace TrakHound.Clients
         {
             return _routerProvider.GetRouter(!string.IsNullOrEmpty(routerId) ? routerId : RouterId);
         }
+
+        public string GetLink(string route)
+        {
+            return route;
+        }
     }
 }

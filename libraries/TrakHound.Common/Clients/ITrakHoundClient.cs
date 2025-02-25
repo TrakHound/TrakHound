@@ -26,5 +26,7 @@ namespace TrakHound.Clients
 
 
         void AddMiddleware(ITrakHoundClientMiddleware middleware);
+
+        string GetLink(string route);
     }
 }
