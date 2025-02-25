@@ -42,5 +42,7 @@ namespace TrakHound.Clients
             _functions = client.Functions;
             _services = client.Services;
         }
+
+        public string GetLink(string route) => null;
     }
 }

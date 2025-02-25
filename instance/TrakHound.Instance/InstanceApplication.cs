@@ -282,6 +282,10 @@ namespace TrakHound.Instance
                     }
                     else if (!IsStaticRoute(context.Request.Path))
                     {
+                        // IIS doesn't cache?
+                        context.Response.Headers.Append("Cache-Control", "max-age=604800");
+                        //context.Response.Headers.Append("Cache-Control", "no-cache");
+
                         //Add for InteractiveServerMode(?)
                         context.Response.Headers.Append("Content-Security-Policy", "frame-ancestors 'self'");
                     }
